@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      > 
+  <h:head>
+    <link rel="shortcut icon" href="//www.dina-web.net/naturarv/resources/images/favicon.ico" type="image/x-icon" />
+    <title>
+      <ui:insert name="windowTitle">
+        #{msg.naturarv}
+      </ui:insert>
+    </title>     
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa1olBKzqZdr4KaHHaC-2njZOWOinIDq8" type="text/javascript"></script> 
+
+    <script name="jquery/jquery.js" library="primefaces"></script>
+
+
+
+  </h:head>
+
+
+  <f:view locale="#{languages.locale}" > 
+
+    <ui:remove>
+      <f:metadata> 
+        <f:event listener="#{search.init()}"  type="preRenderView"  /> 
+      </f:metadata>
+    </ui:remove>
+
+
+    <h:body  styleClass="mainbody" >  	     
+      <h:outputStylesheet library="css" name="style.css"  />  
+      <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+
+      <h:panelGroup layout="block" styleClass="templet">
+        <h:panelGroup  id="header" layout="block"  >
+          <ui:insert name="header" >
+            <ui:include src="/pages/header.xhtml" />
+          </ui:insert> 
+        </h:panelGroup>
+
+        <h:panelGroup  id="topmenu" layout="block"  >
+          <ui:insert name="topmenu" >
+            <ui:include src="/pages/topMenu.xhtml" />
+          </ui:insert>  
+        </h:panelGroup>
+ 
+        <h:panelGroup  id="search" layout="block"  >
+          <ui:insert name="search" >
+            <ui:include src="/pages/search.xhtml" />
+          </ui:insert>  
+        </h:panelGroup>
+        
+        <h:panelGroup id="main" layout="block"  > 
+          <ui:insert name="content"/>
+        </h:panelGroup> 
+
+        <h:panelGroup  id="footer" layout="block"  >
+          <ui:insert name="footer" >
+            <ui:include src="/pages/footer.xhtml" />
+          </ui:insert>
+        </h:panelGroup>
+
+
+      </h:panelGroup>   
+
+
+
+      <ui:remove> 
+
+        <div style="width: 960px; margin: auto;"> 
+          <div id="header" style="width: 960px; ">
+            <ui:insert name="header" >
+              <ui:include src="/pages/header.xhtml" />
+            </ui:insert> 
+          </div> 
+
+          <div id="topmenu" style="width: 960px; float: left; ">
+            <ui:insert name="topmenu" >
+              <ui:include src="/pages/topMenu.xhtml" />
+            </ui:insert> 
+          </div> 
+
+          <div id="mainimages" style="width: 960px; float: left;  ">
+            <ui:insert name="search" >
+              <ui:include src="/pages/search.xhtml" />
+            </ui:insert> 
+          </div> 
+
+          <div id="main" style="width: 960px; float: left;  ">
+            <ui:insert name="content"/>
+          </div>  
+
+          <div id="footer" >
+            <ui:insert name="footer" >
+              <ui:include src="/pages/footer.xhtml" />
+            </ui:insert>
+          </div>
+
+        </div>
+
+      </ui:remove>
+    </h:body>
+  </f:view> 
+</html> 

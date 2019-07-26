@@ -1,2 +1,5 @@
 /dina-web-portal/target/
 /dina-web-portal/nb-configuration.xml
+/target/
+/dina-web-logic/target/
+/dina-web-portal_old/

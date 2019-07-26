@@ -1,0 +1,212 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"   
+      xmlns:p="http://primefaces.org/ui"  >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">    
+
+      <ui:define name="content"  >   
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="section" >    
+          <h:form id="homeForm" prependId="false">  
+            <div class="ui-g" style="width: 980px;">
+              <div class="ui-g-9"> 
+                <div class="ui-g-12"  > 
+                  <h:outputText id="welcomeText1" value="#{msg.welcome1}" styleClass="welcomeheader" /> 
+                </div> 
+                <div class="ui-g-12" >
+                  <h:outputText id="welcomeText2" value="#{msg.welcome2}"  styleClass="welcomeheader" />  
+                </div>  
+                <div class="ui-g-12" >   
+                  <div class="ui-g-7">
+                    <div class="ui-g-12 baggimg" >
+                      <p:cache region="3baggcache" key="3baggimg">
+                        <h:graphicImage library="images" 
+                                        name="3bagg_rising.png" alt="3bagg" 
+                                        title="3bagg" styleClass="images"  
+                                        width="350" height="292"  /> 
+                      </p:cache>  
+                    </div>   
+                    <div class="ui-g-12 baggimgtext" >
+                      <h:outputText value="#{msg.photo3bagg}"    /> 
+                    </div>
+                  </div>
+
+                  <div class="ui-g-5" style="padding-top: 5em; padding-right: 2em; ">
+                    <h:outputText value="#{msg.welcomedescription}" /> 
+                    <div class="ui-g-12" >
+                      <div class="ui-g-4" /> 
+                      <div class="ui-g-8 readMoreLink" >  
+                        <p:commandLink actionListener="#{navigate.gotoAbout()}" 
+                                       value="#{msg.readmore}" styleClass="link"
+                                       process="@this" global="false"   /> 
+                      </div>
+                    </div> 
+                  </div> 
+                </div> 
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="40" />  
+                </div>
+                <div class="ui-g-12" style="padding-left: 80px;">
+                  <p:chart type="bar" id="monthChart" model="#{chart.totalMonthChart}" 
+                           style="height:300px; width: 550px;  " /> 
+                </div>
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="40" />  
+                </div>
+                <div class="ui-g-12" style="padding-left: 80px;">
+                  <p:chart type="bar" id="yearChart" model="#{chart.totalTenYearsChart}" 
+                           style="height:300px; width: 550px;  " />
+
+                </div>
+              </div>
+
+              <!--              statistic panel         -->
+              <div class="ui-g-3 statistic">
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="60" />  
+                </div>
+                <div class="ui-g-12" style="font-weight: bold; "> 
+                  <h:outputText value="#{msg.commonsearch}"  /> 
+                </div> 
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.all()}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.allspecimens}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalRecords}"   style="text-align: right; " /> 
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.map}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.specimenswithmap}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalMaps}" />
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.sweden}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.specimensinsweden}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalInSweden}" />
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.image}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.specimenswithimage}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalImages}" />
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.dna}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.specimenswithdna}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalDnas}" />
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12 shoutcutpanel"> 
+                  <p:commandLink actionListener="#{search.type}"   process="@this"  > 
+                    <div class="ui-g-9 leftcolumn"   >
+                      <h:outputText value="#{msg.specimenwithtype}" />   
+                    </div>
+                    <div class="ui-g-3 rightcolumn">
+                      <h:outputText value="#{statistic.totalType}" />
+                    </div> 
+                  </p:commandLink> 
+                </div>
+
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="40" />  
+                </div>
+                <div  class="ui-g-12 shoutcutpanel">
+                  <h:outputText value="#{msg.allitemsincollections}" style="font-weight: bold;" /> 
+                  <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >    
+                    <div class="ui-g-12"> 
+                      <p:commandLink actionListener="#{search.searchCollection(collection)}" 
+                                     title="#{collection.name}"  
+                                     process="@this"  > 
+                        <div class="ui-g-9 leftcolumn"   >
+                          <h:outputText value="#{collection.shortName}" />  
+                        </div>
+                        <div class="ui-g-3 rightcolumn">
+                          <h:outputText value="#{collection.total}" />
+                        </div> 
+                      </p:commandLink> 
+                    </div> 
+                  </ui:repeat>  
+                </div>
+
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="40" />  
+                </div>
+                <div  class="ui-g-12 shoutcutpanel">
+                  <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>
+                  <ui:repeat var="entry" value="#{statistic.institutions.entrySet()}"> 
+                    <div class="ui-g-12"> 
+                      <p:commandLink actionListener="#{search.searchInstitution()}" 
+                                     title="#{entry.key}"  
+                                     process="@this"  > 
+                        <div class="ui-g-9 leftcolumn"   >
+                          <h:outputText value="#{entry.key}" />  
+                        </div>
+                        <div class="ui-g-3 rightcolumn">
+                          <h:outputText value="#{entry.value}" />
+                        </div> 
+                      </p:commandLink> 
+                    </div>
+                  </ui:repeat> 
+                </div>
+
+                <div class="ui-g-12">
+                  <p:spacer width="100" height="40" />  
+                </div>
+
+                <div  class="ui-g-12 shoutcutpanel">
+                  <h:outputText value="#{msg.externallink}" style="font-weight: bold;"  />  
+                  <div class="ui-g-12"> 
+                    <h:outputLink id="dinaspecieslink" value="http://naturforskaren.se/"  
+                                  title="scientificname"  target="_blank" >  
+                      <h:outputText value="#{msg.naturforskaren}"   />   
+                    </h:outputLink> 
+                  </div> 
+                  <div class="ui-g-12">
+                    <h:outputText value="#{msg.naturforskarendesc}" style="font-size: 10px;" />  
+                  </div>
+                  <div class="ui-g-12"> 
+                    <h:outputLink value="http://www.gbif.se/" target="_blank" > 
+                      <h:outputText value="#{msg.gibf}" /> 
+                    </h:outputLink>
+                  </div> 
+                  <div class="ui-g-12">
+                    <h:outputText value="#{msg.gibfdesc}" style="font-size: 10px;" /> 
+                  </div>
+                </div> 
+              </div>
+            </div> 
+          </h:form> 
+        </h:panelGroup>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
+

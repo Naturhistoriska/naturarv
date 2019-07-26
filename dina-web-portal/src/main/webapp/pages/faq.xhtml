@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"   
+      xmlns:p="http://primefaces.org/ui"  >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">    
+
+      <ui:define name="content"  >   
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="section  main"  > 
+          <div class="ui-g pageContent" > 
+            <div class="ui-g-12"  > 
+              <h:outputLabel styleClass="textTitle" >#{msg.fqa}</h:outputLabel>
+            </div>    
+            <div class="ui-g-12  textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.whatIsNaturarv}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12" > 
+              <p>
+                #{fqa.whatIsNaturarvText}          
+              </p> 
+            </div> 
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.whoIsResponsible}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12" >  
+              #{fqa.whoIsResponsibleText1}     
+              <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
+                                   styleClass="linktext" process="@this" />   
+              #{fqa.whoIsResponsibleText2}     
+              <p:commandLink actionListener="#{navigate.gotoContactPage()}" value="#{msg.contactus}" 
+                                   styleClass="linktext" process="@this" />  
+            </div>
+            
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.whatInformation}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12 contentRow"  > 
+              #{fqa.whatInformationText1}  
+            </div> 
+            <div class="ui-g-12 contentRow"  > 
+              #{fqa.whatInformationText2}  
+            </div> 
+            <div class="ui-g-12"  > 
+              #{fqa.whatInformationText3}  
+            </div> 
+            
+            
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.whatSource}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12"  > 
+              #{fqa.whatSourceText1}  
+              <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
+                                   styleClass="linktext" process="@this" />  
+              #{fqa.whatSourceText2}  
+            </div> 
+            
+            
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.canTrust}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12"  > 
+              #{fqa.trustText}  
+            </div>
+            
+            
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.howOften}</h:outputLabel>
+            </div>
+            <div class="ui-g-12"  > 
+              #{fqa.howOftenText}  
+            </div>
+            
+            <div class="ui-g-12 textRow"  > 
+              <h:outputLabel styleClass="textSubTitle" >#{msg.howContact}</h:outputLabel>
+            </div> 
+            <div class="ui-g-12 contentRow"  > 
+              #{fqa.howContactText}  
+              <p:commandLink actionListener="#{navigate.gotoContactPage()}" value="#{msg.contactus}" 
+                                   styleClass="linktext" process="@this" />  
+            </div>
+            
+          </div>
+        </h:panelGroup> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
+

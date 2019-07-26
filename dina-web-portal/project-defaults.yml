@@ -1,0 +1,11 @@
+## YAML Template.
+---
+swarm:
+  solr:
+    path: http://localhost:18983/solr
+  morphbank:
+    base: http://morphbank.nrm.se/
+    services: http://services.morphbank.nrm.se:8080/mbnd/
+    images: http://www.morphbank.nrm.se/
+    thumns: http://images.morphbank.nrm.se/
+    browser: http://morphbank.nrm.se/Browse/ByImage/

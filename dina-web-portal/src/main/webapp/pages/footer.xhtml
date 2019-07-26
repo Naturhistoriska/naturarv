@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:p="http://primefaces.org/ui"  >
+  <body>
+    <ui:composition>   
+      <h:panelGroup  styleClass="contactFootPanel"  layout="block"   id="footerPanel" >  
+        <h:panelGroup layout="block"  style="float: left;">  
+          <h:form  id="footForm"> 
+            <p:commandLink action="#{navigate.gotoContactPage()}" 
+                           value="#{msg.contactus}"  
+                           process="@this" />    
+          </h:form>
+          <br />
+          <br />   
+        </h:panelGroup>  
+      </h:panelGroup> 
+    </ui:composition>
+  </body>
+</html>
+

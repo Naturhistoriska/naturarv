@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:p="http://primefaces.org/ui"  >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">  
+
+      <ui:define name="content"  >    
+
+        <h:panelGrid id="mainPanel" styleClass="main" >
+          <h:panelGrid style="width: 600px; margin-left: 50px; margin-right: 50px; " >
+            <p:spacer width="20" height="20" /> 
+            <h:outputText value="#{msg.contactus}" style="font-size: 28px; font-weight: bold; " />  
+            <p:spacer width="20" height="20" />  
+            <h:outputText value="#{msg.contacttext}"   />
+            <p:spacer width="20" height="20" />  
+            <h:outputText value="#{msg.postaddresstitle}" style="font-size: 20px; font-weight: bold; "  /> 
+            <p:spacer width="20" height="20" />  
+            <h:outputText value="#{msg.postaddress}"   />   
+            <h:outputText value="#{msg.box}"   />  
+            <h:outputText value="#{msg.post}"   /> 
+
+            <p:spacer width="20" height="20" /> 
+            <h:panelGrid columns="2">
+              <h:outputText value="#{msg.telephone}" style="font-size: 16px; font-weight: bold; padding-right: 5px;" />  
+              <h:outputText value="#{msg.phonenumber}"   /> 
+
+              <h:outputText value="#{msg.epost}" style="font-size: 16px; font-weight: bold; padding-right: 5px;" />  
+              <h:outputLink value="mailto:#{msg.emailaddress}">#{msg.emailaddress}</h:outputLink>
+            </h:panelGrid>  
+          </h:panelGrid> 
+        </h:panelGrid> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:p="http://primefaces.org/ui"    
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core">
+
+  <body> 
+
+
+    <ui:composition>  
+      <h:form  id="searchForm"> 
+        <h:panelGroup styleClass="searchPanel section"  id="searchPanel" layout="block"> 
+            <h:panelGroup layout="block" id="simpleSearchPanel" styleClass="ui-inputgroup" >
+              <p:inputText placeholder="${search.defaultText}" 
+                           value="${search.freeText}" size="60"  />
+              <p:commandButton icon="fa fa-search" action="${search.simpleSearch()}" styleClass="white-button"/>  
+            </h:panelGroup> 
+
+        </h:panelGroup>
+
+
+        <ui:remove>
+
+       
+        <h:panelGrid styleClass="searchPanel" id="searchPanel" cellpadding="0" cellspacing="0"  >
+          
+
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+           
+              <h:panelGrid cellpadding="0" cellspacing="0" styleClass="simplesearchpanel" id="simpleSearchPanel"    >    
+                <h:panelGrid columns="3">
+                  <p:spacer width="150" height="15" />  
+                  <p:spacer width="150" height="15" />   
+                  <p:spacer width="150" height="15" />     
+
+                  <p:spacer width="150" height="5" />  
+                  <h:inputText id="inputbox" value="#{search.freeText}"  
+                               size="70" onfocus="if (this.value === '#{search.defaultSearchText}') {
+                                     this.value = '';
+                                   }" >  
+                    <f:ajax event="blur" render="simpleSearchPanel" listener="#{search.blur}" /> 
+                    <f:ajax event="keyup" render="#{search.updateResult}" listener="#{search.fullTextSearch}"  />   
+                  </h:inputText>    
+                  <p:spacer width="150" height="5" /> 
+
+
+                  <p:spacer width="150" height="5" /> 
+
+
+
+
+
+
+
+
+
+
+                  <h:panelGroup styleClass="searchBoxPanelSimple"  rendered="#{search.hideadvance}" layout="block"   >   
+                    <h:commandLink action="#{search.openAdvanceSearch}"  value="#{msg.advancesearch}"  >    
+                      <f:ajax render="searchPanel welcomepagepanel" />
+                    </h:commandLink> 
+                  </h:panelGroup>    
+
+
+                  <p:spacer width="150" height="5" />   
+                </h:panelGrid>  
+              </h:panelGrid> 
+            
+
+        </h:panelGrid>  
+          </ui:remove> 
+      </h:form>
+    </ui:composition>
+  </body> 
+</html>
+
+
