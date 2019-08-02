@@ -6,13 +6,13 @@
 package se.nrm.dina.web.portal.solr;
 
 import java.io.IOException;
-import java.io.Serializable;   
+import java.io.Serializable;    
 import java.time.LocalDateTime; 
 import java.util.ArrayList;  
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;  
+import java.util.Map;   
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -29,6 +29,9 @@ import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
 import org.apache.solr.common.SolrDocumentList;  
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.CollectionData;
+import se.nrm.dina.web.portal.model.Result;
+import se.nrm.dina.web.portal.model.SolrData;
+import se.nrm.dina.web.portal.model.SolrResult;
 import se.nrm.dina.web.portal.model.StatisticData; 
 
 /**
@@ -44,7 +47,9 @@ public class SolrService implements Serializable {
   private SolrDocumentList docList;
   
   private int cumulateValue; 
-  private int collectionCumulateValue;
+  private int collectionCumulateValue; 
+ 
+  private SolrResult result;
     
   @Inject
   @Solr
@@ -52,6 +57,51 @@ public class SolrService implements Serializable {
 
   public SolrService() {
   }
+  
+  public SolrResult searchAll(String queryText, int start, int numberPerPage) {
+    log.info("searchAll: {} ", queryText );
+     
+    query = new SolrQuery();
+    query.set("q", queryText); 
+    query.setStart(start);
+    query.setRows(numberPerPage);
+    query.setSort("id", SolrQuery.ORDER.asc);
+    
+    try {      
+      response = client.query(query);      
+      log.info("num: {}", response.getResults().getNumFound());
+         
+      return new SolrResult((int)response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
+    } catch (SolrServerException | IOException ex) {      
+      log.error(ex.getMessage());
+      return null;
+    } 
+  }
+  
+  public SolrResult searchWithFilter(String text, List<String> filters, int start, int numPerPage) {
+    log.info("searchWithFilter: {}", filters);
+    
+    query = new SolrQuery();
+    query.setQuery(text); 
+    filters.stream().forEach(f -> {
+      query.addFilterQuery(f);
+    });  
+    query.setStart(start);
+    query.setRows(numPerPage);
+    query.setSort("id", SolrQuery.ORDER.asc);
+    
+    try {    
+     response = client.query(query);      
+      log.info("num: {}", response.getResults().getNumFound());
+         
+      return new SolrResult((int)response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
+    } catch (SolrServerException | IOException ex) {      
+      log.error(ex.getMessage());
+      return null;
+    } 
+  }
+  
+  
   
   public Map<String, Map<String, Integer>> getCollectionsMonthChartData(LocalDateTime startDate) {
     log.info("getCollectionsMonthChartData : {}", startDate); 
@@ -269,6 +319,54 @@ public class SolrService implements Serializable {
       log.error(ex.getMessage());
     } 
     return new StatisticData();
+  }
+  
+  public List<Result> searchAllResults(int start) {
+    log.info("searchAll: {} ", start );
+    
+    List<Result> list = new ArrayList();
+       
+    query = new SolrQuery();
+    query.set("q", "id:*");
+    query.setStart(start);
+    query.setRows(100);    
+    query.setSort("id", SolrQuery.ORDER.asc);
+    
+    try {      
+      response = client.query(query);      
+      log.info("num: {}", response.getResults().getNumFound());
+        
+      response.getResults().stream() 
+              .forEach(r -> {
+                list.add( new Result((String) r.getFieldValue("id"),
+                        (String) r.getFieldValue("catalogNumber"),
+                        (String) r.getFieldValue("txFullName")));
+              });
+      return list;      
+    } catch (SolrServerException | IOException ex) {      
+      log.error(ex.getMessage());
+    }
+    return null;
+  }
+
+  public SolrDocumentList searchAll(int start, int pageSize) {
+    log.info("searchAll: {} -- {}", start, pageSize);
+      
+    int count = start + pageSize;
+    query = new SolrQuery();
+    query.set("q", "id:*");
+    query.setStart(start);
+    query.setRows(100); 
+    query.setSort("id", SolrQuery.ORDER.asc);
+
+    try {  
+      response = client.query(query); 
+      log.info("num: {}", response.getResults().getNumFound());
+      return response.getResults(); 
+    } catch (SolrServerException | IOException ex) { 
+      log.error(ex.getMessage());
+    }
+    return null;
   }
   
   public String simpleSearch(String text) {
