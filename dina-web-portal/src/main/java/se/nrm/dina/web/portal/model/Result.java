@@ -16,20 +16,38 @@ import java.util.Map;
  */
 public class Result implements Serializable {
 
-  private long numFound; 
-  private List<Record> records; 
+//  private long numFound; 
+//  private List<Record> records; 
+  private String id;
+  private String catalogNumber;
+  private String fullName;
   
-  public Result(int numFound, List<Record> records) {
-    this.numFound = numFound;
-    this.records = records;
+  
+  public Result(String id, String catalogNumber, String fullName) {
+    this.id = id;
+    this.catalogNumber = catalogNumber;
+    this.fullName = fullName;
   }
 
-  public long getNumFound() {
-    return numFound;
+//  public long getNumFound() {
+//    return numFound;
+//  }
+//
+//  public List<Record> getRecords() {
+//    return records;
+//  }
+
+  public String getId() {
+    return id;
+  }
+  
+
+  public String getCatalogNumber() {
+    return catalogNumber;
   }
 
-  public List<Record> getRecords() {
-    return records;
+  public String getFullName() {
+    return fullName;
   }
   
   
