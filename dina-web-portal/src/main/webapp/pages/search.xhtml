@@ -9,66 +9,48 @@
 
     <ui:composition>  
       <h:form  id="searchForm"> 
-        <h:panelGroup styleClass="searchPanel section"  id="searchPanel" layout="block"> 
-            <h:panelGroup layout="block" id="simpleSearchPanel" styleClass="ui-inputgroup" >
-              <p:inputText placeholder="${search.defaultText}" 
-                           value="${search.freeText}" size="60"  />
-              <p:commandButton icon="fa fa-search" action="${search.simpleSearch()}" styleClass="white-button"/>  
+        <h:panelGroup styleClass="searchPanel"  id="searchPanel" layout="block"> 
+          <h:panelGroup  id="simpleSearchPanel" layout="block"
+                        rendered="#{searchBean.isSimpleSearch}" styleClass="simplesearchpanel" >
+            <h:panelGrid columns="3">
+              <p:spacer width="20" height="15" />  
+              <p:spacer width="20" height="15" />   
+              <p:spacer width="20" height="15" />     
+
+              <p:spacer width="20" height="5" />  
+              <h:panelGroup styleClass="ui-inputgroup simplesearchpanel" layout="block" >
+                <p:inputText placeholder="${searchBean.defaultText}" 
+                             value="${searchBean.freeText}" size="60"  />
+                <p:commandButton icon="fa fa-search" action="#{searchBean.simpleSearch()}" styleClass="white-button"/>  
+              </h:panelGroup> 
+              <p:spacer width="20" height="5" /> 
+
+              <p:spacer width="20" height="5" /> 
+              <h:panelGroup styleClass="searchBoxPanelSimple textLink"    layout="block"   >   
+                <p:commandLink actionListener="#{searchBean.openAdvanceSearch}" 
+                               value="#{msg.advancesearch}" styleClass="link"
+                               process="@this" global="false"   />  
+              </h:panelGroup>  
+              <p:spacer width="20" height="5" />    
+            </h:panelGrid>  
+
+
+          </h:panelGroup> 
+
+
+          <h:panelGrid cellpadding="0" cellspacing="0" styleClass="simplesearchpanel" 
+                       id="advanceSearchPanel" rendered="#{!searchBean.isSimpleSearch}"   >   
+
+            advance search
+
+            <h:panelGroup styleClass="textLink"    layout="block"   >   
+              <p:commandLink actionListener="#{searchBean.closeAdvanceSearch}" 
+                             value="#{msg.advancesearch}" styleClass="link"
+                             process="@this" global="false" update="simpleSearchPanel"  />  
             </h:panelGroup> 
 
-        </h:panelGroup>
-
-
-        <ui:remove>
-
-       
-        <h:panelGrid styleClass="searchPanel" id="searchPanel" cellpadding="0" cellspacing="0"  >
-          
-
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
            
-              <h:panelGrid cellpadding="0" cellspacing="0" styleClass="simplesearchpanel" id="simpleSearchPanel"    >    
-                <h:panelGrid columns="3">
-                  <p:spacer width="150" height="15" />  
-                  <p:spacer width="150" height="15" />   
-                  <p:spacer width="150" height="15" />     
-
-                  <p:spacer width="150" height="5" />  
-                  <h:inputText id="inputbox" value="#{search.freeText}"  
-                               size="70" onfocus="if (this.value === '#{search.defaultSearchText}') {
-                                     this.value = '';
-                                   }" >  
-                    <f:ajax event="blur" render="simpleSearchPanel" listener="#{search.blur}" /> 
-                    <f:ajax event="keyup" render="#{search.updateResult}" listener="#{search.fullTextSearch}"  />   
-                  </h:inputText>    
-                  <p:spacer width="150" height="5" /> 
-
-
-                  <p:spacer width="150" height="5" /> 
+          </h:panelGrid> 
 
 
 
@@ -79,20 +61,69 @@
 
 
 
-                  <h:panelGroup styleClass="searchBoxPanelSimple"  rendered="#{search.hideadvance}" layout="block"   >   
-                    <h:commandLink action="#{search.openAdvanceSearch}"  value="#{msg.advancesearch}"  >    
-                      <f:ajax render="searchPanel welcomepagepanel" />
-                    </h:commandLink> 
-                  </h:panelGroup>    
 
 
-                  <p:spacer width="150" height="5" />   
-                </h:panelGrid>  
+          <!-- result header --> 
+          <h:panelGrid id="resultheader" styleClass="textLink"  
+                       cellpadding="0" cellspacing="0" rendered="#{navigate.resultView}">
+            <h:panelGrid id="displayviewpanel" columns="4" 
+                         columnClasses="resultheaderemptycolumn,resultheadermaplinkcolumn,resultheadermaplinkcolumn,resultheadermaplinkcolumn"  
+                         >
+
+              <h:panelGrid cellpadding="0" cellspacing="0"  rendered="#{statistic.totalImages != 0}" >   
+                <h:commandLink action="#{searchBean.closeImageView}"  title="#{msg.viewinlist}"    >   
+                  <h:panelGrid columns="3" cellpadding="0" cellspacing="0"  > 
+                    <h:outputText value="#{msg.viewinlist}"    style="font-size: 11px;"  />      
+                  </h:panelGrid> 
+                  <f:ajax render="result globe allimagePanel searchPanel" /> 
+                </h:commandLink>   
+
+                <h:commandLink action="#{searchBean.showallimages}"  title="#{msg.viewinimage}"    >   
+                  <h:panelGrid  cellpadding="0" cellspacing="0"  > 
+                    <h:outputText value="#{msg.viewinimage}"    style="font-size: 11px; "  />     
+                  </h:panelGrid> 
+                  <f:ajax render="result globe allimagePanel searchPanel" /> 
+                </h:commandLink>   
               </h:panelGrid> 
-            
+              <h:panelGrid cellpadding="0" cellspacing="0"  rendered="#{statistic.totalImages == 0}" >   
+                <p:spacer width="10"  />
+              </h:panelGrid>  
 
-        </h:panelGrid>  
-          </ui:remove> 
+
+              <h:panelGrid cellpadding="0" cellspacing="0"  rendered="#{statistic.totalMaps != 0}">  
+                <h:commandLink action="#{searchBean.closeWholeMap}"  title="#{msg.viewinlist}"    >   
+                  <h:panelGrid columns="3" cellpadding="0" cellspacing="0"  > 
+                    <h:outputText value="#{msg.viewinlist}"    style="font-size: 11px;"  />     
+                  </h:panelGrid> 
+                  <f:ajax render="result globe searchPanel" /> 
+                </h:commandLink>   
+
+                <h:commandLink action="#{searchBean.showallmap}"  title="#{msg.viewinmap}"   >   
+                  <h:panelGrid  cellpadding="0" cellspacing="0"  > 
+                    <h:outputText value="#{msg.viewinmap}"    style="font-size: 11px;"  />     
+                  </h:panelGrid> 
+                  <f:ajax render="result globe searchPanel" /> 
+                </h:commandLink>   
+              </h:panelGrid> 
+
+
+ 
+            </h:panelGrid>  
+          </h:panelGrid>
+
+
+          <h:panelGrid styleClass="searchBoxPanelSimple textLink"  rendered="#{!navigate.resultView}" > 
+            <h:panelGrid  cellpadding="0" cellspacing="0"   
+                          styleClass="searchBoxPanelSimple" rendered="#{!searchBean.resultList.isEmpty()}" > 
+              <p:commandLink action="#{navigate.gotoResults()}" 
+                             value="#{msg.backtoresult}" process="@this" global="false"  /> 
+            </h:panelGrid>
+          </h:panelGrid>  
+        </h:panelGroup> 
+
+ 
+
+
       </h:form>
     </ui:composition>
   </body> 
