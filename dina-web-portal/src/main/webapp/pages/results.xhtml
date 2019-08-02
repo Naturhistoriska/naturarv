@@ -1,0 +1,268 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:p="http://primefaces.org/ui"  >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">    
+
+      <ui:define name="content"  >    
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
+          <h:form id="resultsForm" prependId="false">    
+            <h:panelGroup  id="result" layout="block" > 
+              <h:panelGrid columns="2" columnClasses="searchColumn,statistic" style="vertical-align: top;"  > 
+
+               
+
+                <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  > 
+
+                  <h:panelGroup layout="block" id="resultHeader"  styleClass="resultHeader"> 
+                    <h:outputText value="#{paging.resultViewStart}-#{paging.end} #{msg.of} #{paging.totalFound} #{msg.hits}" />
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.numpage}:"  />
+                    <p:spacer width="8" />
+                    <h:selectOneMenu value="#{searchBean.numDisplay}" id="numPerPage" style="width: 50px;">
+                      <f:selectItem itemValue="10" itemLabel="10" />
+                      <f:selectItem itemValue="25" itemLabel="25" />
+                      <f:selectItem itemValue="50" itemLabel="50" />
+                      <p:ajax event="change" update=":resultsForm:resultContent" 
+                              listener="#{searchBean.changeNumDisplay()}" /> 
+                    </h:selectOneMenu> 
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.sort}:"  />
+                    <p:spacer width="8" />
+                    <h:selectOneMenu value="#{searchBean.sortby}" id="sort" style="width: 90px;">
+                      <f:selectItem itemValue="score" itemLabel="#{msg.relevance}" /> 
+                      <f:selectItem itemValue="ftx" itemLabel="#{msg.taxon}" /> 
+                      <f:selectItem itemValue="sd" itemLabel="#{msg.collectiondate}" /> 
+                      <p:ajax event="change" update=":resultsForm:resultContent" 
+                              listener="#{searchBean.sortResult()}" />   
+                    </h:selectOneMenu> 
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.show}:"  />
+                    <p:spacer width="8" />  
+
+                    <p:commandLink actionListener="#{searchBean.simpleView}" process="@this" 
+                                   disabled="#{searchBean.resultView == 'list'}" 
+                                   update=":resultsForm:resultContent">  
+                      <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
+                                      styleClass="resultHeaderImages" />
+                    </p:commandLink>  
+
+                    <p:spacer width="4" /> 
+                    <p:commandLink actionListener="#{searchBean.detailView}" process="@this" 
+                                   disabled="#{searchBean.resultView == 'detail'}" 
+                                   update=":resultsForm:resultContent">  
+                      <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
+                                      styleClass="resultHeaderImages" />
+                    </p:commandLink>   
+
+                    <p:spacer width="4" /> 
+                    <p:commandLink actionListener="#{searchBean.selectedView}" process="@this" 
+                                   rendered="#{searchBean.selectedRecords.size() > 0}" 
+                                   disabled="#{searchBean.resultView == 'selected'}" 
+                                   update=":resultsForm:resultContent">  
+                      <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
+                                      title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
+                    </p:commandLink>    
+                  </h:panelGroup>
+
+              
+                    <ui:include src="#{searchBean.viewPath}" />
+          
+                  
+
+                      <ui:remove>
+                  
+                  <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"   
+                     paginator="false"  rowIndexVar="indexCount"  emptyMessage="empty..."
+                     rowKey="#{record.catalogNumber}" styleClass="simpleResultTable"> 
+          <p:column style="font-size: 11px; width : 15px; "  > 
+            <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne"
+                                      style="margin-top: 2px; margin-left: 2px; margin-top: 5px; "> 
+              <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  
+                      render=":resultsForm:resultContent"   />  
+            </h:selectBooleanCheckbox>  
+          </p:column>
+          <p:column style="font-size: 11px; width : 600px; "> 
+            <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+              <h:panelGrid columns="2" columnClasses="resultTableImageColumn,resultTableDataColumn"  
+                           cellpadding="0" cellspacing="0">
+                <h:graphicImage library="images" 
+                                name="icons/discipline/#{record.collectionId}.png"   
+                                styleClass="images" />  
+                 
+ 
+                <p:commandLink  action="#{searchBean.showOneDetail(record)}" process="@this" > 
+                   <h:outputText value="#{record.txFullName}" 
+                                style="font-weight: bold; font-size: 13px; color: #808080;"/>   
+                </p:commandLink> 
+
+                <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  /> 
+                <p:commandLink rendered="#{record.morphbankId != null}" 
+                               action="#{searchBean.displayImages(record)}"  >
+                  <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                                  title="#{msg.showimages}" alt="#{msg.showimages}"
+                                  styleClass="images" /> 
+                </p:commandLink> 
+
+                <h:panelGrid  columns="2"  cellpadding="0" cellspacing="0" columnClasses="simpleTableLabelCol,simpleTableValueCol"> 
+                  <h:outputText value="#{msg.highertaxa}: " />  
+                  <h:outputText value="#{record.higherTx}" />
+
+                  <h:outputText value="#{msg.collectiondate}: " /> 
+                  <h:outputText value="#{record.startDate}"  > 
+                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
+                  </h:outputText>
+
+                  <h:outputText value="#{msg.locality}: " />  
+                  <h:outputText value="#{record.locality}" />
+
+                  <h:outputText value="#{msg.cataloguenumber}: " /> 
+                  <h:outputText value="#{record.catalogNumber}" /> 
+                </h:panelGrid>  
+
+              </h:panelGrid>   
+            </h:panelGrid> 
+          </p:column>  
+        </p:dataTable> 
+                      </ui:remove>
+
+                </h:panelGrid>
+
+                <h:panelGrid styleClass="statistic"  >
+                  <h:outputText value="#{msg.addfilter}:" style="font-weight: bold;"  />   
+
+                  <p:spacer width="20" height="20" />
+
+                  <p:commandLink actionListener="#{searchBean.filterhWithMap}"  process="@this" 
+                                 rendered="#{statistic.totalMaps > 0}"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithmap}" />  
+                      <h:outputText value="#{statistic.totalMaps}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.filterhWithType}"  process="@this" 
+                                 rendered="#{statistic.totalType > 0}"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.typeddata}" />  
+                      <h:outputText value="#{statistic.totalType}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.filterhWithImage}"  process="@this" 
+                                 rendered="#{statistic.totalImages > 0}"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithimage}" />  
+                      <h:outputText value="#{statistic.totalImages}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.filterhWithDNA()}"  process="@this" 
+                                 rendered="#{statistic.totalDnas > 0}"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithdna}" />  
+                      <h:outputText value="#{statistic.totalDnas}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+
+                  <p:commandLink actionListener="#{searchBean.filterhWithSweden}"  process="@this" 
+                                 rendered="#{statistic.totalInSweden > 0}"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimensinsweden}" />  
+                      <h:outputText value="#{statistic.totalInSweden}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:spacer width="20" height="30" />
+                  <h:outputText value="#{msg.collection}" style="font-weight: bold;" /> 
+
+
+                  <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchCollection(collection)}" 
+                                   title="#{collection.name}"  
+                                   process="@this"  >  
+                      <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
+                                   cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                        <h:outputText value="#{collection.shortName}" />  
+                        <h:outputText value="#{collection.total}" />
+                      </h:panelGrid>  
+                    </p:commandLink>   
+                  </ui:repeat>  
+
+                  <p:spacer width="20" height="30" />
+                  <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>  
+
+                  <ui:repeat var="entry" value="#{statistic.institutions.entrySet()}" varStatus="institutionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchInstitution()}" 
+                                   title="#{entry.key}"  
+                                   process="@this"  >  
+                      <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                   cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                        <h:outputText value="#{entry.key}" /> 
+                        <h:outputText value="#{entry.value}" />
+                      </h:panelGrid> 
+                    </p:commandLink>  
+                  </ui:repeat>  
+
+                  <p:spacer width="20" height="30" />
+                  <h:panelGrid  id="querypanel">  
+                    <h:panelGrid style="font-weight: bold; "  rendered="#{searchBean.queries.size() > 0}">
+                      <h:outputText value="#{msg.filter}"  />
+                    </h:panelGrid>
+                  </h:panelGrid>
+
+                  <h:panelGrid style="border: solid 1px; width: 210px; " rendered="#{searchBean.queries.size() > 0}" >    
+                    <ui:repeat var="entry" value="#{searchBean.queries.entrySet()}" varStatus="status">   
+                      <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">  
+                        <h:outputText value="#{entry.value}" rendered="#{entry.key == 'Institution'}"  style="font-size: 10px;" /> 
+                        <h:outputText value="#{query.value}" rendered="#{entry.key == 'Collection'}"  style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'Map'}" style="font-size: 10px;" />  
+                        <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'Type'}" style="font-size: 10px;" />  
+                        <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'Sweden'}" style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithdna}" rendered="#{entry.key == 'DNA'}" style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithimage}" rendered="#{entry.key == 'Image'}" style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.coordinates}: #{query.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" /> 
+                        <p:spacer width="5"  />
+
+
+                        <p:commandLink actionListener="#{searchBean.removeFilter(query.key, query.value)}" 
+                                       title="#{entry.key}"   process="@this"  >  
+                          <h:graphicImage library="images" name="icons/RemoveRecord16x16.png" 
+                                          alt="#{msg.removequery}" title="#{msg.removequery}" styleClass="images" />
+                        </p:commandLink>   
+                      </h:panelGrid>
+                    </ui:repeat> 
+
+                    <h:panelGrid  columns="2"  >   
+                      <p:commandLink actionListener="#{searchBean.removeAllQueries}"   process="@this"  >  
+                        <h:outputText value="#{msg.removeAllQueries}" style="font-size: 10px;" />   
+                      </p:commandLink> 
+                      <p:spacer width="5"  /> 
+                    </h:panelGrid>
+                  </h:panelGrid> 
+
+                </h:panelGrid>  
+
+
+              </h:panelGrid>
+            </h:panelGroup>
+
+          </h:form>
+
+
+          
+        </h:panelGroup> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
+
