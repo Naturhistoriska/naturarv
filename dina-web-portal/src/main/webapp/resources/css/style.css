@@ -41,7 +41,12 @@ body * {
 .main {
   width: 980px; 
   margin: auto; 
-  border-bottom: solid   1px;
+  border-bottom: solid   1px; 
+}
+
+.homePanel {
+  border-top: solid 1px;
+  border-bottom: solid   1px; 
 }
 
 .topMenu {   
@@ -52,14 +57,15 @@ body * {
 .searchPanel {  
   text-align: center;
   padding: 25px 0px 25px 0px;  
-  border-bottom: solid   1px;
+  /*border-bottom: solid   1px;*/
 }
 
+ 
 
 /*.topmenu .activeTablink { 
     color: #0B4C5F;
     font-weight: bold;
-    text-decoration: none !important;
+    text-decoration: none !important; 
 }
  
 
@@ -144,15 +150,7 @@ body * {
 }
 
 
-/* search page */
-/*.searchPanel {
-    width: 980px; 
-    margin: auto;
-    text-align: center;
-    padding: 25px 0px 25px 0px; 
-    border-bottom: solid   1px; 
-}
-*/
+
 
 
 /* home page */
@@ -246,6 +244,7 @@ body * {
 }
 
 .resultHeader {
+  border-top: solid 1px;
   border-bottom: solid   1px;
   padding: 5px 0px 5px 0px; 
 }
@@ -293,11 +292,11 @@ body * {
   width: 480px;
 }
 
-.resultheaderemptycolumn {
+.emptyColumn {
   width: 350px;
-}
+} 
 
-.resultheadermaplinkcolumn { 
+.linkColumn { 
   /*    vertical-align: top;*/
   width: 130px;
 }
