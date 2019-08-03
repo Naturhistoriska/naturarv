@@ -13,11 +13,42 @@
             <h:panelGroup  id="result" layout="block" > 
               <h:panelGrid columns="2" columnClasses="searchColumn,statistic" style="vertical-align: top;"  > 
 
-               
 
-                <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  > 
+                <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
+                  <!-- result header --> 
+                  <h:panelGrid id="resultheader" styleClass="textLink"  
+                               cellpadding="0" cellspacing="0" rendered="#{navigate.resultView}">
+                    <h:panelGrid id="displayviewpanel" columns="4" 
+                                 columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
 
-                  <h:panelGroup layout="block" id="resultHeader"  styleClass="resultHeader"> 
+                      <p:spacer /> 
+                      <p:commandLink actionListener="#{resultHeader.backToListView}" process="@this" 
+                                     rendered="#{resultHeader.resultView != 'list'}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
+                      </p:commandLink> 
+                      
+                      <p:commandLink actionListener="#{resultHeader.imageView()}" process="@this" 
+                                     rendered="#{resultHeader.resultView != 'image'}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
+                      </p:commandLink>  
+                      
+                      <p:commandLink actionListener="#{resultHeader.mapView()}" process="@this" 
+                                     rendered="#{resultHeader.resultView != 'map'}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
+                      </p:commandLink>   
+                      
+                      <h:panelGrid cellpadding="0" cellspacing="0"  >  
+                        save records
+                      </h:panelGrid> 
+ 
+                    </h:panelGrid>  
+                  </h:panelGrid>
+
+
+                  <h:panelGroup layout="block" id="resultSubHeader"  styleClass="resultHeader"> 
                     <h:outputText value="#{paging.resultViewStart}-#{paging.end} #{msg.of} #{paging.totalFound} #{msg.hits}" />
                     <p:spacer width="8" /> 
                     <h:outputText value="| #{msg.numpage}:"  />
@@ -43,91 +74,33 @@
                     <h:outputText value="| #{msg.show}:"  />
                     <p:spacer width="8" />  
 
-                    <p:commandLink actionListener="#{searchBean.simpleView}" process="@this" 
-                                   disabled="#{searchBean.resultView == 'list'}" 
+                    <p:commandLink actionListener="#{resultHeader.simpleView}" process="@this" 
+                                   disabled="#{resultHeader.resultView == 'list'}" 
                                    update=":resultsForm:resultContent">  
                       <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
                                       styleClass="resultHeaderImages" />
                     </p:commandLink>  
 
                     <p:spacer width="4" /> 
-                    <p:commandLink actionListener="#{searchBean.detailView}" process="@this" 
-                                   disabled="#{searchBean.resultView == 'detail'}" 
+                    <p:commandLink actionListener="#{resultHeader.detailView}" process="@this" 
+                                   disabled="#{resultHeader.resultView == 'detail'}" 
                                    update=":resultsForm:resultContent">  
                       <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
                                       styleClass="resultHeaderImages" />
                     </p:commandLink>   
 
                     <p:spacer width="4" /> 
-                    <p:commandLink actionListener="#{searchBean.selectedView}" process="@this" 
+                    <p:commandLink actionListener="#{resultHeader.selectedView}" process="@this" 
                                    rendered="#{searchBean.selectedRecords.size() > 0}" 
-                                   disabled="#{searchBean.resultView == 'selected'}" 
+                                   disabled="#{resultHeader.resultView == 'selected'}" 
                                    update=":resultsForm:resultContent">  
                       <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
                                       title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
                     </p:commandLink>    
                   </h:panelGroup>
 
-              
-                    <ui:include src="#{searchBean.viewPath}" />
-          
-                  
 
-                      <ui:remove>
-                  
-                  <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"   
-                     paginator="false"  rowIndexVar="indexCount"  emptyMessage="empty..."
-                     rowKey="#{record.catalogNumber}" styleClass="simpleResultTable"> 
-          <p:column style="font-size: 11px; width : 15px; "  > 
-            <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne"
-                                      style="margin-top: 2px; margin-left: 2px; margin-top: 5px; "> 
-              <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  
-                      render=":resultsForm:resultContent"   />  
-            </h:selectBooleanCheckbox>  
-          </p:column>
-          <p:column style="font-size: 11px; width : 600px; "> 
-            <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
-              <h:panelGrid columns="2" columnClasses="resultTableImageColumn,resultTableDataColumn"  
-                           cellpadding="0" cellspacing="0">
-                <h:graphicImage library="images" 
-                                name="icons/discipline/#{record.collectionId}.png"   
-                                styleClass="images" />  
-                 
- 
-                <p:commandLink  action="#{searchBean.showOneDetail(record)}" process="@this" > 
-                   <h:outputText value="#{record.txFullName}" 
-                                style="font-weight: bold; font-size: 13px; color: #808080;"/>   
-                </p:commandLink> 
-
-                <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  /> 
-                <p:commandLink rendered="#{record.morphbankId != null}" 
-                               action="#{searchBean.displayImages(record)}"  >
-                  <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
-                                  title="#{msg.showimages}" alt="#{msg.showimages}"
-                                  styleClass="images" /> 
-                </p:commandLink> 
-
-                <h:panelGrid  columns="2"  cellpadding="0" cellspacing="0" columnClasses="simpleTableLabelCol,simpleTableValueCol"> 
-                  <h:outputText value="#{msg.highertaxa}: " />  
-                  <h:outputText value="#{record.higherTx}" />
-
-                  <h:outputText value="#{msg.collectiondate}: " /> 
-                  <h:outputText value="#{record.startDate}"  > 
-                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-                  </h:outputText>
-
-                  <h:outputText value="#{msg.locality}: " />  
-                  <h:outputText value="#{record.locality}" />
-
-                  <h:outputText value="#{msg.cataloguenumber}: " /> 
-                  <h:outputText value="#{record.catalogNumber}" /> 
-                </h:panelGrid>  
-
-              </h:panelGrid>   
-            </h:panelGrid> 
-          </p:column>  
-        </p:dataTable> 
-                      </ui:remove>
+                  <ui:include src="#{resultHeader.viewPath}" />
 
                 </h:panelGrid>
 
@@ -259,7 +232,7 @@
           </h:form>
 
 
-          
+
         </h:panelGroup> 
       </ui:define>
     </ui:composition>
