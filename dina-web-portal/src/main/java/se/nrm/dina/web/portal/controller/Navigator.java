@@ -6,8 +6,7 @@
 package se.nrm.dina.web.portal.controller;
 
 import java.io.IOException;
-import java.io.Serializable;
-//import javax.enterprise.context.RequestScoped;
+import java.io.Serializable; 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -24,8 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @SessionScoped
 @Slf4j
 public class Navigator implements Serializable {
-
-//  private RequestContext requestContext;
+ 
   private ExternalContext externalContext;
 
   private static final String HOME_PATH = "/faces/pages/home.xhtml";
