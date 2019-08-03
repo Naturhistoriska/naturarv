@@ -43,8 +43,7 @@ public class SearchBean implements Serializable {
   private int totalResult;
   private String numDisplay;
   private String sortby; 
-  private String resultView;
-
+ 
   private List<SolrData> resultList;
   private List<SolrData> selectedRecords;
   private boolean isSimpleSearch; 
@@ -57,9 +56,7 @@ public class SearchBean implements Serializable {
   private List<String> filters;
   
   private static final String WILD_SEARCH_TEXT = "*:*";
-  private static final String LIST_VIEW_PATH = "/pages/listView.xhtml";
-  private static final String DETAIL_VIEW_PATH = "/pages/detailView.xhtml";
-  private static final String SELECTED_VIEW_PATH = "/pages/selectedView.xhtml";
+  
   
   private String viewPath;
 
@@ -81,9 +78,7 @@ public class SearchBean implements Serializable {
     isSimpleSearch = true;
     resultList = new ArrayList();
     selectedRecords = new ArrayList<>();
-    filters = new ArrayList<>();
-    viewPath = LIST_VIEW_PATH; 
-    resultView = "list";
+    filters = new ArrayList<>(); 
   }
 
   /**
@@ -244,44 +239,9 @@ public class SearchBean implements Serializable {
 //    }
   }
 
-  public void simpleView() {
-    log.info("simpleview");
-    viewPath = LIST_VIEW_PATH; 
-    resultView = "list";
-  }
 
-  public void detailView() {
-    log.info("detialview"); 
-    viewPath = DETAIL_VIEW_PATH; 
-    resultView = "detail";
-  }
-
-  public void selectedView() { 
-    log.info("selectedview"); 
-    viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected";
-  }
-
-  public void showOneDetail(SolrData data) {
-    log.info("showOneDetail : {}", data.getCatalogNumber());
-    
-    viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected";
-
-//        List<SolrRecord> list = new ArrayList<>();
-//        list.add(record);
-//        displayOneDetail = true;
-//        
-//        record.setSelected(true);
-//        selectall = true;
-//        
-//        selectedRecords.add(record);
-//        session.setAttribute(SAVED_SELECTED_RECORDS, selectedRecords); 
-//        selectedRecords = new ArrayList<>();
-//        selectedRecords.add(record);
-//     
-//        resultview = 2;
-  }
+  
+ 
 
   public void displayImages(SolrData data) {
     log.info("displayImages : {}", data);
@@ -414,15 +374,5 @@ public class SearchBean implements Serializable {
   public void setSortby(String sortby) {
     this.sortby = sortby;
   }
- 
-  public String getViewPath() {
-    return viewPath;
-  }
-
-  public String getResultView() {
-    return resultView;
-  }
   
-  
-
 }
