@@ -104,7 +104,11 @@ body * {
 }
 
 
-
+/*image view*/
+.imageViewPanel {
+  font-family: Arial,sans-serif; 
+  font-weight: bold;
+}
 
 
 
@@ -285,8 +289,7 @@ body * {
   font-weight: bold; 
   width: 160px;
 }
-
-
+ 
 .simpleTableValueCol {
   text-align: left; 
   width: 480px;
@@ -301,10 +304,28 @@ body * {
   width: 130px;
 }
 
+.downLink {
+  font-family: verdana,arial,helvetica,sans-serif; 
+  font-size: 11px; 
+  margin: 0;
+}
 
 
+.navigationPanel {
+    text-align: center; 
+    width: 730px; 
+    margin-left: auto;
+    margin-right: auto;
+}
 
-
+.pagingNumberText {
+  font-weight: bold;  
+  vertical-align: top;
+  padding-left: 5px;
+  padding-right: 5px !important;
+}
+ 
+ 
 .searchColumn {
   vertical-align: top;
   width: 730px; 
@@ -497,6 +518,7 @@ a:hover {
 
 
 /** ##################################### data table ################################ **/
+
 .ui-datatable * {
   border : 0px !important;    
   padding-bottom: 0px !important;
@@ -562,4 +584,24 @@ a:hover {
 .historyTableStyle.ui-datatable tr td  {
   border : solid 1px !important;  
 }
+
+/* for fix datatable column width */
+.ui-datatable table {
+   table-layout: auto !important;
+}
+
+
+.ui-datatable .ui-paginator {
+    background: transparent;
+}
+
  
+.hide-column-names.ui-datatable table  {     
+   font-family: cursive;
+   color: #000000; 
+   display: none !important;
+}
+ 
+.noheader.ui-datatable table thead {
+  display: none;
+}
