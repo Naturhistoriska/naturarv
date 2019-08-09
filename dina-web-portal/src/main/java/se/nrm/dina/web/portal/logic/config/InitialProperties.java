@@ -22,14 +22,18 @@ public class InitialProperties implements Serializable {
   private final static String CONFIG_INITIALLISING_ERROR = "Property not initialised";
  
   private String solrPath;
+  private String morphbankThumbPath;
 
   public InitialProperties() {
   }
 
   @Inject
-  public InitialProperties(@ConfigurationValue("swarm.solr.path") String solrPath) { 
+  public InitialProperties(@ConfigurationValue("swarm.solr.path") String solrPath,
+                           @ConfigurationValue("swarm.morphbank.thumns") String morphbankThumbPath ) { 
     this.solrPath = solrPath;
-    log.info("test injection : {} ", solrPath);
+    this.morphbankThumbPath = morphbankThumbPath;
+            
+    log.info("test injection : {} ", morphbankThumbPath);
   }
   
   public String getSolrPath() {
@@ -38,4 +42,12 @@ public class InitialProperties implements Serializable {
     }
     return solrPath;
   } 
+  
+  
+  public String getMorphbankThumbPath() {
+    if (morphbankThumbPath == null) {
+      throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+    }
+    return morphbankThumbPath;
+  }
 } 
