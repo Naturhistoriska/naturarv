@@ -8,8 +8,7 @@ package se.nrm.dina.web.portal.controller;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import lombok.extern.slf4j.Slf4j;
-import se.nrm.dina.web.portal.model.SolrData;
+import lombok.extern.slf4j.Slf4j; 
 
 /**
  * 
@@ -28,64 +27,48 @@ public class ResultHeader implements Serializable {
   private static final String MAP_VIEW_PATH = "/pages/mapView.xhtml";
    
   private String viewPath;
-  private String resultView;
+  private String resultView;  
   
   public ResultHeader() { 
     log.info("ResultHeader");
     viewPath = LIST_VIEW_PATH; 
-    resultView = "list";
+    resultView = "list"; 
   }
  
    public void simpleView() {
     log.info("simpleview");
     viewPath = LIST_VIEW_PATH; 
-    resultView = "list";
+    resultView = "list"; 
   }
 
   public void detailView() {
     log.info("detialview"); 
     viewPath = DETAIL_VIEW_PATH; 
-    resultView = "detail";
+    resultView = "detail"; 
   }
 
   public void selectedView() { 
     log.info("selectedview"); 
     viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected";
+    resultView = "selected"; 
   }
-
-  public void showOneDetail(SolrData data) {
-    log.info("showOneDetail : {}", data.getCatalogNumber());
-    
+  
+  public void setSelectedView() {
+    log.info("setSelectedView"); 
     viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected";
-
-//        List<SolrRecord> list = new ArrayList<>();
-//        list.add(record);
-//        displayOneDetail = true;
-//        
-//        record.setSelected(true);
-//        selectall = true;
-//        
-//        selectedRecords.add(record);
-//        session.setAttribute(SAVED_SELECTED_RECORDS, selectedRecords); 
-//        selectedRecords = new ArrayList<>();
-//        selectedRecords.add(record);
-//     
-//        resultview = 2;
+    resultView = "selected"; 
   }
-  
-  
-  
+    
   public void backToListView() {
     log.info("backToListView");
-    resultView = "list";
+    resultView = "list"; 
+    viewPath = LIST_VIEW_PATH; 
   }
   
   public void mapView() {
     log.info("mapView"); 
     resultView = "map";
-    viewPath = MAP_VIEW_PATH;
+    viewPath = MAP_VIEW_PATH; 
   }
   
   public void imageView() {
@@ -101,4 +84,72 @@ public class ResultHeader implements Serializable {
   public String getResultView() {
     return resultView;
   } 
+  
+  public boolean isDisplayPaging() {
+    return resultView.equals("list") || resultView.equals("detail");
+  }
+  
+  public boolean isDisplayMapSummary() {
+    return resultView.equals("map");
+  }
+  
+  public boolean isDisplaySelectedSummary() {
+    return !resultView.equals("map") && !resultView.equals("image");   
+  }
+  
+  public boolean isReplaceByEmptySpace() {
+    return resultView.equals("image");
+  }
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+//  public void showOneDetail(SolrData data) {
+//    log.info("showOneDetail : {}", data.getCatalogNumber());
+//    
+//    viewPath = SELECTED_VIEW_PATH; 
+//    resultView = "selected"; 
+//
+////        List<SolrRecord> list = new ArrayList<>();
+////        list.add(record);
+////        displayOneDetail = true;
+////        
+////        record.setSelected(true);
+////        selectall = true;
+////        
+////        selectedRecords.add(record);
+////        session.setAttribute(SAVED_SELECTED_RECORDS, selectedRecords); 
+////        selectedRecords = new ArrayList<>();
+////        selectedRecords.add(record);
+////     
+////        resultview = 2;
+//  }
+  
+  
+
+  
+
+  
+//  public boolean isDisplaySummary() { 
+//    return !resultView.equals("image");
+//  }
+//  
+//  public boolean isDisplayNumberSelected() {
+//    return !resultView.equals("map") && !resultView.equals("image");
+//  } 
 }
