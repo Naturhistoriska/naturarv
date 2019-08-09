@@ -5,25 +5,87 @@
       xmlns:h="http://java.sun.com/jsf/html"    >
 
   <body>
-    <ui:composition>   
-      <h:form id="detailForm" prependId="false">  
-        <h:panelGrid cellpadding="0" cellspacing="0"  >
-          <h:panelGrid id="lisdetailresult" cellpadding="0" cellspacing="0" >
- 
-image view
-           
-            
-           
-          </h:panelGrid> 
+    <ui:composition>     
+      <h:panelGrid id="imagePanel" columns="2" columnClasses="alignTop,alignTop"  style="width: 700px; float:right;" >  
 
-         
+        <h:panelGrid width="200">  
+          <h:outputText value="#{msg.imagefilter}"  styleClass="imageViewPanel" /> 
+          <p:panel header="#{msg.selectview}" id="selectViewPanel" >   
+            <h:selectManyCheckbox value="#{galleria.viewList}" layout="pageDirection" >
+              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />
+              <f:selectItem itemValue="label" itemLabel="#{msg.label}" />
+              <f:selectItem itemValue="dorsal" itemLabel="#{msg.dorsal}" />
+              <f:selectItem itemValue="ventral" itemLabel="#{msg.ventral}" />
+              <f:selectItem itemValue="lateral" itemLabel="#{msg.lateral}" />
+              <f:selectItem itemValue="frontal" itemLabel="#{msg.frontal}" />
+              <f:selectItem itemValue="caudal" itemLabel="#{msg.caudal}" />
+
+              <f:ajax render="allimagePanel" listener="#{galleria.selectViews}" event="change" execute="@this" /> 
+            </h:selectManyCheckbox> 
+          </p:panel>  
+
+          <p:panel header="#{msg.selectpart}" id="selectPartPanel" >  
+            <h:selectManyCheckbox value="#{galleria.partsList}" layout="pageDirection" >
+              <f:selectItem itemValue="all" itemLabel="#{msg.all}"  />  
+              <f:selectItem itemValue="abdomen" itemLabel="#{msg.abdomen}" />  
+              <f:selectItem itemValue="face"  itemLabel="#{msg.face}"/>   
+              <f:selectItem itemValue="genitalia" itemLabel="#{msg.genitalia}" />  
+              <f:selectItem itemValue="wings"  itemLabel="#{msg.wings}"/>  
+              <f:selectItem itemValue="head" itemLabel="#{msg.head}" />  
+              <f:selectItem itemValue="legs"  itemLabel="#{msg.legs}"/>  
+              <f:selectItem itemValue="lobe" itemLabel="#{msg.lobe}" />  
+              <f:selectItem itemValue="pronotum"  itemLabel="#{msg.pronotum}"/>  
+              <f:selectItem itemValue="vari" itemLabel="#{msg.vari}" />  
+              <f:selectItem itemValue="mesonotum"  itemLabel="#{msg.mesonotum}"/>  
+              <f:selectItem itemValue="posterior" itemLabel="#{msg.posterior}" />  
+              <f:selectItem itemValue="palps"  itemLabel="#{msg.palps}"/>  
+              <f:selectItem itemValue="tarsi" itemLabel="#{msg.tarsi}" />  
+              <f:selectItem itemValue="labrum"  itemLabel="#{msg.labrum}"/>  
+              <f:selectItem itemValue="/notum/" itemLabel="#{msg.notum}" />  
+              <f:selectItem itemValue="mouth"  itemLabel="#{msg.mouth}"/>  
+              <f:selectItem itemValue="chelicerae" itemLabel="#{msg.chelicerae}" />   
+
+              <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="allimagePanel" />   
+            </h:selectManyCheckbox> 
+          </p:panel> 
+
+          <p:panel header="#{msg.selectsex}" id="selectSexPanel" >  
+            <h:selectManyCheckbox value="#{galleria.sexList}" layout="pageDirection" >
+              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
+              <f:selectItem itemValue="/male/" itemLabel="#{msg.male}" />  
+              <f:selectItem itemValue="female"  itemLabel="#{msg.female}"/>   
+              <f:ajax render="allimagePanel" listener="#{galleria.selectSexes}" event="change" execute="@this" />  
+            </h:selectManyCheckbox>  
+          </p:panel> 
+
+          <p:panel header="#{msg.selectstage}" id="selectStagePanel" >  
+            <h:selectManyCheckbox value="#{galleria.stageList}" layout="pageDirection" >
+              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
+              <f:selectItem itemValue="larva" itemLabel="#{msg.larva}" />  
+              <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>   
+              <f:ajax render="allimagePanel" listener="#{galleria.selectStages}" event="change" execute="@this" />  
+            </h:selectManyCheckbox>   
+          </p:panel>  
+        </h:panelGrid >
+
+        <h:panelGrid width="500">   
+          <ui:repeat value="#{galleria.images}" var="subImages" > 
+            <p:outputPanel deferred="true" deferredMode="visible" 
+                           layout="block" style="width: 500px; float:right;"  >  
+              <ui:repeat value="#{subImages}" var="image" >  
+                <p:commandLink  action="#{switch.imageSwitch(image)}" 
+                                oncomplete="PF('imgswitchdlg').show();" update=":searchform:imageswitchpanel">
+                  <p:graphicImage value="#{switch.thumbPath}" title="#{image.scientificName}/#{image.catalogNumber}" 
+                                  alt="#{thumb.catalogNumber}" style="padding: 5px; border: none;"  /> 
+
+                </p:commandLink>   
+              </ui:repeat> 
+            </p:outputPanel>  
+          </ui:repeat> 
+        </h:panelGrid >
+      </h:panelGrid>   
 
 
-
-        </h:panelGrid> 
-
-
-      </h:form> 
     </ui:composition>
   </body>
 </html>
