@@ -6,130 +6,133 @@
 
   <body>
     <ui:composition>    
-        <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"  
-                     rowKey="#{record.catalogNumber}"  styleClass="detailTable"
-                     paginator="false" rowIndexVar="indexCount"   >   
-        
-          
-          <p:column style="font-size: 11px; width : 15px; "  > 
-            <h:selectBooleanCheckbox value="#{record.selected}" 
-                                     style="margin-top: 2px; margin-left: 2px; margin-top: 5px; ">
-              <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  execute="@this"
-                      render=":resultsForm:resultHeader"  />
-            </h:selectBooleanCheckbox> 
-          </p:column>
+      <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"  
+                   rowKey="#{record.catalogNumber}"  styleClass="detailTable"
+                   paginator="false" rowIndexVar="indexCount"   >    
 
-          <p:column style="font-size: 11px; width : 600px; "> 
-            <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
-                         columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  >
-             
-               
-              <h:graphicImage library="images" 
-                                name="icons/discipline/#{record.collectionId}.png"   
-                                styleClass="images" />  
-              
-              <h:outputText value="#{msg.cataloguenumber}:" />   
-              <h:outputText value="#{record.catalogNumber}" />  
- 
-              
-              <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
-              <p:commandLink rendered="#{record.morphbankId != null}" 
-                             action="#{search.displayImages(record)}" >
-                <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
-                                title="#{msg.showimages}" alt="#{msg.showimages}"
-                                styleClass="images" /> 
-              </p:commandLink>  
-              <h:outputText value="#{msg.speciesname}:" />   
-              <h:outputText value="#{record.txFullName}" /> 
+        <p:column style="font-size: 11px; width : 15px; "  > 
+          <h:selectBooleanCheckbox value="#{record.selected}" 
+                                   style="margin-top: 2px; margin-left: 2px; margin-top: 5px; ">
+            <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  execute="@this"
+                    render=":resultsForm:resultHeader"  />
+          </h:selectBooleanCheckbox> 
+        </p:column>
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.highertaxa}:" />   
-              <h:outputText value="#{record.higherTx}" />
+        <p:column style="font-size: 11px; width : 600px; "> 
+          <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
+                       columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  >
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.collection}:" />   
-              <h:outputText value="#{record.collectionName}" />
- 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.type}:"  />   
-              <h:outputText value="#{record.typeStatus}" /> 
-             
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.author}:"  />   
-              <h:outputText value="#{record.authors}" /> 
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.synonyms}:" />   
-              <h:outputText value="#{record.synonyms}" /> 
+            <h:graphicImage library="images" 
+                            name="icons/discipline/#{record.collectionId}.png"   
+                            styleClass="images" />  
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.stationfieldnumber}:"  />   
-              <h:outputText value="#{record.stationFieldNumber}" /> 
+            <h:outputText value="#{msg.cataloguenumber}:" />   
+            <h:outputText value="#{record.catalogNumber}" />  
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.collectiondate}:"  />     
-              <h:outputText value="#{record.startDate}"  >
-                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-                <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
-              </h:outputText>
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.catalogeddate}:"  />     
-              <h:outputText value="#{record.catalogedDate}"  >
-                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-                <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
-              </h:outputText>
+            <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
+            <p:commandLink rendered="#{record.morphbankId != null}" 
+                           action="#{search.displayImages(record)}" >
+              <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                              title="#{msg.showimages}" alt="#{msg.showimages}"
+                              styleClass="images" /> 
+            </p:commandLink>  
+            <h:outputText value="#{msg.speciesname}:" />   
+            <h:outputText value="#{record.txFullName}" /> 
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.locality}:"   />   
-              <h:outputText value="#{record.locality}" /> 
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.highertaxa}:" />   
+            <h:outputText value="#{record.higherTx}" />
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.country}:"  />   
-              <h:outputText value="#{record.country}" />   
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.collection}:" />   
+            <h:outputText value="#{record.collectionName}" />
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.continent}:"   />   
-              <h:outputText value="#{record.continent}" />  
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.type}:"  />   
+            <h:outputText value="#{record.typeStatus}" /> 
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.coordinate}:" />    
-              <h:panelGroup layout="block" rendered="#{record.coordinate != null}" >
-                <h:outputText value="#{record.coordinate}" /> 
-              </h:panelGroup>
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.author}:"  />   
+            <h:outputText value="#{record.authors}" /> 
 
-              <h:panelGrid rendered="#{record.coordinate == null}">  
-                <p:spacer width="10" height="10" />
-              </h:panelGrid> 
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.synonyms}:" />   
+            <h:outputText value="#{record.synonyms}" /> 
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.collector}:" />   
-              <h:outputText value="#{record.collectors}" /> 
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.stationfieldnumber}:"  />   
+            <h:outputText value="#{record.stationFieldNumber}" /> 
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.determiner}:" />   
-              <h:outputText value="#{record.determiner}" />   
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.collectiondate}:"  />     
+            <h:outputText value="#{record.startDate}"  >
+              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
+              <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
+            </h:outputText>
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.remarks}:" />  
-              <h:outputText value="#{record.remarks}" />  
-               
-              <h:panelGrid cellpadding="0" cellspacing="0">
-                <ui:repeat value="#{record.remarks}" var="remark">   
-                  <h:outputText value="#{remark}" />  <br />
-                </ui:repeat>  
-              </h:panelGrid> 
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.catalogeddate}:"  />     
+            <h:outputText value="#{record.catalogedDate}"  >
+              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
+              <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
+            </h:outputText>
 
-              <p:spacer width="5" height="5" />
-              <h:outputText value="#{msg.accessionRemarks}:" />   
-              <h:panelGrid cellpadding="0" cellspacing="0">
-                <ui:repeat value="#{record.accessionRemarks}" var="aremark">   
-                  <h:outputText value="#{aremark}" />  <br />
-                </ui:repeat>  
-              </h:panelGrid> 
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.locality}:"   />   
+            <h:outputText value="#{record.locality}" /> 
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.country}:"  />   
+            <h:outputText value="#{record.country}" />   
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.continent}:"   />   
+            <h:outputText value="#{record.continent}" />  
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.coordinate}:" />    
+            <h:panelGroup layout="block" rendered="#{record.coordinate != null}" >
+              <h:outputText value="#{record.coordinate}" /> 
+            </h:panelGroup>
+
+            <h:panelGrid rendered="#{record.coordinate == null}">  
+              <p:spacer width="10" height="10" />
             </h:panelGrid> 
-          </p:column>   
-        </p:dataTable>  
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.collector}:" />   
+            <h:outputText value="#{record.collectors}" /> 
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.determiner}:" />   
+            <h:outputText value="#{record.determiner}" />   
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.remarks}:" />    
+            <h:panelGrid rendered="#{record.remarks == null}">  
+              <p:spacer width="10" height="10" />
+            </h:panelGrid>  
+            <h:panelGrid cellpadding="0" cellspacing="0" rendered="#{record.remarks != null}">
+              <ui:repeat value="#{record.remarks}" var="remark">   
+                <h:outputText value="#{remark}" />  <br />
+              </ui:repeat>  
+            </h:panelGrid> 
+
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.accessionRemarks}:" />   
+            <h:panelGrid cellpadding="0" cellspacing="0" rendered="#{record.accessionRemarks != null}">
+              <ui:repeat value="#{record.accessionRemarks}" var="accessionRemarks">   
+                <h:outputText value="#{accessionRemarks}" />  <br />
+              </ui:repeat>  
+            </h:panelGrid> 
+            <h:panelGrid rendered="#{record.accessionRemarks == null}">  
+              <p:spacer width="10" height="10" />
+            </h:panelGrid> 
+          </h:panelGrid> 
+        </p:column>   
+      </p:dataTable>  
     </ui:composition>
   </body>
 </html>

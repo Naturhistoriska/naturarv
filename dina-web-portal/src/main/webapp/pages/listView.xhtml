@@ -23,9 +23,8 @@
                 <h:graphicImage library="images" 
                                 name="icons/discipline/#{record.collectionId}.png"   
                                 styleClass="images" />  
-                 
- 
-                <p:commandLink  action="#{searchBean.showOneDetail(record)}" process="@this" > 
+                <p:commandLink  action="#{searchBean.showOneDetail(record)}" 
+                                update=":resultsForm:resultContent" process="@this" > 
                    <h:outputText value="#{record.txFullName}" 
                                 style="font-weight: bold; font-size: 13px; color: #808080;"/>   
                 </p:commandLink> 

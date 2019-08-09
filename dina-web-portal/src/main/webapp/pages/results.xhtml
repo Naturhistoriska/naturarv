@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:h="http://java.sun.com/jsf/html" 
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"  
       xmlns:p="http://primefaces.org/ui"  >
 
   <body>
@@ -20,36 +20,91 @@
                                cellpadding="0" cellspacing="0" rendered="#{navigate.resultView}">
                     <h:panelGrid id="displayviewpanel" columns="4" 
                                  columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
-
-                      <p:spacer /> 
+                      
+                      <!-- result in map view --> 
+                      <h:panelGroup rendered="#{resultHeader.displayMapSummary}" >
+                        (<h:outputText value="#{statistic.totalMaps}" />
+                        <p:spacer width="10"  />
+                        <h:outputText value="#{msg.hits}"   />)  
+                      </h:panelGroup>  
+                      <h:panelGroup layout="block" rendered="#{resultHeader.displaySelectedSummary}">
+                        <h:outputText value="#{msg.numselected}: #{searchBean.selectedRecords.size()}" 
+                                      style="font-size: 11px;" rendered="#{!searchBean.selectedRecords.isEmpty()}"  />  
+                        <p:spacer rendered="#{searchBean.selectedRecords.isEmpty()}" /> 
+                      </h:panelGroup> 
+                      <p:spacer rendered="#{resultHeader.replaceByEmptySpace}" /> 
+                      
                       <p:commandLink actionListener="#{resultHeader.backToListView}" process="@this" 
-                                     rendered="#{resultHeader.resultView != 'list'}" 
+                                     rendered="#{!resultHeader.displaySelectedSummary}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
                       </p:commandLink> 
-                      
-                      <p:commandLink actionListener="#{resultHeader.imageView()}" process="@this" 
+
+                      <p:commandLink actionListener="#{searchBean.showImages()}" process="@this" 
                                      rendered="#{resultHeader.resultView != 'image'}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
                       </p:commandLink>  
-                      
+
                       <p:commandLink actionListener="#{resultHeader.mapView()}" process="@this" 
                                      rendered="#{resultHeader.resultView != 'map'}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
-                      </p:commandLink>   
-                      
-                      <h:panelGrid cellpadding="0" cellspacing="0"  >  
-                        save records
-                      </h:panelGrid> 
- 
+                      </p:commandLink>  
+
+                      <p:commandLink id="downlodlink" action="#{searchBean.export}" styleClass="downLink">   
+                        <h:outputText value="#{msg.downLoadAll}"  rendered="#{searchBean.selectedRecords.size() == 0}" />  
+                        <h:outputText value="#{msg.downLoadSelected}" rendered="#{searchBean.selectedRecords.size() > 0}" />   
+                      </p:commandLink>
+
+                      <p:overlayPanel id="downloadFormatListPanel" for="downlodlink" hideEffect="fade" >  
+                        <h:panelGrid id="maxiumdownloadmsg"  cellpadding="0" cellspacing="0"   >
+                          <h:panelGrid  columns="4"   cellpadding="0" cellspacing="0" 
+                                        style="float: left; text-align:  left;" 
+                                        columnClasses="alignTop,alignTop,alignTop" > 
+                            <p:spacer width="12" />
+                            <p:graphicImage value="/resources/images/icons/exclaim_yellow.gif" alt="warning"  title="warning" />   
+                            <p:spacer width="12" />  
+                            <h:outputText value="#{msg.maxiumdownload}"  style="font-size: 11px; color: red;" />    
+                          </h:panelGrid>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  >
+                          <p:spacer width="52" height="10"/>    
+                          <h:commandLink>     
+                            <p:graphicImage value="/resources/images/xml.png" 
+                                            alt="XML"  title="XML" styleClass="images" />     
+                            <p:dataExporter type="xml" target="exportDataTable" fileName="dina_data" />  
+                          </h:commandLink>  
+                          <p:spacer width="55" />
+                          <h:commandLink>     
+                            <p:graphicImage value="/resources/images/excel.png" 
+                                            alt="XLS"  title="XLS" styleClass="images"/>    
+                            <p:dataExporter type="xls" target="exportDataTable" fileName="dina_data" />  
+                          </h:commandLink>  
+                          <p:spacer width="55" />
+                          <h:commandLink>     
+                            <p:graphicImage value="/resources/images/csv.png"  
+                                            alt="CSV"  title="CSV" styleClass="images"/>       
+                            <p:dataExporter type="csv" target="exportDataTable" 
+                                            fileName="dina_data"   />  
+                          </h:commandLink>  
+                          <ui:remove>
+                            <p:spacer width="55" />  
+                            <h:commandLink>      
+                              <p:graphicImage value="/resources/images/icons/pdf.png"  alt="PDF"  title="PDF"  styleClass="images"/>       
+                              <p:dataExporter type="pdf" target="exportDataTablePDF" 
+                                              fileName="dina_data"   encoding="CP1252"   />   
+                            </h:commandLink>   
+                          </ui:remove> 
+                        </h:panelGrid>  
+                      </p:overlayPanel>  
                     </h:panelGrid>  
                   </h:panelGrid>
 
 
                   <h:panelGroup layout="block" id="resultSubHeader"  styleClass="resultHeader"> 
-                    <h:outputText value="#{paging.resultViewStart}-#{paging.end} #{msg.of} #{paging.totalFound} #{msg.hits}" />
+                    <h:outputText value="#{paging.start}-#{paging.end} #{msg.of} #{paging.totalFound} #{msg.hits}" />
                     <p:spacer width="8" /> 
                     <h:outputText value="| #{msg.numpage}:"  />
                     <p:spacer width="8" />
@@ -102,12 +157,52 @@
 
                   <ui:include src="#{resultHeader.viewPath}" />
 
+                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  >
+
+                    <h:panelGroup  id="floatleftcol"  layout="block" rendered="#{resultHeader.displayPaging}"> 
+                      <p:commandLink actionListener="#{searchBean.firstPage}" process="@this" 
+                                     disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent" >  
+                        <h:graphicImage library="images" name="icons/first.gif" alt="#{msg.first}" 
+                                        title="#{msg.first}" />
+                      </p:commandLink>   
+
+                      <p:spacer width="15" height="5" />
+                      <p:commandLink actionListener="#{searchBean.previousPage}" process="@this" 
+                                     disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/prev.gif" alt="#{msg.previous}" 
+                                        title="#{msg.previous}" />
+                      </p:commandLink> 
+
+                      <p:spacer width="15" height="5" />  
+                      <ui:repeat var="page" value="#{paging.pages}" varStatus="status" >
+                        <p:commandLink actionListener="#{searchBean.changePage(page)}" process="@this" 
+                                       disabled="#{page == paging.currentPage}" 
+                                       update=":resultsForm:resultContent" styleClass="pagingNumberText">   
+                          <h:outputText value= "${page}"    /> 
+                        </p:commandLink>   
+                      </ui:repeat> 
+                      
+                      <p:spacer width="15" height="5" /> 
+                      <p:commandLink actionListener="#{searchBean.nextPage}" process="@this" 
+                                     disabled="#{paging.currentPage == paging.totalPages}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/next.gif" alt="#{msg.next}" 
+                                        title="#{msg.next}" />
+                      </p:commandLink>
+                      <p:spacer width="15" height="5" /> 
+                      <p:commandLink actionListener="#{searchBean.lastPage}" process="@this" 
+                                     disabled="#{paging.currentPage == paging.totalPages}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/last.gif" alt="#{msg.last}" 
+                                        title="#{msg.last}" />
+                      </p:commandLink>  
+                    </h:panelGroup>    
+                  </h:panelGrid> 
                 </h:panelGrid>
 
                 <h:panelGrid styleClass="statistic"  >
+                  <p:spacer width="100" height="30"/>
                   <h:outputText value="#{msg.addfilter}:" style="font-weight: bold;"  />   
 
-                  <p:spacer width="20" height="20" />
+                  <p:spacer width="20" height="10" />
 
                   <p:commandLink actionListener="#{searchBean.filterhWithMap}"  process="@this" 
                                  rendered="#{statistic.totalMaps > 0}"  > 
@@ -157,8 +252,9 @@
 
                   <p:spacer width="20" height="30" />
                   <h:outputText value="#{msg.collection}" style="font-weight: bold;" /> 
-
-
+                    
+               
+                  
                   <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >   
                     <p:commandLink actionListener="#{searchBean.searchCollection(collection)}" 
                                    title="#{collection.name}"  
