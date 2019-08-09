@@ -50,7 +50,7 @@ public class SolrData {
   @Field
   public String higherTx;
   @Field
-  public String[] morphbankId;
+  public String morphbankId;
   @Field
   public String[] remarks;
   @Field
@@ -190,11 +190,11 @@ public class SolrData {
     this.higherTx = higherTx;
   }
 
-  public String[] getMorphbankId() {
+  public String getMorphbankId() {
     return morphbankId;
   }
 
-  public void setMorphbankId(String[] morphbankId) {
+  public void setMorphbankId(String morphbankId) {
     this.morphbankId = morphbankId;
   }
 
@@ -276,9 +276,13 @@ public class SolrData {
     return StringUtils.join(collector, ", ");
   }
   
-  public String getJoinRemarks() {
-    return StringUtils.join(remarks, ", ");
-  }
+//  public String getJoinRemarks() {
+//    return StringUtils.join(remarks, ", ");
+//  }
+//  
+//  public String getJoinedAccessionRemarks() {
+//    return StringUtils.join(accessionRemarks, ", ");
+//  }
 
   public String getCoordinate() {
 
