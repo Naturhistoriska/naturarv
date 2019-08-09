@@ -29,7 +29,7 @@ import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
 import org.apache.solr.common.SolrDocumentList;  
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.CollectionData;
-import se.nrm.dina.web.portal.model.Result;
+import se.nrm.dina.web.portal.model.ImageData; 
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
 import se.nrm.dina.web.portal.model.StatisticData; 
@@ -48,8 +48,9 @@ public class SolrService implements Serializable {
   
   private int cumulateValue; 
   private int collectionCumulateValue; 
+  private static final int MB_IMG_FATCH_SIZE = 15000;
  
-  private SolrResult result;
+//  private SolrResult result;
     
   @Inject
   @Solr
@@ -59,7 +60,7 @@ public class SolrService implements Serializable {
   }
   
   public SolrResult searchAll(String queryText, int start, int numberPerPage) {
-    log.info("searchAll: {} ", queryText );
+    log.info("searchAll: {} -- {} ", start, numberPerPage );
      
     query = new SolrQuery();
     query.set("q", queryText); 
@@ -98,6 +99,54 @@ public class SolrService implements Serializable {
     } catch (SolrServerException | IOException ex) {      
       log.error(ex.getMessage());
       return null;
+    } 
+  }
+   
+  public List<List<ImageData>> searchImages(String input, Map<String, String> filterMap, int start) {
+
+    query = new SolrQuery();
+    query.setQuery(input)
+            .addField("morphbankId")
+            .addField("morphBankView")
+            .addField("txFullName")
+            .addField("catalogNumber")
+            .addField("collectionId");
+
+    addSearchFilters(filterMap);                        // add search query into solr 
+
+    query.setRows(MB_IMG_FATCH_SIZE);
+    try {
+      response = client.query(query);    
+      return createSubList(response.getBeans(ImageData.class)); 
+    } catch (IOException | SolrServerException ex) {
+      log.error(ex.getMessage());
+    }
+    return null;
+  }
+  
+  
+  private List<List<ImageData>> createSubList(List<ImageData> imgList) {
+
+    List<List<ImageData>> mbids = new ArrayList<>();
+
+    final int sizeOfList = imgList.size();
+    final int breakApart = 15;
+    for (int i = 0; i < sizeOfList; i += breakApart) {
+      mbids.add(new ArrayList<>(
+              imgList.subList(i, Math.min(sizeOfList, i + breakApart)))
+      );
+    }
+    return mbids;
+  } 
+  
+  private void addSearchFilters(Map<String, String> filterQueries) {
+
+    if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search
+      filterQueries.entrySet()
+              .stream()
+              .forEach(x -> {
+                query.addFilterQuery(x.getKey().trim() + x.getValue().trim());
+              });
     } 
   }
   
@@ -321,34 +370,6 @@ public class SolrService implements Serializable {
     return new StatisticData();
   }
   
-  public List<Result> searchAllResults(int start) {
-    log.info("searchAll: {} ", start );
-    
-    List<Result> list = new ArrayList();
-       
-    query = new SolrQuery();
-    query.set("q", "id:*");
-    query.setStart(start);
-    query.setRows(100);    
-    query.setSort("id", SolrQuery.ORDER.asc);
-    
-    try {      
-      response = client.query(query);      
-      log.info("num: {}", response.getResults().getNumFound());
-        
-      response.getResults().stream() 
-              .forEach(r -> {
-                list.add( new Result((String) r.getFieldValue("id"),
-                        (String) r.getFieldValue("catalogNumber"),
-                        (String) r.getFieldValue("txFullName")));
-              });
-      return list;      
-    } catch (SolrServerException | IOException ex) {      
-      log.error(ex.getMessage());
-    }
-    return null;
-  }
-
   public SolrDocumentList searchAll(int start, int pageSize) {
     log.info("searchAll: {} -- {}", start, pageSize);
       
@@ -386,6 +407,6 @@ public class SolrService implements Serializable {
       log.error(ex.getMessage());
     }
     return null;
-  }
+  } 
 
 }

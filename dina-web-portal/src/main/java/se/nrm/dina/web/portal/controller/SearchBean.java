@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext; 
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.PrimeFaces;
 import se.nrm.dina.web.portal.model.CollectionData;
+import se.nrm.dina.web.portal.model.ImageData;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
 import se.nrm.dina.web.portal.solr.SolrService;
@@ -41,25 +42,22 @@ public class SearchBean implements Serializable {
   private boolean isSwedish;
 //  private boolean hasResult;
   private int totalResult;
-  private String numDisplay;
-  private String sortby; 
- 
+  private int numDisplay;
+  private String sortby;
+
   private List<SolrData> resultList;
-  private List<SolrData> selectedRecords;
-  private boolean isSimpleSearch; 
+  private final List<SolrData> selectedRecords;
+  private boolean isSimpleSearch;
   private boolean filterMap;
   private boolean filterDNA;
   private boolean filterType;
   private boolean filterSweden;
   private boolean filterImage;
-  
-  private List<String> filters;
-  
-  private static final String WILD_SEARCH_TEXT = "*:*";
-  
-  
-  private String viewPath;
 
+  private List<String> filters;
+
+  private static final String WILD_SEARCH_TEXT = "*:*";
+ 
   private Map<String, String> queries;
 
   @Inject
@@ -71,14 +69,20 @@ public class SearchBean implements Serializable {
   @Inject
   private PagingNavigation paging;
 
+  @Inject
+  private ResultHeader resultHeader;
+  
+  @Inject
+  private GalleriaBean galleria;
+  
+
   public SearchBean() {
     facesContext = FacesContext.getCurrentInstance();
     session = (HttpSession) facesContext.getExternalContext().getSession(false);
-//    hasResult = false;
     isSimpleSearch = true;
     resultList = new ArrayList();
     selectedRecords = new ArrayList<>();
-    filters = new ArrayList<>(); 
+    filters = new ArrayList<>();
   }
 
   /**
@@ -92,9 +96,125 @@ public class SearchBean implements Serializable {
     defaultText = CommonText.getInstance().getSearchDefaultText(isSwedish);
     queries = new HashMap();
     sortby = "score";                                                       // reset sorting to sore -- default sort
-    numDisplay = "10"; 
+    numDisplay = 10;
   }
 
+  public void all() {
+    log.info("all - search all records");
+
+    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
+    if (result == null) {
+      navigator.gotoNoResults();
+    } else {
+      resultList = result.getSolrData();
+      totalResult = result.getTotalFound();
+      paging.calculateTotalPages(totalResult, numDisplay);
+      navigator.gotoResults();
+    }
+  }
+
+  public void nextPage() {
+    log.info("nextPage");
+
+    int start = paging.getEnd();
+    SolrResult result = solr.searchAll("*:*", start, numDisplay);
+    resultList = result.getSolrData();
+    paging.setNextPage(numDisplay);
+  }
+
+  public void previousPage() {
+    log.info("previousPage");
+
+    int start = paging.getStart() - numDisplay - 1;
+    SolrResult result = solr.searchAll("*:*", start, numDisplay);
+    resultList = result.getSolrData();
+    paging.setPreviousPage(numDisplay);
+  }
+
+  public void firstPage() {
+    log.info("firstPage");
+    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
+    resultList = result.getSolrData();
+    paging.setFirstPage(numDisplay);
+  }
+
+  public void lastPage() {
+    log.info("lastPage");
+
+    int totalPages = paging.getTotalPages();
+    int start = numDisplay * (totalPages - 1);
+
+    SolrResult result = solr.searchAll("*:*", start, numDisplay);
+    resultList = result.getSolrData();
+    paging.setLastPage(numDisplay);
+  }
+
+  public void changePage(int pageNumber) {
+    log.info("changePage: {}", pageNumber);
+
+    int start = (pageNumber - 1) * numDisplay;
+    SolrResult result = solr.searchAll("*:*", start, numDisplay);
+    resultList = result.getSolrData();
+    paging.setPaging(start, numDisplay, pageNumber);
+  }
+
+  public void changeNumDisplay() {
+    log.info("changeNumDisplay : {}", numDisplay);
+    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
+    resultList = result.getSolrData();
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
+  }
+
+  public void showOneDetail(SolrData data) {
+    log.info("showOneDetail: {}", data);
+
+    data.setSelected(true);
+    selectedRecords.add(data);
+    resultHeader.setSelectedView();
+  }
+
+  public void removeone(SolrData data) {
+    log.info("removeone: {}", data);
+    data.setSelected(false);
+    selectedRecords.remove(data);
+    
+    if(selectedRecords.isEmpty()) {
+      resultHeader.backToListView(); 
+    }
+  }
+   
+  public void showImages() {
+    log.info("showImages");
+    
+    if(freeText.isEmpty()) { 
+      freeText = WILD_SEARCH_TEXT;
+    }
+    List<List<ImageData>> images = solr.searchImages(freeText, queries, 0);
+    galleria.setSearchResults(images);
+    resultHeader.imageView();
+  }
+
+  public List<SolrData> getSelectedRecords() {
+    return selectedRecords;
+  }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   public void openAdvanceSearch() {
     log.info("openAdvanceSearch");
     isSimpleSearch = false;
@@ -113,13 +233,6 @@ public class SearchBean implements Serializable {
     if (!freeText.equals(defaultText) && freeText.length() > 0) {
       solr.simpleSearch(freeText);
     }
-  }
-
-  public void all() {
-    log.info("all - search all records");
-
-    SolrResult result = solr.searchAll("*:*", 0, Integer.parseInt(numDisplay));
-    setResults(result);
   }
 
   public void searchCollection(CollectionData collection) {
@@ -142,14 +255,13 @@ public class SearchBean implements Serializable {
 
   public void filterhWithMap() {
     log.info("filterhWithMap");
-    
-    if(!filters.contains("map:*")) {
+
+    if (!filters.contains("map:*")) {
       filters.add("map:*");
     }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, Integer.parseInt(numDisplay));
-    setResults(result);
+    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
-  
 
   private String buildSearchText() {
     if (freeText != null && freeText.length() > 0) {
@@ -164,40 +276,49 @@ public class SearchBean implements Serializable {
     if (!filters.contains("dna:*")) {
       filters.add("dna:*");
     }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, Integer.parseInt(numDisplay));
-    setResults(result);
+    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
 
   public void filterhWithType() {
     log.info("filterhWithType");
-    
+
     if (!filters.contains("typeStatus:*")) {
       filters.add("typeStatus:*");
     }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, Integer.parseInt(numDisplay));
-    setResults(result);
+    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
 
   public void filterhWithImage() {
     log.info("filterhWithImage");
-    
+
     if (!filters.contains("image:*")) {
       filters.add("image:*");
     }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, Integer.parseInt(numDisplay));
-    setResults(result);
+    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
 
   public void filterhWithSweden() {
     log.info("filterhWithSweden");
-    
+
     if (!filters.contains("inSweden:*")) {
       filters.add("inSweden:*");
     }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, Integer.parseInt(numDisplay));
-    setResults(result);
+    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
+//    setResults(result, 0, 1);
+    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
 
+//    private void setResults(SolrResult result, int start, int currentPage) { 
+// 
+//      resultList = result.getSolrData();
+//      totalResult = result.getTotalFound(); 
+////      setPaging(start, currentPage); 
+//      navigator.gotoResults();
+//    
+//  }
   public void removeFilter(String key, String value) {
     log.info("removeFilter: {} -- {}", key, value);
   }
@@ -205,17 +326,16 @@ public class SearchBean implements Serializable {
   public void removeAllQueries() {
     log.info("removeAllQueries");
   }
-  
+
   public void removeAllSelectedRecords() {
     log.info("removeAllSelectedRecords");
     selectedRecords.clear();
   }
-   
 
   public void selectOne(SolrData data) {
     log.info("selectOne: {}", data.isSelected());
 
-    if (data.isSelected()) { 
+    if (data.isSelected()) {
       selectedRecords.add(data);
       log.info("data added: {}", selectedRecords.size());
 ////      checkedRecordsCatlogNumList.add(record.getCatalogNum());
@@ -239,27 +359,14 @@ public class SearchBean implements Serializable {
 //    }
   }
 
-
-  
- 
-
   public void displayImages(SolrData data) {
     log.info("displayImages : {}", data);
 
-    String[] mbids = data.getMorphbankId();
+    String mbids = data.getMorphbankId();
 //    if (mbids != null) {
 //      record.setImageExist(true);
 //      record.setDisplayImage(true);
 //    }
-  }
-
-  public void changeNumDisplay() {
-    log.info("changeNumDisplay : {}", numDisplay);
-    SolrResult result = solr.searchAll("*:*", 0, Integer.parseInt(numDisplay));
-    resultList = result.getSolrData();
-//    setResults(result);
-    setPaging(0, 1); 
-//    updateView("resultsForm:result");
   }
 
   public void sortResult() {
@@ -281,27 +388,13 @@ public class SearchBean implements Serializable {
     isSwedish = ((String) session.getAttribute("locale")).equals("sv");
     return CommonText.getInstance().getSearchDefaultText(isSwedish);
   }
-  
-  private void setResults(SolrResult result) {
-//    hasResult = result != null;
-    if (result != null) {
-      resultList = result.getSolrData();
-      totalResult = result.getTotalFound();
-      setPaging(0, 1); 
-      navigator.gotoResults();
-    } else {
-      navigator.gotoNoResults();
-    }   
-  }
-  
 
-  private void setPaging(int start, int currentPage) {
-    paging.setStart(start);
-    paging.setEnd(Integer.parseInt(numDisplay));
-    paging.setTotalFound(totalResult);
-    paging.setCurrentPage(currentPage);
-  }
-
+//  private void setPaging(int start, int currentPage) {
+//    paging.setTotalFound(totalResult);
+//    paging.setStartAndEndPages(start); 
+//   
+//    paging.setCurrentPage(currentPage);
+//  }
   public void setDefaultText(String defaultText) {
     this.defaultText = defaultText;
   }
@@ -321,9 +414,8 @@ public class SearchBean implements Serializable {
 //  public void setHasResult(boolean hasResult) {
 //    this.hasResult = hasResult;
 //  }
-
   public List<SolrData> getResultList() {
-    log.info("getResultList: {}", resultList.isEmpty()); 
+    log.info("getResultList: {}", resultList.isEmpty());
     return resultList;
   }
 
@@ -339,14 +431,6 @@ public class SearchBean implements Serializable {
     this.totalResult = totalResult;
   }
 
-  public List<SolrData> getSelectedRecords() {
-    return selectedRecords;
-  }
-
-  public void setSelectedRecords(List<SolrData> selectedRecords) {
-    this.selectedRecords = selectedRecords;
-  }
-
   public boolean isIsSimpleSearch() {
     return isSimpleSearch;
   }
@@ -359,11 +443,11 @@ public class SearchBean implements Serializable {
     this.queries = queries;
   }
 
-  public String getNumDisplay() {
+  public int getNumDisplay() {
     return numDisplay;
   }
 
-  public void setNumDisplay(String numDisplay) {
+  public void setNumDisplay(int numDisplay) {
     this.numDisplay = numDisplay;
   }
 
@@ -374,5 +458,5 @@ public class SearchBean implements Serializable {
   public void setSortby(String sortby) {
     this.sortby = sortby;
   }
-  
+
 }
