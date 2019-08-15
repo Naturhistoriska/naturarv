@@ -43,6 +43,13 @@
       <param-value>true</param-value>
     </context-param>
     
+    
+    <!-- Handle JSF page expirations gracefully -->
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>        
+		<location>/pages/expired.xhtml</location>
+	</error-page>
+    
     <!--
     <mime-mapping>
  <extension>woff2</extension>
