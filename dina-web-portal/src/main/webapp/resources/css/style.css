@@ -272,6 +272,15 @@ body * {
   text-decoration: underline;
 }
 
+.imagePanel {
+   width: 700px; 
+   float:right;
+}
+
+.imagePanel>tbody>tr>td {
+  vertical-align: top; 
+}
+
 
 .tableIconCol {
   text-align: left;
@@ -554,6 +563,10 @@ a:hover {
   padding: 1px !important; 
 }
 
+.imageResultTable.ui-datatable table thead tr {
+  display: none;  
+  vertical-align: top;
+} 
 
 .ui-chkbox-box {
   background-image: url('../resources/images/icons/ckbox.png') !important;  
@@ -604,4 +617,10 @@ a:hover {
  
 .noheader.ui-datatable table thead {
   display: none;
+}
+
+
+.ui-datascroller .ui-datascroller-item {
+    width: 33%;
+    display: inline-block;
 }
