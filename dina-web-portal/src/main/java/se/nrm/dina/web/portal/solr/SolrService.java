@@ -4,19 +4,20 @@
  * and open the template in the editor.
  */
 package se.nrm.dina.web.portal.solr;
-
+ 
 import java.io.IOException;
 import java.io.Serializable;    
 import java.time.LocalDateTime; 
-import java.util.ArrayList;  
+import java.util.ArrayList;   
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;   
+import java.util.Map;    
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException; 
@@ -24,15 +25,18 @@ import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.RangeFacetMap;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap; 
 import org.apache.solr.client.solrj.response.QueryResponse; 
+import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
 import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
-import org.apache.solr.client.solrj.response.json.NestableJsonFacet; 
-import org.apache.solr.common.SolrDocumentList;  
+import org.apache.solr.client.solrj.response.json.NestableJsonFacet;  
+import org.apache.solr.common.SolrDocumentList;   
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.ImageData; 
+import se.nrm.dina.web.portal.model.ImageModel;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
-import se.nrm.dina.web.portal.model.StatisticData; 
+import se.nrm.dina.web.portal.model.StatisticData;  
+import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
  *
@@ -43,12 +47,11 @@ public class SolrService implements Serializable {
 
   private SolrQuery query;
   private QueryResponse response; 
-
-  private SolrDocumentList docList;
   
   private int cumulateValue; 
   private int collectionCumulateValue; 
   private static final int MB_IMG_FATCH_SIZE = 15000;
+  
  
 //  private SolrResult result;
     
@@ -59,34 +62,27 @@ public class SolrService implements Serializable {
   public SolrService() {
   }
   
-  public SolrResult searchAll(String queryText, int start, int numberPerPage) {
-    log.info("searchAll: {} -- {} ", start, numberPerPage );
-     
-    query = new SolrQuery();
-    query.set("q", queryText); 
-    query.setStart(start);
-    query.setRows(numberPerPage);
-    query.setSort("id", SolrQuery.ORDER.asc);
+  public SolrResult simpleSearch(String text, Map<String, String> filters) {
+    log.info("simpleSearch: {}", text);
     
-    try {      
-      response = client.query(query);      
-      log.info("num: {}", response.getResults().getNumFound());
-         
-      return new SolrResult((int)response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
-    } catch (SolrServerException | IOException ex) {      
+    query = new SolrQuery(); 
+    query.setQuery(text);
+    addSearchFilters(filters);
+    try {   
+      response = client.query(query);    
+      return new SolrResult((int)response.getResults().getNumFound(), 0, response.getBeans(SolrData.class)); 
+    } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return null;
     } 
-  }
-  
-  public SolrResult searchWithFilter(String text, List<String> filters, int start, int numPerPage) {
-    log.info("searchWithFilter: {}", filters);
+  } 
+   
+  public SolrResult searchWithFilter(String text, Map<String, String> filters, int start, int numPerPage) {
+    log.info("searchWithFilter: {} -- {}", text, filters);
     
     query = new SolrQuery();
-    query.setQuery(text); 
-    filters.stream().forEach(f -> {
-      query.addFilterQuery(f);
-    });  
+    query.setQuery(text);  
+    addSearchFilters(filters);
     query.setStart(start);
     query.setRows(numPerPage);
     query.setSort("id", SolrQuery.ORDER.asc);
@@ -101,7 +97,64 @@ public class SolrService implements Serializable {
       return null;
     } 
   }
-   
+
+  public int getImageTotalCount(Map<String, String> filters) {
+
+    query = new SolrQuery();
+    query.setQuery("image:true");
+    addSearchFilters(filters);
+    try {
+      response = client.query(query);
+    } catch (SolrServerException | IOException ex) { 
+      log.error(ex.getMessage());
+    }
+    int total = (int) response.getResults().getNumFound(); 
+    return total;
+  }
+  
+  public List<ImageModel> getImageList(int start, int numPerPage, Map<String, String> filters) {
+    log.info("getImageList: {}", start);
+    query = new SolrQuery();
+    query.setQuery("image:true") 
+            .addField("morphbankId")
+            .addField("morphBankView")
+            .addField("morphbankImageId")
+            .addField("txFullName")
+            .addField("catalogNumber")
+            .addField("collectionId")
+            .setStart(start) 
+            .setRows(numPerPage);
+    
+    addSearchFilters(filters); 
+    query.setRows(numPerPage);
+    List<ImageModel> images = new ArrayList();
+    try {
+      client.query(query).getResults()
+              .stream()
+              .forEach(d -> { 
+                List<String> views = (List<String>) d.getFieldValue("morphBankView");
+                views.stream().forEach(v -> {
+                  String imageId = StringUtils.split(v, "/")[0];
+                  String view = StringUtils.substringAfter(v, "/");
+                  images.add(new ImageModel((String) d.getFieldValue("catalogNumber"),
+                                            (String) d.getFieldValue("collectionId"),
+                                            (String) d.getFieldValue("morphbankId"),
+                                            imageId,
+                                            (String) d.getFieldValue("txFullName"),
+                                            view));
+
+                });
+              });
+      
+      return images;
+//      return response.getBeans(ImageData.class); 
+    } catch (IOException | SolrServerException ex) {
+      log.error(ex.getMessage());
+      return null;
+    }
+  }
+    
+ 
   public List<List<ImageData>> searchImages(String input, Map<String, String> filterMap, int start) {
 
     query = new SolrQuery();
@@ -139,17 +192,7 @@ public class SolrService implements Serializable {
     return mbids;
   } 
   
-  private void addSearchFilters(Map<String, String> filterQueries) {
 
-    if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search
-      filterQueries.entrySet()
-              .stream()
-              .forEach(x -> {
-                query.addFilterQuery(x.getKey().trim() + x.getValue().trim());
-              });
-    } 
-  }
-  
   
   
   public Map<String, Map<String, Integer>> getCollectionsMonthChartData(LocalDateTime startDate) {
@@ -209,7 +252,7 @@ public class SolrService implements Serializable {
             .withFacet("collectionName", collectionNameFacet);
     try {
       response = request.process(client);
-      log.info("json: {}", response.jsonStr());
+//      log.info("json: {}", response.jsonStr());
       
       NestableJsonFacet facet = response.getJsonFacetingResponse(); 
       facet.getBucketBasedFacets("collectionName")
@@ -301,21 +344,22 @@ public class SolrService implements Serializable {
     }   
     return null;  
   }
-  
-  public StatisticData getStatisticData() {
-    log.info("getStatisticData");
+    
+  public StatisticData getStatisticData(String text, Map<String, String> filters) {
+    log.info("getStatisticData: {} -- {}", text, filters);
     List<CollectionData> collections = new ArrayList<>();
-
+  
     final TermsFacetMap collectionNameFacet = new TermsFacetMap("collectionName").setLimit(20);
     final TermsFacetMap collectionIdFacet = new TermsFacetMap("collectionId").setLimit(1);
-    final TermsFacetMap dnaFacet = new TermsFacetMap("dna").setLimit(2);
+    final TermsFacetMap dnaFacet = new TermsFacetMap("dna").setLimit(1);
     final TermsFacetMap mapFacet = new TermsFacetMap("map").setLimit(1);
     final TermsFacetMap imageFacet = new TermsFacetMap("image").setLimit(1);
     final TermsFacetMap inSwedenFacet = new TermsFacetMap("inSweden").setLimit(1);
-    final TermsFacetMap typeFacet = new TermsFacetMap("typeStatus").setLimit(100);
-    collectionNameFacet.withSubFacet("collectionId", collectionIdFacet);
+    final TermsFacetMap typeFacet = new TermsFacetMap("isType").setLimit(1);
+    collectionNameFacet.withSubFacet("collectionId", collectionIdFacet);  
+    
     final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery("*:*")
+            .setQuery(text)
             .returnFields("collectionName", "collectionId")
             .withFacet("dna", dnaFacet)
             .withFacet("image", imageFacet)
@@ -324,29 +368,25 @@ public class SolrService implements Serializable {
             .withFacet("type", typeFacet)
             .withFacet("collectionName", collectionNameFacet);
 
+    if (filters != null && !filters.isEmpty()) {
+      filters.entrySet().stream().forEach(e -> {
+        request.withFilter(e.getKey() + e.getValue());
+      });
+    } 
+
     try {
       response = request.process(client); 
-//      log.info("json: {}", response.jsonStr());
+      log.info("json: {}", response.jsonStr());
       
       NestableJsonFacet facet = response.getJsonFacetingResponse();
-      int totalDna = (int) facet.getBucketBasedFacets("dna")
-              .getBuckets().get(0).getCount();
-
-      int totaImage = (int) facet.getBucketBasedFacets("image")
-              .getBuckets().get(0).getCount();
-
-      int totalMap = (int) facet.getBucketBasedFacets("map")
-              .getBuckets().get(0).getCount();
-
-      int totalInSweden = (int) facet.getBucketBasedFacets("sweden")
-              .getBuckets().get(0).getCount();
-
-      int totalType =  facet.getBucketBasedFacets("type")
-              .getBuckets()
-              .stream()
-              .mapToInt(b -> (int)b.getCount())
-              .sum(); 
-      
+       
+      int totalDna = getBucketsTotal(facet.getBucketBasedFacets("dna")); 
+      int totaImage = getBucketsTotal(facet.getBucketBasedFacets("image")); 
+      int totalMap = getBucketsTotal(facet.getBucketBasedFacets("map")); 
+      int totalInSweden = getBucketsTotal(facet.getBucketBasedFacets("sweden")); 
+      int totalType = getBucketsTotal(facet.getBucketBasedFacets("type"));
+ 
+      log.info("totalDNA: {}", totalDna);
       facet.getBucketBasedFacets("collectionName")
               .getBuckets()
               .stream() 
@@ -369,7 +409,7 @@ public class SolrService implements Serializable {
     } 
     return new StatisticData();
   }
-  
+ 
   public SolrDocumentList searchAll(int start, int pageSize) {
     log.info("searchAll: {} -- {}", start, pageSize);
       
@@ -390,23 +430,117 @@ public class SolrService implements Serializable {
     return null;
   }
   
-  public String simpleSearch(String text) {
-    log.info("simpleSearch: {}", text);
+  
+
+  public SolrResult searchAll(String queryText, int start, int numberPerPage) {
+    log.info("searchAll: {} -- {} ", start, numberPerPage );
+     
+    query = new SolrQuery();
+    query.set("q", queryText); 
+    query.setStart(start);
+    query.setRows(numberPerPage);
+    query.setSort("id", SolrQuery.ORDER.asc);
     
-    try { 
-      query = new SolrQuery();
-      query.set("q", "taxonName:" + text);
-      response = client.query(query);
-
-      docList = response.getResults();
-
-      docList.forEach((doc) -> {
-        log.info("data: {}", doc.getFieldValueMap());
-      });
-    } catch (SolrServerException | IOException ex) {
+    try {      
+      response = client.query(query);      
+      log.info("num: {}", response.getResults().getNumFound());
+         
+      return new SolrResult((int)response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
+    } catch (SolrServerException | IOException ex) {      
       log.error(ex.getMessage());
-    }
-    return null;
-  } 
+      return null;
+    } 
+  }
+   
+  private void addSearchFilters(Map<String, String> filterQueries) {
 
+    if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search
+      filterQueries.entrySet()
+              .stream()
+              .forEach(x -> {
+                query.addFilterQuery(x.getKey().trim() + x.getValue().trim());
+              });
+    } 
+  } 
+  
+  
+    
+  private int getBucketsTotal(BucketBasedJsonFacet facet) {
+    return  facet.getBuckets() != null && facet.getBuckets().size() > 0 ? 
+            (int) facet.getBuckets().get(0).getCount() : 0;
+  }
+  
+//  private void addFilters(JsonQueryRequest request, Map<String, String> map) {
+//    if (map != null && !map.isEmpty()) {                                                // add filters into search
+//      map.entrySet()
+//              .stream()
+//              .forEach(x -> {
+//                request.withFilter(x.getKey().trim() +  x.getValue().trim());
+//              });
+//    }
+//  }
+  
+  
+//   public StatisticData getStatisticDataWithQuery(String text, Map<String, String> filters) {
+//    log.info("getStatisticDataWithQuery: {} -- {}", text, filters);
+//    List<CollectionData> collections = new ArrayList<>();
+//
+//    final TermsFacetMap collectionNameFacet = new TermsFacetMap("collectionName").setLimit(20);
+//    final TermsFacetMap collectionIdFacet = new TermsFacetMap("collectionId").setLimit(1);
+//    final TermsFacetMap dnaFacet = new TermsFacetMap("dna").setLimit(1);
+//    final TermsFacetMap mapFacet = new TermsFacetMap("map").setLimit(1);
+//    final TermsFacetMap imageFacet = new TermsFacetMap("image").setLimit(1);
+//    final TermsFacetMap inSwedenFacet = new TermsFacetMap("inSweden").setLimit(1);
+//    final TermsFacetMap typeFacet = new TermsFacetMap("isType").setLimit(1);
+//    collectionNameFacet.withSubFacet("collectionId", collectionIdFacet);
+//  
+//    final JsonQueryRequest request = new JsonQueryRequest()
+//            .setQuery(text)  
+//            .returnFields("collectionName", "collectionId")
+//            .withFacet("dna", dnaFacet)
+//            .withFacet("image", imageFacet)
+//            .withFacet("map", mapFacet)
+//            .withFacet("sweden", inSwedenFacet)
+//            .withFacet("type", typeFacet)
+//            .withFacet("collectionName", collectionNameFacet);
+//    
+//    filters.entrySet().stream().forEach(e -> {
+//       request.withFilter(e.getKey() + e.getValue()); 
+//    });
+//      
+//    try {
+//      response = request.process(client); 
+////      log.info("json: {}", response.jsonStr());
+//      
+//      NestableJsonFacet facet = response.getJsonFacetingResponse();
+//       
+//      int totalDna = getBucketsTotal(facet.getBucketBasedFacets("dna")); 
+//      int totaImage = getBucketsTotal(facet.getBucketBasedFacets("image")); 
+//      int totalMap = getBucketsTotal(facet.getBucketBasedFacets("map")); 
+//      int totalInSweden = getBucketsTotal(facet.getBucketBasedFacets("sweden")); 
+//      int totalType = getBucketsTotal(facet.getBucketBasedFacets("type"));
+// 
+//      facet.getBucketBasedFacets("collectionName")
+//              .getBuckets()
+//              .stream() 
+//              .forEach(b -> {  
+//                b.getBucketBasedFacets("collectionId")
+//                        .getBuckets()
+//                        .stream()
+//                        .forEach(sb -> { 
+//                          collections.add(new CollectionData(
+//                                  String.valueOf(sb.getVal()), 
+//                                  String.valueOf(b.getVal()), 
+//                                  (int) b.getCount()));
+//                        });
+//                
+//              });
+//      return new StatisticData((int)response.getResults().getNumFound(), totalDna, 
+//              totaImage, totalMap, totalInSweden, totalType, collections);
+//    } catch (SolrServerException | IOException ex) {
+//      log.error(ex.getMessage());
+//    } 
+//    return new StatisticData();
+//  }
+//  
 }
