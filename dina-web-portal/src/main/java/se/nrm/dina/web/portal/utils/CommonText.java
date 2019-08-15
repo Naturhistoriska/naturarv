@@ -14,6 +14,8 @@ public class CommonText {
   private static final String SIMPLE_SEARCH_DEFAULT_TEXT_EN = "Search collections (species, genus, family, collectors, location, etc.)";
   private static final String SIMPLE_SEARCH_DEFAULT_TEXT_SV = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
 
+  private static final String NRM_CODE = "nrm";
+  private static final String GNM_CODE = "gnm";
   private static final String NRM_EN = "Swedish Museum of Natural History";
   private static final String NRM_SV = "Naturhistoriska riksmuseet";
   private static final String GNM_EN = "Gothenburg Natural History Museum";
@@ -41,6 +43,21 @@ public class CommonText {
   private static final String COLLECTIONS_MONTH_CHART_DATA = "collectionsMonthChartData";
   private static final String COLLECTIONS_YEAR_CHART_DATA = "collectionsYearChartData";
   
+  private static final String SORT_BY_SCORE = "score";
+  
+  private static final String WILD_SEARCH_TEXT = "*:*";
+  private static final String WILD_CARD = "*";
+  private static final String MAP_KEY = "map:";
+  private static final String IMAGE_KEY = "image:";
+  private static final String TYPE_KEY = "isType:";
+  private static final String DNA_KEY = "dna:";
+  private static final String SWEDEN_KEY = "inSweden:";
+  private static final String COLLECTION_CODE_KEY = "collectionId:";
+  private static final String COLLECTION_NAME_KEY = "collectionName:";
+  private static final String ID_KEY = "id:";
+  
+  private static final String TEXT_KEY = "text";
+  
 
   private static CommonText instance = null;
 
@@ -50,8 +67,62 @@ public class CommonText {
     }
     return instance;
   }
+  
+  public String getNrmCode() {
+    return NRM_CODE;
+  }
+  
+  public String getGnmCode() {
+    return GNM_CODE;
+  }
+  
+  public String getSortByScore() {
+    return SORT_BY_SCORE;
+  }
+  
+  public String getWildCard() {
+    return WILD_CARD;
+  }
+  
+  public String getIdKey() {
+    return ID_KEY;
+  }
+  
+  public String getCollectionNameKey() {
+    return COLLECTION_NAME_KEY;
+  }
+  
+  public String getCollectionCodeKey() {
+    return COLLECTION_CODE_KEY;
+  }
+  
+  public String getTextKey() {
+    return TEXT_KEY;
+  }
 
-
+  public String getMapKey() {
+    return MAP_KEY;
+  }
+  
+  public String getImageKey() {
+    return IMAGE_KEY;
+  }
+  
+  public String getDNAKey() {
+    return DNA_KEY;
+  }
+  
+  public String getTypeKey() {
+    return TYPE_KEY;
+  }
+  
+  public String getSwedenKey() {
+    return SWEDEN_KEY;
+  }
+  
+  public String getWildSearchText() {
+    return WILD_SEARCH_TEXT;
+  }
   
   public String getLocale() {
     return LOCALE;
