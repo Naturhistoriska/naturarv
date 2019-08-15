@@ -18,10 +18,10 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.PrimeFaces;
-import se.nrm.dina.web.portal.model.CollectionData;
-import se.nrm.dina.web.portal.model.ImageData;
+import se.nrm.dina.web.portal.model.CollectionData; 
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
+import se.nrm.dina.web.portal.solr.SolrHelper;
 import se.nrm.dina.web.portal.solr.SolrService;
 import se.nrm.dina.web.portal.utils.CommonText;
 
@@ -34,55 +34,44 @@ import se.nrm.dina.web.portal.utils.CommonText;
 @Slf4j
 public class SearchBean implements Serializable {
 
-  private String freeText;
-  private String defaultText;
+  private String freeText; 
 
   private final FacesContext facesContext;
   private final HttpSession session;
-  private boolean isSwedish;
-//  private boolean hasResult;
+  private boolean isSwedish; 
   private int totalResult;
   private int numDisplay;
   private String sortby;
 
-  private List<SolrData> resultList;
+  private CollectionData selectedCollection;
+  private String selectedInstitution;
   private final List<SolrData> selectedRecords;
-  private boolean isSimpleSearch;
-  private boolean filterMap;
-  private boolean filterDNA;
-  private boolean filterType;
-  private boolean filterSweden;
-  private boolean filterImage;
-
-  private List<String> filters;
-
-  private static final String WILD_SEARCH_TEXT = "*:*";
+  private boolean isSimpleSearch; 
  
+  
+  private List<SolrData> resultList;
+  private SolrResult result;
   private Map<String, String> queries;
 
   @Inject
-  private SolrService solr;
-
+  private SolrService solr; 
   @Inject
-  private Navigator navigator;
-
+  private Navigator navigator; 
   @Inject
-  private PagingNavigation paging;
-
+  private PagingNavigation paging; 
   @Inject
-  private ResultHeader resultHeader;
-  
+  private ResultHeader resultHeader; 
   @Inject
-  private GalleriaBean galleria;
-  
-
+  private StatisticBean statistic;
+ 
   public SearchBean() {
     facesContext = FacesContext.getCurrentInstance();
     session = (HttpSession) facesContext.getExternalContext().getSession(false);
     isSimpleSearch = true;
     resultList = new ArrayList();
     selectedRecords = new ArrayList<>();
-    filters = new ArrayList<>();
+    queries = new HashMap();
+    selectedCollection = null; 
   }
 
   /**
@@ -92,87 +81,264 @@ public class SearchBean implements Serializable {
   public void init() {
     log.info("init");
 
-    isSwedish = ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");
-    defaultText = CommonText.getInstance().getSearchDefaultText(isSwedish);
-    queries = new HashMap();
-    sortby = "score";                                                       // reset sorting to sore -- default sort
-    numDisplay = 10;
+    isSwedish = ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");  
+    clearData();
   }
 
+  /**
+   * Search all the data from solr without filters
+   */
   public void all() {
     log.info("all - search all records");
 
-    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
-    if (result == null) {
-      navigator.gotoNoResults();
-    } else {
-      resultList = result.getSolrData();
-      totalResult = result.getTotalFound();
-      paging.calculateTotalPages(totalResult, numDisplay);
-      navigator.gotoResults();
+    clearData();
+    result = solr.searchAll(CommonText.getInstance().getWildSearchText(), 0, numDisplay);
+    statistic.resetData(CommonText.getInstance().getWildSearchText(), queries);
+    setResult();
+  }
+   
+  /**
+   * Search all the data has coordinates from solr
+   */
+  public void searchAllDataHasCoordinates() {
+    log.info("searchAllDataHasCoordinates");
+    filterSearch(CommonText.getInstance().getMapKey(), String.valueOf(true)); 
+  }
+  
+  /**
+   * Search all the data has DNA sequences from solr
+   */
+  public void searchAllDataHasDNASequences() {
+    log.info("searchAllDataHasDNASequences");
+    filterSearch(CommonText.getInstance().getDNAKey(), String.valueOf(true)); 
+  }
+  
+  /**
+   * Search all the data has images from solr
+   */
+  public void searchAllDataHasImages() {
+    log.info("searchAllDataHasImages");
+    filterSearch(CommonText.getInstance().getImageKey(), String.valueOf(true));  
+  }
+  
+  /**
+   * Search all the data are type specimens from solr
+   */
+  public void searchAllDataAreTypeSpecimems() {
+    log.info("searchAllDataAreTypeSpecimems");
+    filterSearch(CommonText.getInstance().getTypeKey(), String.valueOf(true)); 
+  }
+  
+  /**
+   * Search all the data are collected in Sweden from solr
+   */
+  public void searchAllDataCollectedInSweden() {
+    log.info("searchAllDataCollectedInSweden");
+    filterSearch(CommonText.getInstance().getSwedenKey(), String.valueOf(true)); 
+  }
+  
+  /**
+   * Search data has coordinates with filters from solr
+   */
+  public void searchDataHasCoordinatesWithFilters() {
+    log.info("searchDataHasCoordinatesWithFilters");
+
+    if (!queries.containsKey(CommonText.getInstance().getMapKey())) { 
+      filterSearchWithQueries(CommonText.getInstance().getMapKey(), String.valueOf(true));
     }
   }
+ 
+  /**
+   * Search data has dna sequences with filters from solr
+   */
+  public void searchDataHasDNASequencesWithFilters() {
+    log.info("searchDataHasDNASequencesWithFilters");
+     
+    if (!queries.containsKey(CommonText.getInstance().getDNAKey())) { 
+      filterSearchWithQueries(CommonText.getInstance().getDNAKey(), String.valueOf(true));
+    } 
+  }
+  
+  /**
+   * Search data are type specimens with filters from solr
+   */
+  public void searchDataAreTypeSpecimenaWithFilters() {
+    log.info("searchDataAreTypeSpecimenaWithFilters");
 
+    if (!queries.containsKey(CommonText.getInstance().getTypeKey())) { 
+      filterSearchWithQueries(CommonText.getInstance().getTypeKey(), String.valueOf(true));
+    } 
+  }
+  
+  /**
+   * Search data has images with filters from solr
+   */
+  public void searchDataHasImagesWithFilters() {
+    log.info("searchDataHasImagesWithFilters");
+
+    if (!queries.containsKey(CommonText.getInstance().getImageKey())) { 
+      filterSearchWithQueries(CommonText.getInstance().getImageKey(), String.valueOf(true));
+    } 
+  }
+  
+  /**
+   * Search data collected in Sweden with filters from solr
+   */
+  public void searchDataCollectedInSwedenWithFilters() {
+    log.info("searchDataCollectedInSwedenWithFilters");
+
+    if (!queries.containsKey(CommonText.getInstance().getSwedenKey())) { 
+      filterSearchWithQueries(CommonText.getInstance().getSwedenKey(), String.valueOf(true));
+    } 
+  }
+  
+  /**
+   * Search collection data filtered with collection code
+   * @param collection 
+   */
+  public void searchCollectionWithoutFilter(CollectionData collection) {
+    log.info("searchCollectionWithoutFilter: {}", collection.getCode()); 
+    filterSearch(CommonText.getInstance().getCollectionCodeKey(), collection.getCode()); 
+    this.selectedCollection = collection;
+  }
+
+   /**
+   * Search collection data filtered with collection code and other applied filters
+   * @param collection 
+   */
+  public void searchCollectionWithFilter(CollectionData collection) {
+    log.info("searchCollectionWithFilter: {}", collection.getCode()); 
+    filterSearchWithQueries(CommonText.getInstance().getCollectionCodeKey(), collection.getCode()); 
+    this.selectedCollection = collection;
+  }
+
+  /**
+   * Search institution data filtered institution code and other applied filters
+   *
+   * @param key
+   */
+  public void searchInstitutionWithFilter(String key) {
+    log.info("searchInstitutionWithFilter: {}", key);
+
+    String institutionCode = key.equals(CommonText.getInstance().getNrmName(isSwedish))
+            ? CommonText.getInstance().getNrmCode() : CommonText.getInstance().getGnmCode();
+    filterSearchWithQueries(CommonText.getInstance().getIdKey(), institutionCode + "*");
+    selectedInstitution = key;
+  }
+
+  /**
+   * Search institution data filtered institution code
+   *
+   * @param key
+   */
+  public void searchInstitutionWithoutFilter(String key) {
+    log.info("searchInstitution: {}", key);
+
+    String institutionCode = key.equals(CommonText.getInstance().getNrmName(isSwedish))
+            ? CommonText.getInstance().getNrmCode() : CommonText.getInstance().getGnmCode();
+    filterSearch(CommonText.getInstance().getIdKey(), institutionCode + "*");
+    selectedInstitution = key;
+  }
+
+  /**
+   * Free text search
+   */
+  public void simpleSearch() {
+    log.info("simpleSearch: {}", freeText);
+    
+    boolean isResultView = navigator.isResultView();  
+    if(!isResultView) {
+      queries.clear();
+    }
+    if (freeText != null && freeText.length() > 0) {
+      String searchText = SolrHelper.getInstance()
+                            .buildSearchText(CommonText.getInstance()
+                              .getTextKey(), freeText);
+      result = solr.simpleSearch(searchText, queries);
+      setResult();
+      statistic.resetData(searchText, queries);
+    }
+  }
+  
+  /**
+   * Search next page data
+   */
   public void nextPage() {
-    log.info("nextPage");
-
-    int start = paging.getEnd();
-    SolrResult result = solr.searchAll("*:*", start, numDisplay);
-    resultList = result.getSolrData();
+    log.info("nextPage"); 
+    pagingSearch(paging.getEnd());  
     paging.setNextPage(numDisplay);
   }
 
+  /**
+   * Search previous page data
+   */
   public void previousPage() {
-    log.info("previousPage");
-
-    int start = paging.getStart() - numDisplay - 1;
-    SolrResult result = solr.searchAll("*:*", start, numDisplay);
-    resultList = result.getSolrData();
+    log.info("previousPage");  
+    pagingSearch(paging.getStart() - numDisplay - 1);
     paging.setPreviousPage(numDisplay);
   }
 
+  /**
+   * Search first page data
+   */
   public void firstPage() {
-    log.info("firstPage");
-    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
-    resultList = result.getSolrData();
+    log.info("firstPage"); 
+    pagingSearch(0);
     paging.setFirstPage(numDisplay);
   }
 
+  /**
+   * Search last page data
+   */
   public void lastPage() {
     log.info("lastPage");
 
     int totalPages = paging.getTotalPages();
-    int start = numDisplay * (totalPages - 1);
-
-    SolrResult result = solr.searchAll("*:*", start, numDisplay);
-    resultList = result.getSolrData();
+    int start = numDisplay * (totalPages - 1); 
+    pagingSearch(start);
     paging.setLastPage(numDisplay);
   }
 
+  /**
+   * Search selected page data
+   * 
+   * @param pageNumber 
+   */
   public void changePage(int pageNumber) {
-    log.info("changePage: {}", pageNumber);
-
-    int start = (pageNumber - 1) * numDisplay;
-    SolrResult result = solr.searchAll("*:*", start, numDisplay);
-    resultList = result.getSolrData();
+    log.info("changePage: {}", pageNumber); 
+    int start = (pageNumber - 1) * numDisplay; 
+    pagingSearch((pageNumber - 1) * numDisplay);
     paging.setPaging(start, numDisplay, pageNumber);
   }
 
+  
+  /**
+   * Search data when display number per page changed
+   */
   public void changeNumDisplay() {
-    log.info("changeNumDisplay : {}", numDisplay);
-    SolrResult result = solr.searchAll("*:*", 0, numDisplay);
-    resultList = result.getSolrData();
+    log.info("changeNumDisplay : {}", numDisplay); 
+    pagingSearch(0);
     paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
-
+  
+  /**
+   * Display data details
+   * 
+   * @param data 
+   */
   public void showOneDetail(SolrData data) {
     log.info("showOneDetail: {}", data);
 
     data.setSelected(true);
     selectedRecords.add(data);
     resultHeader.setSelectedView();
-  }
-
+  } 
+  
+  /**
+   * Remove one selected data from selected data list
+   * 
+   * @param data 
+   */
   public void removeone(SolrData data) {
     log.info("removeone: {}", data);
     data.setSelected(false);
@@ -182,22 +348,76 @@ public class SearchBean implements Serializable {
       resultHeader.backToListView(); 
     }
   }
+  
+  /**
+   * Remove all the selected data
+   */
+  public void removeAllSelectedRecords() {
+    log.info("removeAllSelectedRecords");
+    selectedRecords.clear();
+  }
+  
+  /**
+   * 
+   * @param key
+   * @param value 
+   */
+  public void removeFilter(String key, String value) {
+    log.info("removeFilter: {} -- {}", key, value); 
+    queries.remove(key);
+    
+    if(key.equals(CommonText.getInstance().getCollectionCodeKey())) {
+      selectedCollection = null;
+    }
+    if(key.equals(CommonText.getInstance().getIdKey())) {
+      selectedInstitution = null;
+    }
    
+    statistic.resetData(SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText), queries);
+  }
+  
+  /**
+   * Remove all filters
+   */
+  public void removeAllQueries() {
+    log.info("removeAllQueries");
+    queries.clear();
+    selectedCollection = null;
+    selectedInstitution = null;
+    statistic.resetData(SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText), queries);  
+  }
+ 
+   
+  /**
+   * Display images view
+   */
   public void showImages() {
     log.info("showImages");
-    
-    if(freeText.isEmpty()) { 
-      freeText = WILD_SEARCH_TEXT;
-    }
-    List<List<ImageData>> images = solr.searchImages(freeText, queries, 0);
-    galleria.setSearchResults(images);
+      
     resultHeader.imageView();
   }
 
-  public List<SolrData> getSelectedRecords() {
-    return selectedRecords;
-  }
 
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -228,109 +448,32 @@ public class SearchBean implements Serializable {
     updateView("searchForm:searchPanel");
   }
 
-  public void simpleSearch() {
-    log.info("simpleSearch: {}", freeText);
-    if (!freeText.equals(defaultText) && freeText.length() > 0) {
-      solr.simpleSearch(freeText);
-    }
-  }
 
-  public void searchCollection(CollectionData collection) {
-    log.info("searchCollection: {}", collection);
-  }
+ 
 
-  public void searchInstitution() {
-    log.info("searchInstitution");
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-//        savedFilterMap.put("institution", institution.getInstCode()); 
-//        session.setAttribute(SAVED_QUERY, savedFilterMap);  
-//        queries.put("Institution", institution.getInstitution());
-//        
-//        String searchText = getSavedSearchText();
-//        solrResult = search(searchText, savedFilterMap, 0);
-// 
-//        statistic.searchFilteredData(searchText, savedFilterMap, map, type, image);
-//        setResultView();  
-  }
 
-  public void filterhWithMap() {
-    log.info("filterhWithMap");
 
-    if (!filters.contains("map:*")) {
-      filters.add("map:*");
-    }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
-    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
-  }
+ 
 
-  private String buildSearchText() {
-    if (freeText != null && freeText.length() > 0) {
-      return "text:" + freeText;
-    }
-    return WILD_SEARCH_TEXT;
-  }
 
-  public void filterhWithDNA() {
-    log.info("filterhWithDNA");
-
-    if (!filters.contains("dna:*")) {
-      filters.add("dna:*");
-    }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
-    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
-  }
-
-  public void filterhWithType() {
-    log.info("filterhWithType");
-
-    if (!filters.contains("typeStatus:*")) {
-      filters.add("typeStatus:*");
-    }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
-    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
-  }
-
-  public void filterhWithImage() {
-    log.info("filterhWithImage");
-
-    if (!filters.contains("image:*")) {
-      filters.add("image:*");
-    }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
-    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
-  }
-
-  public void filterhWithSweden() {
-    log.info("filterhWithSweden");
-
-    if (!filters.contains("inSweden:*")) {
-      filters.add("inSweden:*");
-    }
-    SolrResult result = solr.searchWithFilter(buildSearchText(), filters, 0, numDisplay);
-//    setResults(result, 0, 1);
-    paging.calculateTotalPages(result.getTotalFound(), numDisplay);
-  }
-
-//    private void setResults(SolrResult result, int start, int currentPage) { 
-// 
-//      resultList = result.getSolrData();
-//      totalResult = result.getTotalFound(); 
-////      setPaging(start, currentPage); 
-//      navigator.gotoResults();
-//    
-//  }
-  public void removeFilter(String key, String value) {
-    log.info("removeFilter: {} -- {}", key, value);
-  }
-
-  public void removeAllQueries() {
-    log.info("removeAllQueries");
-  }
-
-  public void removeAllSelectedRecords() {
-    log.info("removeAllSelectedRecords");
-    selectedRecords.clear();
-  }
 
   public void selectOne(SolrData data) {
     log.info("selectOne: {}", data.isSelected());
@@ -379,9 +522,7 @@ public class SearchBean implements Serializable {
 //    exportDataSet = new ArrayList<>();
   }
 
-  private void updateView(String viewId) {
-    PrimeFaces.current().ajax().update(viewId);
-  }
+
 
   public String getDefaultText() {
 
@@ -389,16 +530,7 @@ public class SearchBean implements Serializable {
     return CommonText.getInstance().getSearchDefaultText(isSwedish);
   }
 
-//  private void setPaging(int start, int currentPage) {
-//    paging.setTotalFound(totalResult);
-//    paging.setStartAndEndPages(start); 
-//   
-//    paging.setCurrentPage(currentPage);
-//  }
-  public void setDefaultText(String defaultText) {
-    this.defaultText = defaultText;
-  }
-
+ 
   public String getFreeText() {
     return freeText;
   }
@@ -459,4 +591,96 @@ public class SearchBean implements Serializable {
     this.sortby = sortby;
   }
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  public List<SolrData> getSelectedRecords() {
+    return selectedRecords;
+  }
+ 
+  public String getSelectedCollectionName() {
+    return selectedCollection == null ? "" : selectedCollection.getShortName();
+  }
+  
+  public String getSelectedInstitution() {
+    return selectedInstitution;
+  }
+  
+  private void pagingSearch(int start) {
+    String searchText = SolrHelper.getInstance()
+            .buildSearchText(CommonText.getInstance().getTextKey(), freeText); 
+    result = solr.searchWithFilter(searchText, queries, start, numDisplay);
+    resultList = result.getSolrData();
+  }
+  
+  private void filterSearch(String key, String value) {
+    log.info("filterSearch");
+    
+    selectedCollection = null;
+    selectedInstitution = null;
+    queries.clear(); 
+    freeText = null;
+    filterSearchWithQueries(key, value);  
+  }
+
+  private void filterSearchWithQueries(String key, String value) {  
+    String searchText = SolrHelper.getInstance()
+            .buildSearchText(CommonText.getInstance().getTextKey(), freeText);
+    
+    queries.put(key, value); 
+    result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
+    setResult();
+    statistic.resetData(searchText, queries);
+  }
+   
+  private void setResult() {
+    if (result == null) {
+      navigator.gotoNoResults();
+    } else {
+      resultList = result.getSolrData();
+      totalResult = result.getTotalFound();
+      paging.calculateTotalPages(totalResult, numDisplay);
+      
+      if(!navigator.isResultView()) {
+        navigator.gotoResults();
+      } 
+    } 
+  }
+  
+  /**
+   * Update ui
+   * 
+   * @param viewId 
+   */
+  private void updateView(String viewId) {
+    PrimeFaces.current().ajax().update(viewId);
+  }
+  
+  /**
+   * Clear data to initial state
+   */
+  private void clearData() {
+    freeText = null;
+    isSimpleSearch = true;
+    numDisplay = 10;
+    queries.clear();
+    selectedCollection = null; 
+    selectedInstitution = null; 
+    sortby = CommonText.getInstance().getSortByScore();  
+    result = null;
+    resultList.clear();
+    selectedRecords.clear();
+    totalResult = 0;
+    
+  }
 }
