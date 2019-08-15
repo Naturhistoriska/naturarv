@@ -5,13 +5,19 @@
  */
 package se.nrm.dina.web.portal.controller;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.io.Serializable; 
 import java.util.List;
-import javax.enterprise.context.SessionScoped; 
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;  
+import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j; 
-import se.nrm.dina.web.portal.model.ImageData;
+import org.primefaces.model.LazyDataModel;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
+import se.nrm.dina.web.portal.logic.lazy.datamodel.ImageLazyDataModel; 
+import se.nrm.dina.web.portal.model.ImageModel;
+import se.nrm.dina.web.portal.solr.SolrService;
 
 /**
  *
@@ -25,21 +31,33 @@ public class GalleriaBean implements Serializable {
   private List<String> viewList;
   private List<String> partsList;
   private List<String> sexList;
-  private List<String> stageList;
-
-  private List<List<ImageData>> images;
-  private List<List<ImageData>> results;
+  private List<String> stageList; 
+  
+  private Map<String, String> filterMap;
+  
+  @Inject
+  private SolrService solr;
+  
+  @Inject
+  private InitialProperties properties;
+  @Inject
+  private SearchBean search;       
+  
+  ImageLazyDataModel dataModel;
 
   public GalleriaBean() {
 
   }
   
-  public void setSearchResults(List<List<ImageData>> results) {
-    this.results = results;
-    images = new ArrayList();
-    images.addAll(results);
+  @PostConstruct
+  public void init() { 
+    dataModel = new ImageLazyDataModel(solr, search.getQueries()); 
   }
 
+  public LazyDataModel<ImageModel> getModel() {
+    return dataModel;
+  }
+   
   public void selectViews() {
     log.info("selextViews");
   }
@@ -87,9 +105,9 @@ public class GalleriaBean implements Serializable {
 
   public void setStageList(List<String> stageList) {
     this.stageList = stageList;
-  }
-
-  public List<List<ImageData>> getImages() {
-    return images;
   } 
+   
+  public String getThumbPath(String imageId) { 
+    return properties.getMorphbankThumbPath() + "?id=" + imageId + "&imgType=thumb"; 
+  }
 }
