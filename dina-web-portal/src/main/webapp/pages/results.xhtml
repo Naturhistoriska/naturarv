@@ -154,7 +154,6 @@
                     </p:commandLink>    
                   </h:panelGroup>
 
-
                   <ui:include src="#{resultHeader.viewPath}" />
 
                   <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  >
@@ -204,61 +203,59 @@
 
                   <p:spacer width="20" height="10" />
 
-                  <p:commandLink actionListener="#{searchBean.filterhWithMap}"  process="@this" 
-                                 rendered="#{statistic.totalMaps > 0}"  > 
+                  <p:commandLink actionListener="#{searchBean.searchDataHasCoordinatesWithFilters}"  process="@this" 
+                                 rendered="#{statistic.filteredTotalMaps > 0}"  update=":resultsForm:result"  > 
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                  cellpadding="0" cellspacing="0" styleClass="statistic" >
                       <h:outputText value="#{msg.specimenswithmap}" />  
-                      <h:outputText value="#{statistic.totalMaps}" />
+                      <h:outputText value="#{statistic.filteredTotalMaps}" />
                     </h:panelGrid> 
                   </p:commandLink> 
 
-                  <p:commandLink actionListener="#{searchBean.filterhWithType}"  process="@this" 
-                                 rendered="#{statistic.totalType > 0}"  > 
+                  <p:commandLink actionListener="#{searchBean.searchDataAreTypeSpecimenaWithFilters}" process="@this" 
+                                 rendered="#{statistic.filteredTotalType > 0}" update=":resultsForm:result"   > 
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                  cellpadding="0" cellspacing="0" styleClass="statistic" >
                       <h:outputText value="#{msg.typeddata}" />  
-                      <h:outputText value="#{statistic.totalType}" />
+                      <h:outputText value="#{statistic.filteredTotalType}" />
                     </h:panelGrid> 
                   </p:commandLink> 
 
-                  <p:commandLink actionListener="#{searchBean.filterhWithImage}"  process="@this" 
-                                 rendered="#{statistic.totalImages > 0}"  > 
+                  <p:commandLink actionListener="#{searchBean.searchDataHasImagesWithFilters}" process="@this" 
+                                 rendered="#{statistic.filteredTotalImages > 0}" update=":resultsForm:result" > 
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                  cellpadding="0" cellspacing="0" styleClass="statistic" >
                       <h:outputText value="#{msg.specimenswithimage}" />  
-                      <h:outputText value="#{statistic.totalImages}" />
+                      <h:outputText value="#{statistic.filteredTotalImages}" />
                     </h:panelGrid> 
                   </p:commandLink> 
-
-                  <p:commandLink actionListener="#{searchBean.filterhWithDNA()}"  process="@this" 
-                                 rendered="#{statistic.totalDnas > 0}"  > 
-                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
-                      <h:outputText value="#{msg.specimenswithdna}" />  
-                      <h:outputText value="#{statistic.totalDnas}" />
-                    </h:panelGrid> 
-                  </p:commandLink> 
-
-
-                  <p:commandLink actionListener="#{searchBean.filterhWithSweden}"  process="@this" 
-                                 rendered="#{statistic.totalInSweden > 0}"  > 
+ 
+                  <p:commandLink actionListener="#{searchBean.searchDataCollectedInSwedenWithFilters}" process="@this" 
+                                 rendered="#{statistic.filteredTotalInSweden > 0}" update=":resultsForm:result" > 
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                  cellpadding="0" cellspacing="0" styleClass="statistic" >
                       <h:outputText value="#{msg.specimensinsweden}" />  
-                      <h:outputText value="#{statistic.totalInSweden}" />
+                      <h:outputText value="#{statistic.filteredTotalInSweden}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+                  
+                  <p:commandLink actionListener="#{searchBean.searchDataHasDNASequencesWithFilters()}" process="@this" 
+                                 rendered="#{statistic.filteredTotalDnas > 0}" update=":resultsForm:result"> 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithdna}" />  
+                      <h:outputText value="#{statistic.filteredTotalDnas}" />
                     </h:panelGrid> 
                   </p:commandLink> 
 
+
                   <p:spacer width="20" height="30" />
-                  <h:outputText value="#{msg.collection}" style="font-weight: bold;" /> 
-                    
-               
+                  <h:outputText value="#{msg.collection}" style="font-weight: bold;" />  
                   
-                  <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >   
-                    <p:commandLink actionListener="#{searchBean.searchCollection(collection)}" 
+                  <ui:repeat var="collection" value="#{statistic.filteredCollections}" varStatus="collectionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchCollectionWithFilter(collection)}" 
                                    title="#{collection.name}"  
-                                   process="@this"  >  
+                                   process="@this" update=":resultsForm:result">  
                       <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
                                    cellpadding="0" cellspacing="0" styleClass="statistic"> 
                         <h:outputText value="#{collection.shortName}" />  
@@ -270,10 +267,10 @@
                   <p:spacer width="20" height="30" />
                   <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>  
 
-                  <ui:repeat var="entry" value="#{statistic.institutions.entrySet()}" varStatus="institutionStatus" >   
-                    <p:commandLink actionListener="#{searchBean.searchInstitution()}" 
+                  <ui:repeat var="entry" value="#{statistic.filteredInstitutions.entrySet()}" varStatus="institutionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchInstitutionWithFilter(entry.key)}" 
                                    title="#{entry.key}"  
-                                   process="@this"  >  
+                                   process="@this" rendered="#{entry.value > 0}" update=":resultsForm:result"  >  
                       <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
                                    cellpadding="0" cellspacing="0" styleClass="statistic"> 
                         <h:outputText value="#{entry.key}" /> 
@@ -283,28 +280,28 @@
                   </ui:repeat>  
 
                   <p:spacer width="20" height="30" />
-                  <h:panelGrid  id="querypanel">  
-                    <h:panelGrid style="font-weight: bold; "  rendered="#{searchBean.queries.size() > 0}">
+                  <h:panelGrid  id="querypanel" rendered="#{searchBean.queries.size() > 0}">  
+                    <h:panelGrid style="font-weight: bold; "  >
                       <h:outputText value="#{msg.filter}"  />
                     </h:panelGrid>
-                  </h:panelGrid>
-
-                  <h:panelGrid style="border: solid 1px; width: 210px; " rendered="#{searchBean.queries.size() > 0}" >    
+                     
+                    <h:panelGrid style="border: solid 1px; width: 210px; "   >    
                     <ui:repeat var="entry" value="#{searchBean.queries.entrySet()}" varStatus="status">   
                       <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">  
-                        <h:outputText value="#{entry.value}" rendered="#{entry.key == 'Institution'}"  style="font-size: 10px;" /> 
-                        <h:outputText value="#{query.value}" rendered="#{entry.key == 'Collection'}"  style="font-size: 10px;" /> 
-                        <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'Map'}" style="font-size: 10px;" />  
-                        <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'Type'}" style="font-size: 10px;" />  
-                        <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'Sweden'}" style="font-size: 10px;" /> 
-                        <h:outputText value="#{msg.specimenswithdna}" rendered="#{entry.key == 'DNA'}" style="font-size: 10px;" /> 
-                        <h:outputText value="#{msg.specimenswithimage}" rendered="#{entry.key == 'Image'}" style="font-size: 10px;" /> 
-                        <h:outputText value="#{msg.coordinates}: #{query.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" /> 
-                        <p:spacer width="5"  />
-
-
-                        <p:commandLink actionListener="#{searchBean.removeFilter(query.key, query.value)}" 
-                                       title="#{entry.key}"   process="@this"  >  
+                        <h:outputText value="#{searchBean.selectedInstitution}" rendered="#{entry.key == 'id:'}"  style="font-size: 10px;" /> 
+                        <h:outputText value="#{searchBean.selectedCollectionName}" rendered="#{entry.key == 'collectionId:'}"  style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'map:'}" style="font-size: 10px;" />  
+                        <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'isType:'}" style="font-size: 10px;" />  
+                        <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'inSweden:'}" style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithdna}" rendered="#{entry.key == 'dna:'}" style="font-size: 10px;" /> 
+                        <h:outputText value="#{msg.specimenswithimage}" rendered="#{entry.key == 'image:'}" style="font-size: 10px;" /> 
+                        
+                        <ui:remove>
+                          <h:outputText value="#{msg.coordinates}: #{query.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" />
+                        </ui:remove> 
+                        <p:spacer width="5"  /> 
+                        <p:commandLink actionListener="#{searchBean.removeFilter(entry.key, entry.value)}" 
+                                       title="#{entry.key}" process="@this" update=":resultsForm:result"   >  
                           <h:graphicImage library="images" name="icons/RemoveRecord16x16.png" 
                                           alt="#{msg.removequery}" title="#{msg.removequery}" styleClass="images" />
                         </p:commandLink>   
@@ -312,13 +309,14 @@
                     </ui:repeat> 
 
                     <h:panelGrid  columns="2"  >   
-                      <p:commandLink actionListener="#{searchBean.removeAllQueries}"   process="@this"  >  
+                      <p:commandLink actionListener="#{searchBean.removeAllQueries}"    
+                                     process="@this" update=":resultsForm:result"  >  
                         <h:outputText value="#{msg.removeAllQueries}" style="font-size: 10px;" />   
                       </p:commandLink> 
                       <p:spacer width="5"  /> 
                     </h:panelGrid>
                   </h:panelGrid> 
-
+                  </h:panelGrid> 
                 </h:panelGrid>  
 
 
