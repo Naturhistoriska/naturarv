@@ -17,8 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.primefaces.PrimeFaces;
-import se.nrm.dina.web.portal.model.CollectionData; 
+import org.primefaces.PrimeFaces; 
+import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
 import se.nrm.dina.web.portal.solr.SolrHelper;
@@ -34,11 +34,11 @@ import se.nrm.dina.web.portal.utils.CommonText;
 @Slf4j
 public class SearchBean implements Serializable {
 
-  private String freeText; 
+  private String freeText;
 
   private final FacesContext facesContext;
   private final HttpSession session;
-  private boolean isSwedish; 
+  private boolean isSwedish;
   private int totalResult;
   private int numDisplay;
   private String sortby;
@@ -46,24 +46,25 @@ public class SearchBean implements Serializable {
   private CollectionData selectedCollection;
   private String selectedInstitution;
   private final List<SolrData> selectedRecords;
-  private boolean isSimpleSearch; 
- 
-  
+  private boolean isSimpleSearch;
+
   private List<SolrData> resultList;
   private SolrResult result;
   private Map<String, String> queries;
 
   @Inject
-  private SolrService solr; 
+  private SolrService solr;
   @Inject
-  private Navigator navigator; 
+  private Navigator navigator;
   @Inject
-  private PagingNavigation paging; 
+  private PagingNavigation paging;
   @Inject
-  private ResultHeader resultHeader; 
+  private ResultHeader resultHeader;
   @Inject
   private StatisticBean statistic;
- 
+  @Inject
+  private GeoMap geo;
+   
   public SearchBean() {
     facesContext = FacesContext.getCurrentInstance();
     session = (HttpSession) facesContext.getExternalContext().getSession(false);
@@ -71,7 +72,7 @@ public class SearchBean implements Serializable {
     resultList = new ArrayList();
     selectedRecords = new ArrayList<>();
     queries = new HashMap();
-    selectedCollection = null; 
+    selectedCollection = null;
   }
 
   /**
@@ -81,7 +82,7 @@ public class SearchBean implements Serializable {
   public void init() {
     log.info("init");
 
-    isSwedish = ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");  
+    isSwedish = ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");
     clearData();
   }
 
@@ -96,119 +97,122 @@ public class SearchBean implements Serializable {
     statistic.resetData(CommonText.getInstance().getWildSearchText(), queries);
     setResult();
   }
-   
+
   /**
    * Search all the data has coordinates from solr
    */
   public void searchAllDataHasCoordinates() {
     log.info("searchAllDataHasCoordinates");
-    filterSearch(CommonText.getInstance().getMapKey(), String.valueOf(true)); 
+    filterSearch(CommonText.getInstance().getMapKey(), String.valueOf(true));
   }
-  
+
   /**
    * Search all the data has DNA sequences from solr
    */
   public void searchAllDataHasDNASequences() {
     log.info("searchAllDataHasDNASequences");
-    filterSearch(CommonText.getInstance().getDNAKey(), String.valueOf(true)); 
+    filterSearch(CommonText.getInstance().getDNAKey(), String.valueOf(true));
   }
-  
+
   /**
    * Search all the data has images from solr
    */
   public void searchAllDataHasImages() {
     log.info("searchAllDataHasImages");
-    filterSearch(CommonText.getInstance().getImageKey(), String.valueOf(true));  
+    filterSearch(CommonText.getInstance().getImageKey(), String.valueOf(true));
   }
-  
+
   /**
    * Search all the data are type specimens from solr
    */
   public void searchAllDataAreTypeSpecimems() {
     log.info("searchAllDataAreTypeSpecimems");
-    filterSearch(CommonText.getInstance().getTypeKey(), String.valueOf(true)); 
+    filterSearch(CommonText.getInstance().getTypeKey(), String.valueOf(true));
   }
-  
+
   /**
    * Search all the data are collected in Sweden from solr
    */
   public void searchAllDataCollectedInSweden() {
     log.info("searchAllDataCollectedInSweden");
-    filterSearch(CommonText.getInstance().getSwedenKey(), String.valueOf(true)); 
+    filterSearch(CommonText.getInstance().getSwedenKey(), String.valueOf(true));
   }
-  
+
   /**
    * Search data has coordinates with filters from solr
    */
   public void searchDataHasCoordinatesWithFilters() {
     log.info("searchDataHasCoordinatesWithFilters");
 
-    if (!queries.containsKey(CommonText.getInstance().getMapKey())) { 
+    if (!queries.containsKey(CommonText.getInstance().getMapKey())) {
       filterSearchWithQueries(CommonText.getInstance().getMapKey(), String.valueOf(true));
     }
   }
- 
+
   /**
    * Search data has dna sequences with filters from solr
    */
   public void searchDataHasDNASequencesWithFilters() {
     log.info("searchDataHasDNASequencesWithFilters");
-     
-    if (!queries.containsKey(CommonText.getInstance().getDNAKey())) { 
+
+    if (!queries.containsKey(CommonText.getInstance().getDNAKey())) {
       filterSearchWithQueries(CommonText.getInstance().getDNAKey(), String.valueOf(true));
-    } 
+    }
   }
-  
+
   /**
    * Search data are type specimens with filters from solr
    */
   public void searchDataAreTypeSpecimenaWithFilters() {
     log.info("searchDataAreTypeSpecimenaWithFilters");
 
-    if (!queries.containsKey(CommonText.getInstance().getTypeKey())) { 
+    if (!queries.containsKey(CommonText.getInstance().getTypeKey())) {
       filterSearchWithQueries(CommonText.getInstance().getTypeKey(), String.valueOf(true));
-    } 
+    }
   }
-  
+
   /**
    * Search data has images with filters from solr
    */
   public void searchDataHasImagesWithFilters() {
     log.info("searchDataHasImagesWithFilters");
 
-    if (!queries.containsKey(CommonText.getInstance().getImageKey())) { 
+    if (!queries.containsKey(CommonText.getInstance().getImageKey())) {
       filterSearchWithQueries(CommonText.getInstance().getImageKey(), String.valueOf(true));
-    } 
+    }
   }
-  
+
   /**
    * Search data collected in Sweden with filters from solr
    */
   public void searchDataCollectedInSwedenWithFilters() {
     log.info("searchDataCollectedInSwedenWithFilters");
 
-    if (!queries.containsKey(CommonText.getInstance().getSwedenKey())) { 
+    if (!queries.containsKey(CommonText.getInstance().getSwedenKey())) {
       filterSearchWithQueries(CommonText.getInstance().getSwedenKey(), String.valueOf(true));
-    } 
+    }
   }
-  
+
   /**
    * Search collection data filtered with collection code
-   * @param collection 
+   *
+   * @param collection
    */
   public void searchCollectionWithoutFilter(CollectionData collection) {
-    log.info("searchCollectionWithoutFilter: {}", collection.getCode()); 
-    filterSearch(CommonText.getInstance().getCollectionCodeKey(), collection.getCode()); 
+    log.info("searchCollectionWithoutFilter: {}", collection.getCode());
+    filterSearch(CommonText.getInstance().getCollectionCodeKey(), collection.getCode());
     this.selectedCollection = collection;
   }
 
-   /**
-   * Search collection data filtered with collection code and other applied filters
-   * @param collection 
+  /**
+   * Search collection data filtered with collection code and other applied
+   * filters
+   *
+   * @param collection
    */
   public void searchCollectionWithFilter(CollectionData collection) {
-    log.info("searchCollectionWithFilter: {}", collection.getCode()); 
-    filterSearchWithQueries(CommonText.getInstance().getCollectionCodeKey(), collection.getCode()); 
+    log.info("searchCollectionWithFilter: {}", collection.getCode());
+    filterSearchWithQueries(CommonText.getInstance().getCollectionCodeKey(), collection.getCode());
     this.selectedCollection = collection;
   }
 
@@ -236,7 +240,7 @@ public class SearchBean implements Serializable {
 
     String institutionCode = key.equals(CommonText.getInstance().getNrmName(isSwedish))
             ? CommonText.getInstance().getNrmCode() : CommonText.getInstance().getGnmCode();
-    filterSearch(CommonText.getInstance().getIdKey(), institutionCode + "*");
+    filterSearch(CommonText.getInstance().getIdKey(), institutionCode + CommonText.getInstance().getWildCard());
     selectedInstitution = key;
   }
 
@@ -245,27 +249,25 @@ public class SearchBean implements Serializable {
    */
   public void simpleSearch() {
     log.info("simpleSearch: {}", freeText);
-    
-    boolean isResultView = navigator.isResultView();  
-    if(!isResultView) {
+
+    boolean isResultView = navigator.isResultView();
+    if (!isResultView) {
       queries.clear();
     }
-    if (freeText != null && freeText.length() > 0) {
-      String searchText = SolrHelper.getInstance()
-                            .buildSearchText(CommonText.getInstance()
-                              .getTextKey(), freeText);
-      result = solr.simpleSearch(searchText, queries);
+    if (freeText != null && freeText.length() > 0) { 
+      String searchText = getBuildSearchText();
+      result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
       setResult();
       statistic.resetData(searchText, queries);
     }
   }
-  
+
   /**
    * Search next page data
    */
   public void nextPage() {
-    log.info("nextPage"); 
-    pagingSearch(paging.getEnd());  
+    log.info("nextPage");
+    pagingSearch(paging.getEnd());
     paging.setNextPage(numDisplay);
   }
 
@@ -273,7 +275,7 @@ public class SearchBean implements Serializable {
    * Search previous page data
    */
   public void previousPage() {
-    log.info("previousPage");  
+    log.info("previousPage");
     pagingSearch(paging.getStart() - numDisplay - 1);
     paging.setPreviousPage(numDisplay);
   }
@@ -282,7 +284,7 @@ public class SearchBean implements Serializable {
    * Search first page data
    */
   public void firstPage() {
-    log.info("firstPage"); 
+    log.info("firstPage");
     pagingSearch(0);
     paging.setFirstPage(numDisplay);
   }
@@ -294,37 +296,36 @@ public class SearchBean implements Serializable {
     log.info("lastPage");
 
     int totalPages = paging.getTotalPages();
-    int start = numDisplay * (totalPages - 1); 
+    int start = numDisplay * (totalPages - 1);
     pagingSearch(start);
     paging.setLastPage(numDisplay);
   }
 
   /**
    * Search selected page data
-   * 
-   * @param pageNumber 
+   *
+   * @param pageNumber
    */
   public void changePage(int pageNumber) {
-    log.info("changePage: {}", pageNumber); 
-    int start = (pageNumber - 1) * numDisplay; 
+    log.info("changePage: {}", pageNumber);
+    int start = (pageNumber - 1) * numDisplay;
     pagingSearch((pageNumber - 1) * numDisplay);
     paging.setPaging(start, numDisplay, pageNumber);
   }
 
-  
   /**
    * Search data when display number per page changed
    */
   public void changeNumDisplay() {
-    log.info("changeNumDisplay : {}", numDisplay); 
+    log.info("changeNumDisplay : {}", numDisplay);
     pagingSearch(0);
     paging.calculateTotalPages(result.getTotalFound(), numDisplay);
   }
-  
+
   /**
    * Display data details
-   * 
-   * @param data 
+   *
+   * @param data
    */
   public void showOneDetail(SolrData data) {
     log.info("showOneDetail: {}", data);
@@ -332,23 +333,23 @@ public class SearchBean implements Serializable {
     data.setSelected(true);
     selectedRecords.add(data);
     resultHeader.setSelectedView();
-  } 
-  
+  }
+
   /**
    * Remove one selected data from selected data list
-   * 
-   * @param data 
+   *
+   * @param data
    */
   public void removeone(SolrData data) {
     log.info("removeone: {}", data);
     data.setSelected(false);
     selectedRecords.remove(data);
-    
-    if(selectedRecords.isEmpty()) {
-      resultHeader.backToListView(); 
+
+    if (selectedRecords.isEmpty()) {
+      resultHeader.backToListView();
     }
   }
-  
+
   /**
    * Remove all the selected data
    */
@@ -356,26 +357,28 @@ public class SearchBean implements Serializable {
     log.info("removeAllSelectedRecords");
     selectedRecords.clear();
   }
-  
+
   /**
-   * 
+   *
    * @param key
-   * @param value 
+   * @param value
    */
   public void removeFilter(String key, String value) {
-    log.info("removeFilter: {} -- {}", key, value); 
+    log.info("removeFilter: {} -- {}", key, value);
     queries.remove(key);
-    
-    if(key.equals(CommonText.getInstance().getCollectionCodeKey())) {
+
+    if (key.equals(CommonText.getInstance().getCollectionCodeKey())) {
       selectedCollection = null;
     }
-    if(key.equals(CommonText.getInstance().getIdKey())) {
+    if (key.equals(CommonText.getInstance().getIdKey())) {
       selectedInstitution = null;
-    }
-   
-    statistic.resetData(SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText), queries);
+    } 
+    String searchText = getBuildSearchText();
+    result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
+    setResult();
+    statistic.resetData(searchText, queries);
   }
-  
+
   /**
    * Remove all filters
    */
@@ -384,57 +387,53 @@ public class SearchBean implements Serializable {
     queries.clear();
     selectedCollection = null;
     selectedInstitution = null;
-    statistic.resetData(SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText), queries);  
+    String searchText = getBuildSearchText();
+    result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
+    setResult();
+    statistic.resetData(searchText, queries);
   }
- 
-   
+  
+  
   /**
-   * Display images view
+   * Display map view
    */
-  public void showImages() {
-    log.info("showImages");
-      
-    resultHeader.imageView();
+  public void showMapView() {
+    log.info("showMapView");
+
+    geo.gotoMapView(statistic.getTotalMaps(), getBuildSearchText(), queries, solr);
+    resultHeader.mapView();
   }
+  
+  
+//
+//  /**
+//   * Display images view
+//   */
+//  public void showImages() {
+//    log.info("showImages");
+//
+//    resultHeader.imageView();
+//  }
+  
+  public String getSearchText() {
+    return getBuildSearchText();
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   public void openAdvanceSearch() {
     log.info("openAdvanceSearch");
     isSimpleSearch = false;
@@ -447,33 +446,6 @@ public class SearchBean implements Serializable {
     isSimpleSearch = true;
     updateView("searchForm:searchPanel");
   }
-
-
- 
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
-
- 
-
-
 
   public void selectOne(SolrData data) {
     log.info("selectOne: {}", data.isSelected());
@@ -522,15 +494,12 @@ public class SearchBean implements Serializable {
 //    exportDataSet = new ArrayList<>();
   }
 
-
-
   public String getDefaultText() {
 
     isSwedish = ((String) session.getAttribute("locale")).equals("sv");
     return CommonText.getInstance().getSearchDefaultText(isSwedish);
   }
 
- 
   public String getFreeText() {
     return freeText;
   }
@@ -559,10 +528,14 @@ public class SearchBean implements Serializable {
     return totalResult;
   }
 
-  public void setTotalResult(int totalResult) {
-    this.totalResult = totalResult;
-  }
-
+//  public void setTotalResult(int totalResult) {
+//    this.totalResult = totalResult;
+//  }
+  
+  
+  
+  
+  
   public boolean isIsSimpleSearch() {
     return isSimpleSearch;
   }
@@ -591,58 +564,41 @@ public class SearchBean implements Serializable {
     this.sortby = sortby;
   }
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   public List<SolrData> getSelectedRecords() {
     return selectedRecords;
   }
- 
+
   public String getSelectedCollectionName() {
     return selectedCollection == null ? "" : selectedCollection.getShortName();
   }
-  
+
   public String getSelectedInstitution() {
     return selectedInstitution;
   }
-  
-  private void pagingSearch(int start) {
-    String searchText = SolrHelper.getInstance()
-            .buildSearchText(CommonText.getInstance().getTextKey(), freeText); 
-    result = solr.searchWithFilter(searchText, queries, start, numDisplay);
+
+  private void pagingSearch(int start) { 
+    result = solr.searchWithFilter(getBuildSearchText(), queries, start, numDisplay);
     resultList = result.getSolrData();
   }
-  
+
   private void filterSearch(String key, String value) {
     log.info("filterSearch");
-    
+
     selectedCollection = null;
     selectedInstitution = null;
-    queries.clear(); 
+    queries.clear();
     freeText = null;
-    filterSearchWithQueries(key, value);  
+    filterSearchWithQueries(key, value);
   }
 
-  private void filterSearchWithQueries(String key, String value) {  
-    String searchText = SolrHelper.getInstance()
-            .buildSearchText(CommonText.getInstance().getTextKey(), freeText);
-    
-    queries.put(key, value); 
+  private void filterSearchWithQueries(String key, String value) {
+    String searchText = getBuildSearchText(); 
+    queries.put(key, value);
     result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
     setResult();
     statistic.resetData(searchText, queries);
   }
-   
+
   private void setResult() {
     if (result == null) {
       navigator.gotoNoResults();
@@ -650,22 +606,26 @@ public class SearchBean implements Serializable {
       resultList = result.getSolrData();
       totalResult = result.getTotalFound();
       paging.calculateTotalPages(totalResult, numDisplay);
-      
-      if(!navigator.isResultView()) {
+
+      if (!navigator.isResultView()) {
         navigator.gotoResults();
-      } 
-    } 
+      }
+    }
   }
-  
+    
+  public String getBuildSearchText() {
+    return SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText);
+  }
+
   /**
    * Update ui
-   * 
-   * @param viewId 
+   *
+   * @param viewId
    */
   private void updateView(String viewId) {
     PrimeFaces.current().ajax().update(viewId);
   }
-  
+
   /**
    * Clear data to initial state
    */
@@ -674,13 +634,12 @@ public class SearchBean implements Serializable {
     isSimpleSearch = true;
     numDisplay = 10;
     queries.clear();
-    selectedCollection = null; 
-    selectedInstitution = null; 
-    sortby = CommonText.getInstance().getSortByScore();  
+    selectedCollection = null;
+    selectedInstitution = null;
+    sortby = CommonText.getInstance().getSortByScore();
     result = null;
     resultList.clear();
     selectedRecords.clear();
-    totalResult = 0;
-    
-  }
+    totalResult = 0; 
+  } 
 }

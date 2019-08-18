@@ -5,25 +5,95 @@
       xmlns:h="http://java.sun.com/jsf/html"    >
 
   <body>
-    <ui:composition>   
-      <h:form id="detailForm" prependId="false">  
-        <h:panelGrid cellpadding="0" cellspacing="0"  >
-          <h:panelGrid id="lisdetailresult" cellpadding="0" cellspacing="0" >
- 
-map view
-           
-            
-           
-          </h:panelGrid> 
+    <ui:composition>    
+      <h:panelGrid id="mapPanel" style="main">    
+       
+        <p:gmap center="#{geo.centerLat},#{geo.centerLng}" 
+                type="ROADMAP" styleClass="largeMap" streetView="true" 
+                model="#{geo.model}" zoom="#{geo.zoom}" 
+                mapTypeControl="false" fitBounds="false"  />
+        
+         
+        
+         <ui:remove>
+        <p:gmap center="#{geoMap.centerLat},#{geoMap.centerLng}" zoom="#{geoMap.zoom}" 
+                type="ROADMAP"  id="largeMap"   mapTypeControl="false"   streetView="true"
+                fitBounds="false" 
+                model="#{geoMap.model}"  style="width:700px;height:400px"  widgetVar="myMap" >  
+
+          <p:ajax event="stateChange" listener="#{geoMap.onStateChange}" 
+                  update="colorpanel largeMap" partialSubmit="true"  />  
+
+          <p:ajax event="overlaySelect" listener="#{geoMap.onMarkerSelect}" 
+                  partialSubmit="true"  /> 
+
 
          
+          <p:gmapInfoWindow >  
+            <p:outputPanel  style="text-align:center;display:block;margin:auto; overflow: visible; width: 300px; " >   
+              <h:panelGrid columns="2" >
+                <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" />  
+                <h:outputText value="#{geoMap.taxon}" style=" font-size: 9px;" />  
+                <h:column />
+                <h:outputText value="#{geoMap.locality}"  style=" font-size: 9px;" />   
+                <h:column />
+                <h:outputText value="#{geoMap.coordinate}" style=" font-size: 9px;"  />  
+
+                <h:column />
+                <h:panelGrid columns="3" style="font-size: 9px; float: right;" rendered="#{geoMap.infoLink == 0}"> 
+                  <p:commandLink value="#{msg.showdetail}"  oncomplete="PF('detailDlg').show()"  
+                                 action="#{search.detail(geoMap.selectedRecord)}"     
+                                 update=":searchform:detailDlgPanel"   
+                                 style="font-size: 10px; float: right; text-decoration: underline;"/> 
+                  <p:spacer width="10" height="30" />
 
 
 
-        </h:panelGrid> 
+                  <p:commandLink value="#{msg.errorreport}"    process="@this"  global="false"
+                                 action="#{search.errorreportFromMap(geoMap.selectedRecord)}" 
+                                 update=":searchform:result :searchform:welcomepagepanel"
+                                 style="font-size: 10px; float: right; text-decoration: underline;" /> 
+                  <ui:remove>
+                    <p:commandLink value="#{msg.errorreport}" oncomplete="PF('dlg').show()" 
+                                   action="#{search.errorreportFromMap(geoMap.selectedRecord)}"     
+                                   update=":searchform:errorreportPanel"  
+                                   style="font-size: 10px; float: right; text-decoration: underline;"/> 
+                  </ui:remove>
 
+                </h:panelGrid> 
 
-      </h:form> 
+                <h:panelGrid style="font-size: 9px; float: right;" rendered="#{geoMap.infoLink == 1}"> 
+                  <p:commandLink value="#{msg.showdetail}"  
+                                 action="#{search.listMapData(geoMap.records)}"     
+                                 update=":searchform:result"   
+                                 style="font-size: 10px; float: right; text-decoration: underline;"/> 
+                </h:panelGrid>
+              </h:panelGrid> 
+            </p:outputPanel>   
+          </p:gmapInfoWindow>  
+             
+        </p:gmap>      
+        <h:panelGrid  id="colorpanel"  >
+          <h:panelGrid  style="border: solid 1px #A9A9A9;"  rendered="#{geoMap.colors.size() > 0}" >
+            <h:outputText value="Density"   />
+            <hr />
+            <h:panelGroup layout="block"> 
+              <h:outputText value="#{geoMap.min} " />   
+
+              <ui:repeat value="#{geoMap.colors}" var="color">   
+                <p:spacer width="5" height="5" />
+                <p:spacer width="12" height="10" style="background-color: #{color};" /> 
+              </ui:repeat>
+              <p:spacer width="5" height="5" /> 
+              <h:outputText value="#{geoMap.max}"   />
+            </h:panelGroup>
+
+          </h:panelGrid>
+        </h:panelGrid>
+
+</ui:remove>
+
+      </h:panelGrid>
     </ui:composition>
   </body>
 </html>

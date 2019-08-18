@@ -40,13 +40,13 @@
                         <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
                       </p:commandLink> 
 
-                      <p:commandLink actionListener="#{searchBean.showImages()}" process="@this" 
+                      <p:commandLink actionListener="#{resultHeader.imageView()}" process="@this" 
                                      rendered="#{resultHeader.resultView != 'image'}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
                       </p:commandLink>  
 
-                      <p:commandLink actionListener="#{resultHeader.mapView()}" process="@this" 
+                      <p:commandLink actionListener="#{searchBean.showMapView()}" process="@this" 
                                      rendered="#{resultHeader.resultView != 'map'}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  

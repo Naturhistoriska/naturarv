@@ -23,17 +23,19 @@ public class InitialProperties implements Serializable {
  
   private String solrPath;
   private String morphbankThumbPath;
+  private String mapKey;
 
   public InitialProperties() {
   }
 
   @Inject
   public InitialProperties(@ConfigurationValue("swarm.solr.path") String solrPath,
-                           @ConfigurationValue("swarm.morphbank.thumns") String morphbankThumbPath ) { 
+                           @ConfigurationValue("swarm.morphbank.thumns") String morphbankThumbPath,
+                           @ConfigurationValue("swarm.map.key") String mapKey) { 
     this.solrPath = solrPath;
     this.morphbankThumbPath = morphbankThumbPath;
-            
-    log.info("test injection : {} ", morphbankThumbPath);
+    this.mapKey = mapKey; 
+    log.info("test injection : {} ", mapKey);
   }
   
   public String getSolrPath() {
@@ -49,5 +51,12 @@ public class InitialProperties implements Serializable {
       throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
     }
     return morphbankThumbPath;
+  }
+  
+  public String getMapKey() {
+    if (mapKey == null) {
+      throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+    }
+    return mapKey;
   }
 } 
