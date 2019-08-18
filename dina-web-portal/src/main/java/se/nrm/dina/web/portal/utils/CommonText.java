@@ -56,8 +56,16 @@ public class CommonText {
   private static final String COLLECTION_NAME_KEY = "collectionName:";
   private static final String ID_KEY = "id:";
   
+  private static final String IMAGE_VIEW_KEY = "morphBankView:";
   private static final String TEXT_KEY = "text";
+  private static final String GEOPOINT_KEY = "geopoint";
   
+  private static final String ID = "id";
+  private static final String COLLECTION_NAME = "collectionName";
+  private static final String COLLECTION_ID = "collectionId";
+  private static final String CATALOGED_YEAR = "catalogedYear";
+  private static final String TAXON_FULL_NAME = "txFullName";
+  private static final String LOCATIONS = "locations";
 
   private static CommonText instance = null;
 
@@ -66,6 +74,26 @@ public class CommonText {
       instance = new CommonText();
     }
     return instance;
+  }
+  
+  public String getId() {
+    return ID;
+  }
+  
+  public String getTaxonFullName() {
+    return TAXON_FULL_NAME;
+  }
+  
+  public String getCollectionId() {
+    return COLLECTION_ID;
+  }
+  
+  public String getLocations() {
+    return LOCATIONS;
+  }
+  
+  public String getCatalogedYear() {
+    return CATALOGED_YEAR;
   }
   
   public String getNrmCode() {
@@ -98,6 +126,18 @@ public class CommonText {
   
   public String getTextKey() {
     return TEXT_KEY;
+  }
+  
+  public String getGeopointKey() {
+    return GEOPOINT_KEY;
+  }
+  
+  public String getCollectionName() {
+    return COLLECTION_NAME;
+  }
+  
+  public String getImageViewKey() {
+    return IMAGE_VIEW_KEY;
   }
 
   public String getMapKey() {
