@@ -344,8 +344,11 @@ body * {
 
 
 
-
-
+/*map view*/
+.largeMap {
+  width:700px; 
+  height:400px
+}
 
 .ui-inputgroup {
   display: -webkit-box;
