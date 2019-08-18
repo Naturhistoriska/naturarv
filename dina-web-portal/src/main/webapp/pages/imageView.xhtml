@@ -5,20 +5,19 @@
       xmlns:h="http://java.sun.com/jsf/html"    >
 
   <body>
-    <ui:composition>       
-     
+    <ui:composition>        
       <h:panelGrid id="imagePanel" styleClass="imagePanel" columns="2" >   
         <h:panelGrid width="200">  
           <h:outputText value="#{msg.imagefilter}"  styleClass="imageViewPanel" /> 
           <p:panel header="#{msg.selectview}" id="selectViewPanel" >   
             <h:selectManyCheckbox value="#{galleria.viewList}" layout="pageDirection" >
               <f:selectItem itemValue="all" itemLabel="#{msg.all}" />
-              <f:selectItem itemValue="label" itemLabel="#{msg.label}" />
-              <f:selectItem itemValue="dorsal" itemLabel="#{msg.dorsal}" />
-              <f:selectItem itemValue="ventral" itemLabel="#{msg.ventral}" />
-              <f:selectItem itemValue="lateral" itemLabel="#{msg.lateral}" />
-              <f:selectItem itemValue="frontal" itemLabel="#{msg.frontal}" />
-              <f:selectItem itemValue="caudal" itemLabel="#{msg.caudal}" />
+              <f:selectItem itemValue="Label" itemLabel="#{msg.label}" />
+              <f:selectItem itemValue="Dorsal" itemLabel="#{msg.dorsal}" />
+              <f:selectItem itemValue="Ventral" itemLabel="#{msg.ventral}" />
+              <f:selectItem itemValue="Lateral" itemLabel="#{msg.lateral}" />
+              <f:selectItem itemValue="Frontal" itemLabel="#{msg.frontal}" />
+              <f:selectItem itemValue="Caudal" itemLabel="#{msg.caudal}" />
 
               <f:ajax render="imagePanel" listener="#{galleria.selectViews}" event="change" execute="@this" /> 
             </h:selectManyCheckbox> 
@@ -27,23 +26,23 @@
           <p:panel header="#{msg.selectpart}" id="selectPartPanel" >  
             <h:selectManyCheckbox value="#{galleria.partsList}" layout="pageDirection" >
               <f:selectItem itemValue="all" itemLabel="#{msg.all}"  />  
-              <f:selectItem itemValue="abdomen" itemLabel="#{msg.abdomen}" />  
-              <f:selectItem itemValue="face"  itemLabel="#{msg.face}"/>   
-              <f:selectItem itemValue="genitalia" itemLabel="#{msg.genitalia}" />  
-              <f:selectItem itemValue="wings"  itemLabel="#{msg.wings}"/>  
-              <f:selectItem itemValue="head" itemLabel="#{msg.head}" />  
-              <f:selectItem itemValue="legs"  itemLabel="#{msg.legs}"/>  
-              <f:selectItem itemValue="lobe" itemLabel="#{msg.lobe}" />  
-              <f:selectItem itemValue="pronotum"  itemLabel="#{msg.pronotum}"/>  
-              <f:selectItem itemValue="vari" itemLabel="#{msg.vari}" />  
-              <f:selectItem itemValue="mesonotum"  itemLabel="#{msg.mesonotum}"/>  
-              <f:selectItem itemValue="posterior" itemLabel="#{msg.posterior}" />  
-              <f:selectItem itemValue="palps"  itemLabel="#{msg.palps}"/>  
-              <f:selectItem itemValue="tarsi" itemLabel="#{msg.tarsi}" />  
-              <f:selectItem itemValue="labrum"  itemLabel="#{msg.labrum}"/>  
-              <f:selectItem itemValue="/notum/" itemLabel="#{msg.notum}" />  
-              <f:selectItem itemValue="mouth"  itemLabel="#{msg.mouth}"/>  
-              <f:selectItem itemValue="chelicerae" itemLabel="#{msg.chelicerae}" />   
+              <f:selectItem itemValue="Abdomen" itemLabel="#{msg.abdomen}" />  
+              <f:selectItem itemValue="Face"  itemLabel="#{msg.face}"/>   
+              <f:selectItem itemValue="Genitalia" itemLabel="#{msg.genitalia}" />  
+              <f:selectItem itemValue="Wings"  itemLabel="#{msg.wings}"/>  
+              <f:selectItem itemValue="Head" itemLabel="#{msg.head}" />  
+              <f:selectItem itemValue="Legs"  itemLabel="#{msg.legs}"/>  
+              <f:selectItem itemValue="Lobe" itemLabel="#{msg.lobe}" />  
+              <f:selectItem itemValue="Pronotum"  itemLabel="#{msg.pronotum}"/>  
+              <f:selectItem itemValue="Vari" itemLabel="#{msg.vari}" />  
+              <f:selectItem itemValue="Mesonotum"  itemLabel="#{msg.mesonotum}"/>  
+              <f:selectItem itemValue="Posterior" itemLabel="#{msg.posterior}" />  
+              <f:selectItem itemValue="Palps"  itemLabel="#{msg.palps}"/>  
+              <f:selectItem itemValue="Tarsi" itemLabel="#{msg.tarsi}" />  
+              <f:selectItem itemValue="Labrum"  itemLabel="#{msg.labrum}"/>  
+              <f:selectItem itemValue="Notum" itemLabel="#{msg.notum}" />  
+              <f:selectItem itemValue="Mouth"  itemLabel="#{msg.mouth}"/>  
+              <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />   
 
               <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="imagePanel" />   
             </h:selectManyCheckbox> 

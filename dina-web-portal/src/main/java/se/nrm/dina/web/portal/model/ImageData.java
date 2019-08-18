@@ -21,12 +21,12 @@ public class ImageData {
   @Field
   public String morphbankId;   
   @Field
-  public String[] morphbankImageId;   
+  public String[] morphbankImageId;    
   @Field
   public String txFullName;  
   @Field
-  private String morphBankView; 
-  
+  public String[] morphBankView; 
+   
   public ImageData() {
     
   }
@@ -62,9 +62,7 @@ public class ImageData {
   public void setMorphbankImageId(String[] morphbankImageId) {
     this.morphbankImageId = morphbankImageId;
   }
-  
-  
-
+   
   public String getTxFullName() {
     return txFullName;
   }
@@ -73,11 +71,11 @@ public class ImageData {
     this.txFullName = txFullName;
   }
 
-  public String getMorphBankView() {
+  public String[] getMorphBankView() {
     return morphBankView;
   }
 
-  public void setMorphBankView(String morphBankView) {
+  public void setMorphBankView(String[] morphBankView) {
     this.morphBankView = morphBankView;
   }
   
