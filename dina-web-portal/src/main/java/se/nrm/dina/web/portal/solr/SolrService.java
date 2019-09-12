@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -25,23 +25,23 @@ import org.apache.solr.client.solrj.request.json.HeatmapFacetMap;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.RangeFacetMap;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
 import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
 import org.apache.solr.client.solrj.response.json.HeatmapJsonFacet;
 import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
 import org.apache.solr.common.SolrDocumentList;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.CollectionData;
+import se.nrm.dina.web.portal.model.GeoData;
 import se.nrm.dina.web.portal.model.HeatmapData;
-import se.nrm.dina.web.portal.model.ImageData;
-import se.nrm.dina.web.portal.model.ImageModel; 
-import se.nrm.dina.web.portal.model.MapData;
+import se.nrm.dina.web.portal.model.ImageModel;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
 import se.nrm.dina.web.portal.model.StatisticData;
 import se.nrm.dina.web.portal.utils.CommonText;
+import se.nrm.dina.web.portal.utils.HelpClass;
 
 /**
  *
@@ -60,46 +60,42 @@ public class SolrService implements Serializable {
 //  private StringBuilder imageViewSB;
 //  private SolrResult result;
   @Inject
+  private InitialProperties properties;
+
+  @Inject
   @Solr
   private SolrClient client;
 
   public SolrService() {
   }
 
-  public HeatmapData searchHeatmapWithFilter(String text, Map<String, String> filters, 
-                        String regionQueryText, int gridLevel) {
+  public HeatmapData searchHeatmapWithFilter(String text, Map<String, String> filters,
+          String regionQueryText, int gridLevel) {
+    log.info("searchHeatmapWithFilter: {} -- {}", regionQueryText, gridLevel);
 
-    log.info("searchHeatmapWithFilter: {} -- {}", text, regionQueryText);
-    log.info("searchHeatmapWithFilter:filters:  {}", filters);
-    
-  
     final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery(text) 
+            .setQuery(text)
             .setLimit(0)
-//            .returnFields("collectionName")
-//            .withStatFacet(text, text)
-            .withFacet(CommonText.getInstance().getLocations(), 
-                    new HeatmapFacetMap(CommonText.getInstance().getGeopointKey())
-                      .setHeatmapFormat(HeatmapFacetMap.HeatmapFormat.INTS2D) 
-                      .setRegionQuery(regionQueryText)
-                      .setGridLevel(gridLevel));
+            .withFilter(CommonText.getInstance().getGeoKey() + regionQueryText)
+            .withFacet(CommonText.getInstance().getLocations(),
+                    new HeatmapFacetMap(CommonText.getInstance().getGeopoint())
+                            .setHeatmapFormat(HeatmapFacetMap.HeatmapFormat.INTS2D)
+                            .setRegionQuery(regionQueryText)
+                            .setGridLevel(gridLevel));
 
-    if (!filters.containsKey(CommonText.getInstance().getMapKey())) {
-      filters.put(CommonText.getInstance().getMapKey(), "*");
-    }
     filters.entrySet().stream().forEach(e -> {
       request.withFilter(e.getKey() + e.getValue());
     });
 
+    if (!filters.containsKey(CommonText.getInstance().getMapKey())) {
+      request.withFilter(CommonText.getInstance().getMapKey() + String.valueOf(true));
+    }
+
     try {
       response = request.process(client);
-      log.info("json: {}", response.jsonStr());
-//      List<MapData> mapData = response.getBeans(MapData.class);
-//      log.info("mapData: {}", mapData);
+//      log.info("json: {}", response.jsonStr()); 
       int numFound = (int) response.getResults().getNumFound();
-
-      log.info("total: {}", numFound);
-
+      log.info("numFound: {}", numFound);
       NestableJsonFacet facet = response.getJsonFacetingResponse();
       HeatmapJsonFacet heatmapFacet = facet.getHeatmapFacetByName("locations");
 
@@ -112,12 +108,83 @@ public class SolrService implements Serializable {
         double minY = heatmapFacet.getMinY();
         double maxY = heatmapFacet.getMaxY();
 
-        log.info("x - y : {} -- {}", minX + " -- " + maxX, minY + " -- " + maxY);
         return new HeatmapData(numFound, rows, columns, minX, maxX, minY, maxY, list);
       }
 
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
+    }
+    return null;
+  }
+
+  public List<GeoData> searchSmallDataSet(String searchText, Map<String, String> filters, String regionText) {
+    log.info("searchSmallDataSet: {} -- {}", filters, regionText);
+    List<GeoData> list = new ArrayList<>();
+
+    final TermsFacetMap coordinateFacet = new TermsFacetMap(CommonText.getInstance().getCoordinate()).setLimit(500);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFilter(CommonText.getInstance().getGeoKey() + regionText)
+            .withFacet(CommonText.getInstance().getCoordinate(), coordinateFacet);
+    filters.entrySet().stream().forEach(e -> {
+      request.withFilter(e.getKey() + e.getValue());
+    });
+
+    if (!filters.containsKey(CommonText.getInstance().getMapKey())) {
+      request.withFilter(CommonText.getInstance().getMapKey() + String.valueOf(true));
+    }
+
+    try {
+      response = request.process(client);
+      BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
+              .getBucketBasedFacets(CommonText.getInstance().getCoordinate());
+
+      if (bucket != null) {
+        bucket.getBuckets().stream()
+                .forEach(b -> {
+                  int total = (int) b.getCount();
+                  String value = (String) b.getVal();
+                  List<SolrData> solrDataList = searchByCoordinate(searchText, filters, value);
+                  if (total == 1) {
+                    list.add(new GeoData(total, solrDataList.get(0)));
+                  } else {
+                    list.add(new GeoData(total, solrDataList));
+                  }
+                });
+      }
+      return list;
+    } catch (SolrServerException | IOException ex) {
+      log.warn(ex.getMessage());
+    }
+    return null;
+  }
+
+  private List<SolrData> searchByCoordinate(String text, Map<String, String> filters, String coordinate) {
+
+    query = new SolrQuery();
+    query.setQuery(text);
+    query.addFilterQuery(CommonText.getInstance().getCoordinateKey() + coordinate);
+    addSearchFilters(filters);
+    query.setRows(5000);
+    try {
+      return client.query(query).getBeans(SolrData.class);
+    } catch (SolrServerException | IOException ex) {
+      log.warn(ex.getMessage());
+    }
+    return null;
+  }
+
+  public List<SolrData> searchSpatialData(String text, Map<String, String> filters, String regionQueryText) {
+    try {
+      query = new SolrQuery();
+      query.setQuery(text);
+      query.addFilterQuery("geo:" + regionQueryText);
+      addSearchFilters(filters);
+      query.setRows(10);
+
+      return client.query(query).getBeans(SolrData.class);
+    } catch (SolrServerException | IOException ex) {
+      log.warn(ex.getMessage());
     }
     return null;
   }
@@ -143,11 +210,13 @@ public class SolrService implements Serializable {
     }
   }
 
-  public int getImageTotalCount(String searchText, Map<String, String> filters) {
+  public int getImageTotalCount(String searchText, Map<String, String> filters, List<String> filterList) {
     log.info("getImageTotalCount: {}", searchText);
 
     query = new SolrQuery();
-    query.setQuery(searchText);
+
+    String selectedImageViewSearchText = SolrHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+    query.setQuery(selectedImageViewSearchText);
     query.addFilterQuery(CommonText.getInstance().getImageKey() + String.valueOf(true));
 
     addSearchFilters(filters);
@@ -157,24 +226,25 @@ public class SolrService implements Serializable {
       log.error(ex.getMessage());
     }
     int totalCount = (int) response.getResults().getNumFound();
-
-    log.info("totalCount: {}", totalCount);
     return totalCount;
   }
 
   public List<ImageModel> getImageList(String searchText, int start, int numPerPage,
           Map<String, String> filters, List<String> filterList) {
-    log.info("getImageList: {}", start);
+    log.info("getImageList: {} -- {}", start, filterList);
+
+    String imageThumbPath = properties.getMorphbankThumbPath();
     query = new SolrQuery();
-    query.setQuery(searchText)
-            .addField("morphbankId")
-            .addField("morphBankView")
-            .addField("morphbankImageId")
-            .addField("txFullName")
-            .addField("catalogNumber")
-            .addField("collectionId")
-            .setStart(start)
-            .setRows(numPerPage);
+
+    String selectedImageViewSearchText = SolrHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+    log.info("imageView SearchTexgt: {}", selectedImageViewSearchText);
+    query.setQuery(selectedImageViewSearchText)
+            .addField(CommonText.getInstance().getMorphbankId())
+            .addField(CommonText.getInstance().getImageView())
+            .addField(CommonText.getInstance().getTaxonFullName())
+            .addField(CommonText.getInstance().getCatalogNumber())
+            .addField(CommonText.getInstance().getCollectionId())
+            .setStart(start);
 
     query.addFilterQuery(CommonText.getInstance().getImageKey() + String.valueOf(true));
     addSearchFilters(filters);
@@ -184,50 +254,19 @@ public class SolrService implements Serializable {
       client.query(query).getResults()
               .stream()
               .forEach(d -> {
-                ((List<String>) d.getFieldValue("morphBankView")).stream()
+                ((List<String>) d.getFieldValue(CommonText.getInstance().getImageView())).stream()
                         .forEach(v -> {
                           String imageId = StringUtils.split(v, "/")[0];
                           String view = StringUtils.substringAfter(v, "/");
-
-                          if (filterList != null && !filterList.isEmpty()) {
-                            boolean isMatch = filterList.stream()
-                                    .anyMatch(f -> v.contains(f));
-                            if (isMatch) {
-                              images.add(new ImageModel((String) d.getFieldValue("catalogNumber"),
-                                      (String) d.getFieldValue("collectionId"),
-                                      (String) d.getFieldValue("morphbankId"),
-                                      imageId,
-                                      (String) d.getFieldValue("txFullName"),
-                                      view));
-                            }
-                          } else {
-                            images.add(new ImageModel((String) d.getFieldValue("catalogNumber"),
-                                    (String) d.getFieldValue("collectionId"),
-                                    (String) d.getFieldValue("morphbankId"),
-                                    imageId,
-                                    (String) d.getFieldValue("txFullName"),
-                                    view));
+                          if (isMatchFilter(v, filterList)) {
+                            images.add(new ImageModel((String) d.getFieldValue(CommonText.getInstance().getCatalogNumber()),
+                                    (String) d.getFieldValue(CommonText.getInstance().getCollectionId()),
+                                    (String) d.getFieldValue(CommonText.getInstance().getMorphbankId()),
+                                    HelpClass.getInstance().buildImagePath(imageId, CommonText.getInstance().getImageTypeThumb(), imageThumbPath),
+                                    (String) d.getFieldValue(CommonText.getInstance().getTaxonFullName()), view));
                           }
                         });
               });
-
-//    client.query(query).getResults()
-//              .stream()
-//              .forEach(d -> {  
-//                ((List<String>) d.getFieldValue("morphBankView")).stream()
-//                        .filter(v -> filterList.stream()
-//                                .anyMatch(f -> StringUtils.containsIgnoreCase(v, f)))
-//                        .forEach(v -> { 
-//                          String imageId = StringUtils.split(v, "/")[0];
-//                          String view = StringUtils.substringAfter(v, "/");
-//                          images.add(new ImageModel((String) d.getFieldValue("catalogNumber"),
-//                                            (String) d.getFieldValue("collectionId"),
-//                                            (String) d.getFieldValue("morphbankId"),
-//                                            imageId,
-//                                            (String) d.getFieldValue("txFullName"),
-//                                            view));
-//                        });
-//              }); 
       return images;
     } catch (IOException | SolrServerException ex) {
       log.error(ex.getMessage());
@@ -235,40 +274,30 @@ public class SolrService implements Serializable {
     }
   }
 
-  public List<List<ImageData>> searchImages(String searchText, Map<String, String> filterMap, int start) {
-
-    query = new SolrQuery();
-    query.setQuery(searchText)
-            .addField("morphbankId")
-            .addField("morphBankView")
-            .addField("txFullName")
-            .addField("catalogNumber")
-            .addField("collectionId");
-
-    addSearchFilters(filterMap);                        // add search query into solr 
-
-    query.setRows(MB_IMG_FATCH_SIZE);
-    try {
-      response = client.query(query);
-      return createSubList(response.getBeans(ImageData.class));
-    } catch (IOException | SolrServerException ex) {
-      log.error(ex.getMessage());
+  private boolean isMatchFilter(String imageView, List<String> filters) {
+    if (filters == null || filters.isEmpty()) {
+      return true;
     }
-    return null;
+    return filters.stream().anyMatch(v -> imageView.contains(v));
   }
 
-  private List<List<ImageData>> createSubList(List<ImageData> imgList) {
-
-    List<List<ImageData>> mbids = new ArrayList<>();
-
-    final int sizeOfList = imgList.size();
-    final int breakApart = 15;
-    for (int i = 0; i < sizeOfList; i += breakApart) {
-      mbids.add(new ArrayList<>(
-              imgList.subList(i, Math.min(sizeOfList, i + breakApart)))
-      );
+  public SolrData getImagesByMorphbankId(String morphbankId) {
+    String morphbankImagePath = properties.getMorphbankThumbPath();
+    query = new SolrQuery();
+    query.setQuery(CommonText.getInstance().getMorphbankIdKey() + morphbankId);
+    try {
+      response = client.query(query);
+      List<SolrData> data = response.getBeans(SolrData.class);
+      if (data != null && !data.isEmpty()) {
+        SolrData solrData = data.get(0);
+        solrData.setImages(morphbankImagePath);
+        return solrData;
+      }
+      return null;
+    } catch (IOException | SolrServerException ex) {
+      log.error(ex.getMessage());
+      return null;
     }
-    return mbids;
   }
 
   public Map<String, Map<String, Integer>> getCollectionsMonthChartData(LocalDateTime startDate) {
@@ -276,36 +305,35 @@ public class SolrService implements Serializable {
 
     Map<String, Map<String, Integer>> collectionMonthsDataMap = new HashMap<>();
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("catalogedDate:[");
-    sb.append(startDate);
-    sb.append(":00Z TO *]");
+    final TermsFacetMap collectionNameFacet = new TermsFacetMap(
+            CommonText.getInstance().getCollectionName()).setLimit(20);
+    final TermsFacetMap catalogedMonthFacet = new TermsFacetMap(
+            CommonText.getInstance().getCatalogedMonthString()).setLimit(20);
 
-    final TermsFacetMap collectionNameFacet = new TermsFacetMap("collectionName").setLimit(20);
-    final TermsFacetMap catalogedMonthFacet = new TermsFacetMap("catalogedMonthString").setLimit(20);
-
-    collectionNameFacet.withSubFacet("catalogedMonth", catalogedMonthFacet);
+    collectionNameFacet.withSubFacet(CommonText.getInstance().getCatalogedMonth(), catalogedMonthFacet);
     final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery(sb.toString())
-            .returnFields("collectionName")
-            .withFacet("collectionName", collectionNameFacet);
+            .setQuery(SolrHelper.getInstance().buildSearchCatalogedDateText(startDate))
+            .returnFields(CommonText.getInstance().getCollectionName())
+            .withFacet(CommonText.getInstance().getCollectionName(), collectionNameFacet);
 
     try {
       response = request.process(client);
       NestableJsonFacet facet = response.getJsonFacetingResponse();
-      facet.getBucketBasedFacets("collectionName")
-              .getBuckets()
-              .stream()
-              .forEach(b -> {
-                Map<String, Integer> subMap
-                        = b.getBucketBasedFacets("catalogedMonth")
-                                .getBuckets()
-                                .stream()
-                                .collect(Collectors.toMap(
-                                        sub -> (String) sub.getVal(),
-                                        sub -> (int) sub.getCount()));
-                collectionMonthsDataMap.put((String) b.getVal(), subMap);
-              });
+      BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName());
+      if (bucket != null) {
+        bucket.getBuckets()
+                .stream()
+                .forEach(b -> {
+                  Map<String, Integer> subMap
+                          = b.getBucketBasedFacets(CommonText.getInstance().getCatalogedMonth())
+                                  .getBuckets()
+                                  .stream()
+                                  .collect(Collectors.toMap(
+                                          sub -> (String) sub.getVal(),
+                                          sub -> (int) sub.getCount()));
+                  collectionMonthsDataMap.put((String) b.getVal(), subMap);
+                });
+      }
 
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
@@ -314,7 +342,6 @@ public class SolrService implements Serializable {
   }
 
   public Map<String, Map<String, Integer>> getCollectionsYearData(int startYear, int endYear) {
-
     log.info("getCollectionsYearData : {} -- {}", startYear, endYear);
 
     Map<String, Map<String, Integer>> collectionYearsDataMap = new HashMap<>();
@@ -333,26 +360,29 @@ public class SolrService implements Serializable {
 //      log.info("json: {}", response.jsonStr());
 
       NestableJsonFacet facet = response.getJsonFacetingResponse();
-      facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName())
-              .getBuckets()
-              .forEach(b -> {
-                int collectionTotal = (int) b.getCount();
+      BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName());
+      if (bucket != null) {
+        bucket.getBuckets()
+                .forEach(b -> {
+                  int collectionTotal = (int) b.getCount();
 
-                List<BucketJsonFacet> buckets = b.getBucketBasedFacets(
-                        CommonText.getInstance().getCatalogedYear()).getBuckets();
-                int sum = buckets.stream().mapToInt(sub -> (int) sub.getCount()).sum();
+                  List<BucketJsonFacet> buckets = b.getBucketBasedFacets(
+                          CommonText.getInstance().getCatalogedYear()).getBuckets();
+                  int sum = buckets.stream().mapToInt(sub -> (int) sub.getCount()).sum();
 
-                collectionCumulateValue = collectionTotal - sum;
+                  collectionCumulateValue = collectionTotal - sum;
 
-                Map<String, Integer> subMap = new LinkedHashMap<>();
-                IntStream.range(0, buckets.size())
-                        .forEach(i -> {
-                          int yearTotal = (int) buckets.get(i).getCount();
-                          collectionCumulateValue += yearTotal;
-                          subMap.put(String.valueOf(buckets.get(i).getVal()), collectionCumulateValue);
-                        });
-                collectionYearsDataMap.put((String) b.getVal(), subMap);
-              });
+                  Map<String, Integer> subMap = new LinkedHashMap<>();
+                  IntStream.range(0, buckets.size())
+                          .forEach(i -> {
+                            int yearTotal = (int) buckets.get(i).getCount();
+                            collectionCumulateValue += yearTotal;
+                            subMap.put(String.valueOf(buckets.get(i).getVal()), collectionCumulateValue);
+                          });
+                  collectionYearsDataMap.put((String) b.getVal(), subMap);
+                });
+      }
+
     } catch (SolrServerException | IOException ex) {
     }
     return collectionYearsDataMap;
@@ -373,21 +403,24 @@ public class SolrService implements Serializable {
       response = request.process(client);
       NestableJsonFacet facet = response.getJsonFacetingResponse();
       int total = (int) facet.getCount();
-      List<BucketJsonFacet> buckets = facet.getBucketBasedFacets(
-              CommonText.getInstance().getCatalogedYear()).getBuckets();
 
-      int sum = buckets.stream()
-              .mapToInt(b -> (int) b.getCount())
-              .sum();
+      BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(
+              CommonText.getInstance().getCatalogedYear());
 
-      cumulateValue = total - sum;
+      if (bucket != null) {
+        List<BucketJsonFacet> buckets = bucket.getBuckets();
+        int sum = buckets.stream()
+                .mapToInt(b -> (int) b.getCount())
+                .sum();
 
-      IntStream.range(0, buckets.size())
-              .forEach(i -> {
-                int yearTotal = (int) buckets.get(i).getCount();
-                cumulateValue += yearTotal;
-                resultMap.put(String.valueOf(buckets.get(i).getVal()), cumulateValue);
-              });
+        cumulateValue = total - sum;
+        IntStream.range(0, buckets.size())
+                .forEach(i -> {
+                  int yearTotal = (int) buckets.get(i).getCount();
+                  cumulateValue += yearTotal;
+                  resultMap.put(String.valueOf(buckets.get(i).getVal()), cumulateValue);
+                });
+      }
 
     } catch (SolrServerException | IOException ex) {
       log.warn(ex.getMessage());
@@ -398,33 +431,30 @@ public class SolrService implements Serializable {
   public Map<String, Integer> getLastYearRegistedData(LocalDateTime startDate) {
     log.info("getLastYearRegistedData : {}", startDate);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("catalogedDate:[");
-    sb.append(startDate);
-    sb.append(":00Z TO *]");
-
-    final TermsFacetMap catalogedMonthFacet = new TermsFacetMap("catalogedMonthString").setLimit(20);
+    final TermsFacetMap catalogedMonthFacet = new TermsFacetMap(
+            CommonText.getInstance().getCatalogedMonthString()).setLimit(20);
     final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery(sb.toString())
+            .setQuery(SolrHelper.getInstance().buildSearchCatalogedDateText(startDate))
             .returnFields(CommonText.getInstance().getCollectionName())
-            .withFacet("catalogedMonth", catalogedMonthFacet);
+            .withFacet(CommonText.getInstance().getCatalogedMonth(), catalogedMonthFacet);
 
     try {
       response = request.process(client);
       NestableJsonFacet facet = response.getJsonFacetingResponse();
 
-      return facet.getBucketBasedFacets("catalogedMonth")
-              .getBuckets()
-              .stream()
-              .collect(Collectors.toMap(
-                      b -> (String) b.getVal(),
-                      b -> (int) b.getCount()));
+      BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCatalogedMonth());
+      return bucket != null
+              ? bucket.getBuckets()
+                      .stream()
+                      .collect(Collectors.toMap(
+                              b -> (String) b.getVal(),
+                              b -> (int) b.getCount())) : null;
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
     }
     return null;
   }
-
+ 
   public StatisticData getStatisticData(String text, Map<String, String> filters) {
     log.info("getStatisticData: {} -- {}", text, filters);
     List<CollectionData> collections = new ArrayList<>();
@@ -467,21 +497,23 @@ public class SolrService implements Serializable {
       int totalInSweden = getBucketsTotal(facet.getBucketBasedFacets("sweden"));
       int totalType = getBucketsTotal(facet.getBucketBasedFacets("type"));
 
-      facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName())
-              .getBuckets()
-              .stream()
-              .forEach(b -> {
-                b.getBucketBasedFacets(CommonText.getInstance().getCollectionId())
-                        .getBuckets()
-                        .stream()
-                        .forEach(sb -> {
-                          collections.add(new CollectionData(
-                                  String.valueOf(sb.getVal()),
-                                  String.valueOf(b.getVal()),
-                                  (int) b.getCount()));
-                        });
+      BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName());
+      if (bucket != null) {
+        bucket.getBuckets()
+                .stream()
+                .forEach(b -> {
+                  b.getBucketBasedFacets(CommonText.getInstance().getCollectionId())
+                          .getBuckets()
+                          .stream()
+                          .forEach(sb -> {
+                            collections.add(new CollectionData(
+                                    String.valueOf(sb.getVal()),
+                                    String.valueOf(b.getVal()),
+                                    (int) b.getCount()));
+                          });
 
-              });
+                });
+      }
       return new StatisticData((int) response.getResults().getNumFound(), totalDna,
               totaImage, totalMap, totalInSweden, totalType, collections);
     } catch (SolrServerException | IOException ex) {
@@ -541,23 +573,10 @@ public class SolrService implements Serializable {
     }
   }
 
-//  private void addSearchFilters(String key, List<String> filterList) {
-//    
-//    if(filterList != null && !filterList.isEmpty()) {
-//      filterList.stream()
-//              .forEach(f -> { 
-//                imageViewSB = new StringBuilder(); 
-//                imageViewSB.append(key);
-//                imageViewSB.append(CommonText.getInstance().getWildCard());
-//                imageViewSB.append(f);
-//                imageViewSB.append(CommonText.getInstance().getWildCard());
-//                query.addFilterQuery(imageViewSB.toString()); 
-//              });
-//    }
-//  }
-  private int getBucketsTotal(BucketBasedJsonFacet facet) {
-    return facet.getBuckets() != null && facet.getBuckets().size() > 0
-            ? (int) facet.getBuckets().get(0).getCount() : 0;
+  private int getBucketsTotal(BucketBasedJsonFacet bucket) {
+    return bucket != null
+            ? bucket.getBuckets() != null && bucket.getBuckets().size() > 0
+            ? (int) bucket.getBuckets().get(0).getCount() : 0 : 0;
   }
 
 //  private void addFilters(JsonQueryRequest request, Map<String, String> map) {
@@ -645,4 +664,73 @@ public class SolrService implements Serializable {
 //      return null;
 //    } 
 //  } 
+//  public List<GeoData> searchGroupData(String text, Map<String, String> filters) {
+//    log.info("searchHeatmapWithFilter: {} -- {}", text, filters);
+//   
+//    
+//    List<GeoData> list = new ArrayList<>();
+//    try { 
+//      query = new SolrQuery();
+//      query.setQuery(text); 
+//      query.addFilterQuery("geopoint:*");
+//      query.setParam("group", true).setParam("group.field", "locality");  
+//      query.setRows(5000);
+//      
+//      response = client.query(query);
+//
+//      NamedList thisGroupInfo = (NamedList) ((NamedList) (response.getResponse()).get("grouped")).get("locality");
+//      Number totalUngrouped = (Number) thisGroupInfo.get("matches");
+//      log.info("totalUngrouped: {}", totalUngrouped); 
+//      
+//      List<Object> groupData = (List<Object>) thisGroupInfo.get("groups");
+//      
+//      groupData.stream() 
+//              .map(o -> ((SolrDocumentList) ((NamedList) o).get("doclist")))
+//              .forEach(d -> {
+//                SolrDocument doc = d.get(0);  
+//                list.add(new GeoData((int)d.getNumFound(),  
+//                        (double) doc.getFieldValue("latitude"), 
+//                        (double) doc.getFieldValue("longitude"), 
+//                        (String) doc.getFieldValue("locality"))); 
+//               
+//              });
+//    } catch (SolrServerException | IOException ex) {
+//      log.warn(ex.getMessage());
+//    } 
+//    return list;
+//  }
+//  public List<GeoData> searchGroupData(String text, Map<String, String> filters) {
+//    log.info("searchGroupData: {} -- {}", text, filters);
+//
+//    List<GeoData> list = new ArrayList<>();
+//    try {
+//      query = new SolrQuery();
+//      query.setQuery(text);
+//      query.addFilterQuery("geopoint:*");
+//      query.setParam("group", true).setParam("group.field", "locality");
+//      query.setRows(5000);
+//
+//      response = client.query(query);
+//
+//      NamedList thisGroupInfo = (NamedList) ((NamedList) (response.getResponse()).get("grouped")).get("locality");
+//      Number totalUngrouped = (Number) thisGroupInfo.get("matches");
+//      log.info("totalUngrouped: {}", totalUngrouped);
+//
+//      List<Object> groupData = (List<Object>) thisGroupInfo.get("groups");
+//
+//      groupData.stream()
+//              .map(o -> ((SolrDocumentList) ((NamedList) o).get("doclist")))
+//              .forEach(d -> {
+//                SolrDocument doc = d.get(0);
+//                list.add(new GeoData((int) d.getNumFound(),
+//                        (double) doc.getFieldValue("latitude"),
+//                        (double) doc.getFieldValue("longitude"),
+//                        (String) doc.getFieldValue("locality")));
+//
+//              });
+//    } catch (SolrServerException | IOException ex) {
+//      log.warn(ex.getMessage());
+//    }
+//    return list;
+//  }
 }
