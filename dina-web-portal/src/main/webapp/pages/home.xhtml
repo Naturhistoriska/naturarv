@@ -8,7 +8,10 @@
 
       <ui:define name="content"  >   
         <h:panelGroup id="mainPanel"  layout="block" styleClass="homePanel"  >    
+         
+
           <h:form id="homeForm" prependId="false">  
+
             <div class="ui-g" style="width: 980px;">
               <div class="ui-g-9"> 
                 <div class="ui-g-12"  > 
@@ -77,23 +80,23 @@
                   </h:panelGrid> 
                 </p:commandLink>  
 
-                <p:commandLink actionListener="#{searchBean.searchAllDataHasCoordinates()}"  process="@this"   > 
+                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('map:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
                     <h:outputText value="#{msg.specimenswithmap}" />     
-                    <h:outputText value="#{statistic.totalMaps}" />
+                    <h:outputText value="#{statistic.totalMaps}"  style="text-align: right;" />
                   </h:panelGrid> 
                 </p:commandLink>  
 
-                <p:commandLink actionListener="#{searchBean.searchAllDataCollectedInSweden()}"  process="@this"   > 
+                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('inSweden:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
                     <h:outputText value="#{msg.specimensinsweden}" />      
                     <h:outputText value="#{statistic.totalInSweden}" />
                   </h:panelGrid> 
                 </p:commandLink>  
-                
-                <p:commandLink actionListener="#{searchBean.searchAllDataHasDNASequences()}"  process="@this"   > 
+
+                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('dna:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
                     <h:outputText value="#{msg.specimenswithdna}" />        
@@ -101,7 +104,7 @@
                   </h:panelGrid> 
                 </p:commandLink> 
 
-                <p:commandLink actionListener="#{searchBean.searchAllDataHasImages()}"  process="@this"   > 
+                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('image:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
                     <h:outputText value="#{msg.specimenswithimage}" />       
@@ -109,9 +112,9 @@
                   </h:panelGrid> 
                 </p:commandLink>  
 
-                
 
-                <p:commandLink actionListener="#{searchBean.searchAllDataAreTypeSpecimems()}"  process="@this"   > 
+
+                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('isType:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
                     <h:outputText value="#{msg.specimenwithtype}" />          
@@ -124,7 +127,7 @@
 
                 <h:outputText value="#{msg.allitemsincollections}" style="font-weight: bold;" />
                 <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >   
-                  <p:commandLink actionListener="#{searchBean.searchCollectionWithoutFilter(collection)}" 
+                  <p:commandLink actionListener="#{searchBean.searchCollectionWithSingleFilter(collection)}" 
                                  title="#{collection.name}"  
                                  process="@this"  >  
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
@@ -140,7 +143,7 @@
 
                 <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>
                 <ui:repeat var="entry" value="#{statistic.institutions.entrySet()}" varStatus="institutionStatus" >   
-                  <p:commandLink actionListener="#{searchBean.searchInstitutionWithoutFilter(entry.key)}" 
+                  <p:commandLink actionListener="#{searchBean.searchInstitutionWithSingleFilter(entry.key)}" 
                                  title="#{entry.key}"  
                                  process="@this" rendered="#{entry.value > 0}" >  
                     <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
@@ -154,7 +157,7 @@
                 <p:spacer width="20" height="20" />
                 <p:spacer width="20" height="20" />
                 <h:outputText value="#{msg.externallink}" style="font-weight: bold;"  />  
- 
+
                 <h:outputLink id="dinaspecieslink" value="http://naturforskaren.se/"  
                               title="scientificname"  target="_blank" >  
                   <h:outputText value="#{msg.naturforskaren}"   />   

@@ -6,7 +6,7 @@
 
   <body>
     <ui:composition>    
-      <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"  
+      <p:dataTable id="detailResultTable" var="record" value="#{searchBean.resultList}"  
                    rowKey="#{record.catalogNumber}"  styleClass="detailTable"
                    paginator="false" rowIndexVar="indexCount"   >    
 
@@ -14,36 +14,30 @@
           <h:selectBooleanCheckbox value="#{record.selected}" 
                                    style="margin-top: 2px; margin-left: 2px; margin-top: 5px; ">
             <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  execute="@this"
-                    render=":resultsForm:resultHeader"  />
+                    render=":resultsForm:resultContent"   />
           </h:selectBooleanCheckbox> 
         </p:column>
 
         <p:column style="font-size: 11px; width : 600px; "> 
           <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
-                       columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  >
-
-
-            <h:graphicImage library="images" 
-                            name="icons/discipline/#{record.collectionId}.png"   
-                            styleClass="images" />  
-
+                       columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  > 
+            <h:graphicImage library="images" styleClass="images" 
+                            name="icons/discipline/#{record.collectionId}.png" />   
             <h:outputText value="#{msg.cataloguenumber}:" />   
             <h:outputText value="#{record.catalogNumber}" />  
 
-
             <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
-            <p:commandLink rendered="#{record.morphbankId != null}" 
-                           action="#{search.displayImages(record)}" >
-              <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
-                              title="#{msg.showimages}" alt="#{msg.showimages}"
-                              styleClass="images" /> 
+            <p:commandLink rendered="#{record.morphbankId != null}"  
+                           action="#{searchBean.displayImages(record)}" update="imagePanel"  >
+              <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
+                              title="#{msg.showimages}" alt="#{msg.showimages}" /> 
             </p:commandLink>  
             <h:outputText value="#{msg.speciesname}:" />   
             <h:outputText value="#{record.txFullName}" /> 
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.highertaxa}:" />   
-            <h:outputText value="#{record.higherTx}" />
+            <h:outputText value="#{record.higherTx}" style="word-break: break-all;" />
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.collection}:" />   
@@ -68,15 +62,13 @@
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.collectiondate}:"  />     
             <h:outputText value="#{record.startDate}"  >
-              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-              <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
+              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
             </h:outputText>
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.catalogeddate}:"  />     
             <h:outputText value="#{record.catalogedDate}"  >
-              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-              <!--                                                                <f:convertDateTime pattern="yyyy-MM-dd"  />-->
+              <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
             </h:outputText>
 
             <p:spacer width="5" height="5" />
@@ -93,11 +85,11 @@
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.coordinate}:" />    
-            <h:panelGroup layout="block" rendered="#{record.coordinate != null}" >
-              <h:outputText value="#{record.coordinate}" /> 
+            <h:panelGroup layout="block" rendered="#{record.coordinateString != null}" >
+              <h:outputText value="#{record.coordinateString}" /> 
             </h:panelGroup>
 
-            <h:panelGrid rendered="#{record.coordinate == null}">  
+            <h:panelGrid rendered="#{record.coordinateString == null}">  
               <p:spacer width="10" height="10" />
             </h:panelGrid> 
 
@@ -131,6 +123,70 @@
               <p:spacer width="10" height="10" />
             </h:panelGrid> 
           </h:panelGrid> 
+
+          <p:spacer width="5" height="5" />
+          <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="imagePanel" >   
+
+            <h:panelGrid  rendered="#{record.displayImage}"> 
+              <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
+                <f:ajax render="imagePanel"/>
+              </h:commandLink>   
+
+              <ui:repeat value="#{record.thumbs}" var="thumb">     
+                <p:commandLink  action="#{switch.imageSwitch(record)}" 
+                                onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
+                  <p:graphicImage value="#{thumb}" 
+                                  title="#{record.txFullName}/#{record.catalogNumber}" 
+                                  alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                </p:commandLink>  
+
+              </ui:repeat>   
+            </h:panelGrid> 
+          </h:panelGrid> 
+
+          <p:spacer width="5" height="5" />
+          <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="singleMapPanel" >   
+            <h:panelGrid rendered="#{record.displayMap}"> 
+              <h:commandLink action="#{searchBean.closeMap(record)}" value="#{msg.closemap}" >    
+                <f:ajax render="singleMapPanel"/>
+              </h:commandLink> 
+
+              <f:view> 
+                <p:gmap center="#{record.latitude}, #{record.longitude}" type="ROADMAP"
+                        zoom="8" model="#{map.getSingledModel(record)}" 
+                        style="width:600px; height:300px" fitBounds="false"   >  
+
+                  <p:ajax event="overlaySelect" listener="#{map.onSingleMarkerSelect}" />   
+                  <p:gmapInfoWindow >  
+                    <p:outputPanel styleClass="mapInfoWindos">   
+                      <h:panelGrid columns="2" >
+                        <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" /> 
+                        <h:outputText value="#{record.locality}"  style=" font-size: 9px;" />   
+                        <h:column />
+                        <h:outputText value="#{record.coordinateString}" style=" font-size: 9px;" />    
+                      </h:panelGrid> 
+                    </p:outputPanel>   
+                  </p:gmapInfoWindow>  
+                </p:gmap> 
+              </f:view>  
+            </h:panelGrid>
+          </h:panelGrid>
+
+          <p:spacer width="10" height="5" />
+          <h:panelGroup layout="block" >  
+            <p:commandLink value="#{msg.showmap}" rendered="#{record.singleMapLink}"
+                           action="#{searchBean.showSingleMap(record)}"    
+                           update="singleMapPanel" />  
+            <p:spacer width="10" height="5" rendered="#{record.singleMapLink}" /> 
+            <h:outputLink id="scientificNameLinkNrmSingle" value="http://naturforskaren.se/search/#{record.txFullName.trim()}"  
+                          title="scientificname"  target="_blank" >                   
+              <h:outputText value="#{msg.showintaxonpages}"  style="font-family: Arial,sans-serif;" />   
+            </h:outputLink>   
+
+            <p:spacer width="10" height="5" /> 
+            <p:commandLink value="#{msg.errorreport}"    process="@this"  global="false" 
+                           action="#{error.reportError(record)}"  />  
+          </h:panelGroup> 
         </p:column>   
       </p:dataTable>  
     </ui:composition>
