@@ -8,10 +8,10 @@ package se.nrm.dina.web.portal.controller;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import lombok.extern.slf4j.Slf4j; 
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
+ *
  *
  * @author idali
  */
@@ -19,58 +19,46 @@ import lombok.extern.slf4j.Slf4j;
 @SessionScoped
 @Slf4j
 public class ResultHeader implements Serializable {
-   
+
   private static final String LIST_VIEW_PATH = "/pages/listView.xhtml";
   private static final String DETAIL_VIEW_PATH = "/pages/detailView.xhtml";
   private static final String SELECTED_VIEW_PATH = "/pages/selectedView.xhtml";
   private static final String IMAGE_VIEW_PATH = "/pages/imageView.xhtml";
   private static final String MAP_VIEW_PATH = "/pages/mapView.xhtml";
-   
+
   private String viewPath;
-  private String resultView;  
-  
-  public ResultHeader() { 
+  private String resultView;
+
+  public ResultHeader() {
     log.info("ResultHeader");
-    viewPath = LIST_VIEW_PATH; 
-    resultView = "list"; 
+    viewPath = LIST_VIEW_PATH;
+    resultView = "list";
   }
- 
-   public void simpleView() {
+
+  public void simpleView() {
     log.info("simpleview");
-    viewPath = LIST_VIEW_PATH; 
-    resultView = "list"; 
+    viewPath = LIST_VIEW_PATH;
+    resultView = "list";
   }
 
   public void detailView() {
-    log.info("detialview"); 
-    viewPath = DETAIL_VIEW_PATH; 
-    resultView = "detail"; 
+    log.info("detialview");
+    viewPath = DETAIL_VIEW_PATH;
+    resultView = "detail";
   }
 
-  public void selectedView() { 
-    log.info("selectedview"); 
-    viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected"; 
+  public void selectedView() {
+    log.info("selectedview");
+    viewPath = SELECTED_VIEW_PATH;
+    resultView = "selected";
   }
-  
-  public void setSelectedView() {
-    log.info("setSelectedView"); 
-    viewPath = SELECTED_VIEW_PATH; 
-    resultView = "selected"; 
-  }
-    
-  public void backToListView() {
-    log.info("backToListView");
-    resultView = "list"; 
-    viewPath = LIST_VIEW_PATH; 
-  }
-  
+
   public void mapView() {
-    log.info("mapView"); 
+    log.info("mapView");
     resultView = "map";
-    viewPath = MAP_VIEW_PATH; 
+    viewPath = MAP_VIEW_PATH;
   }
-  
+
   public void imageView() {
     log.info("imageView");
     resultView = "image";
@@ -83,73 +71,29 @@ public class ResultHeader implements Serializable {
 
   public String getResultView() {
     return resultView;
-  } 
-  
+  }
+
   public boolean isDisplayPaging() {
     return resultView.equals("list") || resultView.equals("detail");
   }
+
+  public boolean isDisplaySelectedView() {
+    return resultView.equals("selected");
+  }
   
-  public boolean isDisplayMapSummary() {
+  public boolean isDisplayListView() {
+    return resultView.equals("list") || resultView.equals("detail");
+  }
+
+  public boolean isDisplayBackToListLink() {
+    return resultView.equals("map") || resultView.equals("image");
+  }
+
+  public boolean isMapView() {
     return resultView.equals("map");
   }
   
-  public boolean isDisplaySelectedSummary() {
-    return !resultView.equals("map") && !resultView.equals("image");   
-  }
-  
-  public boolean isReplaceByEmptySpace() {
+  public boolean isImageView() { 
     return resultView.equals("image");
-  }
- 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-//  public void showOneDetail(SolrData data) {
-//    log.info("showOneDetail : {}", data.getCatalogNumber());
-//    
-//    viewPath = SELECTED_VIEW_PATH; 
-//    resultView = "selected"; 
-//
-////        List<SolrRecord> list = new ArrayList<>();
-////        list.add(record);
-////        displayOneDetail = true;
-////        
-////        record.setSelected(true);
-////        selectall = true;
-////        
-////        selectedRecords.add(record);
-////        session.setAttribute(SAVED_SELECTED_RECORDS, selectedRecords); 
-////        selectedRecords = new ArrayList<>();
-////        selectedRecords.add(record);
-////     
-////        resultview = 2;
-//  }
-  
-  
-
-  
-
-  
-//  public boolean isDisplaySummary() { 
-//    return !resultView.equals("image");
-//  }
-//  
-//  public boolean isDisplayNumberSelected() {
-//    return !resultView.equals("map") && !resultView.equals("image");
-//  } 
+  } 
 }
