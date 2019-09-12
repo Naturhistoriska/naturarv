@@ -69,61 +69,26 @@
 
         <h:panelGrid width="500" > 
           <p:dataScroller var="image" value="#{galleria.model}" lazy="true" 
-                          scrollHeight="800" rows="50" chunkSize="100"  
-                          mode="inline"> 
+                          scrollHeight="800" rows="50" chunkSize="50"  rowIndexVar="rowIndex"
+                          mode="inline" > 
 
-            <p:panel header="#{image.catalogNumber}" style="text-align:center">
-              <h:panelGrid columns="1" style="width:100%">
-                <p:graphicImage value="#{galleria.getThumbPath(image.imageId)}"  
+            <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
+              <h:panelGrid columns="1" style="width:100%" > 
+                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.morphbankId}'}])"  id="imagePanelLink"
+                            update=":resultsForm:imageGalleria">
+                  <p:graphicImage value="#{image.imageId}"  
                                 alt="#{image.catalogNumber}" 
-                                title="#{image.txFullName}"  styleClass="imageswithpedding" />  
-
-                <h:outputText value="#{image.txFullName}" />
-                <ui:remove>
-                  <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
-                  <h:outputText styleClass="pi pi-search" style="margin:0 auto;"/>
-                  <f:setPropertyActionListener value="#{car}" target="#{dataGridView.selectedCar}" />
-                </p:commandLink> 
-                </ui:remove>
-                  
-                
+                                title="#{image.txFullName}"  styleClass="imageswithpedding" />    
+                </p:commandLink>     
+                <h:outputText value="#{image.txFullName}" /> 
               </h:panelGrid>
-            </p:panel>
-
-
-              
-                 
-              
+            </p:panel> 
             </p:dataScroller>  
-        </h:panelGrid>
-        
-        <ui:remove> 
-          <h:panelGrid width="500" style="vertical-align: top;"> 
-          <p:growl id="msgs" showDetail="true" />
-          <p:dataTable id="imageTable" var="image" value="#{galleria.model}" 
-                       lazy="true" liveScroll="true" liveScrollBuffer="200"
-                       scrollRows="100" virtualScroll="true"  
-                       rows="40" styleClass="imageResultTable"
-                       scrollable="true" scrollHeight="1100">
-             
-            <p:column>  
-              <p:graphicImage value="#{galleria.getThumbPath(image)}" alt="#{image.catalogNumber}" 
-                              title="#{image.txFullName}"  styleClass="imageswithpedding" />  
-      
-            </p:column>
-           
-          </p:dataTable>
-
-          <p:blockUI block="imageTable" trigger="imageTable">
-            LOADING<br />
-            <p:graphicImage name="demo/images/ajaxloadingbar.gif"/>
-          </p:blockUI>
         </h:panelGrid> 
-        </ui:remove>
-        
       </h:panelGrid>   
-
-        
+      <p:remoteCommand name="displayIndex" process="@this"  
+                       actionListener="#{switch.imageSwitch()}" oncomplete="PF('imgswitchdlg').show();"/>
+         
            <ui:remove>
              
              

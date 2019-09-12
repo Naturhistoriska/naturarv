@@ -5,6 +5,8 @@
  */
 package se.nrm.dina.web.portal.model;
 
+import java.util.List;
+
 /**
  *
  * @author idali
@@ -15,7 +17,7 @@ public class ImageModel {
   public String morphbankId;    
   public String imageId;  
   public String txFullName;   
-  public String morphBankView; 
+  public String morphBankView;  
   
   public ImageModel(String catalogNumber, String collectionId, String morphbankId,
             String imageId, String txFullName, String morphBaneView) {
@@ -24,7 +26,7 @@ public class ImageModel {
     this.morphbankId = morphbankId;
     this.imageId = imageId;
     this.txFullName = txFullName;
-    this.morphBankView = morphBaneView;
+    this.morphBankView = morphBaneView; 
   }
 
   public String getCatalogNumber() {
@@ -49,5 +51,7 @@ public class ImageModel {
 
   public String getMorphBankView() {
     return morphBankView;
-  }  
+  }   
 }
+
+
