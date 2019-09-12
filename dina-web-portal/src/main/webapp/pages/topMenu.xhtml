@@ -10,19 +10,19 @@
             <h:panelGrid width="980" columns="11" id="topmenupanel"   cellpadding="5" cellspacing="5"  > 
               <p:spacer width="1"  />
               <p:commandLink actionListener="#{navigate.gotoHome()}" value="#{msg.startpage}" 
-                             styleClass="#{style.tabStart}" process="@this"  /> 
+                             styleClass="#{style.tabStart}" process="@this" global="false" /> 
               <p:spacer width="20"  /> 
               <p:commandLink actionListener="#{navigate.gotoCollections()}" value="#{msg.ourcollections}" 
-                             styleClass="#{style.tabCollections}" process="@this" /> 
+                             styleClass="#{style.tabCollections}" process="@this" global="false" /> 
               <p:spacer width="20"  />
               <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
-                             styleClass="#{style.tabPartners}" process="@this" /> 
+                             styleClass="#{style.tabPartners}" process="@this" global="false" /> 
               <p:spacer width="20"  />
               <p:commandLink actionListener="#{navigate.gotoFAQ()}" value="#{msg.fqa}" 
-                             styleClass="#{style.tabFaq}" process="@this" /> 
+                             styleClass="#{style.tabFaq}" process="@this" global="false" /> 
               <p:spacer width="20"  />
               <p:commandLink actionListener="#{navigate.gotoAbout()}" value="#{msg.about}" 
-                             styleClass="#{style.tabAbout}" process="@this" />  
+                             styleClass="#{style.tabAbout}" process="@this" global="false" />  
               <p:spacer width="120" height="20" /> 
 
             </h:panelGrid>   

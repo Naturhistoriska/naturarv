@@ -26,10 +26,10 @@
             <div class="ui-g-12" >  
               #{fqa.whoIsResponsibleText1}     
               <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
-                                   styleClass="linktext" process="@this" />   
+                                   styleClass="linktext" process="@this" global="false" />   
               #{fqa.whoIsResponsibleText2}     
               <p:commandLink actionListener="#{navigate.gotoContactPage()}" value="#{msg.contactus}" 
-                                   styleClass="linktext" process="@this" />  
+                                   styleClass="linktext" process="@this" global="false" />  
             </div>
             
             <div class="ui-g-12 textRow"  > 
@@ -52,7 +52,7 @@
             <div class="ui-g-12"  > 
               #{fqa.whatSourceText1}  
               <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
-                                   styleClass="linktext" process="@this" />  
+                                   styleClass="linktext" process="@this" global="false" />  
               #{fqa.whatSourceText2}  
             </div> 
             
@@ -78,7 +78,7 @@
             <div class="ui-g-12 contentRow"  > 
               #{fqa.howContactText}  
               <p:commandLink actionListener="#{navigate.gotoContactPage()}" value="#{msg.contactus}" 
-                                   styleClass="linktext" process="@this" />  
+                                   styleClass="linktext" process="@this" global="false" />  
             </div>
             
           </div>

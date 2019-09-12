@@ -26,7 +26,7 @@
                   <h:panelGroup>
                     #{about.whatIsNaurarvSubText} 
                     <p:commandLink actionListener="#{navigate.gotoCollections()}" value="#{msg.ourcollections}" 
-                                   styleClass="linktext" process="@this" /> 
+                                   styleClass="linktext" process="@this" global="false" /> 
                     #{msg.text1}
                   </h:panelGroup>
 
@@ -52,7 +52,8 @@
                   <h:column /> 
                   <h:panelGroup>
                     #{about.partInfrastructureSubText}  
-                    <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
+                    <p:commandLink actionListener="#{navigate.gotoPartners()}" 
+                                   value="#{msg.partners}" global="false"
                                    styleClass="linktext" process="@this" /> 
                     ${msg.text2}
                   </h:panelGroup>
