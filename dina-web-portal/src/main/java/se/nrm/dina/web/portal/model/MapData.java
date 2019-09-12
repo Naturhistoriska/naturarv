@@ -13,32 +13,27 @@ import org.apache.solr.client.solrj.beans.Field;
  * @author idali
  */
 public class MapData {
-  
-     
-    @Field
-    String id; 
-    @Field
-    String geo; 
-    @Field  
-    String catalogNumber; 
-    @Field
-    String txFullName;  
-    @Field
-    Date startDate; 
-    @Field
-    String locality; 
-    @Field
-    Double latitude; 
-    @Field 
-    Double longitude; 
-    @Field
-    String latitudeText; 
-    @Field
-    String longitudeText;
-    
-    
-    //    @Field("geopoint")
-//    String geopoint;
+
+  @Field
+  String id;
+  @Field
+  String geo;
+  @Field
+  String catalogNumber;
+  @Field
+  String txFullName;
+  @Field
+  Date startDate;
+  @Field
+  String locality;
+  @Field
+  Double latitude;
+  @Field
+  Double longitude;
+  @Field
+  String latitudeText;
+  @Field
+  String longitudeText;
 
   public String getId() {
     return id;
@@ -119,6 +114,5 @@ public class MapData {
   public void setLongitudeText(String longitudeText) {
     this.longitudeText = longitudeText;
   }
-    
-    
+
 }

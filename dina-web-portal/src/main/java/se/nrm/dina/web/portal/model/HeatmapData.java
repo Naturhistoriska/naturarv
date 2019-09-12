@@ -5,13 +5,9 @@
  */
 package se.nrm.dina.web.portal.model;
 
-import com.codepoetics.protonpack.StreamUtils;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.LatLngBounds;
-import org.primefaces.model.map.Rectangle;
+import se.nrm.dina.web.portal.logic.utils.MapHelper;
 
 /**
  *
@@ -27,7 +23,9 @@ public class HeatmapData {
   private final double maxX;
   private final double minY;
   private final double maxY;
-  List<List<Integer>> countList;
+  private final List<List<Integer>> countList;
+  private final double widthRatio;
+  private final double heightRatio;
 
   public HeatmapData(int total, int rowCount, int columnCount, double minX,
           double maxX, double minY, double maxY, List<List<Integer>> countList) {
@@ -39,48 +37,32 @@ public class HeatmapData {
     this.minY = minY;
     this.maxY = maxY;
     this.countList = countList;
+
+    widthRatio = maxX < minX ? (360 + maxX - minX) / columnCount : (maxX - minX) / columnCount;  
+    heightRatio = (maxY - minY) / rowCount; 
   }
 
-  public List<GeoData> calculate() {
-    double width = (maxX - minX) / columnCount;
-    double height = (maxY - minY) / rowCount;
+  public double getLowLat(int rowIndex) { 
+    return maxY - (rowIndex + 1) * heightRatio; 
+  }
 
-    log.info("width and height: {} -- {}", width, height);
-    List<GeoData> listData = new ArrayList<>();
-    StreamUtils
-            .zipWithIndex(countList.stream())
-            .forEach(i -> {
-              int rowIndex = (int) i.getIndex();
-              List<Integer> list = i.getValue();
-              log.info("value ? : {}", list);
-              if (list != null) {
-                StreamUtils
-                        .zipWithIndex(list.stream())
-                        .forEach(j -> {
-                          int columnIndex = (int) j.getIndex();
-                          int value = j.getValue();
-                          log.info("column value : {} -- {}", columnIndex, value);
-                          if (value > 0) { 
-                            double lowLat = maxY - (rowIndex + 1) * height;
-                            double lowLnt = minX + columnIndex * width;
-                            LatLng lowerLeft = new LatLng(lowLat, lowLnt);
+  public double getLowLng(int columnIndex) {
+    double lng = minX + columnIndex * widthRatio;
+    return lng > 180 ? lng - 360 : lng;
+  }
 
-                            double upperLat = maxY - (rowIndex + 1) * height + height;
-                            double upperLnt = minX + columnIndex * width + width;
-                            LatLng upperRignt = new LatLng(upperLat, upperLnt );
-                            
-                            log.info("coord : {} -- {}", lowLat + " -- " + lowLnt, upperLat + " -- " + upperLnt);
-                             
-                            Rectangle rect = new Rectangle(new LatLngBounds(upperRignt, lowerLeft));
-                              rect.setStrokeColor("#d93c3c");
-                              rect.setFillColor("#d93c3c");
-                              rect.setFillOpacity(0.5); 
-                            listData.add(new GeoData(value, rect));
-                          }
-                        });
-              }
-            });
-    return listData;
+  public double getUpperLat(int rowIndex) {
+    return getLowLat(rowIndex) + heightRatio;
+  }
+
+  public double getUpperLng(int columnIndex) {
+    return getLowLng(columnIndex) + widthRatio;
+  }
+
+  public String getSearchRegionText(int rowIndex, int columnIndex) {
+    return MapHelper.getInstance().buildSearchRegion(getLowLat(rowIndex),
+            getLowLng(columnIndex), getUpperLat(rowIndex), getUpperLng(columnIndex));
+
   }
 
   public int getTotal() {
