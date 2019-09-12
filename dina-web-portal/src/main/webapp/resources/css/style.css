@@ -240,6 +240,17 @@ body * {
 }
 
 
+.advancesearchpanel { 
+    width: 940px;  
+    margin-left: 20px; 
+    margin-top: 10px; 
+    margin-right: 20px; 
+}
+
+.alignBottom {
+  vertical-align: bottom;
+}
+
 /*result page*/
 #noResult {
   margin: 20px 20px 20px 20px;
@@ -248,7 +259,7 @@ body * {
 }
 
 .resultHeader {
-  border-top: solid 1px;
+  /*border-top: solid 1px;*/
   border-bottom: solid   1px;
   padding: 5px 0px 5px 0px; 
 }
@@ -310,8 +321,9 @@ body * {
 
 .linkColumn { 
   /*    vertical-align: top;*/
-  width: 130px;
+  width: 180px;
 }
+ 
 
 .downLink {
   font-family: verdana,arial,helvetica,sans-serif; 
@@ -347,8 +359,59 @@ body * {
 /*map view*/
 .largeMap {
   width:700px; 
-  height:400px
+  height:410px;
 }
+
+
+/* map info window*/
+.mapInfoWindos {
+  text-align: center; 
+  display: block;
+  margin: auto; 
+  overflow: visible; 
+  width: 300px; 
+}
+ 
+.detailDlgLabel {
+    vertical-align: top;
+    width: 150px;
+}
+
+
+.detailDlgText {
+    vertical-align: top;
+    width: 450px;
+}
+
+
+/* error report page */ 
+.errorcol1 {
+    vertical-align: top;
+    width: 150px;
+    text-align: left;
+    padding-right: 20px;
+}
+
+.errorcol2 {
+    vertical-align: top;
+    width: 580px;
+    padding-right: 20px;
+}
+
+.errorcol3 {
+    vertical-align: top;
+    float: right;
+    width: 15px;
+    padding-right: 20px;
+}
+
+
+
+
+
+
+
+
 
 .ui-inputgroup {
   display: -webkit-box;
@@ -558,6 +621,7 @@ a:hover {
 
 
 
+
 .simpleResultTable.ui-datatable table thead tr {
   display: none;  
 } 
@@ -626,4 +690,8 @@ a:hover {
 .ui-datascroller .ui-datascroller-item {
     width: 33%;
     display: inline-block;
+}
+
+.ui-datascroller-content { 
+    border: none;
 }
