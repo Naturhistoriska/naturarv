@@ -56,10 +56,10 @@ public class StatisticBean implements Serializable {
     data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null);  
   }
   
-  public void resetData(String text, Map<String, String> query) {
-    filteredData = solr.getStatisticData(text, query);  
+  public void resetData(String text, Map<String, String> queries) {
+    filteredData = solr.getStatisticData(text, queries);   
   }
-
+  
   public List<CollectionData> getFilteredCollections() {
     return filteredData == null ? getCollections() : filteredData.getCollections(); 
   }
