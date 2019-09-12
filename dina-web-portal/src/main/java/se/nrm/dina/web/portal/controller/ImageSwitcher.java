@@ -5,15 +5,15 @@
  */
 package se.nrm.dina.web.portal.controller;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.context.SessionScoped;
+import java.io.Serializable;  
+import java.util.List; 
+import javax.enterprise.context.SessionScoped; 
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import lombok.extern.slf4j.Slf4j;
-import se.nrm.dina.web.portal.logic.config.InitialProperties;
-import se.nrm.dina.web.portal.model.ImageData;
+import lombok.extern.slf4j.Slf4j;  
+import se.nrm.dina.web.portal.model.SolrData; 
+import se.nrm.dina.web.portal.solr.SolrService;
 
 /**
  *
@@ -23,33 +23,58 @@ import se.nrm.dina.web.portal.model.ImageData;
 @SessionScoped
 @Slf4j
 public class ImageSwitcher implements Serializable {
-
-  private List<String> thumbs;
-  private String[] imageId;
+ 
   private String catalogNumber;
   private String scientificName;
+  private String mbid;
+  private List<String> thumbs;
+  private List<String> jpgs;
   
   @Inject
-  InitialProperties properties;
-
+  private SolrService solr;
+ 
   public ImageSwitcher() {
-
-  }
-
-  public void imageSwitch(ImageData imageData) { 
-    log.info("imageSwitch : {}", imageData);
-
-    thumbs = new ArrayList<>(); 
-    this.imageId = imageData.getMorphbankImageId();
-            
-    this.scientificName = imageData.getTxFullName();
-    this.catalogNumber = imageData.getCatalogNumber(); 
+  } 
+  
+  public void imageSwitch() {
+    log.info("imageSwitch" );
+    
+    String imageId =  FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("imageId");
+          
+    log.info("imageId: {}", imageId);
+    SolrData data = solr.getImagesByMorphbankId(imageId);
+    log.info("data: {}", data);
+    catalogNumber = data.getCatalogNumber();
+    scientificName = data.getTxFullName();
+    jpgs = data.getJpgs();
   }
   
-  public String getThumbPath() {
-    String thumbPath = properties.getMorphbankThumbPath();
-    String thumb = thumbPath + "?id=" + imageId + "&imgType=jpg";
-    log.info("thumb. {}", thumb);
-    return thumb;        
+  public void imageSwitch(SolrData data) {
+    this.mbid = data.getMorphbankId();
+    this.catalogNumber = data.getCatalogNumber();
+    this.scientificName = data.getTxFullName(); 
+    this.thumbs = data.getThumbs();
+    this.jpgs = data.getJpgs();
+//    PrimeFaces.current().ajax().update("resultsForm:imgswitchdialog");
   }
+
+  public String getMbid() {
+    return mbid;
+  }
+
+  public String getCatalogNumber() {
+    return catalogNumber;
+  }
+
+  public String getScientificName() {
+    return scientificName;
+  }
+
+  public List<String> getThumbs() {
+    return thumbs;
+  } 
+
+  public List<String> getJpgs() {
+    return jpgs;
+  } 
 }
