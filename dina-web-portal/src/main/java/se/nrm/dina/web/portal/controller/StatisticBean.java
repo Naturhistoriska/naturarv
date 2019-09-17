@@ -60,6 +60,13 @@ public class StatisticBean implements Serializable {
     filteredData = solr.getStatisticData(text, queries);   
   }
   
+  public void resetAllData() {
+    if(data == null) {
+      initStatisticData();
+    }
+    filteredData = data;
+  }
+  
   public List<CollectionData> getFilteredCollections() {
     return filteredData == null ? getCollections() : filteredData.getCollections(); 
   }
