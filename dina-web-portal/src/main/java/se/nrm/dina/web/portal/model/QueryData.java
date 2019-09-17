@@ -134,5 +134,8 @@ public class QueryData implements Serializable {
     this.endDay = endDay;
   }
   
-  
+  @Override
+  public String toString() {
+    return operattion + " " + content + " " + field + " " + value; 
+  }
 }
