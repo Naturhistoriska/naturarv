@@ -5,6 +5,9 @@
  */
 package se.nrm.dina.web.portal.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author idali
@@ -13,6 +16,8 @@ public class CommonText {
 
   private static final String SIMPLE_SEARCH_DEFAULT_TEXT_EN = "Search collections (species, genus, family, collectors, location, etc.)";
   private static final String SIMPLE_SEARCH_DEFAULT_TEXT_SV = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
+  
+  private static final String EMPTY_STRING = "";
 
   private static final String NRM_CODE = "nrm";
   private static final String GNM_CODE = "gnm";
@@ -102,7 +107,7 @@ public class CommonText {
 
   private static final String IMAGE_VIEW_KEY = "morphBankView:";
   private static final String MORPHBANK_ID_KEY = "morphbankId:";
-  private static final String TEXT_KEY = "text";
+  private static final String TEXT_FIELD = "text";
   private static final String GEOPOINT = "geopoint";
 
   private static final String ID = "id";
@@ -110,14 +115,19 @@ public class CommonText {
   private static final String COLLECTION_ID = "collectionId";
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
+  private static final String ACCESSION_NUMBER = "accessionNumber";
   private static final String LOCATIONS = "locations";
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
   private static final String IMAGE_VIEW = "morphBankView";
   private static final String IMAGE_ID = "morphbankImageId";
   private static final String MORPHBANK_ID = "morphbankId";
-  
+  private static final String SYNONYM = "synonym";
+  private static final String AUTHOR = "author";
+  private static final String COMMON_NAME = "commonName";
+
   private static final String ALL = "all";
+  private static final String CONTAINS = "contains";
 
   private static final String COLOR_1 = "coloer1";
   private static final String COLOR_2 = "coloer2";
@@ -131,18 +141,57 @@ public class CommonText {
   private static final String GROUPS = "groups";
   private static final String GROUPED = "grouped";
   private static final String MATCHES = "matches";
-  
+
   private static final String IMAGE_TYPE_THUMB = "&imgType=thumb";
   private static final String IMAGE_QUERY_ID = "?id=";
   private static final String IMAGE_TYPE_JPG = "&imgType=jpg";
 
+  private static final Map<String, String> FIELD_NAME_MAP = new HashMap<>();
   private static CommonText instance = null;
+
+  static {
+    FIELD_NAME_MAP.put("tx_en", "Scientific name");
+    FIELD_NAME_MAP.put("tx_sv", "Vetenskapligt namn");
+
+    FIELD_NAME_MAP.put("ftx_en", "Classification");
+    FIELD_NAME_MAP.put("ftx_sv", "Klassifikation");
+
+    FIELD_NAME_MAP.put("eftx_en", "Determination");
+    FIELD_NAME_MAP.put("eftx_sv", "Bestämning");
+
+    FIELD_NAME_MAP.put("cm_en", "Common name");
+    FIELD_NAME_MAP.put("cm_sv", "Svenska namn");
+    FIELD_NAME_MAP.put("au_en", "Author");
+    FIELD_NAME_MAP.put("au_sv", "Auktor");
+
+    FIELD_NAME_MAP.put("auth_en", "Author");
+    FIELD_NAME_MAP.put("auth_sv", "Auktor");
+
+    FIELD_NAME_MAP.put("cn_en", "Catalog number");
+    FIELD_NAME_MAP.put("cn_sv", "Cataloguenumber");
+
+    FIELD_NAME_MAP.put("lc_en", "Locality");
+    FIELD_NAME_MAP.put("lc_sv", "Lokal / Geografi");
+
+    FIELD_NAME_MAP.put("sfn_en", "Station field number");
+    FIELD_NAME_MAP.put("sfn_sv", "Station field number");
+
+    FIELD_NAME_MAP.put("col_en", "Collector");
+    FIELD_NAME_MAP.put("col_sv", "Insamlare av");
+    FIELD_NAME_MAP.put("dn_en", "Determiner");
+    FIELD_NAME_MAP.put("dn_sv", "Bestämd av");
+  }
 
   public static synchronized CommonText getInstance() {
     if (instance == null) {
       instance = new CommonText();
     }
     return instance;
+  }
+  
+  public String getFieldName(String key, boolean isSwedish) {
+    key = isSwedish ? key + "_" + "sv" : key + "_" + "en";
+    return FIELD_NAME_MAP.get(key);
   }
 
   public String getColor1() {
@@ -196,9 +245,13 @@ public class CommonText {
   public String getCoordinate() {
     return COORDINATE;
   }
-  
+
   public String getCatalogNumber() {
     return CATALOG_NUMBER;
+  }
+  
+  public String getCommonName() {
+    return COMMON_NAME;
   }
 
   public String getTaxonFullName() {
@@ -216,25 +269,33 @@ public class CommonText {
   public String getCatalogedYear() {
     return CATALOGED_YEAR;
   }
-  
+
   public String getMorphbankId() {
     return MORPHBANK_ID;
   }
-  
+
   public String getMorphbankIdKey() {
     return MORPHBANK_ID_KEY;
   }
-  
+
   public String getImageView() {
     return IMAGE_VIEW;
   }
-  
+
   public String getImageId() {
     return IMAGE_ID;
+  }
+
+  public String getAuthor() {
+    return AUTHOR;
   }
   
   public String getAll() {
     return ALL;
+  }
+  
+  public String getContains() {
+    return CONTAINS;
   }
 
   public String getNrmCode() {
@@ -273,8 +334,8 @@ public class CommonText {
     return COLLECTION_CODE_KEY;
   }
 
-  public String getTextKey() {
-    return TEXT_KEY;
+  public String getTextField() {
+    return TEXT_FIELD;
   }
 
   public String getCoordinateKey() {
@@ -321,6 +382,10 @@ public class CommonText {
     return STATISTIC;
   }
 
+  public String getSynonmy() {
+    return SYNONYM;
+  }
+  
   public String getMonthChartData() {
     return MONTH_CHART_DATA;
   }
@@ -345,16 +410,24 @@ public class CommonText {
     return CATALOGED_MONTH_STRING;
   }
   
+  public String getAccessionNumber() {
+    return ACCESSION_NUMBER;
+  }
+
   public String getImageTypeThumb() {
     return IMAGE_TYPE_THUMB;
   }
-  
+
   public String getImageTypeJpg() {
     return IMAGE_TYPE_JPG;
   }
-  
+
   public String getImageQueryId() {
     return IMAGE_QUERY_ID;
+  }
+  
+  public String getEmptyString() {
+    return EMPTY_STRING;
   }
 
   public String getSearchDefaultText(boolean isSwedish) {
@@ -456,7 +529,7 @@ public class CommonText {
   public String getHits(boolean isSwedish) {
     return isSwedish ? HITS_SV : HITS_EN;
   }
-  
+
   public String getSelected(boolean isSwedish) {
     return isSwedish ? SELECTED_SV : SELECTED_EN;
   }
