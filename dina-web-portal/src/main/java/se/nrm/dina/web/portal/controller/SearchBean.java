@@ -11,15 +11,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.QueryData;
@@ -29,6 +34,7 @@ import se.nrm.dina.web.portal.solr.SolrHelper;
 import se.nrm.dina.web.portal.solr.SolrService;
 import se.nrm.dina.web.portal.utils.CommonText;
 import se.nrm.dina.web.portal.utils.HelpClass;
+import se.nrm.dina.web.portal.utils.MonthElement;
 
 /**
  *
@@ -52,11 +58,11 @@ public class SearchBean implements Serializable {
   private String selectedInstitution;
   private List<SolrData> selectedRecords;
   private List<SolrData> selectedOneRecord;
-  private List<SolrData> exportDataSet;
-  private QueryData queryData;
+  private List<SolrData> exportDataSet; 
   private List<QueryData> queryDataList;
 
   private String queryText;
+  private StringBuilder queryTextSb;
 
   private boolean isSelectedOne;
   private boolean isSimpleSearch;
@@ -86,11 +92,7 @@ public class SearchBean implements Serializable {
 
   public SearchBean() {
     facesContext = FacesContext.getCurrentInstance();
-    session = (HttpSession) facesContext.getExternalContext().getSession(false);
-
-    QueryData qd = new QueryData("", "contains", "text", "");
-    queryDataList = new ArrayList<>();
-    queryDataList.add(qd);
+    session = (HttpSession) facesContext.getExternalContext().getSession(false); 
   }
 
   /**
@@ -103,7 +105,29 @@ public class SearchBean implements Serializable {
     isSwedish = ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");
     clearData();
   }
-
+  
+  
+  /**
+   * Free text search
+   */
+  public void simpleSearch() {
+    log.info("simpleSearch: {}", freeText);
+ 
+    if (freeText != null && freeText.length() > 0) {
+      String searchText = getBuildSearchText();
+      if(resultHeader.isImageView()) {
+        galleria.setImageView(statistic.getFilteredTotalImages(), searchText, queries);
+      } else if(resultHeader.isMapView()) {
+        geo.setMapView(totalResult, searchText, queries);
+      } else {
+        result = solr.searchWithFilter(searchText, queries, 0, numDisplay); 
+        gotoSimpleView();
+        setResult();
+      } 
+      statistic.resetData(searchText, queries);
+    }
+  }
+  
   /**
    * Search all the data from solr without filters
    */
@@ -111,12 +135,12 @@ public class SearchBean implements Serializable {
     log.info("all - search all records");
 
     clearData();
-    result = solr.searchAll(CommonText.getInstance().getWildSearchText(), 0, numDisplay);
-//    statistic.resetData(CommonText.getInstance().getWildSearchText(), queries);
+    result = solr.searchAll(0, numDisplay); 
     gotoSimpleView();
+    statistic.resetAllData();
     setResult();
   }
-
+ 
   /**
    * Search link from home page: filter with map, dna, type, image, and
    * collected in Sweden
@@ -266,24 +290,6 @@ public class SearchBean implements Serializable {
   private void filterSearchWithQueries(String searchText) {
     result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
     setResult();
-  }
-
-  /**
-   * Free text search
-   */
-  public void simpleSearch() {
-    log.info("simpleSearch: {}", freeText);
-
-    boolean isResultView = navigator.isResultView();
-    if (!isResultView) {
-      queries.clear();
-    }
-    if (freeText != null && freeText.length() > 0) {
-      String searchText = getBuildSearchText();
-      result = solr.searchWithFilter(searchText, queries, 0, numDisplay);
-      setResult();
-      statistic.resetData(searchText, queries);
-    }
   }
 
   public void blur() {
@@ -517,6 +523,21 @@ public class SearchBean implements Serializable {
     return getBuildSearchText();
   }
 
+  public void advanceClear() {
+    log.info("advanceClear");
+
+    clearAdvanceData();
+    appendQuery();    
+    searchData();
+    statistic.resetData(getBuildSearchText(), queries);
+  }
+
+  public void advanceSearch() {
+    log.info("advenceSearch");
+   
+//    buildAdvanceSearch();
+  }
+
   public void openAdvanceSearch() {
     log.info("openAdvanceSearch");
     isSimpleSearch = false;
@@ -526,38 +547,48 @@ public class SearchBean implements Serializable {
     queryDataList = new ArrayList<>();
     queryDataList.add(qb);
     queryText = "";
-    if (welcomePage) {
-      cleardata();
-    } else {
-      String searchText;
-      QueryBean qb = new QueryBean("", "contains", "text", "");
-      if (!input.equals(defaultSearchText) && !StringUtils.isEmpty(input)) {
-        qb.setValue(input);
-        queryBeans = new ArrayList<>();
-        queryBeans.add(qb);
-        querytext = "";
-        searchText = buildSearchText(WILD_CHAR);
-        session.setAttribute(SAVED_SEARCH_TEXT, searchText);
-        appendQuery();
-      }
-    }
+
+    appendQuery();
+//    if (welcomePage) {
+//      cleardata();
+//    } else {
+//      String searchText;
+//      QueryBean qb = new QueryBean("", "contains", "text", "");
+//      if (!input.equals(defaultSearchText) && !StringUtils.isEmpty(input)) {
+//        qb.setValue(input);
+//        queryBeans = new ArrayList<>();
+//        queryBeans.add(qb);
+//        querytext = "";
+//        searchText = buildSearchText(WILD_CHAR);
+//        session.setAttribute(SAVED_SEARCH_TEXT, searchText);
+//        appendQuery();
+//      }
+//    }
 
     updateView("searchForm:searchPanel");
+  }
+
+  public void handleDateSelect(SelectEvent event) {
+    log.info("handleDateSelect : {}", event);
+    appendQuery();
   }
 
   private void appendQuery() {
 //        log.info("appandQuery : {}", queryBeans.size());
 
-    StringBuilder sb = new StringBuilder();
-    for (QueryData bean : queryDataList) {
+    queryTextSb = new StringBuilder();
+
+    queryDataList.stream().map((bean) -> {
       if (queryDataList.indexOf(bean) > 0) {
-        sb.append(" ");
-        sb.append(bean.getOperattion());
-        sb.append(" ");
+        queryTextSb.append(" ");
+        queryTextSb.append(bean.getOperattion());
+        queryTextSb.append(" ");
       }
-      sb.append(buildQueryString(bean));
-    }
-    queryText = sb.toString();
+      return bean;
+    }).forEachOrdered((bean) -> {
+      queryTextSb.append(buildQueryString(bean));
+    });
+    queryText = queryTextSb.toString();
   }
 
   private String buildQueryString(QueryData data) {
@@ -576,34 +607,26 @@ public class SearchBean implements Serializable {
         if (endDate == null) {
           sb.append("*");
         } else {
-          sb.append(HelpUtil.getInstance().dateToString(bean.getToDate()));
+          sb.append(HelpClass.getInstance().dateToString(data.getToDate()));
         }
         break;
       case "season":
-        //            int startMonth = bean.getStartMonth();
-//            int endMonth = bean.getEndMonth();
-
-//            if(startMonth == 0) {
-//                startMonth = 1;
-//            } 
-//
-//            if (endMonth == 0) {
-//                endMonth = 12;
-//            }
+        int startMonth = data.getStartMonth();
+        int endMonth = data.getEndMonth() == 0 ? 12 : data.getEndMonth();
         sb.append(" [Form] ");
-        sb.append(StringMap.getInstance().getMonth(bean.getStartMonth(), locale, true));
+        sb.append(MonthElement.valueOfNameByNumberOfMonth(startMonth, isSwedish));
         sb.append(" ");
-        sb.append(bean.getStartDay());
+        sb.append(data.getStartDay());
         sb.append(" [To] ");
-        sb.append(StringMap.getInstance().getMonth(bean.getEndMonth(), locale, false));
+        sb.append(MonthElement.valueOfNameByNumberOfMonth(endMonth, isSwedish));
         sb.append(" ");
-        sb.append(bean.getEndDay());
+        sb.append(data.getEndDay());
         break;
       default:
-        if (bean.getValue() != null && bean.getValue().trim().length() > 0) {
-          sb.append(bean.getValue());
-          if (!bean.getField().equals("text")) {
-            String field = StringMap.getInstance().getFieldName(bean.getField() + "_" + locale);
+        if (data.getValue() != null && !data.getValue().isEmpty()) {
+          sb.append(data.getValue());
+          if (!data.getField().equals("text")) {
+            String field = CommonText.getInstance().getFieldName(data.getField(), isSwedish);
             sb.append(" [");
             sb.append(field);
             sb.append("] ");
@@ -612,6 +635,17 @@ public class SearchBean implements Serializable {
         break;
     }
     return sb.toString();
+  }
+
+  public List<SelectItem> getMonthList() {
+
+    List<SelectItem> dropMonthList = new ArrayList();
+    IntStream.range(1, 13)
+            .forEach(x -> {
+              dropMonthList.add(new SelectItem(String.valueOf(x),
+                      MonthElement.valueOfNameByNumberOfMonth(x, isSwedish)));
+            });
+    return dropMonthList;
   }
 
   public void closeAdvanceSearch() {
@@ -639,6 +673,103 @@ public class SearchBean implements Serializable {
 //        bean.setOperattion("");
 //      }
 //    }
+  }
+
+  public List startDayList(int index) {
+    log.info("getStartDayList: {}", index);
+    QueryData data = queryDataList.get(index);
+    return HelpClass.getInstance().getDayList(data.getStartMonth());
+  }
+
+  public List endDayList(int index) {
+    log.info("getEndDayList: {}", index);
+    QueryData data = queryDataList.get(index);
+    return HelpClass.getInstance().getDayList(data.getEndMonth());
+  }
+
+  public void changeStartMonth() {
+    log.info("changeStartMonth");
+    appendQuery();
+  }
+
+  public void changeEndMonth() {
+    log.info("changeEndMonth");
+    appendQuery();
+  }
+
+  public void changeStartDay() {
+    log.info("changeStartDay");
+    appendQuery();
+  }
+
+  public void changeEndDay() {
+    log.info("changeEndDay");
+    appendQuery();
+  }
+
+  public void removeQueryLine(int index) {
+    log.info("removeQueryLine : {} ", index);
+
+    queryDataList.remove(index);
+    appendQuery();
+  }
+
+  public void addQueryLine(QueryData qb, int index) {
+    log.info("addQueryLine : {} -- {}", qb, index);
+
+//    if (index == queryDataList.size() - 1) {
+//      QueryBean bean = queryDataList.get(queryDataList.size() - 1);                     // get last query bean
+//      bean.setField(qb.getField());
+//      bean.setValue(qb.getValue());
+//      bean.setOperattion(qb.getOperattion());
+//      bean.setStMon(qb.getStMon());
+//      bean.setEndMon(qb.getEndMon());
+//      bean.setFromDate(qb.getFromDate());
+//      bean.setToDate(qb.getToDate());
+//
+//      if (index == 1 && qb.getOperattion().equals("and")) {
+//        QueryBean querybean = queryBeans.get(0);
+//        querybean.setOperattion("and");
+//      }
+//
+    QueryData newQueryData = new QueryData("and", "contains", "text", "");
+    queryDataList.add(newQueryData);
+//    }
+  }
+
+  public List<String> queryComplete(QueryData data) {
+    log.info("queryComplete : {} -- {}", data.getValue(), data.getField());
+    String fieldName = data.getField();
+    String value = data.getValue();
+    String content = data.getContent();
+
+    if (value.length() > 2) {
+      switch (fieldName) {
+        case "text":
+          return solr.autoCompleteSearchAllField(value, content);
+        case "ftx":
+        case "eftx":
+          return solr.autoCompleteTaxon(value, content);
+        case "accessionNumber":
+          return solr.autoCompleteAccession(value, content);
+        default:
+          return solr.autoCompleteSearch(value, fieldName, content);
+      }
+    }
+    return new ArrayList<>();
+  }
+
+  public void itemSelect(SelectEvent event) {
+//        log.info("itemSelect"); 
+    appendQuery();
+  }
+
+  public void keyup() {
+    appendQuery();
+  }
+
+  public void freeTextKeyup() {
+
   }
 
   public void selectOne(SolrData data) {
@@ -836,19 +967,23 @@ public class SearchBean implements Serializable {
   }
 
   public String getBuildSearchText() {
-    return SolrHelper.getInstance().buildSearchText(CommonText.getInstance().getTextKey(), freeText);
+    return SolrHelper.getInstance().buildFullSearchText(freeText);
   }
 
   public boolean isOverMaxDownloadSize() {
-    return selectedRecords.size() > 0 ? selectedRecords.size() > 1000 : result.getTotalFound() > 1000;
+    return selectedRecords.size() > 0 ? selectedRecords.size() > 1000 : totalResult > 1000;
   }
 
-  public QueryData getQueryData() {
-    return queryData;
-  }
+//  public QueryData getQueryData() {
+//    return queryData;
+//  }
 
   public List<QueryData> getQueryDataList() {
     return queryDataList;
+  }
+
+  public String getMaxDate() {
+    return HelpClass.getInstance().getTodaysDateInString();
   }
 
   public String getQueryText() {
@@ -862,6 +997,21 @@ public class SearchBean implements Serializable {
    */
   private void updateView(String viewId) {
     PrimeFaces.current().ajax().update(viewId);
+  }
+  
+  private void clearAdvanceData() {
+    freeText = null;      
+    result = null;
+    resultList = new ArrayList<>();
+    exportDataSet = new ArrayList<>();
+    selectedAll = false; 
+
+    queryDataList = new ArrayList<>();
+    queryDataList.add(new QueryData("", "contains", "text", ""));
+    queryTextSb = new StringBuilder();
+    queryText = "";
+
+    clearSelectedData();
   }
 
   /**
@@ -880,8 +1030,19 @@ public class SearchBean implements Serializable {
     resultList = new ArrayList<>();
     exportDataSet = new ArrayList<>();
     selectedAll = false;
-    totalResult = 0;
+    totalResult = 0; 
+    
+    queryDataList = new ArrayList<>();
+    queryDataList.add(getNewQueryData());
+    queryTextSb = new StringBuilder();
+    queryText = "";
+
     clearSelectedData();
+  }
+  
+  private QueryData getNewQueryData() {
+    return new QueryData(CommonText.getInstance().getEmptyString(), CommonText.getInstance().getContains(), 
+                  CommonText.getInstance().getTextField(), CommonText.getInstance().getEmptyString());
   }
 
   private void clearSelectedData() {
@@ -894,7 +1055,10 @@ public class SearchBean implements Serializable {
   private void updateFilters() {
     filters = new HashMap();
     filters = queries.entrySet().stream()
-            .filter(e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey()))
+            .filter(notCoordinateKey)
             .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
   }
+  
+   Predicate<Entry<String, String>> notCoordinateKey = 
+           e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey());
 }
