@@ -17,8 +17,7 @@ import org.primefaces.model.LazyDataModel;
 import se.nrm.dina.web.portal.logic.lazy.datamodel.ImageLazyDataModel;
 import se.nrm.dina.web.portal.logic.utils.GalleriaHelper;
 import se.nrm.dina.web.portal.model.ImageModel;
-import se.nrm.dina.web.portal.solr.SolrService;
-import se.nrm.dina.web.portal.utils.CommonText;
+import se.nrm.dina.web.portal.solr.SolrService; 
 
 /**
  *
@@ -43,11 +42,7 @@ public class GalleriaBean implements Serializable {
   private List<String> partsList;
   private List<String> sexList;
   private List<String> stageList;
-  
-  private String all;
-
-  private String mbid;
-
+   
   @Inject
   private SolrService solr;
  
@@ -58,9 +53,7 @@ public class GalleriaBean implements Serializable {
     partsList = new ArrayList<>();
     sexList = new ArrayList<>();
     stageList = new ArrayList<>(); 
-    filters = new ArrayList<>();
-    
-    all = CommonText.getInstance().getAll();
+    filters = new ArrayList<>(); 
   }
  
   public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {  
