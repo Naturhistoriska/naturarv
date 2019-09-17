@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -21,7 +20,6 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
@@ -40,6 +38,7 @@ import se.nrm.dina.web.portal.model.RectangleData;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.solr.SolrService;
 import se.nrm.dina.web.portal.utils.CommonText;
+import se.nrm.dina.web.portal.utils.HelpClass;
 
 /**
  *
@@ -59,8 +58,12 @@ public class GeoMap implements Serializable {
   private int maxCount;
   private int totalFound;
   private boolean displayingColorBar;
-  private Map<String, String> defaultColorMap;
   private List<String> colorBar;
+
+  private double minLat;
+  private double maxLat;
+  private double minLng;
+  private double maxLng;
 
   private TreeSet<Integer> set;
   private List<GeoData> listData;
@@ -72,7 +75,6 @@ public class GeoMap implements Serializable {
   private static final String RELATIVE_IMAGE_PATH_PINK = "/resources/images/icons/pink_10.png";
   private static final String RELATIVE_IMAGE_PATH_PLUS = "/resources/images/icons/marker_red_plus_19.png";
   private static final String RELATIVE_IMAGE_PATH_MINUS = "/resources/images/icons/marker_red_minus_19.png";
-  
 
   private final String singleMarkerPath;
   private final String pinkMarkerPath;
@@ -108,34 +110,14 @@ public class GeoMap implements Serializable {
     pinkMarkerPath = sb.toString() + RELATIVE_IMAGE_PATH_PINK;
     plusMarkerPath = sb.toString() + RELATIVE_IMAGE_PATH_PLUS;
     minusMarkerPath = sb.toString() + RELATIVE_IMAGE_PATH_MINUS;
- 
+
     session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
   }
 
   @PostConstruct
   public void init() {
     log.info("init");
-
-    defaultColorMap = new TreeMap<>();
-    defaultColorMap.put(CommonText.getInstance().getColor1(), "#F7C7C7");
-    defaultColorMap.put(CommonText.getInstance().getColor2(), "#E98990");
-    defaultColorMap.put(CommonText.getInstance().getColor3(), "#DA323D");
-    defaultColorMap.put(CommonText.getInstance().getColor4(), "#A2002E");
-    defaultColorMap.put(CommonText.getInstance().getColor5(), "#8E0028");
-    defaultColorMap.put(CommonText.getInstance().getColor6(), "#790022");
-
     setDefaultMapData();
-  }
-
-  private void setDefaultMapData() {
-    model = new DefaultMapModel();
-    zoom = 1;
-
-    centerLat = 32.0;
-    centerLng = 31.0;
-
-    displayingColorBar = false;
-    colorBar = new ArrayList<>();
   }
 
   public void setMapView(int totalResults, String searchText, Map<String, String> filters) {
@@ -150,12 +132,9 @@ public class GeoMap implements Serializable {
 
     totalFound = totalResults;
     fetchDataSet(MapHelper.getInstance().getDefaultRegion(), MapHelper.getInstance().getDefaultZoom());
-  }
-
-  public void onFilters(String searchText, Map<String, String> filters) {
-    this.searchText = searchText;
-    this.filters = filters;
-    fetchDataSet(MapHelper.getInstance().getDefaultRegion(), MapHelper.getInstance().getDefaultZoom());
+    setMapData(true);
+    resetZoom();
+    zoom = zoom >= 3 ? zoom - 2 : zoom;
   }
 
   public void onStateChange(StateChangeEvent event) {
@@ -168,14 +147,13 @@ public class GeoMap implements Serializable {
     set = new TreeSet<>();
     listData = new ArrayList<>();
     model = new DefaultMapModel();
-
-    if (zoom < 16) {
+    if (zoom < 15) {
       fetchDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()),
               MapHelper.getInstance().getGridLevel(zoom));
     } else {
       fetchSmallDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()));
-      setMapData();
     }
+    setMapData(false);
   }
 
   private void fetchDataSet(String regionText, int gridLevel) {
@@ -184,15 +162,14 @@ public class GeoMap implements Serializable {
     HeatmapData data = solr.searchHeatmapWithFilter(searchText, filters, regionText, gridLevel);
 
     if (data != null) {
-      int total = data.getTotal();
-      if (total > 0) {
-        displayingColorBar = total > 500;
-        if (total > 500) {
+      totalFound = data.getTotal();
+      if (totalFound > 0) {
+        displayingColorBar = totalFound > 500;
+        if (totalFound > 500) {
           extractData(data);
         } else {
           fetchSmallDataSet(regionText);
         }
-        setMapData();
       }
     }
   }
@@ -215,14 +192,12 @@ public class GeoMap implements Serializable {
             });
     minCount = set.first();
     maxCount = set.last();
-    log.info("set size: {}", set.size());
     if (set.size() >= 6) {
       if (colorBar.size() < 6) {
-        colorBar = defaultColorMap.values()
-                .stream().collect(Collectors.toList());
+        MapHelper.getInstance().setDefaultColorBar(colorBar);
       }
     } else {
-      setColorBar();
+      MapHelper.getInstance().setColorBar(set.size(), colorBar);
     }
   }
 
@@ -242,33 +217,43 @@ public class GeoMap implements Serializable {
     listData = solr.searchSmallDataSet(searchText, filters, regionText);
   }
 
-  private void setMapData() {
+  private void setMapData(boolean resetMinMaxLatLng) {
     log.info("setMapData");
 
     listData.stream().forEach(geoData -> {
       int count = geoData.getTotal();
       if (count == 1) {
-        addSingleMarker(geoData.getSolrData());
+        addSingleMarker(geoData.getSolrData(), resetMinMaxLatLng);
       } else {
         if (geoData.getSolrDataList() != null) {
-          addMultipleDataMarker(geoData);
+          addMultipleDataMarker(geoData, resetMinMaxLatLng);
         } else {
-          addRectanglerToModel(count, geoData.getLatLngBounds());
+          addRectanglerToModel(count, geoData.getLatLngBounds(), resetMinMaxLatLng);
         }
       }
     });
+//    resetZoom();
   }
 
-  private void addMultipleDataMarker(GeoData geoData) {
+  private void addMultipleDataMarker(GeoData geoData, boolean resetMinMaxLatLng) {
     SolrData data = geoData.getSolrDataList().get(0);
+    if (resetMinMaxLatLng) {
+      setMinAndMaxLatLng(data.getLatitude(), data.getLongitude());
+    }
     String text = MapHelper.getInstance().buildMultipleDataText(geoData.getTotal(), geoData.getSolrDataList());
     Marker marker = new Marker(data.getLatLng(), text, geoData.getSolrDataList(), plusMarkerPath);
     model.addOverlay(marker);
   }
 
-  private void addRectanglerToModel(int count, LatLngBounds bounds) {
-    String colorCode = getColorCode(count);                    // color to fill the rectangle
+  private void addRectanglerToModel(int count, LatLngBounds bounds, boolean resetMinMaxLatLng) {
+    if (resetMinMaxLatLng) {
+      setMinLat(bounds.getSouthWest().getLat());
+      setMaxLat(bounds.getNorthEast().getLat());
+      setMinLng(bounds.getSouthWest().getLng());
+      setMaxLng(bounds.getNorthEast().getLat()); 
+    }
 
+    String colorCode = MapHelper.getInstance().getColorCode(count, set);
     Rectangle rect = new Rectangle(bounds);
     rect.setStrokeColor(colorCode);
     rect.setStrokeOpacity(0.8);
@@ -281,129 +266,19 @@ public class GeoMap implements Serializable {
     model.addOverlay(rect);
   }
 
-  private void addSingleMarker(SolrData solrData) {
+  private void addSingleMarker(SolrData solrData, boolean resetMinMaxLatLng) {
+    if (resetMinMaxLatLng) {
+      setMinAndMaxLatLng(solrData.getLatitude(), solrData.getLongitude());
+    }
+
     model.addOverlay(new Marker(solrData.getLatLng(),
             MapHelper.getInstance().buildMakerTitle(solrData, 1),
             solrData, singleMarkerPath));
   }
 
   private SolrData searchSingleData(String regionText) {
-    log.info("searchSingleData: {}", regionText);
+//    log.info("searchSingleData: {}", regionText);
     return solr.searchSpatialData(searchText, filters, regionText).get(0);
-  }
-
-  private String getColorCode(int count) {
-
-    int setSize = set.size();
-    if (setSize >= 6) {
-      if (count == set.first()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor1());
-      }
-
-      if (count == set.last()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor6());
-      }
-
-      int colorIndex = set.headSet(count).size();
-      double divid = set.size() / 4;
-      if (colorIndex > 0 && colorIndex <= divid) {
-        return defaultColorMap.get(CommonText.getInstance().getColor2());
-      }
-
-      if (colorIndex > divid && colorIndex <= divid * 2) {
-        return defaultColorMap.get(CommonText.getInstance().getColor3());
-      }
-
-      if (colorIndex > divid * 2 && colorIndex <= divid * 3) {
-        return defaultColorMap.get(CommonText.getInstance().getColor4());
-      } else if (colorIndex > divid * 3 && colorIndex < set.size() - 1) {
-        return defaultColorMap.get(CommonText.getInstance().getColor5());
-      }
-    }
-
-    if (setSize == 5) {
-      if (count == set.first()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor1());
-      }
-      if (count == set.last()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor6());
-      }
-
-      return set.headSet(count).size() == 2
-              ? defaultColorMap.get(CommonText.getInstance().getColor2())
-              : set.headSet(count).size() == 5
-              ? defaultColorMap.get(CommonText.getInstance().getColor3())
-              : defaultColorMap.get(CommonText.getInstance().getColor4());
-    }
-
-    if (setSize == 4) {
-      if (count == set.first()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor1());
-      }
-      if (count == set.last()) {
-        return defaultColorMap.get(CommonText.getInstance().getColor6());
-      }
-
-      return set.headSet(count).size() == 2
-              ? defaultColorMap.get(CommonText.getInstance().getColor3())
-              : defaultColorMap.get(CommonText.getInstance().getColor4());
-    }
-
-    if (setSize == 3) {
-      return count == set.first()
-              ? defaultColorMap.get(CommonText.getInstance().getColor1())
-              : count == set.last() ? defaultColorMap.get(CommonText.getInstance().getColor6())
-              : defaultColorMap.get(CommonText.getInstance().getColor3());
-    }
-
-    if (setSize == 2) {
-      return count == set.first()
-              ? defaultColorMap.get(CommonText.getInstance().getColor1())
-              : defaultColorMap.get(CommonText.getInstance().getColor6());
-    }
-
-    if (setSize == 1) {
-      return defaultColorMap.get(CommonText.getInstance().getColor6());
-    }
-
-    return defaultColorMap.get(CommonText.getInstance().getColor1());
-  }
-
-  private void setColorBar() {
-    log.info("setColorBar: {}", set.size());
-    colorBar.clear();
-    switch (set.size()) {
-      case 1:
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor6()));
-        break;
-      case 2:
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor1()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor6()));
-        break;
-      case 3:
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor1()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor3()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor6()));
-        break;
-      case 4:
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor1()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor3()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor4()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor6()));
-        break;
-      case 5:
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor1()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor2()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor3()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor4()));
-        colorBar.add(defaultColorMap.get(CommonText.getInstance().getColor6()));
-        break;
-      default:
-        colorBar = defaultColorMap.values()
-                .stream().collect(Collectors.toList());
-        break;
-    }
-    log.info("colorBar : {}", colorBar);
   }
 
   private void addPolyline(SolrData solrData) {
@@ -474,101 +349,61 @@ public class GeoMap implements Serializable {
             marker.setIcon(plusMarkerPath);
             removePolylineAndSubMarkers();
           }
-          updateView("resultsForm:largeMap");
+          HelpClass.getInstance().updateView("resultsForm:largeMap");
         } else {
           selectedLocality = solrData.getLocality();
           selectedCoordinate = solrData.getCoordinateString();
         }
       }
     } else if (overlay instanceof Rectangle) {
-      colorBar = new ArrayList<>();
-      model = new DefaultMapModel();
+      set = new TreeSet<>();
+      listData = new ArrayList();
+      setDefaultMapData();
       Rectangle rectangle = (Rectangle) overlay;
 
       LatLngBounds bound = rectangle.getBounds();
+      minLat = bound.getSouthWest().getLat();
+      maxLat = bound.getNorthEast().getLat();
+      minLng = bound.getSouthWest().getLng();
+      maxLng = bound.getNorthEast().getLng(); 
+      resetZoom();
+
       String searchRegion = MapHelper.getInstance().buildSearchRegion(bound);
-      log.info("Search region: {}", searchRegion);
-      setZoom(bound);
-      fetchDataSet(searchRegion, MapHelper.getInstance().getGridLevel(zoom));
-      updateView("resultsForm:mapPanel");
+      
+      if (zoom < 15) {
+        fetchDataSet(searchRegion, MapHelper.getInstance().getGridLevel(zoom));
+      } else {
+        fetchSmallDataSet(searchRegion);
+      }
+      
+      setMapData(false); 
+      HelpClass.getInstance().updateView("resultsForm:mapPanel");
     }
   }
 
-  private void setZoom(LatLngBounds bound) {
+  private void resetZoom() {  
+    double lngD = maxLng < minLng ? 360 + maxLng - minLng : maxLng - minLng;
+    double latD = maxLat - minLat;
+    zoom = MapHelper.getInstance().getZoomLevel(latD, lngD);
 
-    double north = bound.getNorthEast().getLat();
-    double south = bound.getSouthWest().getLat();
-    double east = bound.getNorthEast().getLng();
-    double west = bound.getSouthWest().getLng();
+    log.info("resetZoom: zoom: {} ", zoom);
 
-    double lngD = east < west ? 360 + east - west : east - west;
-    double latD = north - south;
+    minLng = maxLng > minLng ? minLng : maxLng;
 
-    log.info("lngD, latD: {} -- {}", lngD, latD);
+    centerLat = minLat + latD / 2;
+    centerLng = minLng + lngD / 2;
 
-    int zoomlevelLng = 1;
-    if (lngD >= 240) {
-      zoomlevelLng = 1;
-    } else if (lngD < 240 && lngD >= 120) {
-      zoomlevelLng = 2;
-    } else if (lngD < 120 && lngD >= 62) {
-      zoomlevelLng = 3;
-    } else if (lngD < 62 && lngD >= 25) {
-      zoomlevelLng = 4;
-    } else if (lngD < 25 && lngD >= 10) {
-      zoomlevelLng = 5;
-    } else if (lngD < 10 && lngD >= 7) {
-      zoomlevelLng = 6;
-    } else if (lngD < 7) {
-      if (zoom > 7) {
-        zoomlevelLng = zoom;
-      } else {
-        zoomlevelLng = 7;
-      }
-    }
-
-    int zoomlevelLat = 1;
-    if (latD >= 100) {
-      zoomlevelLat = 1;
-    } else if (latD < 100 && latD >= 60) {
-      zoomlevelLat = 2;
-    } else if (latD < 60 && latD >= 32) {
-      zoomlevelLat = 3;
-    } else if (latD < 32 && latD >= 12) {
-      zoomlevelLat = 4;
-    } else if (latD < 12 && latD >= 6) {
-      zoomlevelLat = 5;
-    } else if (latD < 6 && latD >= 3) {
-      zoomlevelLat = 6;
-    } else if (latD < 3) {
-      if (zoom > 7) {
-        zoomlevelLat = zoom;
-      } else {
-        zoomlevelLat = 7;
-      }
-    }
-
-    zoom = zoomlevelLng > zoomlevelLat ? zoomlevelLat : zoomlevelLng;
-//    centerLat = north + latD / 2;
-//    centerLng = east + lngD / 2;
-
-    centerLat = (south + north) / 2.0;
-    centerLng = (west + east) / 2.0 + west <= north ? 0 : 180.0;
-
-    log.info("zoom : {} - {}", zoom, centerLat + " -- " + centerLng);
-  }
-
-  //  private void addMultipleMarkers(List<SolrData> solrDataList) {
-//    solrDataList.stream()
-//            .forEach(d -> {
-//              String markerTitle = MapHelper.getInstance().buildMakerTitle(d, solrDataList.size());
-//              LatLng latLng = d.getLatLng();
-//              Marker marker = new Marker(latLng, markerTitle, d, plusMarkerPath, plusMarkerPath);
-//              model.addOverlay(marker);
-//            });
-//  }
-  private void updateView(String viewId) {
-    PrimeFaces.current().ajax().update(viewId);
+//    double north = bound.getNorthEast().getLat();
+//    double south = bound.getSouthWest().getLat();
+//    double east = bound.getNorthEast().getLng();
+//    double west = bound.getSouthWest().getLng();
+//    double lngD = east < west ? 360 + east - west : east - west;
+//    double latD = north - south; 
+//    zoom = MapHelper.getInstance().getZoomLevel(latD, lngD); 
+//    double mimLng = east > west ? west : east;
+//
+//    centerLat = south + latD / 2;
+//    centerLng = mimLng + lngD / 2; 
   }
 
   public void showSelectedMarkDetail() {
@@ -649,4 +484,42 @@ public class GeoMap implements Serializable {
     return selectedCoordinate;
   }
 
+  private void setDefaultMapData() {
+    model = new DefaultMapModel();
+    zoom = 1;
+
+    minLat = 90;
+    minLng = 180;
+    maxLat = -90;
+    maxLng = -180;
+
+    centerLat = 32.0;
+    centerLng = 31.0;
+
+    displayingColorBar = false;
+    colorBar = new ArrayList<>();
+  }
+
+  private void setMinLat(double latitude) {
+    minLat = latitude > minLat ? minLat : latitude;
+  }
+
+  private void setMaxLat(double latitude) {
+    maxLat = latitude > maxLat ? latitude : maxLat;
+  }
+
+  private void setMinLng(double longitude) {
+    minLng = longitude > minLng ? minLng : longitude;
+  }
+
+  private void setMaxLng(double longitude) {
+    maxLng = longitude > maxLng ? longitude : maxLng;
+  }
+
+  private void setMinAndMaxLatLng(double latitude, double longitude) {
+    setMinLat(latitude);
+    setMaxLat(latitude);
+    setMinLng(longitude);
+    setMaxLng(longitude);
+  }
 }
