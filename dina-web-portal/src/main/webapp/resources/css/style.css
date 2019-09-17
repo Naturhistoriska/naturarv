@@ -247,6 +247,21 @@ body * {
     margin-right: 20px; 
 }
 
+.queryDropdownBox {
+  width: 70px; 
+  margin-top: 4px;
+}
+
+.queryDropdownBoxContent {
+  width:100px;
+  margin-top: 4px;
+}
+
+.queryDropdownBoxField {
+  width:170px; 
+  margin-top: 4px;
+}
+
 .alignBottom {
   vertical-align: bottom;
 }
