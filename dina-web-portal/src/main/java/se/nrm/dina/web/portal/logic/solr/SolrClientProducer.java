@@ -6,9 +6,10 @@
 package se.nrm.dina.web.portal.logic.solr;
 
 import java.io.IOException; 
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.ejb.Startup;
+import javax.annotation.PreDestroy; 
+import javax.ejb.Startup; 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -22,9 +23,10 @@ import se.nrm.dina.web.portal.logic.config.InitialProperties;
  * @author idali
  */
 @ApplicationScoped
+//@Stateless 
 @Startup
 @Slf4j
-public class SolrClientProducer {
+public class SolrClientProducer implements Serializable {
 
   private SolrClient client;
 
@@ -44,14 +46,14 @@ public class SolrClientProducer {
   public void init() {
     log.info("init"); 
      
-    client = new HttpSolrClient.Builder(properties.getSolrPath() + "/nrm").build();
+    client = new HttpSolrClient.Builder(properties.getSolrURL()).build();
   }
 
   /**
    *
-   * Produce CDI KeycloakClient
+   * Produce CDI SolrClient
    *
-   * @return Keycloak
+   * @return SolrClient
    */
   @Produces
   @Solr
@@ -65,7 +67,7 @@ public class SolrClientProducer {
   @PreDestroy
   public void preDestroy() {
     try {
-      log.info("preDestroy - keyclokClient is closed");
+      log.info("preDestroy - solrClient is closed");
       client.close();
     } catch (IOException ex) { 
     }

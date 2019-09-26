@@ -1,0 +1,116 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:h="http://java.sun.com/jsf/html"    >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">     
+      <ui:define name="content"  >    
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
+          <h:form id="errorReportForm" prependId="false">   
+            <hr  />
+            <h:panelGrid style="text-align: center; width: 800px; "> 
+              <p:outputLabel value="Error Report" style=" font-size: 24px; " /> 
+            </h:panelGrid>
+            <h:panelGrid columns="3" columnClasses="errorcol3,errorcol1,errorcol2">  
+              <h:selectBooleanCheckbox value="#{error.errorReport.catalogNumber}" />
+              <h:outputText value="#{msg.cataloguenumber}:" styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.catalogNumber}" /> 
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.specimenName}" />
+              <h:outputText value="#{msg.speciesname}:" styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.txFullName}" />  
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.family}" />
+              <h:outputText value="#{msg.family}:" styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.higherTx}" />  
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.typeinfo}" />
+              <h:outputText value="#{msg.type}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.typeStatus}" /> 
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.collector}" />
+              <h:outputText value="#{msg.collector}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.collectors}" /> 
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.date}" />
+              <h:outputText value="#{msg.collectiondate}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.catalogedDate}" />   
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.locality}" />
+              <h:outputText value="#{msg.locality}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.locality}" />   
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.country}" />
+              <h:outputText value="#{msg.country}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.country}" />   
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.coordinate}" />
+              <h:outputText value="#{msg.coordinate}:"  styleClass="boldtext" />   
+              <h:outputText value="#{error.errorData.coordinateString}" /> 
+
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.otherinfo}" />
+              <h:outputText value="#{msg.remarks}:"  styleClass="boldtext" />   
+              <h:panelGrid cellpadding="0" cellspacing="0">
+                <ui:repeat value="#{error.errorData.remarks}" var="remark">   
+                  <h:outputText value="#{remark}" />  <br />
+                </ui:repeat>  
+              </h:panelGrid>
+
+              <h:selectBooleanCheckbox value="#{error.errorReport.determinater}" />
+              <h:outputText value="#{msg.determiner}:"  styleClass="boldtext" />    
+              <h:outputText value="#{error.errorData.determiner}"/>  
+
+            </h:panelGrid>
+
+            <h:panelGrid width="580">
+              <hr />
+              <h:outputText value="#{msg.errordesc}"  styleClass="boldtext" />  
+              <h:inputTextarea value="#{error.errorReport.errorDesc}" rows="8"  cols="110"   >
+                <p:ajax event="blur"  listener="#{error.onBlur()}" global="false"  
+                        update="sendErrorReportBtnPanel"   />
+              </h:inputTextarea> 
+            </h:panelGrid>
+
+            <h:column />
+            <h:column /> 
+
+            <h:panelGrid id="errorreportoremailpanel">
+              <h:outputText value="#{msg.erroryouremail}"  styleClass="boldtext" />  
+              <p:inputText id="erroryouremail"   size="40" required="false" 
+                           validatorMessage="#{msg.errmsgemailvalidation}"  styleClass="contactfieldstext" 
+                           value="#{error.errorReport.reportorsEmail}"> 
+                <f:validateRegex pattern="(.+@.+\.[a-zA-Z]+)?" />  
+                <p:ajax event="blur"  listener="#{error.validateEmail()}" global="false"
+                        update="errorreportoremailpanel"  process="@this,erroryouremail" />
+
+              </p:inputText> 
+              <p:messages showDetail="false" for="erroryouremail" closable="true"   />  
+            </h:panelGrid>
+            <h:panelGrid>
+              <p:messages showDetail="true"/>
+              <p:captcha label="Captcha"   />
+            </h:panelGrid>
+
+
+            <h:panelGrid id="sendErrorReportBtnPanel" style="float: right; " >  
+              <p:commandButton value="#{msg.sendbutton}" actionListener="#{error.sendErrorReport}" 
+                               update="errorReportForm"   >
+                <p:confirm header="Confirmation" message="#{msg.confirmationbeforesendmsg}" 
+                           icon="ui-icon-alert" disabled="#{not empty error.errorReport.errorDesc}" /> 
+              </p:commandButton> 
+            </h:panelGrid>
+ 
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+              <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" style="color: #FFFFFF;"   />
+              <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" style="color: #FFFFFF;"   />
+            </p:confirmDialog>
+
+          </h:form> 
+        </h:panelGroup> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

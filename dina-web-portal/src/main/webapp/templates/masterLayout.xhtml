@@ -3,20 +3,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:p="http://primefaces.org/ui" 
       > 
   <h:head>
-    <link rel="shortcut icon" href="//www.dina-web.net/naturarv/resources/images/favicon.ico" type="image/x-icon" />
+    <!--<link rel="shortcut icon" href="//www.dina-web.net/naturarv/resources/images/favicon.ico" type="image/x-icon" />-->
+    <link rel="shortcut icon" href="//localhost:8080/naturarv/resources/images/favicon.ico" type="image/x-icon" />
     <title>
       <ui:insert name="windowTitle">
         #{msg.naturarv}
       </ui:insert>
     </title>     
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa1olBKzqZdr4KaHHaC-2njZOWOinIDq8" type="text/javascript"></script> 
 
-    <script name="jquery/jquery.js" library="primefaces"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>   
+    <script name="jquery/jquery.js" library="primefaces"></script>  
 
-
+    <!--<h:outputScript name="markerclusterer.js" />-->
 
   </h:head>
 
@@ -27,48 +29,92 @@
       <f:metadata> 
         <f:event listener="#{search.init()}"  type="preRenderView"  /> 
       </f:metadata>
-    </ui:remove>
+    </ui:remove> 
 
-
-    <h:body  styleClass="mainbody" >  	     
+    <h:body  styleClass="mainbody" >  	      
       <h:outputStylesheet library="css" name="style.css"  />  
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+      
+      <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   /> 
+      <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" 
+               resizable="false" showHeader="false">   
+        <h:panelGrid columns="3"  >  
+          <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" /> 
+          <p:spacer width="10" />
+          <p:outputLabel value="#{msg.wait}" styleClass="inprocess" /> 
+        </h:panelGrid>  
+      </p:dialog>
 
-      <h:panelGroup layout="block" styleClass="templet">
-        <h:panelGroup  id="header" layout="block"  >
+
+      <div styleClass="templet">
+        <div  id="header" layout="block"  >
           <ui:insert name="header" >
             <ui:include src="/pages/header.xhtml" />
           </ui:insert> 
-        </h:panelGroup>
+        </div>
 
-        <h:panelGroup  id="topmenu" layout="block"  >
+        <div  id="topmenu" layout="block"  >
           <ui:insert name="topmenu" >
             <ui:include src="/pages/topMenu.xhtml" />
           </ui:insert>  
-        </h:panelGroup>
- 
-        <h:panelGroup  id="search" layout="block"  >
+        </div>
+
+        <div  id="search"  >
           <ui:insert name="search" >
             <ui:include src="/pages/search.xhtml" />
           </ui:insert>  
-        </h:panelGroup>
-        
-        <h:panelGroup id="main" layout="block"  > 
-          <ui:insert name="content"/>
-        </h:panelGroup> 
+        </div>
 
-        <h:panelGroup  id="footer" layout="block"  >
+        <div id="main"  > 
+          <ui:insert name="content"/>
+        </div> 
+
+        <div  id="footer"  >
           <ui:insert name="footer" >
             <ui:include src="/pages/footer.xhtml" />
           </ui:insert>
-        </h:panelGroup>
+        </div>
 
 
-      </h:panelGroup>   
+      </div> 
+
+
 
 
 
       <ui:remove> 
+
+        <h:panelGroup layout="block" styleClass="templet">
+          <h:panelGroup  id="header" layout="block"  >
+            <ui:insert name="header" >
+              <ui:include src="/pages/header.xhtml" />
+            </ui:insert> 
+          </h:panelGroup>
+
+          <h:panelGroup  id="topmenu" layout="block"  >
+            <ui:insert name="topmenu" >
+              <ui:include src="/pages/topMenu.xhtml" />
+            </ui:insert>  
+          </h:panelGroup>
+
+          <h:panelGroup  id="search" layout="block"  >
+            <ui:insert name="search" >
+              <ui:include src="/pages/search.xhtml" />
+            </ui:insert>  
+          </h:panelGroup>
+
+          <h:panelGroup id="main" layout="block"  > 
+            <ui:insert name="content"/>
+          </h:panelGroup> 
+
+          <h:panelGroup  id="footer" layout="block"  >
+            <ui:insert name="footer" >
+              <ui:include src="/pages/footer.xhtml" />
+            </ui:insert>
+          </h:panelGroup>
+
+
+        </h:panelGroup>   
 
         <div style="width: 960px; margin: auto;"> 
           <div id="header" style="width: 960px; ">

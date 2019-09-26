@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"   >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">  
+
+      <ui:define name="content"  >    
+
+        <h:panelGrid id="mainPanel" styleClass="main" >
+          <h:outputText  value="#{msg.allitemsincollections}" style="font-weight: bold;"/>
+           
+        </h:panelGrid> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

@@ -1,0 +1,475 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core"  
+      xmlns:p="http://primefaces.org/ui"  >
+
+  <body>
+    <ui:composition  template="/templates/masterLayout.xhtml">    
+
+      <ui:define name="content"  >    
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
+          <h:form id="resultsForm" prependId="false">    
+            <h:panelGroup  id="result" layout="block" > 
+              <h:panelGrid columns="2" columnClasses="searchColumn,statistic" styleClass="topAlign"  >  
+                <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
+                  <!-- result header --> 
+                  <h:panelGrid id="resultHeader" styleClass="textLink" cellpadding="0" cellspacing="0"  > 
+                    <h:panelGrid id="displayviewpanel" columns="4"
+                                 columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
+                      <h:outputText value="#{searchBean.resultHeaderSummary}" /> 
+                      <p:commandLink actionListener="#{searchBean.backToListView}" process="@this" 
+                                     rendered="#{resultHeader.displayBackToListLink}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
+                      </p:commandLink>  
+                      <p:commandLink actionListener="#{searchBean.showImageView()}" process="@this" 
+                                     rendered="#{!resultHeader.imageView}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
+                      </p:commandLink>  
+
+                      <p:commandLink actionListener="#{searchBean.showMapView()}" process="@this" 
+                                     rendered="#{!resultHeader.mapView}" 
+                                     update=":resultsForm:resultContent">   
+                        <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
+                      </p:commandLink> 
+
+                      <p:commandLink id="downlodlink" action="#{searchBean.export}"  
+                                     styleClass="downLink" process="@this" global="false">   
+                        <h:outputText value="#{msg.downLoadAll}"  rendered="#{searchBean.selectedRecords.size() == 0}" />  
+                        <h:outputText value="#{msg.downLoadSelected}" rendered="#{searchBean.selectedRecords.size() > 0}" />   
+                      </p:commandLink> 
+                      <p:overlayPanel id="downloadFormatListPanel" for="downlodlink" hideEffect="fade" >  
+                        <h:panelGrid id="maxiumdownloadmsg"  cellpadding="0" cellspacing="0"
+                                     rendered="#{searchBean.overMaxDownloadSize}"  >
+                          <h:panelGrid  columns="4"   cellpadding="0" cellspacing="0" 
+                                        style="float: left; text-align:  left;" 
+                                        columnClasses="alignTop,alignTop,alignTop" > 
+                            <p:spacer width="12" />
+                            <p:graphicImage value="/resources/images/icons/exclaim_yellow.gif" alt="warning"  title="warning" />   
+                            <p:spacer width="12" />  
+                            <h:outputText value="#{msg.maxiumdownload}"  style="font-size: 11px; color: red;" />    
+                          </h:panelGrid>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  > 
+                          <p:spacer width="55" />
+                          <h:commandLink>     
+                            <p:graphicImage value="/resources/images/excel.png" 
+                                            alt="XLS"  title="XLS" styleClass="images"/>    
+                            <p:dataExporter type="xls" target="exportDataTable" fileName="dina_data" />  
+                          </h:commandLink>  
+                          <p:spacer width="55" />
+                          <h:commandLink>     
+                            <p:graphicImage value="/resources/images/csv.png"  
+                                            alt="CSV"  title="CSV" styleClass="images"/>       
+                            <p:dataExporter type="csv" target="exportDataTable" 
+                                            fileName="dina_data" />  
+                          </h:commandLink>   
+                        </h:panelGrid>  
+                      </p:overlayPanel>  
+                    </h:panelGrid>  
+                  </h:panelGrid>
+                  <hr />
+                  <h:panelGroup layout="block" id="resultSubHeaderSelectedView"  styleClass="resultHeader"   
+                                rendered="#{resultHeader.displaySelectedView}"> 
+                    <h:panelGrid columns="3">
+                      <h:panelGrid columns="3">
+                        <h:selectBooleanCheckbox id="selectallbox" value="#{searchBean.selectedAll}"  >  
+                          <p:ajax event="click" update="resultsForm:resultContent" process="@this" global="false"
+                                  listener="#{searchBean.removeAllSelectedRecords}" />
+                        </h:selectBooleanCheckbox> 
+                        <p:spacer width="4" /> 
+                        <h:outputText value="#{msg.removeAllQueries}" />
+                      </h:panelGrid> 
+                      <p:spacer width="400" height="20"/> 
+                      <h:panelGrid columns="6" > 
+                        <h:outputText value="#{msg.backtolistview}:" />
+                        <p:spacer width="8" />  
+                        <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
+                                       disabled="#{resultHeader.resultView == 'list'}" 
+                                       update=":resultsForm:resultContent" global="false">  
+                          <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
+                                          styleClass="resultHeaderImages" />
+                        </p:commandLink>   
+
+                        <p:spacer width="8" /> 
+                        <p:commandLink actionListener="#{searchBean.gotoDetailView}" process="@this" 
+                                       disabled="#{resultHeader.resultView == 'detail'}" 
+                                       update=":resultsForm:resultContent" global="false">  
+                          <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
+                                          styleClass="resultHeaderImages" />
+                        </p:commandLink>  
+                        <p:spacer width="8" />
+                      </h:panelGrid> 
+                    </h:panelGrid>
+                  </h:panelGroup>
+
+
+                  <h:panelGroup layout="block" id="resultSubHeader"  styleClass="resultHeader"   
+                                rendered="#{resultHeader.displayListView}"> 
+                    <h:outputText value="#{paging.start}-#{paging.end} #{msg.of} #{paging.totalFound} #{msg.hits}" />
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.numpage}:"  />
+                    <p:spacer width="8" />
+                    <h:selectOneMenu value="#{searchBean.numDisplay}" id="numPerPage" style="width: 50px;">
+                      <f:selectItem itemValue="10" itemLabel="10" />
+                      <f:selectItem itemValue="25" itemLabel="25" />
+                      <f:selectItem itemValue="50" itemLabel="50" />
+                      <p:ajax event="change" update=":resultsForm:resultContent" 
+                              listener="#{searchBean.changeNumDisplay()}" /> 
+                    </h:selectOneMenu> 
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.sort}:"  />
+                    <p:spacer width="8" />
+                    <h:selectOneMenu value="#{searchBean.sortby}" id="sort" style="width: 90px;">
+                      <f:selectItem itemValue="score" itemLabel="#{msg.relevance}" /> 
+                      <f:selectItem itemValue="ftx" itemLabel="#{msg.taxon}" /> 
+                      <f:selectItem itemValue="sd" itemLabel="#{msg.collectiondate}" /> 
+                      <p:ajax event="change" update=":resultsForm:resultContent" 
+                              listener="#{searchBean.sortResult()}" />   
+                    </h:selectOneMenu> 
+                    <p:spacer width="8" /> 
+                    <h:outputText value="| #{msg.show}:"  />
+                    <p:spacer width="8" />  
+
+                    <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
+                                   disabled="#{resultHeader.resultView == 'list'}" 
+                                   update=":resultsForm:resultContent" global="false" >  
+                      <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
+                                      styleClass="resultHeaderImages" />
+                    </p:commandLink>  
+
+                    <p:spacer width="4" /> 
+                    <p:commandLink actionListener="#{searchBean.gotoDetailView()}" process="@this" 
+                                   disabled="#{resultHeader.resultView == 'detail'}" 
+                                   update=":resultsForm:resultContent" global="false" >  
+                      <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
+                                      styleClass="resultHeaderImages" />
+                    </p:commandLink>   
+
+                    <p:spacer width="4" /> 
+                    <p:commandLink actionListener="#{searchBean.gotoSelectedView}" process="@this" 
+                                   rendered="#{searchBean.selectedRecords.size() > 0}" 
+                                   disabled="#{resultHeader.resultView == 'selected'}" 
+                                   update=":resultsForm:resultContent" global="false" >  
+                      <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
+                                      title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
+                    </p:commandLink>    
+                  </h:panelGroup>
+
+                  <!-- result page include -->
+                  <ui:include src="#{resultHeader.viewPath}" />   
+
+                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  > 
+                    <h:panelGroup  id="floatleftcol"  layout="block" rendered="#{resultHeader.displayPaging}"> 
+                      <p:commandLink actionListener="#{searchBean.firstPage}" process="@this" 
+                                     disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent" >  
+                        <h:graphicImage library="images" name="icons/first.gif" alt="#{msg.first}" 
+                                        title="#{msg.first}" />
+                      </p:commandLink>   
+
+                      <p:spacer width="15" height="5" />
+                      <p:commandLink actionListener="#{searchBean.previousPage}" process="@this" 
+                                     disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/prev.gif" alt="#{msg.previous}" 
+                                        title="#{msg.previous}" />
+                      </p:commandLink> 
+
+                      <p:spacer width="15" height="5" />  
+                      <ui:repeat var="page" value="#{paging.pages}" varStatus="status" >
+                        <p:commandLink actionListener="#{searchBean.changePage(page)}" process="@this" 
+                                       disabled="#{page == paging.currentPage}" 
+                                       update=":resultsForm:resultContent" styleClass="pagingNumberText">   
+                          <h:outputText value= "${page}"    /> 
+                        </p:commandLink>   
+                      </ui:repeat> 
+
+                      <p:spacer width="15" height="5" /> 
+                      <p:commandLink actionListener="#{searchBean.nextPage}" process="@this" 
+                                     disabled="#{paging.currentPage == paging.totalPages}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/next.gif" alt="#{msg.next}" 
+                                        title="#{msg.next}" />
+                      </p:commandLink>
+                      <p:spacer width="15" height="5" /> 
+                      <p:commandLink actionListener="#{searchBean.lastPage}" process="@this" 
+                                     disabled="#{paging.currentPage == paging.totalPages}" update=":resultsForm:resultContent">  
+                        <h:graphicImage library="images" name="icons/last.gif" alt="#{msg.last}" 
+                                        title="#{msg.last}" />
+                      </p:commandLink>  
+                    </h:panelGroup>    
+                  </h:panelGrid> 
+                </h:panelGrid>
+
+                <h:panelGrid styleClass="statistic"  >
+                  <p:spacer width="100" height="30"/>
+                  <h:outputText value="#{msg.addfilter}:" style="font-weight: bold;"  />   
+
+                  <p:spacer width="20" height="10" />
+
+                  <p:commandLink actionListener="#{searchBean.searchDataWithFilter('map:')}"  process="@this" 
+                                 rendered="#{statistic.filteredTotalMaps > 0}"  update=":resultsForm:result"  > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithmap}" />  
+                      <h:outputText value="#{statistic.filteredTotalMaps}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.searchDataWithFilter('isType:')}" process="@this" 
+                                 rendered="#{statistic.filteredTotalType > 0}" update=":resultsForm:result"   > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.typeddata}" />  
+                      <h:outputText value="#{statistic.filteredTotalType}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.searchDataWithFilter('image:')}" process="@this" 
+                                 rendered="#{statistic.filteredTotalImages > 0}" update=":resultsForm:result" > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithimage}" />  
+                      <h:outputText value="#{statistic.filteredTotalImages}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.searchDataWithFilter('inSweden:')}" process="@this" 
+                                 rendered="#{statistic.filteredTotalInSweden > 0}" update=":resultsForm:result" > 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimensinsweden}" />  
+                      <h:outputText value="#{statistic.filteredTotalInSweden}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+                  <p:commandLink actionListener="#{searchBean.searchDataWithFilter('dna:')}" process="@this" 
+                                 rendered="#{statistic.filteredTotalDnas > 0}" update=":resultsForm:result"> 
+                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                 cellpadding="0" cellspacing="0" styleClass="statistic" >
+                      <h:outputText value="#{msg.specimenswithdna}" />  
+                      <h:outputText value="#{statistic.filteredTotalDnas}" />
+                    </h:panelGrid> 
+                  </p:commandLink> 
+
+
+                  <p:spacer width="20" height="30" />
+                  <h:outputText value="#{msg.collection}" style="font-weight: bold;" />  
+
+                  <ui:repeat var="collection" value="#{statistic.filteredCollections}" varStatus="collectionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchCollectionWithFilter(collection)}" 
+                                   title="#{collection.name}"  
+                                   process="@this" update=":resultsForm:result">  
+                      <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
+                                   cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                        <h:outputText value="#{collection.shortName}" />  
+                        <h:outputText value="#{collection.total}" />
+                      </h:panelGrid>  
+                    </p:commandLink>   
+                  </ui:repeat>  
+
+                  <p:spacer width="20" height="30" />
+                  <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>  
+
+                  <ui:repeat var="entry" value="#{statistic.filteredInstitutions.entrySet()}" varStatus="institutionStatus" >   
+                    <p:commandLink actionListener="#{searchBean.searchInstitutionWithFilter(entry.key)}" 
+                                   title="#{entry.key}"  
+                                   process="@this" rendered="#{entry.value > 0}" update=":resultsForm:result"  >  
+                      <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                   cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                        <h:outputText value="#{entry.key}" /> 
+                        <h:outputText value="#{entry.value}" />
+                      </h:panelGrid> 
+                    </p:commandLink>  
+                  </ui:repeat>  
+
+                  <p:spacer width="20" height="30" />
+                  <h:panelGrid  id="querypanel" rendered="#{searchBean.queries.size() > 0}">  
+                    <h:panelGrid style="font-weight: bold; "  >
+                      <h:outputText value="#{msg.filter}"  />
+                    </h:panelGrid>
+
+                    <h:panelGrid style="border: solid 1px; width: 210px; "   >    
+                      <ui:repeat var="entry" value="#{searchBean.filters.entrySet()}" varStatus="status">   
+                        <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">  
+                          <h:outputText value="#{searchBean.selectedInstitution}" rendered="#{entry.key == 'id:'}"  style="font-size: 10px;" /> 
+                          <h:outputText value="#{searchBean.selectedCollectionName}" rendered="#{entry.key == 'collectionId:'}"  style="font-size: 10px;" /> 
+                          <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'map:'}" style="font-size: 10px;" />  
+                          <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'isType:'}" style="font-size: 10px;" />  
+                          <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'inSweden:'}" style="font-size: 10px;" /> 
+                          <h:outputText value="#{msg.specimenswithdna}" rendered="#{entry.key == 'dna:'}" style="font-size: 10px;" /> 
+                          <h:outputText value="#{msg.specimenswithimage}" rendered="#{entry.key == 'image:'}" style="font-size: 10px;" /> 
+                          <h:outputText value="#{msg.coordinates}: #{entry.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" />
+
+                          <p:spacer width="5"  /> 
+                          <p:commandLink actionListener="#{searchBean.removeFilter(entry.key, entry.value)}" 
+                                         title="#{entry.key}" process="@this" update=":resultsForm:result"   >  
+                            <h:graphicImage library="images" name="icons/RemoveRecord16x16.png" 
+                                            alt="#{msg.removequery}" title="#{msg.removequery}" styleClass="images" />
+                          </p:commandLink>   
+                        </h:panelGrid>
+                      </ui:repeat> 
+
+                      <h:panelGrid  columns="2"  >   
+                        <p:commandLink actionListener="#{searchBean.removeAllQueries}"    
+                                       process="@this" update=":resultsForm:result"  >  
+                          <h:outputText value="#{msg.removeAllQueries}" style="font-size: 10px;" />   
+                        </p:commandLink> 
+                        <p:spacer width="5"  /> 
+                      </h:panelGrid>
+                    </h:panelGrid> 
+                  </h:panelGrid> 
+                </h:panelGrid>  
+
+
+              </h:panelGrid>
+            </h:panelGroup>
+
+
+            <!-- ************************************** image switch div ************************************* -->     
+            <p:dialog id="imgswitchdialog" closable="true"  widgetVar="imgswitchdlg" position="top"
+                      draggable="false" header="#{msg.imageswitcher} (#{msg.imgmouseover})" > 
+              <p:panel id="imageswitchpanel">
+                <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
+                            panelWidth="420" panelHeight="450"   autoPlay="false"
+                            var="thumb"  showCaption="true" >    
+                  <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
+                                  title="#{switch.scientificName}"  styleClass="imageswithpedding" />     
+
+                </p:galleria>     
+                <p:contextMenu for="imageGalleria" style="z-index:50; font-size: 10px;">  
+                  <p:menuitem value="Morphbank" url="http://morphbank.nrm.se/Browse/ByImage/?specimenId=#{switch.mbid}"   
+                              target="_blank"   icon="ui-icon-extlink"/>    
+                  <p:menuitem value="Naturforskaren" url="http://naturforskaren.se/search/#{switch.scientificName}"    
+                              target="_blank"   icon="ui-icon-extlink"/>   
+                  <p:menuitem value="GIBF.se" url="http://old.gbif.se/search/#{switch.scientificName}"    
+                              target="_blank"   icon="ui-icon-extlink"/>  
+                  <p:menuitem value="GIBF" url="http://data.gbif.org/search/#{switch.scientificName}"    
+                              target="_blank"   icon="ui-icon-extlink"/>  
+                  <p:menuitem value="#{msg.btnclose}" url="javascript:void(0)" onclick="PF('imgswitchdlg').hide();" icon="ui-icon-close"/>    
+                </p:contextMenu> 
+              </p:panel> 
+            </p:dialog> 
+ 
+
+            <h:panelGrid id="exportDataTablePanel" cellpadding="0" cellspacing="0" styleClass="searchColumn" rendered="false"> 
+
+              <p:dataTable id="exportDataTable" var="record" value="#{searchBean.exportDataSet}"   
+                           paginator="true" rows="#{search.numDisplay}"  >    
+
+                <p:column>   
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.cataloguenumber1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.catalogNumber}" />   
+                </p:column> 
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.speciesname}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.txFullName}" />   
+                </p:column> 
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.family}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.higherTx}" />  
+                </p:column> 
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.type}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.typeStatus}"  />  
+                </p:column> 
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.author}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.authors}"  />  
+                </p:column>  
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.synonyms}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.synonyms}"  />  
+                </p:column>  
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.stationfieldnumber1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.stationFieldNumber}"  />  
+                </p:column>  
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.collectiondate1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.startDate}"  >
+                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
+                  </h:outputText>  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.locality}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.locality}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.country}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.country}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.continent1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.continent}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.coordinate}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.coordinateString}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.collector1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.collectors}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.determiner1}" />  
+                  </f:facet> 
+                  <h:outputText value="#{record.determiner}"  />  
+                </p:column>
+
+                <p:column> 
+                  <f:facet name="header">  
+                    <h:outputText value="#{msg.remarks}" />  
+                  </f:facet>     
+                  <h:outputText value="#{record.allRemarkes}" />  
+                </p:column> 
+              </p:dataTable> 
+
+            </h:panelGrid>
+          </h:form> 
+        </h:panelGroup> 
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
+

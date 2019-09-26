@@ -32,17 +32,16 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class StatisticBean implements Serializable {
   
   private StatisticData data; 
+  private StatisticData filteredData;
   private final HttpSession session;  
   
-  private boolean isSwedish;
-  private final String statistic;
+  private boolean isSwedish; 
   
   @Inject
   private SolrService solr;
   
   public StatisticBean() {
-    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
-    statistic = CommonText.getInstance().getStatistic();
+    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);  
   }
   
   @PostConstruct
@@ -54,65 +53,106 @@ public class StatisticBean implements Serializable {
   }
 
   public void initStatisticData() {
-    data = solr.getStatisticData();
-    session.setAttribute(statistic, data); 
+    data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null);  
   }
-
+  
+  public void resetData(String text, Map<String, String> queries) {
+    filteredData = solr.getStatisticData(text, queries);   
+  }
+  
+  public void resetAllData() {
+    if(data == null) {
+      initStatisticData();
+    }
+    filteredData = data;
+  }
+  
+  public List<CollectionData> getFilteredCollections() {
+    return filteredData == null ? getCollections() : filteredData.getCollections(); 
+  }
+  
   public List<CollectionData> getCollections() { 
-    if (session.getAttribute(statistic) == null) { 
+    if (data == null) { 
       initStatisticData();
     }
     return data.getCollections();
   }
-  
+   
   public int getTotalRecords() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotal(); 
   }
   
+  public int getFilteredTotalDnas() {
+    return filteredData == null ? getTotalDnas() : filteredData.getTotalDnas(); 
+  }
+  
   public int getTotalDnas() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotalDnas();
   }
+  
+  public int getFilteredTotalImages() {
+    return filteredData == null ? getTotalImages() : filteredData.getTotalImages();
+  }
  
   public int getTotalImages() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotalImages();
   }
+  
+  public int getFilteredTotalMaps() {
+    return filteredData == null ? getTotalMaps() : filteredData.getTotalMaps();
+  }
 
   public int getTotalMaps() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotalMaps();
   }
   
+  public int getFilteredTotalInSweden() {
+    return filteredData == null ? getTotalInSweden() : filteredData.getTotalInSweden();
+  }
+  
   public int getTotalInSweden() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotalInSweden();
   }
   
+  public int getFilteredTotalType() {
+    return filteredData == null ? getTotalType() : filteredData.getTotalType();
+  }
+  
   public int getTotalType() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
     return data.getTotalType();
   }
+  
+  public Map<String, Integer> getFilteredInstitutions() {
+    return filteredData == null ? getInstitutions() : buildInstitutionsMap(filteredData);
+  }
 
   public Map<String, Integer> getInstitutions() {
-    if (session.getAttribute(statistic) == null) {
+    if (data == null) {
       initStatisticData();
     }
-
-    Map<Boolean, List<CollectionData>> partitions = data.getCollections().stream()
+    return buildInstitutionsMap(data); 
+  }
+  
+  private Map<String, Integer> buildInstitutionsMap(StatisticData statisticData) {
+    Map<Boolean, List<CollectionData>> partitions = statisticData.getCollections().stream()
             .collect(Collectors.partitioningBy(c -> Integer.parseInt(c.getCode()) != 4));
  
     Map<String, Integer> map = new LinkedHashMap<>();

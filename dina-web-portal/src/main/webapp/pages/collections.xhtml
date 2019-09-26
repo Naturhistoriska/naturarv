@@ -14,8 +14,8 @@
                               var="collection" styleClass="accordingpanel" 
                               dynamic="true"  cache="true"   >    
 
-              <p:ajax event="tabChange" listener="#{collections.onTabChange}"   />
-              <p:ajax event="tabClose" listener="#{collections.onTabClose}"   />
+              <p:ajax event="tabChange" listener="#{collections.onTabChange}" global="false"  />
+              <p:ajax event="tabClose" listener="#{collections.onTabClose}" global="false"  />
               <p:tab title="#{collection}"  >    
                 <p:chart type="bar" 
                          model="#{chart.getCollectionMonthChart(collection)}" 
