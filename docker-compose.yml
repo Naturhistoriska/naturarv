@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+
+  ui:
+    image: dina/naturarv:v0.1
+    environment:
+      - VIRTUAL_HOST=beta.dina-web.net
+      - VIRTUAL_PORT=8180
+    ports:
+      - 8180:8180
+    volumes:
+      - ./project-initdata.yml:/usr/src/myapp/project-initdata.yml
+    external_links:
+       - solr:solr
+    networks:
+      - default
+
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+
+
+
+# running with external proxy (check the network 'docker network ls')
+networks:
+  default:
+    external:
+      name: dwproxy_default
+
+
