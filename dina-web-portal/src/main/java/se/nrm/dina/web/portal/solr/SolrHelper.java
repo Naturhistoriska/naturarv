@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import se.nrm.dina.web.portal.model.QueryData;
 import se.nrm.dina.web.portal.utils.CommonText;
 import se.nrm.dina.web.portal.utils.HelpClass;
 
@@ -17,10 +19,10 @@ import se.nrm.dina.web.portal.utils.HelpClass;
  *
  * @author idali
  */
+@Slf4j
 public class SolrHelper {
 
   private static SolrHelper instance = null;
-  private StringBuilder searchCatalogedDateSb;
   private StringBuilder searchTextSb;
   private StringJoiner sj;
 
@@ -31,6 +33,162 @@ public class SolrHelper {
       instance = new SolrHelper();
     }
     return instance;
+  }
+
+//  public String buildAdvanceFullTextSearchString(String value, String field, String content) {
+//    log.info("buildAdvanceFullTextSearchString: {} -- {}", value, field);
+//    switch (content) {
+//      case "exact":
+//        return buildExactString(value, field);
+//      case "startswith":
+//        return buildStartsWithString(value, field);
+//      default:
+//        return buildContainsString(value, field); 
+//    } 
+//  }
+   
+  public String buildSearchString(String value, String field, String content) {
+    
+    if(content.equals(CommonText.getInstance().getExact())) {
+      return buildExactString(value, field);
+    }
+     
+    if (value.contains("(") || value.contains(")") || value.contains(",")) {
+      value = HelpClass.getInstance().replaceChars(value);
+    } 
+    return content.equals(CommonText.getInstance().getStartWith()) ?
+            buildStartsWithString(value, field) : buildContainsString(value, field); 
+  }
+
+
+  private String buildExactString(String value, String field) {
+    advanceSearchText = new StringBuilder();
+    advanceSearchText.append(field);
+    advanceSearchText.append(":\"");
+    advanceSearchText.append(value);
+    advanceSearchText.append("\""); 
+    return advanceSearchText.toString();
+  }
+
+  private String buildStartsWithString(String value, String field) {
+    if (value.contains("(") || value.contains(")") || value.contains(",")) {
+      value = HelpClass.getInstance().replaceChars(value);
+    }
+    
+    advanceSearchText = new StringBuilder();
+    String[] strings = value.split(" ");
+
+    advanceSearchText.append("+");
+    advanceSearchText.append(field);
+    advanceSearchText.append(":");
+    advanceSearchText.append(strings[0]);
+    advanceSearchText.append("* ");
+    if (strings.length > 1) {
+      for (int i = 1; i < strings.length; i++) {
+        if (!strings[i].isEmpty()) {
+          advanceSearchText.append("+");
+          advanceSearchText.append(field);
+          advanceSearchText.append(":*");
+          advanceSearchText.append(strings[i]);
+          advanceSearchText.append("* ");
+        }
+      }
+    } 
+    return advanceSearchText.toString().trim();
+  }
+
+  private String buildContainsString(String value, String field) {
+    if (value.contains("(") || value.contains(")") || value.contains(",")) {
+      value = HelpClass.getInstance().replaceChars(value);
+    }
+    
+    advanceSearchText = new StringBuilder();
+    String[] strings = value.split(" "); 
+    Arrays.asList(strings).stream()
+            .filter(s -> !s.isEmpty())
+            .forEach(s -> {
+              advanceSearchText.append("+");
+              advanceSearchText.append(field);
+              advanceSearchText.append(":*");
+              advanceSearchText.append(s);
+              advanceSearchText.append("* ");
+            });
+    
+//    StringBuilder sb = new StringBuilder();
+//    String[] strings = value.split(" ");
+//    if (strings.length == 1) {
+//      sb.append(field);
+//      sb.append(":*");
+//      sb.append(value);
+//      sb.append("*");
+//    } else {
+//      sb.append("(");
+//      for (String s : strings) {
+//        if (!s.isEmpty()) {
+//          sb.append("+");
+//          sb.append(field);
+//          sb.append(":*");
+//          sb.append(s);
+//          sb.append("* ");
+//        }
+//      } 
+//    }
+    return advanceSearchText.toString().trim();
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//  
+//  /**
+//   * Method build a search string for advance search
+//   * @param value
+//   * @param content
+//   * @param field
+//   * @return 
+//   */
+//  public String buildAdvanceFullTextSearchtring(String value, String content, String field) {
+//
+//    if (value.equals(CommonText.getInstance().getWildSearchText())) {
+//      return buildSearchString(field, value);
+//    }
+//    return buildFullTextSearchString(value, field, content);
+//  }
+//  
+  private String buildSearchString(String field, String value) {
+    searchTextSb = new StringBuilder();
+    searchTextSb.append(field);
+    searchTextSb.append(":");
+    searchTextSb.append(value);
+    return searchTextSb.toString();
   }
 
   public String buildFullSearchText(String text) {
@@ -50,84 +208,57 @@ public class SolrHelper {
               searchTextSb.append(":*");
               searchTextSb.append(s);
               searchTextSb.append("* ");
-            }); 
+            });
     return searchTextSb.toString().trim();
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
-  public String buildAdvanceFullTextSearchtring(String value, String content, String field) {
-
-    if (value.equals(CommonText.getInstance().getWildSearchText())) {
-      return buildFullTextSearch(value, field);
-    }
-    return buildFullTextSearchString(value, field, content);
-  }
-
-  private String buildFullTextSearchString(String value, String field, String content) {
-    advanceSearchText = new StringBuilder();
-    switch (content) {
-      case "exact":
-        advanceSearchText.append(buildExactString(value, field));
+  public String buildDate(QueryData data) {
+    String fromZoom = ":00Z";
+    String toZoom = "Z";
+    String key = "startDate";
+    switch (data.getOperation()) {
+      case "not":
+        key = "-startDate";
         break;
-      case "startswith":
-        advanceSearchText.append(buildStartsWithString(value, field, false));
-        break;
-      default:
-        advanceSearchText.append(buildContainsString(value, field, false));
+      case "and":
+        key = "+startDate";
         break;
     }
-    return advanceSearchText.toString();
+    LocalDateTime fromDate = data.getFromDate() == null
+            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getFromDate(), true, false);
+    LocalDateTime toDate = data.getToDate() == null
+            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getToDate(), false, true);
+    return HelpClass.getInstance().convertLocalDateTimeToString(fromDate, toDate, key, fromZoom, toZoom);
   }
 
-  private String buildExactString(String value, String field) {
-    advanceSearchText = new StringBuilder();
-    advanceSearchText.append(field);
-    advanceSearchText.append(":\"");
-    advanceSearchText.append(value);
-    advanceSearchText.append("\"");
-    return advanceSearchText.toString();
-  }
+  public String buildAdvanceSearchText(QueryData data) {
+    log.info("buildAdvanceSearchText");
+    String value = data.getValue();
+//    if (value != null && !value.isEmpty()) {
+//      value = replaceChars(value.trim());
+//    } else {
+//      value = "*";
+//    }
 
-  private String buildFullTextSearch(String value, String field) {
-    searchTextSb = new StringBuilder();
-    searchTextSb.append(field);
-    searchTextSb.append(":");
-    searchTextSb.append(value);
-    return searchTextSb.toString();
+    StringBuilder sb = new StringBuilder();
+    switch (data.getOperation()) {
+      case "not":
+        sb.append("-");
+        break;
+      case "and":
+        sb.append("+");
+        break;
+    }
+
+    sb.append("(");
+    sb.append(buildSearchString(value, data.getField(), data.getContent()));
+    sb.append(")");
+    return sb.toString().trim();
   }
 
   public String buildSearchCatalogedDateText(LocalDateTime date) {
-    searchCatalogedDateSb = new StringBuilder();
-    searchCatalogedDateSb.append("catalogedDate:[");
-    searchCatalogedDateSb.append(date);
-    searchCatalogedDateSb.append(":00Z TO *]");
-    return searchCatalogedDateSb.toString();
+    return HelpClass.getInstance().convertLocalDateTimeToString(date, null,
+            CommonText.getInstance().getCatalogedDate(), ":00Z", null); 
   }
 
   public String buildImageOptionSearchText(String searchText, List<String> filters) {
@@ -156,77 +287,7 @@ public class SolrHelper {
     }
   }
 
-  public String buildString(String value, String field, String content) {
-
-    if (value.contains("(") || value.contains(")") || value.contains(",")) {
-      value = HelpClass.getInstance().replaceChars(value);
-    }
-
-    StringBuilder sb = new StringBuilder();
-    switch (content) {
-      case "exact":
-        sb.append(buildExactString(value, field));
-        break;
-      case "startswith":
-        sb.append(buildStartsWithString(value, field, false));
-        break;
-      default:
-        sb.append(buildContainsString(value, field, false));
-        break;
-    }
-    return sb.toString().trim();
-  }
-
-  private String buildContainsString(String value, String field, boolean boost) {
-    StringBuilder sb = new StringBuilder();
-    String[] strings = value.split(" ");
-    if (strings.length == 1) {
-      sb.append(field);
-      sb.append(":*");
-      sb.append(value);
-      sb.append(boost ? "*^2" : "*");
-    } else {
-      sb.append("(");
-      for (String s : strings) {
-        if (!s.isEmpty()) {
-          sb.append("+");
-          sb.append(field);
-          sb.append(":*");
-          sb.append(s);
-          sb.append(boost ? "*^2 " : "* ");
-        }
-      }
-      sb.append(")");
-    }
-    return sb.toString().trim();
-  }
-
-  private String buildStartsWithString(String value, String field, boolean boost) {
-    StringBuilder sb = new StringBuilder();
-    String[] strings = value.split(" ");
-
-    if (strings.length > 1) {
-      sb.append("(+");
-    }
-    sb.append(field);
-    sb.append(":");
-    sb.append(strings[0]);
-    sb.append(boost ? "*^2 " : "* ");
-
-    for (int i = 1; i < strings.length; i++) {
-      if (!strings[i].isEmpty()) {
-        sb.append("+");
-        sb.append(field);
-        sb.append(":*");
-        sb.append(strings[i]);
-        sb.append(boost ? "*^2 " : "* ");
-      }
-    }
-    if (strings.length > 1) {
-      sb.append(")");
-    }
-    return sb.toString().trim();
-  }
+  
 
 //  private String buildExactString(String value, String field, boolean boost) {  
 //    StringBuilder sb = new StringBuilder();

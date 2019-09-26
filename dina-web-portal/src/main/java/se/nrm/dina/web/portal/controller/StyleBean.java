@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j; 
+import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
  *
@@ -53,17 +54,11 @@ public class StyleBean implements Serializable {
   public String getEnLink() {
     return enLink;
   }
-
-//  public void setEnLink(boolean isActive) {
-//    this.enLink = isActive ? activeLink : inactiveLink;
-//  }
+ 
   public String getSvLink() {
     return svLink;
   }
 
-//  public void setSvLink(boolean isActive) {
-//    this.svLink = isActive ? activeLink : inactiveLink;
-//  }
   public String getTabStart() {
     return tabStart;
   }
@@ -120,7 +115,7 @@ public class StyleBean implements Serializable {
     svLink = INACTIVE_LINK;
     enLink = INACTIVE_LINK;
 
-    if (locale.equals("sv")) {
+    if (locale.equals(CommonText.getInstance().getSv())) {
       svLink = ACTIVE_LINK;
     } else {
       enLink = ACTIVE_LINK;

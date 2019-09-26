@@ -11,31 +11,26 @@
         <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
           <h:form id="resultsForm" prependId="false">    
             <h:panelGroup  id="result" layout="block" > 
-              <h:panelGrid columns="2" columnClasses="searchColumn,statistic" style="vertical-align: top;"  > 
-
+              <h:panelGrid columns="2" columnClasses="searchColumn,statistic" styleClass="topAlign"  >  
                 <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
                   <!-- result header --> 
-                  <h:panelGrid id="resultHeader" styleClass="textLink" cellpadding="0" cellspacing="0"  >
-
+                  <h:panelGrid id="resultHeader" styleClass="textLink" cellpadding="0" cellspacing="0"  > 
                     <h:panelGrid id="displayviewpanel" columns="4"
                                  columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
-                      <h:outputText value="#{searchBean.resultHeaderSummary}" />
-
+                      <h:outputText value="#{searchBean.resultHeaderSummary}" /> 
                       <p:commandLink actionListener="#{searchBean.backToListView}" process="@this" 
                                      rendered="#{resultHeader.displayBackToListLink}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
-                      </p:commandLink> 
-
-
+                      </p:commandLink>  
                       <p:commandLink actionListener="#{searchBean.showImageView()}" process="@this" 
-                                     rendered="#{resultHeader.resultView != 'image'}" 
+                                     rendered="#{!resultHeader.imageView}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
                       </p:commandLink>  
 
                       <p:commandLink actionListener="#{searchBean.showMapView()}" process="@this" 
-                                     rendered="#{resultHeader.resultView != 'map'}" 
+                                     rendered="#{!resultHeader.mapView}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
                       </p:commandLink> 
@@ -44,8 +39,7 @@
                                      styleClass="downLink" process="@this" global="false">   
                         <h:outputText value="#{msg.downLoadAll}"  rendered="#{searchBean.selectedRecords.size() == 0}" />  
                         <h:outputText value="#{msg.downLoadSelected}" rendered="#{searchBean.selectedRecords.size() > 0}" />   
-                      </p:commandLink>
-
+                      </p:commandLink> 
                       <p:overlayPanel id="downloadFormatListPanel" for="downlodlink" hideEffect="fade" >  
                         <h:panelGrid id="maxiumdownloadmsg"  cellpadding="0" cellspacing="0"
                                      rendered="#{searchBean.overMaxDownloadSize}"  >
@@ -59,17 +53,7 @@
                           </h:panelGrid>
                         </h:panelGrid>
 
-                        <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  >
-
-                          <ui:remove>
-                            <p:spacer width="52" height="10"/>  
-                            <h:commandLink>     
-                              <p:graphicImage value="/resources/images/xml.png" 
-                                              alt="XML"  title="XML" styleClass="images" />     
-                              <p:dataExporter type="xml" target="resultTable" fileName="dina_data" />  
-                            </h:commandLink> 
-                          </ui:remove>
-
+                        <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  > 
                           <p:spacer width="55" />
                           <h:commandLink>     
                             <p:graphicImage value="/resources/images/excel.png" 
@@ -82,17 +66,7 @@
                                             alt="CSV"  title="CSV" styleClass="images"/>       
                             <p:dataExporter type="csv" target="exportDataTable" 
                                             fileName="dina_data" />  
-                          </h:commandLink>  
-
-                          <ui:remove>
-                            <p:spacer width="55" />  
-                            <h:commandLink>      
-                              <p:graphicImage value="/resources/images/icons/pdf.png"  alt="PDF"  title="PDF"  styleClass="images"/>       
-                              <p:dataExporter type="pdf" target="exportDataTable" 
-                                              fileName="dina_data"   encoding="CP1252"   />    
-                            </h:commandLink>  
-                          </ui:remove>
-
+                          </h:commandLink>   
                         </h:panelGrid>  
                       </p:overlayPanel>  
                     </h:panelGrid>  
@@ -112,11 +86,10 @@
                       <p:spacer width="400" height="20"/> 
                       <h:panelGrid columns="6" > 
                         <h:outputText value="#{msg.backtolistview}:" />
-                        <p:spacer width="8" /> 
-
+                        <p:spacer width="8" />  
                         <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
                                        disabled="#{resultHeader.resultView == 'list'}" 
-                                       update=":resultsForm:resultContent">  
+                                       update=":resultsForm:resultContent" global="false">  
                           <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
                                           styleClass="resultHeaderImages" />
                         </p:commandLink>   
@@ -124,7 +97,7 @@
                         <p:spacer width="8" /> 
                         <p:commandLink actionListener="#{searchBean.gotoDetailView}" process="@this" 
                                        disabled="#{resultHeader.resultView == 'detail'}" 
-                                       update=":resultsForm:resultContent">  
+                                       update=":resultsForm:resultContent" global="false">  
                           <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
                                           styleClass="resultHeaderImages" />
                         </p:commandLink>  
@@ -163,7 +136,7 @@
 
                     <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
                                    disabled="#{resultHeader.resultView == 'list'}" 
-                                   update=":resultsForm:resultContent">  
+                                   update=":resultsForm:resultContent" global="false" >  
                       <h:graphicImage library="images" name="icons/list.png" title="#{msg.simple}" 
                                       styleClass="resultHeaderImages" />
                     </p:commandLink>  
@@ -171,7 +144,7 @@
                     <p:spacer width="4" /> 
                     <p:commandLink actionListener="#{searchBean.gotoDetailView()}" process="@this" 
                                    disabled="#{resultHeader.resultView == 'detail'}" 
-                                   update=":resultsForm:resultContent">  
+                                   update=":resultsForm:resultContent" global="false" >  
                       <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
                                       styleClass="resultHeaderImages" />
                     </p:commandLink>   
@@ -180,16 +153,16 @@
                     <p:commandLink actionListener="#{searchBean.gotoSelectedView}" process="@this" 
                                    rendered="#{searchBean.selectedRecords.size() > 0}" 
                                    disabled="#{resultHeader.resultView == 'selected'}" 
-                                   update=":resultsForm:resultContent">  
+                                   update=":resultsForm:resultContent" global="false" >  
                       <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
                                       title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
                     </p:commandLink>    
                   </h:panelGroup>
 
-                  <ui:include src="#{resultHeader.viewPath}" />
+                  <!-- result page include -->
+                  <ui:include src="#{resultHeader.viewPath}" />   
 
-                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  >
-
+                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  > 
                     <h:panelGroup  id="floatleftcol"  layout="block" rendered="#{resultHeader.displayPaging}"> 
                       <p:commandLink actionListener="#{searchBean.firstPage}" process="@this" 
                                      disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent" >  
@@ -493,10 +466,7 @@
               </p:dataTable> 
 
             </h:panelGrid>
-          </h:form>
-
-
-
+          </h:form> 
         </h:panelGroup> 
       </ui:define>
     </ui:composition>

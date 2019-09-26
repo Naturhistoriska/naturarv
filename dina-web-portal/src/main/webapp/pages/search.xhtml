@@ -69,7 +69,7 @@
                         <p:spacer width="70" height="15" rendered="#{query.field == 'season'}" />  
 
                         <p:spacer width="70" height="15"   rendered="#{status.first}"/>
-                        <h:selectOneMenu value="#{query.operattion}" styleClass="queryDropdownBox" rendered="#{!status.first}" > 
+                        <h:selectOneMenu value="#{query.operation}" styleClass="queryDropdownBox" rendered="#{!status.first}" > 
                           <f:selectItem itemValue="and" itemLabel="#{msg.and1}" />
                           <f:selectItem itemValue="or" itemLabel="#{msg.or1}" /> 
                           <f:selectItem itemValue="not" itemLabel="#{msg.not1}" /> 
@@ -108,19 +108,22 @@
                         <p:autoComplete value="#{query.value}"  id="autoComplete"
                                         size="55" required="false"
                                         forceSelection="false" 
+                                        minQueryLength="3"
                                         completeMethod="#{searchBean.queryComplete(query)}"  
-                                        scrollHeight="300" minQueryLength="2"  >
+                                        scrollHeight="300"  
+                                        dynamic="true"  
+                                        >
                           <p:ajax event="itemSelect" listener="#{searchBean.itemSelect}" 
                                   update=":searchForm:queryBuildPanel" global="false"   />   
                           <p:ajax event="keyup" listener="#{searchBean.keyup}" 
-                                  update=":searchForm:querytext" global="false"   />   
+                                  update=":searchForm:querytext :searchForm:searchBtnPanel" global="false"   />   
                         </p:autoComplete>  
                       </h:panelGrid>
 
                       <h:panelGrid rendered="#{query.field == 'date'}"  >  
                         <h:panelGrid columns="5"  cellpadding="0" cellspacing="0" >  
                           <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="fromdatepanel">
-                            <p:calendar id="fromdate" pattern="yyyy-MM-dd"  yearRange="1800:2100" maxdate="#{searchBean.maxDate}"
+                            <p:calendar id="fromdate" pattern="yyyy-MM-dd"  yearRange="1800:2500" maxdate="#{searchBean.maxDate}"
                                         showButtonPanel="true" size="23" value="#{query.fromDate}" 
                                         navigator="true" > 
                               <p:ajax event="dateSelect" listener="#{searchBean.handleDateSelect}" 
@@ -134,7 +137,7 @@
                           <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="todatepanel">
                             <p:calendar pattern="yyyy-MM-dd" yearRange="1800:2100" maxdate="#{searchBean.maxDate}"
                                         showButtonPanel="true" navigator="true"  id="todate"
-                                        size="24" value="#{query.toDate}"  >
+                                        size="24" value="#{query.toDate}" mindate="#{query.fromDate}" >
                               <p:ajax event="dateSelect" listener="#{searchBean.handleDateSelect}" 
                                       update=":searchForm:queryBuildPanel" global="false"/>   
                             </p:calendar>  
@@ -152,7 +155,7 @@
                           <p:spacer width="70" height="10" />
                           <h:outputLabel value="#{msg.day}" />
                         </h:panelGrid> 
-
+ 
                         <h:panelGrid id="seasonpanel"     > 
                           <h:panelGrid columns="9"  cellpadding="0" cellspacing="0" id="seasonSearch">   
                             <h:selectOneMenu value="#{query.startMonth}" id="startmonth" style="width: 120px;" > 
@@ -212,15 +215,15 @@
                                    id="querytext" readonly="true" disabled="true" />
 
                 </h:panelGrid>
-                <h:panelGroup style="float: right; width: 180px;" layout="block" >
-                  <p:commandButton id="advSearch" value="#{msg.searchbutton}" 
-                                   action="#{searchBean.advanceSearch}"   
-                                   update=":searchForm:queryBuildPanel"
+                <h:panelGroup id="searchBtnPanel" style="float: right; width: 180px;" layout="block" >
+                  <p:commandButton id="advSearchBtn" value="#{msg.searchbutton}" 
+                                   action="#{searchBean.advanceSearch}"  disabled="#{searchBean.disableAdvanceSearch}" 
+                                   update=":searchForm:queryBuildPanel mainPanel"
                                    />    
                   <p:spacer width="20" height="10"  />
-                  <p:commandButton id="advSearchClear" value="#{msg.clearbutton}" 
+                  <p:commandButton id="advSearchClearBtn" value="#{msg.clearbutton}" 
                                    action="#{searchBean.advanceClear}"  
-                                   update=":searchForm:queryBuildPanel"
+                                   update=":searchForm:queryBuildPanel mainPanel"
                                    />    
                 </h:panelGroup>  
               </h:panelGrid>

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class QueryData implements Serializable {
 
-  private String operattion;
+  private String operation;
   private String content;
   private String field;
   private String value;
@@ -32,20 +32,20 @@ public class QueryData implements Serializable {
   }
   
   public QueryData(String operation, String content, String field, String value) {
-    this.operattion = operation;
+    this.operation = operation;
     this.content = content;
     this.field = field;
     this.value = value;
   }
 
-  public String getOperattion() {
-    return operattion;
+  public String getOperation() {
+    return operation;
   }
 
-  public void setOperattion(String operattion) {
-    this.operattion = operattion;
+  public void setOperation(String operation) {
+    this.operation = operation;
   }
-
+ 
   public String getContent() {
     return content;
   }
@@ -134,8 +134,16 @@ public class QueryData implements Serializable {
     this.endDay = endDay;
   }
   
+  public boolean isAppendValue() {
+    boolean isAppandValue = true;
+    if(!field.equals("date") && !field.equals("season")) {
+      isAppandValue = value != null && !value.isEmpty();
+    }
+    return isAppandValue;
+  }
+  
   @Override
   public String toString() {
-    return operattion + " " + content + " " + field + " " + value; 
+    return operation + " " + content + " " + field + " " + value; 
   }
 }

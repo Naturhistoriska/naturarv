@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map; 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -58,7 +58,10 @@ public class SolrService implements Serializable {
 
   private int cumulateValue;
   private int collectionCumulateValue;
-  private static final int MB_IMG_FATCH_SIZE = 15000;
+//  private static final int MB_IMG_FATCH_SIZE = 15000;
+
+  private static final String START_EM_TAG = "<em>";
+  private static final String END_EM_TAG = "</em>";
 
   private List<String> autoCompleteList;
 
@@ -71,7 +74,7 @@ public class SolrService implements Serializable {
 
   public SolrService() {
   }
-  
+
   public SolrResult searchWithFilter(String text, Map<String, String> filters, int start, int numPerPage) {
     log.info("searchWithFilter: {} -- {}", text, filters);
 
@@ -86,104 +89,28 @@ public class SolrService implements Serializable {
       response = client.query(query);
       log.info("num: {}", response.getResults().getNumFound());
 
-      return new SolrResult((int) response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
+      return new SolrResult((int) response.getResults().getNumFound(), response.getBeans(SolrData.class));
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return null;
     }
   }
-  
-  
-  
-  
-  
-  
-  
-   
+
   public SolrResult searchAll(int start, int numberPerPage) {
     log.info("searchAll: {} -- {} ", start, numberPerPage);
 
     query = new SolrQuery();
-    query.set("q", CommonText.getInstance().getWildSearchText());
+    query.setQuery(CommonText.getInstance().getWildSearchText());
     query.setStart(start);
     query.setRows(numberPerPage);
-    query.setSort("id", SolrQuery.ORDER.asc);
-
+    query.setSort(CommonText.getInstance().getCatalogedDate(), SolrQuery.ORDER.asc);
     try {
       response = client.query(query);
-      log.info("num: {}", response.getResults().getNumFound());
-
-      return new SolrResult((int) response.getResults().getNumFound(), start, response.getBeans(SolrData.class));
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return null;
     }
-  }
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  public List<String> autoCompleteTaxon(String input, String content) {
-//    if (content.equals("exact")) {
-//      content = "startswith";
-//    }
-    String searchText = SolrHelper.getInstance().buildString(input,
-            CommonText.getInstance().getTaxonFullName(), content);
-
-    autoCompleteList = new ArrayList<>();
-    try {
-      String text = searchText;
-      query = new SolrQuery();
-      query.setQuery(text)
-              .setParam(CommonText.getInstance().getGroup(), true)
-              .setParam(CommonText.getInstance().getGroupField(),
-                      CommonText.getInstance().getTaxonFullName());
-
-      query.setStart(0);
-      query.setRows(5000);
-      response = client.query(query);
-
-      NamedList thisGroupInfo = (NamedList) ((NamedList) (response.getResponse())
-              .get(CommonText.getInstance().getGrouped()))
-              .get(CommonText.getInstance().getTaxonFullName());
-      ((List<Object>) thisGroupInfo.get(CommonText.getInstance().getGroups())).stream()
-              .map(o -> ((SolrDocumentList) ((NamedList) o).get("doclist")).get(0))
-              .forEach(d -> {
-                if (d.getFieldValue(CommonText.getInstance().getSynonmy()) != null) {
-                  List<String> list = ((ArrayList<String>) d.getFieldValue(CommonText.getInstance().getSynonmy())).stream()
-                          .filter(s -> s.toLowerCase().contains(input.toLowerCase().trim()))
-                          .collect(Collectors.toList());
-                  autoCompleteList.addAll(list);
-                }
-                autoCompleteList.add((String) d.getFieldValue(CommonText.getInstance().getTaxonFullName()));
-              });
-    } catch (SolrServerException | IOException ex) {
-      log.warn(ex.getMessage());
-    }
-//    return HelpClass.sortUniqueValues(list);  // TODO: check code sortUniqueValues
-    return autoCompleteList;
+    return new SolrResult((int) response.getResults().getNumFound(), response.getBeans(SolrData.class));
   }
 
   /**
@@ -195,18 +122,17 @@ public class SolrService implements Serializable {
    */
   public List<String> autoCompleteSearchAllField(String input, String content) {
     log.info("autoCompleteSearchAllField : {} -- {}", input, content);
- 
-    String searchText = SolrHelper.getInstance()
-            .buildAdvanceFullTextSearchtring(input, content, CommonText.getInstance().getTextField());
-    query = new SolrQuery();
 
-    try {
-      query.setQuery(searchText);
-      query.setHighlight(true)
+    String searchText = SolrHelper.getInstance()
+            .buildSearchString(input, CommonText.getInstance().getTextField(), content);
+    
+    query = new SolrQuery(); 
+    query.setQuery(searchText);
+    query.setHighlight(true)
               .addHighlightField(CommonText.getInstance().getTextField())
               .setHighlightSnippets(20)
-              .setRows(30);
-
+              .setRows(500);
+    try { 
       response = client.query(query);
       Map<String, Map<String, List<String>>> highlightSnippets = response.getHighlighting();
       List<String> results = new ArrayList<>();
@@ -215,16 +141,14 @@ public class SolrService implements Serializable {
               .collect(Collectors.toList())
               .stream()
               .forEach(v -> {
-                v.values()
-                        .stream()
-                        .collect(Collectors.toList())
-                        .stream() 
+                v.values().stream()
+                        .collect(Collectors.toList()).stream()
                         .forEach(l -> {
                           results.addAll(l);
                         });
               });
       return results.stream()
-              .map(s -> StringUtils.substringBetween(s, "<em>", "</em>").trim())
+              .map(s -> StringUtils.substringBetween(s, START_EM_TAG, END_EM_TAG).trim())
               .distinct()
               .collect(Collectors.toList());
     } catch (SolrServerException | IOException ex) {
@@ -233,48 +157,141 @@ public class SolrService implements Serializable {
     return null;
   }
 
-  public List<String> autoCompleteSearch(String input, String field, String content) {
-//        log.info("autoCompleteSearch : {} -- {}", input, field);
+  public List<String> autoCompleteTaxon(String input, String content) {
 
-//    if (content.equals("exact")) {
-//      content = "startswith";
-//    }
-    String searchText = SolrHelper.getInstance().buildString(input, field, content);
+    log.info("autoCompleteTaxon");
+
+    String searchText = SolrHelper.getInstance().buildSearchString(input,
+                            CommonText.getInstance().getTxSearch(), content);
+
+    final TermsFacetMap synonmyFacet = new TermsFacetMap(CommonText.getInstance().getSynonmy()).setLimit(20);
+    final TermsFacetMap taxonNameFacet = new TermsFacetMap(CommonText.getInstance().getTaxonFullName()).setLimit(20);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFacet(CommonText.getInstance().getTaxonFullName(), taxonNameFacet)
+            .withFacet(CommonText.getInstance().getSynonmy(), synonmyFacet);
+
     try {
-      query = new SolrQuery();
-      query.setQuery(searchText)
-              .addField(field)
-              .setRows(1000);
-
-      response = client.query(query);
-
-      List<String> list;
-
-      if (field.equals(CommonText.getInstance().getAuthor())
-              || field.equals(CommonText.getInstance().getCommonName())) {
-        list = response.getResults().stream()
-                .map(d -> ((List<String>) d.getFieldValue(field)).toString())
-                .distinct()
-                .collect(Collectors.toList());
-      } else {
-        list = response.getResults().stream()
-                .map(d -> (String) d.getFieldValue(field))
-                .distinct()
-                .collect(Collectors.toList());
-      }
-      return list;
+      response = request.process(client); 
     } catch (SolrServerException | IOException ex) {
-      log.error(ex.getMessage());
+      log.warn(ex.getMessage());
     }
-    return null;
+    
+    autoCompleteList = new ArrayList<>();
+    NestableJsonFacet facet = response.getJsonFacetingResponse();
+    BucketBasedJsonFacet taxonBucket = facet.getBucketBasedFacets(CommonText.getInstance().getTaxonFullName());
+    if (taxonBucket != null) {
+      autoCompleteList.addAll(taxonBucket.getBuckets() 
+              .stream()
+              .map(b -> (String)b.getVal()) 
+              .collect(Collectors.toList())); 
+    } 
+    
+    BucketBasedJsonFacet synonmyBucket = facet.getBucketBasedFacets(CommonText.getInstance().getSynonmy());
+    if (taxonBucket != null) {
+      autoCompleteList.addAll(synonmyBucket.getBuckets() 
+              .stream()
+              .map(b -> (String)b.getVal())
+              .filter(s -> s.contains(input)) 
+              .collect(Collectors.toList())); 
+    } 
+    return autoCompleteList; 
+  }
+  
+  public List<String> autoCompleteSearch(String value, String field, String content) {
+ 
+    String searchText = SolrHelper.getInstance().buildSearchString(value,field, content);
+    final TermsFacetMap facet = new TermsFacetMap(field).setLimit(80);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFacet(field, facet);
+        
+    try {
+      response = request.process(client); 
+      log.info("json: {}", response.jsonStr()); 
+    } catch (SolrServerException | IOException ex) {
+      log.warn(ex.getMessage());
+    }
+    autoCompleteList = new ArrayList<>();
+    NestableJsonFacet jsonFacet = response.getJsonFacetingResponse();
+    BucketBasedJsonFacet bucket = jsonFacet.getBucketBasedFacets(field);
+    if (bucket != null) {
+      autoCompleteList.addAll(
+              bucket.getBuckets() 
+                .stream()
+                .map(b -> (String)b.getVal())   
+                .collect(Collectors.toList())); 
+    }  
+    return autoCompleteList;
+    
+    
+    
+//    try {
+//      query = new SolrQuery();
+//      query.setQuery(searchText)
+//              .addField(field)
+//              .setRows(1000);
+//
+//      response = client.query(query);
+//
+//      List<String> list;
+//
+//      if (field.equals(CommonText.getInstance().getAuthor())
+//              || field.equals(CommonText.getInstance().getCommonName())) {
+//        list = response.getResults().stream()
+//                .map(d -> ((List<String>) d.getFieldValue(field)).toString())
+//                .distinct()
+//                .collect(Collectors.toList());
+//      } else {
+//        list = response.getResults().stream()
+//                .map(d -> (String) d.getFieldValue(field))
+//                .distinct()
+//                .collect(Collectors.toList());
+//      }
+//      return list;
+//    } catch (SolrServerException | IOException ex) {
+//      log.error(ex.getMessage());
+//    }
+//    return null;
+  }
+  
+  
+
+  public List<String> autoComleteCommonName(String value, String content) {
+    String searchText = SolrHelper.getInstance().buildSearchString(value,
+            CommonText.getInstance().getCommonName(), content);
+     
+    final TermsFacetMap commonNameFacet = new TermsFacetMap(CommonText.getInstance().getCommonName()).setLimit(80);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFacet(CommonText.getInstance().getCommonName(), commonNameFacet);
+
+    try {
+      response = request.process(client); 
+      log.info("json: {}", response.jsonStr()); 
+    } catch (SolrServerException | IOException ex) {
+      log.warn(ex.getMessage());
+    }
+
+    autoCompleteList = new ArrayList<>();
+    NestableJsonFacet facet = response.getJsonFacetingResponse();
+    BucketBasedJsonFacet commonBucket = facet.getBucketBasedFacets(CommonText.getInstance().getCommonName());
+    if (commonBucket != null) {
+      autoCompleteList.addAll(
+              commonBucket.getBuckets() 
+                .stream()
+                .map(b ->  (String)b.getVal())  
+                .filter(s -> s.contains(value)) 
+                .collect(Collectors.toList())); 
+    }  
+    return autoCompleteList;
   }
 
-  public List<String> autoCompleteAccession(String value, String content) {
+  
 
-//    if (content.equals("exact")) {
-//      content = "startswith";
-//    }
-    String searchText = SolrHelper.getInstance().buildString(value,
+  public List<String> autoCompleteAccession(String value, String content) {
+ 
+    String searchText = SolrHelper.getInstance().buildSearchString(value,
             CommonText.getInstance().getAccessionNumber(), content);
     try {
       query = new SolrQuery();
@@ -417,7 +434,6 @@ public class SolrService implements Serializable {
     }
     return null;
   }
-
 
   public int getImageTotalCount(String searchText, Map<String, String> filters, List<String> filterList) {
     log.info("getImageTotalCount: {}", searchText);
@@ -696,7 +712,7 @@ public class SolrService implements Serializable {
 
     try {
       response = request.process(client);
-//      log.info("json: {}", response.jsonStr());
+      log.info("json: {}", response.jsonStr());
 
       NestableJsonFacet facet = response.getJsonFacetingResponse();
 
@@ -750,7 +766,6 @@ public class SolrService implements Serializable {
 //    }
 //    return null;
 //  }
-
   private void addSearchFilters(Map<String, String> filterQueries) {
 
     if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search

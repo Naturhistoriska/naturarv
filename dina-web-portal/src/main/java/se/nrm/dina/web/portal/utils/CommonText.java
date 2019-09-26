@@ -81,6 +81,8 @@ public class CommonText {
   private static final String SELECTED_EN = "Selected";
   private static final String SELECTED_SV = "Valda";
 
+  private static final String SELECT_MONTH_EN = "Select month";
+  private static final String SELECT_MONTH_SV = "Välj månad";
   private static final String LOCALE = "locale";
   private static final String STATISTIC = "statistic";
   private static final String MONTH_CHART_DATA = "monthChartData";
@@ -92,6 +94,7 @@ public class CommonText {
 
   private static final String SORT_BY_SCORE = "score";
 
+  private static final String WILD_SEARCH_QUERY = "q:*";
   private static final String WILD_SEARCH_TEXT = "*:*";
   private static final String WILD_CARD = "*";
   private static final String IMAGE_KEY = "image:";
@@ -119,15 +122,24 @@ public class CommonText {
   private static final String LOCATIONS = "locations";
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
+  private static final String CATALOGED_DATE = "catalogedDate";
   private static final String IMAGE_VIEW = "morphBankView";
   private static final String IMAGE_ID = "morphbankImageId";
   private static final String MORPHBANK_ID = "morphbankId";
-  private static final String SYNONYM = "synonym";
+  private static final String SYNONYM = "synonym"; 
   private static final String AUTHOR = "author";
   private static final String COMMON_NAME = "commonName";
+  
+  private static final String TX_SEARCH = "tx";
 
   private static final String ALL = "all";
   private static final String CONTAINS = "contains";
+  private static final String EXACT = "exact"; 
+  private static final String START_WITH = "startswith";
+  
+  private static final String AND = "and";
+  private static final String NOT = "not";
+  private static final String OR = "or";
 
   private static final String COLOR_1 = "coloer1";
   private static final String COLOR_2 = "coloer2";
@@ -145,6 +157,12 @@ public class CommonText {
   private static final String IMAGE_TYPE_THUMB = "&imgType=thumb";
   private static final String IMAGE_QUERY_ID = "?id=";
   private static final String IMAGE_TYPE_JPG = "&imgType=jpg";
+  
+  
+  
+  
+  private static final String SV = "sv";
+  private static final String EN = "en";
 
   private static final Map<String, String> FIELD_NAME_MAP = new HashMap<>();
   private static CommonText instance = null;
@@ -159,27 +177,29 @@ public class CommonText {
     FIELD_NAME_MAP.put("eftx_en", "Determination");
     FIELD_NAME_MAP.put("eftx_sv", "Bestämning");
 
-    FIELD_NAME_MAP.put("cm_en", "Common name");
-    FIELD_NAME_MAP.put("cm_sv", "Svenska namn");
+    FIELD_NAME_MAP.put("commonName_en", "Common name");
+    FIELD_NAME_MAP.put("commonName_sv", "Svenska namn");
     FIELD_NAME_MAP.put("au_en", "Author");
     FIELD_NAME_MAP.put("au_sv", "Auktor");
 
-    FIELD_NAME_MAP.put("auth_en", "Author");
-    FIELD_NAME_MAP.put("auth_sv", "Auktor");
+    FIELD_NAME_MAP.put("author_en", "Author");
+    FIELD_NAME_MAP.put("author_sv", "Auktor");
 
-    FIELD_NAME_MAP.put("cn_en", "Catalog number");
-    FIELD_NAME_MAP.put("cn_sv", "Cataloguenumber");
+    FIELD_NAME_MAP.put("catalogNumber_en", "Catalog number");
+    FIELD_NAME_MAP.put("catalogNumber_sv", "Cataloguenumber");
 
-    FIELD_NAME_MAP.put("lc_en", "Locality");
-    FIELD_NAME_MAP.put("lc_sv", "Lokal / Geografi");
+    FIELD_NAME_MAP.put("locality_en", "Locality");
+    FIELD_NAME_MAP.put("locality_sv", "Lokal / Geografi");
 
-    FIELD_NAME_MAP.put("sfn_en", "Station field number");
-    FIELD_NAME_MAP.put("sfn_sv", "Station field number");
+    FIELD_NAME_MAP.put("stationFieldNumber_en", "Station field number");
+    FIELD_NAME_MAP.put("stationFieldNumber_sv", "Station field number");
 
-    FIELD_NAME_MAP.put("col_en", "Collector");
-    FIELD_NAME_MAP.put("col_sv", "Insamlare av");
-    FIELD_NAME_MAP.put("dn_en", "Determiner");
-    FIELD_NAME_MAP.put("dn_sv", "Bestämd av");
+    FIELD_NAME_MAP.put("collector_en", "Collector");
+    FIELD_NAME_MAP.put("collector_sv", "Insamlare av");
+    FIELD_NAME_MAP.put("determiner_en", "Determiner");
+    FIELD_NAME_MAP.put("determiner_sv", "Bestämd av");
+    FIELD_NAME_MAP.put("accessionNumber_en", "Accession");
+    FIELD_NAME_MAP.put("accessionNumber_sv", "Accession"); 
   }
 
   public static synchronized CommonText getInstance() {
@@ -190,8 +210,12 @@ public class CommonText {
   }
   
   public String getFieldName(String key, boolean isSwedish) {
-    key = isSwedish ? key + "_" + "sv" : key + "_" + "en";
+    key = isSwedish ? key + "_" + SV : key + "_" + EN;
     return FIELD_NAME_MAP.get(key);
+  }
+  
+  public String getSv() {
+    return SV;
   }
 
   public String getColor1() {
@@ -250,12 +274,20 @@ public class CommonText {
     return CATALOG_NUMBER;
   }
   
+  public String getCatalogedDate() {
+    return CATALOGED_DATE;
+  }
+  
   public String getCommonName() {
     return COMMON_NAME;
   }
 
   public String getTaxonFullName() {
     return TAXON_FULL_NAME;
+  }
+  
+  public String getTxSearch() {
+    return TX_SEARCH;
   }
 
   public String getCollectionId() {
@@ -297,7 +329,27 @@ public class CommonText {
   public String getContains() {
     return CONTAINS;
   }
+  
+  public String getExact() {
+    return EXACT;
+  }
+  
+  public String getStartWith() {
+    return START_WITH;
+  }
 
+  public String getAnd(){
+    return AND;
+  }
+  
+  public String getOr() {
+   return OR; 
+  }
+  
+  public String getNot() {
+    return NOT;
+  }
+  
   public String getNrmCode() {
     return NRM_CODE;
   }
@@ -370,6 +422,10 @@ public class CommonText {
     return SWEDEN_KEY;
   }
 
+  public String getWildSearchQuery() {
+    return WILD_SEARCH_QUERY;
+  }
+  
   public String getWildSearchText() {
     return WILD_SEARCH_TEXT;
   }
@@ -532,6 +588,10 @@ public class CommonText {
 
   public String getSelected(boolean isSwedish) {
     return isSwedish ? SELECTED_SV : SELECTED_EN;
+  }
+  
+  public String getSelectMonth(boolean isSwedish) {
+    return isSwedish ? SELECT_MONTH_SV : SELECT_MONTH_EN;
   }
 }
 

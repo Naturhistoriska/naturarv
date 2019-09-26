@@ -377,6 +377,10 @@ public class SolrData {
     }
   }
   
+  public boolean isOpenMap() {
+    return map != null && !displayMap;
+  }
+  
   public boolean isSingleMapLink() {
     return map != null;
   }
@@ -388,16 +392,7 @@ public class SolrData {
   public List<String> getJpgs() {
     return jpgs;
   }
-   
-//  private String buildString(String id, String type) {
-//    sb = new StringBuilder();
-//    sb.append(morphbankImagePath);
-//    sb.append(CommonText.getInstance().getImageQueryId());
-//    sb.append(id);
-//    sb.append(type);
-//    return sb.toString();
-//  }
- 
+    
   public String getCoordinateString() {
 
     if (latitudeText != null && latitudeText.length() > 0) {

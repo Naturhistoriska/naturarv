@@ -10,10 +10,9 @@
                    paginator="false"  rowIndexVar="indexCount"  emptyMessage="empty..."
                    rowKey="#{record.catalogNumber}" styleClass="simpleResultTable"> 
         <p:column style="font-size: 11px; width : 15px; "  > 
-          <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne"
-                                    style="margin-top: 2px; margin-left: 2px; margin-top: 5px; "> 
-            <f:ajax event="click" listener="#{searchBean.selectOne(record)}"  
-                    render=":resultsForm:resultContent"   />  
+          <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne" styleClass="listViewCheckbox"> 
+            <p:ajax event="click" listener="#{searchBean.selectOne(record)}" 
+                    update=":resultsForm:resultContent" global="false"/>   
           </h:selectBooleanCheckbox>  
         </p:column>
         <p:column style="font-size: 11px; width : 600px; "> 
@@ -30,7 +29,7 @@
               </p:commandLink> 
 
               <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  /> 
-              <p:commandLink rendered="#{record.morphbankId != null}" 
+              <p:commandLink rendered="#{record.morphbankId != null}" global="false"
                              action="#{searchBean.displayImages(record)}" update="imagePanel"  >
                 <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
                                 title="#{msg.showimages}" alt="#{msg.showimages}"
@@ -58,10 +57,9 @@
               <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="imagePanel" >   
 
                 <h:panelGrid  rendered="#{record.displayImage}"> 
-                  <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
-                    <f:ajax render="imagePanel"/>
-                  </h:commandLink>   
-
+                  <p:commandLink value="#{msg.closeimage}" 
+                               action="#{searchBean.closeImage(record)}"    
+                               update="imagePanel" global="false" process="@this" />   
                   <ui:repeat value="#{record.thumbs}" var="thumb">     
                     <p:commandLink  action="#{switch.imageSwitch(record)}" 
                                     onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
@@ -76,16 +74,11 @@
 
               <p:spacer width="5" height="5" />
               <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="singleMapPanel" >   
-                <h:panelGrid rendered="#{record.displayMap}"> 
-                  <h:commandLink action="#{searchBean.closeMap(record)}" value="#{msg.closemap}" >    
-                    <f:ajax render="singleMapPanel"/>
-                  </h:commandLink> 
-
+                <h:panelGrid rendered="#{record.displayMap}">  
                   <f:view> 
                     <p:gmap center="#{record.latitude}, #{record.longitude}" type="ROADMAP"
                             zoom="8" model="#{map.getSingledModel(record)}" 
-                            style="width:600px; height:300px" fitBounds="false"   >  
-
+                            style="width:600px; height:300px" fitBounds="false"   >   
                       <p:ajax event="overlaySelect" listener="#{map.onSingleMarkerSelect}" />   
                       <p:gmapInfoWindow >  
                         <p:outputPanel styleClass="mapInfoWindos">   
@@ -103,18 +96,21 @@
               </h:panelGrid>
 
               <p:spacer width="10" height="5" />
-              <h:panelGroup layout="block" >  
-                <p:commandLink value="#{msg.showmap}" rendered="#{record.singleMapLink}"
+              <h:panelGroup layout="block" id="linkPanel" >   
+                <p:commandLink value="#{msg.closemap}" rendered="#{record.displayMap}"
+                               action="#{searchBean.closeMap(record)}"    
+                               update="singleMapPanel linkPanel" global="false" process="@this" />  
+
+                <p:commandLink value="#{msg.showmap}" rendered="#{record.openMap}"
                                action="#{searchBean.showSingleMap(record)}"    
-                               update="singleMapPanel" />  
+                               update="singleMapPanel linkPanel" global="false" process="@this" />  
                 <p:spacer width="10" height="5" rendered="#{record.singleMapLink}" /> 
                 <h:outputLink id="scientificNameLinkNrmSingle" value="http://naturforskaren.se/search/#{record.txFullName.trim()}"  
                               title="scientificname"  target="_blank" >                   
                   <h:outputText value="#{msg.showintaxonpages}"  style="font-family: Arial,sans-serif;" />   
-                </h:outputLink>   
-
+                </h:outputLink>    
                 <p:spacer width="10" height="5" /> 
-                <p:commandLink value="#{msg.errorreport}"    process="@this"  global="false" 
+                <p:commandLink value="#{msg.errorreport}" process="@this" global="false" 
                                action="#{error.reportError(record)}"  />  
               </h:panelGroup> 
             </h:panelGrid>   

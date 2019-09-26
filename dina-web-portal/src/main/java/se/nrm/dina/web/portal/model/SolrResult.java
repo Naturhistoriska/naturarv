@@ -15,23 +15,16 @@ public class SolrResult {
   
   private final int totalFound;
   private final List<SolrData> solrData;
-  
-  private final int start; 
-  
-  public SolrResult(int totalFound, int start, List<SolrData> solrData) {
+   
+  public SolrResult(int totalFound, List<SolrData> solrData) {
     this.totalFound = totalFound;
-    this.solrData = solrData;
-    this.start = start;
+    this.solrData = solrData; 
   }
 
   public int getTotalFound() {
     return totalFound;
   }
-
-  public int getStart() {
-    return start;
-  }
-   
+ 
   public List<SolrData> getSolrData() {
     return solrData;
   } 

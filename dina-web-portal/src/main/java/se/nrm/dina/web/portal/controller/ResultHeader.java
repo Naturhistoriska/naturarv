@@ -35,31 +35,31 @@ public class ResultHeader implements Serializable {
     resultView = "list";
   }
 
-  public void simpleView() {
+  public void setSimpleView() {
     log.info("simpleview");
     viewPath = LIST_VIEW_PATH;
     resultView = "list";
   }
 
-  public void detailView() {
+  public void setDetailView() {
     log.info("detialview");
     viewPath = DETAIL_VIEW_PATH;
     resultView = "detail";
   }
 
-  public void selectedView() {
+  public void setSelectedView() {
     log.info("selectedview");
     viewPath = SELECTED_VIEW_PATH;
     resultView = "selected";
   }
 
-  public void mapView() {
+  public void setMapView() {
     log.info("mapView");
     resultView = "map";
     viewPath = MAP_VIEW_PATH;
   }
 
-  public void imageView() {
+  public void setImageView() {
     log.info("imageView");
     resultView = "image";
     viewPath = IMAGE_VIEW_PATH;
