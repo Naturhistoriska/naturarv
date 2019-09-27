@@ -7,12 +7,11 @@
       xmlns:p="http://primefaces.org/ui" 
       > 
   <h:head>
-    <!--<link rel="shortcut icon" href="//www.dina-web.net/naturarv/resources/images/favicon.ico" type="image/x-icon" />-->
-    <link rel="shortcut icon" href="//localhost:8080/naturarv/resources/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/> 
     <title>
       <ui:insert name="windowTitle">
         #{msg.naturarv}
-      </ui:insert>
+      </ui:insert> 
     </title>     
 
     <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>   
