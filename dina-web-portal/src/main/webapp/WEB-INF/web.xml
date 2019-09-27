@@ -50,8 +50,7 @@
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>        
     <location>/pages/expired.xhtml</location>
   </error-page>
- 
-    
+  
        
   <context-param> 
     <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name> 
@@ -64,10 +63,13 @@
   </context-param> 
     
     
-  <!--
-      <mime-mapping>
-   <extension>woff2</extension>
-   <mime-type>application/x-font-woff2</mime-type>
+  <mime-mapping>
+    <extension>ico</extension>
+    <mime-type>image/ico</mime-type>
+  </mime-mapping>
+  <!--  <mime-mapping>
+    <extension>woff2</extension>
+    <mime-type>application/x-font-woff2</mime-type>
   </mime-mapping>-->
 
   <!--     <filter>
@@ -83,7 +85,11 @@
       <servlet-name>Faces Servlet</servlet-name>
   </filter-mapping> -->
 
-
+  <!--  <mime-mapping>
+    <extension>xhtml</extension>
+    <mime-type>application/xml</mime-type>
+  </mime-mapping>-->
+  
   <session-config>
     <session-timeout>
       300
