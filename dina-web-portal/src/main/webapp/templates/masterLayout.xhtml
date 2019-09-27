@@ -33,16 +33,21 @@
     <h:body  styleClass="mainbody" >  	      
       <h:outputStylesheet library="css" name="style.css"  />  
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
-      
+
       <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   /> 
       <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" 
-               resizable="false" showHeader="false">   
+                resizable="false" showHeader="false">   
         <h:panelGrid columns="3"  >  
           <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" /> 
           <p:spacer width="10" />
           <p:outputLabel value="#{msg.wait}" styleClass="inprocess" /> 
         </h:panelGrid>  
       </p:dialog>
+
+
+      <p:idleMonitor timeout="1800000000" >  
+        <p:ajax event="idle" listener="#{idle.idleListener}"  />   
+      </p:idleMonitor>  
 
 
       <div styleClass="templet">
