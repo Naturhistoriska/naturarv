@@ -7,5 +7,9 @@
 /todo.md
 
 .DS_Store
-certs/*
+certs/*.crt
+certs/*.key
+certs/.gitkeep
+
+/project-initdata-local.yml
 /project-initdata.yml
