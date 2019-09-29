@@ -84,8 +84,8 @@ public class ChartView implements Serializable {
     createTotalMonthChart();
     createSpecimenModelForLastTenYears();
 
-    initCollectionMonthChartData();
-    initCollectionYearChartData();
+//    initCollectionMonthChartData();
+//    initCollectionYearChartData();
   }
 
   private void initCollectionMonthChartData() {
@@ -233,9 +233,14 @@ public class ChartView implements Serializable {
 
     totalMonthChart = new BarChartModel();
     totalTenYearsChart = new BarChartModel();
-    createMonthChart(totalMonthChart, (Map) session.getAttribute(common.getMonthChartData()));
-    createYearChart(totalTenYearsChart, (Map) session.getAttribute(common.getYearChartData()));
-
+    
+    if(session.getAttribute(common.getMonthChartData()) != null) {
+      createMonthChart(totalMonthChart, (Map) session.getAttribute(common.getMonthChartData()));
+    } 
+    
+    if(session.getAttribute(common.getYearChartData()) != null) {
+      createYearChart(totalTenYearsChart, (Map) session.getAttribute(common.getYearChartData()));
+    } 
     collectionNameList.stream()
             .forEach(c -> {
               if (session.getAttribute(c) != null) {
