@@ -6,12 +6,14 @@
 package se.nrm.dina.web.portal.utils;
 
 import java.text.DateFormat; 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List; 
 import javax.faces.model.SelectItem;
@@ -28,7 +30,8 @@ public class HelpClass {
   private static HelpClass instance = null;
   private StringBuilder resultHeaderSummarySb;
   private StringBuilder imagePathSb;
-
+  private StringBuilder dayOfYearSb;
+ 
   private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 //  private final SimpleDateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 //  private final SimpleDateFormat genericDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SSS'Z'");
@@ -81,6 +84,16 @@ public class HelpClass {
     }
     return dateFormat.format(date);
   }
+  
+  public Date stringToDate(String strDate) {
+    try {
+      return dateFormat.parse(strDate); 
+    } catch(ParseException e) {
+      return null;
+    }
+  }
+  
+  
   
   public LocalDate convertDateToLocalDate(Date date) {
      return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -138,6 +151,22 @@ public class HelpClass {
     }
     return dropDayList;
   }
+  
+  public int getDayOfYear(int month, int day) {
+    int year = 2000;
+
+    dayOfYearSb = new StringBuilder();
+    dayOfYearSb.append(year);
+    dayOfYearSb.append("-");
+    dayOfYearSb.append(month);
+    dayOfYearSb.append("-");
+    dayOfYearSb.append(day);
+
+    Date date = stringToDate(dayOfYearSb.toString().trim()); 
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date); 
+    return cal.get(Calendar.DAY_OF_YEAR);
+  }
 
   public int getNumberOfDaysInMonth(int numberOfMonth) {
     switch (numberOfMonth) {
@@ -168,6 +197,11 @@ public class HelpClass {
       default:
         return 31;
     }
+  }
+  
+  public String resetValue(String value) {
+    return value != null && !value.isEmpty()
+            ? replaceChars(value) : CommonText.getInstance().getWildCard();
   }
 
   public void updateView(String viewId) {

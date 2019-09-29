@@ -129,9 +129,21 @@ public class CommonText {
   private static final String SYNONYM = "synonym"; 
   private static final String AUTHOR = "author";
   private static final String COMMON_NAME = "commonName";
+  private static final String COLLECTOR = "collector";
+  private static final String HIGH_TAXA = "higherTx";
   
   private static final String TX_SEARCH = "tx";
-
+  private static final String LOCALITY_SEARCH = "lc";
+  private static final String ACCESSION_SEARCH = "acc";
+  private static final String DETERMINER_SEARCH = "dtm";
+  private static final String STATION_FIELD_SEARCH = "sfn";
+  private static final String AUTHOR_SEARCH = "auth";
+  private static final String CATALOG_NUMBER_SEARCH = "cn";
+  private static final String COLLECTOR_SEARCH = "clt";
+  
+  
+  
+  
   private static final String ALL = "all";
   private static final String CONTAINS = "contains";
   private static final String EXACT = "exact"; 
@@ -281,13 +293,49 @@ public class CommonText {
   public String getCommonName() {
     return COMMON_NAME;
   }
+  
+  public String getCollector() {
+    return COLLECTOR;
+  }
 
   public String getTaxonFullName() {
     return TAXON_FULL_NAME;
   }
   
+  public String getHighTaxa() {
+    return HIGH_TAXA;
+  }
+  
   public String getTxSearch() {
     return TX_SEARCH;
+  }
+  
+  public String getLocalitySearch() {
+    return LOCALITY_SEARCH;
+  }
+  
+  public String getCollectorSearch() {
+    return COLLECTOR_SEARCH;
+  }
+  
+  public String getDeterminerSearch() {
+    return DETERMINER_SEARCH;
+  }
+  
+  public String getCatalogNumberSearch() {
+    return CATALOG_NUMBER_SEARCH;
+  }
+  
+  public String getAuthorSearch() {
+    return AUTHOR_SEARCH;
+  }
+  
+  public String getAccessionSearch() {
+    return ACCESSION_SEARCH;
+  }
+  
+  public String getStationFieldSearch() {
+    return STATION_FIELD_SEARCH;
   }
 
   public String getCollectionId() {

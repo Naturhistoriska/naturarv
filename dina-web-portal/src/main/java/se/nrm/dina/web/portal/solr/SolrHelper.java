@@ -6,7 +6,7 @@
 package se.nrm.dina.web.portal.solr;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Arrays; 
 import java.util.List;
 import java.util.StringJoiner;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,10 @@ public class SolrHelper {
   private static SolrHelper instance = null;
   private StringBuilder searchTextSb;
   private StringJoiner sj;
-
+  private StringBuilder sessionSb;
+  private StringBuilder classificationSb;
+  private StringBuilder commonNameSb;
+  
   private StringBuilder advanceSearchText;
 
   public static synchronized SolrHelper getInstance() {
@@ -46,27 +49,26 @@ public class SolrHelper {
 //        return buildContainsString(value, field); 
 //    } 
 //  }
-   
   public String buildSearchString(String value, String field, String content) {
-    
-    if(content.equals(CommonText.getInstance().getExact())) {
+
+    value = value == null ? CommonText.getInstance().getWildCard() : value; 
+    if (content.equals(CommonText.getInstance().getExact())) {
       return buildExactString(value, field);
     }
-     
+
     if (value.contains("(") || value.contains(")") || value.contains(",")) {
       value = HelpClass.getInstance().replaceChars(value);
-    } 
-    return content.equals(CommonText.getInstance().getStartWith()) ?
-            buildStartsWithString(value, field) : buildContainsString(value, field); 
+    }
+    return content.equals(CommonText.getInstance().getStartWith())
+            ? buildStartsWithString(value, field) : buildContainsString(value, field);
   }
-
 
   private String buildExactString(String value, String field) {
     advanceSearchText = new StringBuilder();
     advanceSearchText.append(field);
     advanceSearchText.append(":\"");
     advanceSearchText.append(value);
-    advanceSearchText.append("\""); 
+    advanceSearchText.append("\"");
     return advanceSearchText.toString();
   }
 
@@ -74,7 +76,7 @@ public class SolrHelper {
     if (value.contains("(") || value.contains(")") || value.contains(",")) {
       value = HelpClass.getInstance().replaceChars(value);
     }
-    
+
     advanceSearchText = new StringBuilder();
     String[] strings = value.split(" ");
 
@@ -93,7 +95,7 @@ public class SolrHelper {
           advanceSearchText.append("* ");
         }
       }
-    } 
+    }
     return advanceSearchText.toString().trim();
   }
 
@@ -101,9 +103,9 @@ public class SolrHelper {
     if (value.contains("(") || value.contains(")") || value.contains(",")) {
       value = HelpClass.getInstance().replaceChars(value);
     }
-    
+
     advanceSearchText = new StringBuilder();
-    String[] strings = value.split(" "); 
+    String[] strings = value.split(" ");
     Arrays.asList(strings).stream()
             .filter(s -> !s.isEmpty())
             .forEach(s -> {
@@ -113,7 +115,7 @@ public class SolrHelper {
               advanceSearchText.append(s);
               advanceSearchText.append("* ");
             });
-    
+
 //    StringBuilder sb = new StringBuilder();
 //    String[] strings = value.split(" ");
 //    if (strings.length == 1) {
@@ -135,38 +137,231 @@ public class SolrHelper {
 //    }
     return advanceSearchText.toString().trim();
   }
+
+  public String buildQueryDataString(QueryData data) {
+
+    log.info("buildQueryBeanString : data : {}", data);
+
+    String field = data.getField();
+    String searchText;
+    switch (field) {
+      case "date":
+        return buildDate(data);
+      case "season":
+        return buildSeason(data);
+      case "ftx":
+        return buildClassificationSearch(data);
+      case "eftx":
+        return buildDeterminationSearch(data); 
+      case "text":
+        return buildFullTextSearchText(data); 
+      case "commonName":
+        return SolrHelper.getInstance().buildCommonNameSearchText(data); 
+      default:
+        searchText = SolrHelper.getInstance().buildAdvanceSearchText(data);
+        break;
+    }
+    return searchText;
+  }
+
+  public String buildCommonNameSearchText(QueryData data) { 
+
+    String value = HelpClass.getInstance().resetValue(data.getValue());
+ 
+    commonNameSb = new StringBuilder();
+    switch (data.getOperation()) {
+      case "not":
+        commonNameSb.append("-");
+        break;
+      case "and":
+        commonNameSb.append("+");
+        break;
+    }
+    commonNameSb.append("(");
+    commonNameSb.append(buildExactString(value, CommonText.getInstance().getCommonName()));
+ 
+    switch (data.getContent()) {
+      case "startswith":
+        commonNameSb.append(" ");
+        commonNameSb.append(buildStartsWithString(value, CommonText.getInstance().getCommonName()));
+        break;
+      case "exact":
+        commonNameSb.append(" ");
+        commonNameSb.append(buildExactString(value, CommonText.getInstance().getCommonName()));
+        break; 
+      default:
+        commonNameSb.append(buildContainsString(value, CommonText.getInstance().getCommonName()));
+        break;
+    }
+    commonNameSb.append(")");
+    return commonNameSb.toString().trim();
+  }
+
+  private String buildFullTextSearchText(QueryData data) {
+
+    StringBuilder sb = new StringBuilder(); 
+    switch (data.getOperation()) {
+      case "and":
+        sb.append("+");
+        break;
+      case "not":
+        sb.append("-");
+        break;
+    }
+    sb.append("("); 
+    String value = HelpClass.getInstance().resetValue(data.getValue()); 
+    switch (data.getContent()) {
+      case "exact":
+        sb.append(buildExactString(value, CommonText.getInstance().getTextField()));
+        break;
+      case "startswith":
+        sb.append(buildStartsWithString(value, CommonText.getInstance().getTextField()));
+        break;
+      default:
+        sb.append(buildFullTextSearchText(value));
+        break;
+    }
+    sb.append(")");
+    return sb.toString().trim();
+  }
   
+  private String buildFullTextSearchText(String value) { 
+      StringBuilder sb = new StringBuilder();
+      sb.append("(");
+      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+      sb.append(") ");
+      sb.append("(");
+      sb.append(buildStartsWithString(value, CommonText.getInstance().getTxSearch()));
+      sb.append(") ");
+      sb.append("(");
+      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+      sb.append(")");
+      return sb.toString().trim(); 
+  }
+
+  private String buildDeterminationSearch(QueryData data) {
+    String value = HelpClass.getInstance().resetValue(data.getValue());
+ 
+    StringBuilder sb = new StringBuilder();
+    switch (data.getOperation()) {
+      case "not":
+        sb.append("-");
+        break;
+      case "and":
+        sb.append("+");
+        break;
+    }
+    sb.append("(");
+ 
+    switch (data.getContent()) {
+      case "exact":
+        sb.append(buildExactString(value, CommonText.getInstance().getTxSearch()));
+        break;
+      case "startswith":
+        sb.append(buildStartsWithString(value, CommonText.getInstance().getTxSearch()));
+        break;
+      default:
+        sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+        break;
+    }
+    sb.append(")");
+    return sb.toString().trim();
+  }
+
+
+  private String buildClassificationSearch(QueryData data) { 
+    log.info("buildClassificationSearch : {}", data.getValue());
+
+    String value = HelpClass.getInstance().resetValue(data.getValue());
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    classificationSb = new StringBuilder();
+    switch (data.getOperation()) {
+      case "not":
+        classificationSb.append("-");
+        break;
+      case "and":
+        classificationSb.append("+");
+        break;
+    }
+    classificationSb.append("(");
+ 
+    StringBuilder tsb = new StringBuilder();
+    StringBuilder hsb = new StringBuilder();
+
+    tsb.append("(");
+    hsb.append("(");
+
+    switch (data.getContent()) {
+      case "exact":
+        tsb.append(buildExactString(value, CommonText.getInstance().getTxSearch()));
+        hsb.append(buildExactString(value, CommonText.getInstance().getHighTaxa()));
+        break;
+      case "startswith":
+        tsb.append(buildStartsWithString(value, CommonText.getInstance().getTxSearch()));
+        hsb.append(buildStartsWithString(value, CommonText.getInstance().getHighTaxa()));
+        break;
+      default:
+        tsb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+        hsb.append(buildContainsString(value, CommonText.getInstance().getHighTaxa()));
+        break;
+    }
+    tsb.append(")");
+    hsb.append(")");
+    classificationSb.append(tsb.toString().trim());
+    classificationSb.append(" ");
+    classificationSb.append(hsb.toString().trim());
+    classificationSb.append(")");
+
+    return classificationSb.toString().trim();
+  }
+
+  private String buildSeason(QueryData bean) {
+    int startMonth = bean.getStartMonth() == 0 ? 1 : bean.getStartMonth();
+    int endMonth = bean.getEndMonth() == 0 ? 12 : bean.getEndMonth();
+
+    int startDay = bean.getStartDay();
+    int endDay = bean.getEndDay();
+
+    int fromDayOfYear = HelpClass.getInstance().getDayOfYear(startMonth, startDay);
+    int toDayOfYear = HelpClass.getInstance().getDayOfYear(endMonth, endDay);
+
+    sessionSb = new StringBuilder();
+    switch (bean.getOperation()) {
+      case "not":
+        sessionSb.append("-");
+        break;
+      case "and":
+        sessionSb.append("+");
+        break;
+    }
+    sessionSb.append("dayOfTheYear:[");
+    sessionSb.append(fromDayOfYear);
+    sessionSb.append(" TO ");
+    sessionSb.append(toDayOfYear);
+    sessionSb.append("]");
+
+    return sessionSb.toString().trim();
+  }
+
+  private String buildDate(QueryData data) {
+    String fromZoom = ":00Z";
+    String toZoom = "Z";
+    String key = "startDate";
+    switch (data.getOperation()) {
+      case "not":
+        key = "-startDate";
+        break;
+      case "and":
+        key = "+startDate";
+        break;
+    }
+    LocalDateTime fromDate = data.getFromDate() == null
+            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getFromDate(), true, false);
+    LocalDateTime toDate = data.getToDate() == null
+            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getToDate(), false, true);
+    return HelpClass.getInstance().convertLocalDateTimeToString(fromDate, toDate, key, fromZoom, toZoom);
+  }
+
 //  
 //  /**
 //   * Method build a search string for advance search
@@ -212,24 +407,7 @@ public class SolrHelper {
     return searchTextSb.toString().trim();
   }
 
-  public String buildDate(QueryData data) {
-    String fromZoom = ":00Z";
-    String toZoom = "Z";
-    String key = "startDate";
-    switch (data.getOperation()) {
-      case "not":
-        key = "-startDate";
-        break;
-      case "and":
-        key = "+startDate";
-        break;
-    }
-    LocalDateTime fromDate = data.getFromDate() == null
-            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getFromDate(), true, false);
-    LocalDateTime toDate = data.getToDate() == null
-            ? null : HelpClass.getInstance().convertDateToLocalDateTime(data.getToDate(), false, true);
-    return HelpClass.getInstance().convertLocalDateTimeToString(fromDate, toDate, key, fromZoom, toZoom);
-  }
+ 
 
   public String buildAdvanceSearchText(QueryData data) {
     log.info("buildAdvanceSearchText");
@@ -258,7 +436,7 @@ public class SolrHelper {
 
   public String buildSearchCatalogedDateText(LocalDateTime date) {
     return HelpClass.getInstance().convertLocalDateTimeToString(date, null,
-            CommonText.getInstance().getCatalogedDate(), ":00Z", null); 
+            CommonText.getInstance().getCatalogedDate(), ":00Z", null);
   }
 
   public String buildImageOptionSearchText(String searchText, List<String> filters) {
@@ -286,8 +464,6 @@ public class SolrHelper {
       sb.append("*)) ");
     }
   }
-
-  
 
 //  private String buildExactString(String value, String field, boolean boost) {  
 //    StringBuilder sb = new StringBuilder();

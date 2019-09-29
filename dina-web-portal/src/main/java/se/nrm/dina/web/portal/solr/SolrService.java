@@ -31,9 +31,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
 import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
 import org.apache.solr.client.solrj.response.json.HeatmapJsonFacet;
-import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.json.NestableJsonFacet; 
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.CollectionData;
@@ -118,18 +116,18 @@ public class SolrService implements Serializable {
    *
    * @param input
    * @param content
+   * @param field
    * @return
    */
-  public List<String> autoCompleteSearchAllField(String input, String content) {
+  public List<String> autoCompleteSearchAllField(String input, String content, String field) {
     log.info("autoCompleteSearchAllField : {} -- {}", input, content);
 
-    String searchText = SolrHelper.getInstance()
-            .buildSearchString(input, CommonText.getInstance().getTextField(), content);
+    String searchText = SolrHelper.getInstance().buildSearchString(input, field, content);
     
     query = new SolrQuery(); 
     query.setQuery(searchText);
     query.setHighlight(true)
-              .addHighlightField(CommonText.getInstance().getTextField())
+              .addHighlightField(field)
               .setHighlightSnippets(20)
               .setRows(500);
     try { 
@@ -157,8 +155,7 @@ public class SolrService implements Serializable {
     return null;
   }
 
-  public List<String> autoCompleteTaxon(String input, String content) {
-
+  public List<String> autoCompleteTaxon(String input, String content) { 
     log.info("autoCompleteTaxon");
 
     String searchText = SolrHelper.getInstance().buildSearchString(input,
@@ -173,6 +170,7 @@ public class SolrService implements Serializable {
 
     try {
       response = request.process(client); 
+      log.info("json: {}", response.jsonStr()); 
     } catch (SolrServerException | IOException ex) {
       log.warn(ex.getMessage());
     }
@@ -187,6 +185,7 @@ public class SolrService implements Serializable {
               .collect(Collectors.toList())); 
     } 
     
+    log.info("data: {}", autoCompleteList);
     BucketBasedJsonFacet synonmyBucket = facet.getBucketBasedFacets(CommonText.getInstance().getSynonmy());
     if (taxonBucket != null) {
       autoCompleteList.addAll(synonmyBucket.getBuckets() 
@@ -195,8 +194,98 @@ public class SolrService implements Serializable {
               .filter(s -> s.contains(input)) 
               .collect(Collectors.toList())); 
     } 
+    log.info("data: {}", autoCompleteList);
     return autoCompleteList; 
   }
+  
+  
+  public List<String> autoComleteSearch(String value, String content, 
+          String field, String searchField) {
+    log.info("autoComleteSearch: {} -- {}", field, searchField);
+    String searchText = SolrHelper.getInstance().buildSearchString(value, searchField, content);
+    log.info("searchText: {}", searchText);
+    final TermsFacetMap termsFacet = new TermsFacetMap(field).setLimit(80);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFacet(field, termsFacet);
+
+    try {
+      response = request.process(client);  
+    } catch (SolrServerException | IOException ex) {
+      log.error(ex.getMessage());
+    }
+
+    autoCompleteList = new ArrayList<>();
+    NestableJsonFacet facet = response.getJsonFacetingResponse();
+    BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(field);
+    if (bucket != null) {
+      autoCompleteList.addAll(
+              bucket.getBuckets() 
+                .stream()
+                .map(b ->  (String)b.getVal())   
+                .collect(Collectors.toList())); 
+    }  
+    return autoCompleteList;
+  }
+  
+  public List<String> autoComleteMultivalue(String value, String content, String field) {
+    String searchText = SolrHelper.getInstance().buildSearchString(value, field, content);
+     
+    final TermsFacetMap termsFacet = new TermsFacetMap(field).setLimit(80);
+    final JsonQueryRequest request = new JsonQueryRequest()
+            .setQuery(searchText)
+            .withFacet(field, termsFacet);
+
+    try {
+      response = request.process(client); 
+      log.info("json: {}", response.jsonStr()); 
+    } catch (SolrServerException | IOException ex) {
+      log.error(ex.getMessage());
+    }
+
+    autoCompleteList = new ArrayList<>();
+    NestableJsonFacet facet = response.getJsonFacetingResponse();
+    BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(field);
+    if (bucket != null) {
+      autoCompleteList.addAll(
+              bucket.getBuckets() 
+                .stream()
+                .map(b ->  (String)b.getVal())  
+                .filter(s -> s.contains(value)) 
+                .collect(Collectors.toList())); 
+    }  
+    return autoCompleteList;
+  }
+  
+//  public List<String> autoCompleteAccession(String value, String content, String field) {
+// 
+//    String searchText = SolrHelper.getInstance().buildSearchString(value, field, content);
+//     
+//    final TermsFacetMap termsFacet = new TermsFacetMap(field).setLimit(80);
+//    final JsonQueryRequest request = new JsonQueryRequest()
+//            .setQuery(searchText)
+//            .withFacet(field, termsFacet);
+//
+//    try {
+//      response = request.process(client); 
+//      log.info("json: {}", response.jsonStr()); 
+//    } catch (SolrServerException | IOException ex) {
+//      log.error(ex.getMessage());
+//    }
+//
+//    autoCompleteList = new ArrayList<>();
+//    NestableJsonFacet facet = response.getJsonFacetingResponse();
+//    BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(field);
+//    if (bucket != null) {
+//      autoCompleteList.addAll(
+//              bucket.getBuckets() 
+//                .stream()
+//                .map(b ->  (String)b.getVal())  
+//                .filter(s -> s.contains(value)) 
+//                .collect(Collectors.toList())); 
+//    }  
+//    return autoCompleteList;
+//  }
   
   public List<String> autoCompleteSearch(String value, String field, String content) {
  
@@ -222,98 +311,16 @@ public class SolrService implements Serializable {
                 .map(b -> (String)b.getVal())   
                 .collect(Collectors.toList())); 
     }  
-    return autoCompleteList;
-    
-    
-    
-//    try {
-//      query = new SolrQuery();
-//      query.setQuery(searchText)
-//              .addField(field)
-//              .setRows(1000);
-//
-//      response = client.query(query);
-//
-//      List<String> list;
-//
-//      if (field.equals(CommonText.getInstance().getAuthor())
-//              || field.equals(CommonText.getInstance().getCommonName())) {
-//        list = response.getResults().stream()
-//                .map(d -> ((List<String>) d.getFieldValue(field)).toString())
-//                .distinct()
-//                .collect(Collectors.toList());
-//      } else {
-//        list = response.getResults().stream()
-//                .map(d -> (String) d.getFieldValue(field))
-//                .distinct()
-//                .collect(Collectors.toList());
-//      }
-//      return list;
-//    } catch (SolrServerException | IOException ex) {
-//      log.error(ex.getMessage());
-//    }
-//    return null;
+    return autoCompleteList; 
   }
   
   
 
-  public List<String> autoComleteCommonName(String value, String content) {
-    String searchText = SolrHelper.getInstance().buildSearchString(value,
-            CommonText.getInstance().getCommonName(), content);
-     
-    final TermsFacetMap commonNameFacet = new TermsFacetMap(CommonText.getInstance().getCommonName()).setLimit(80);
-    final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery(searchText)
-            .withFacet(CommonText.getInstance().getCommonName(), commonNameFacet);
 
-    try {
-      response = request.process(client); 
-      log.info("json: {}", response.jsonStr()); 
-    } catch (SolrServerException | IOException ex) {
-      log.warn(ex.getMessage());
-    }
-
-    autoCompleteList = new ArrayList<>();
-    NestableJsonFacet facet = response.getJsonFacetingResponse();
-    BucketBasedJsonFacet commonBucket = facet.getBucketBasedFacets(CommonText.getInstance().getCommonName());
-    if (commonBucket != null) {
-      autoCompleteList.addAll(
-              commonBucket.getBuckets() 
-                .stream()
-                .map(b ->  (String)b.getVal())  
-                .filter(s -> s.contains(value)) 
-                .collect(Collectors.toList())); 
-    }  
-    return autoCompleteList;
-  }
 
   
 
-  public List<String> autoCompleteAccession(String value, String content) {
- 
-    String searchText = SolrHelper.getInstance().buildSearchString(value,
-            CommonText.getInstance().getAccessionNumber(), content);
-    try {
-      query = new SolrQuery();
-      query.setQuery(searchText)
-              .setFacet(true)
-              .addFacetField(CommonText.getInstance().getAccessionNumber())
-              .setFacetLimit(10000)
-              .setFacetMinCount(1);
-
-      FacetField field = client.query(query)
-              .getFacetField(CommonText.getInstance().getAccessionNumber());
-
-      List<Count> counts = field.getValues();
-      return counts.stream()
-              .map(c -> c.getName())
-              .distinct()
-              .collect(Collectors.toList());
-    } catch (SolrServerException | IOException ex) {
-      log.error(ex.getMessage());
-    }
-    return null;
-  }
+  
 
   public HeatmapData searchHeatmapWithFilter(String text, Map<String, String> filters,
           String regionQueryText, int gridLevel) {
@@ -712,7 +719,7 @@ public class SolrService implements Serializable {
 
     try {
       response = request.process(client);
-      log.info("json: {}", response.jsonStr());
+//      log.info("json: {}", response.jsonStr());
 
       NestableJsonFacet facet = response.getJsonFacetingResponse();
 
