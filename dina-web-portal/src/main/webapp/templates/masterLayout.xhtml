@@ -15,10 +15,7 @@
     </title>     
 
     <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>   
-    <script name="jquery/jquery.js" library="primefaces"></script>  
-
-    <!--<h:outputScript name="markerclusterer.js" />-->
-
+    <script name="jquery/jquery.js" library="primefaces"></script>   
   </h:head>
 
 
@@ -34,8 +31,8 @@
       <h:outputStylesheet library="css" name="style.css"  />  
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
 
-      <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   /> 
-      <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" 
+      <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   /> 
+      <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false" 
                 resizable="false" showHeader="false">   
         <h:panelGrid columns="3"  >  
           <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" /> 
@@ -44,11 +41,13 @@
         </h:panelGrid>  
       </p:dialog>
 
+      <h:form id="idelForm">
+        <p:idleMonitor id="idleMonitor" timeout="1800000000" >  
 
-      <p:idleMonitor timeout="1800000000" >  
-        <p:ajax event="idle" listener="#{idle.idleListener}"  />   
-      </p:idleMonitor>  
+          <p:ajax id="idleEvent" event="idle" listener="#{idle.idleListener}"  />   
 
+        </p:idleMonitor>  
+      </h:form> 
 
       <div styleClass="templet">
         <div  id="header" layout="block"  >
