@@ -46,6 +46,10 @@ public class SolrData {
   @Field
   public String country;
   @Field
+  public String county;
+  @Field
+  public String state;
+  @Field
   public String coordinate;
   @Field
   public String determiner;
@@ -70,6 +74,8 @@ public class SolrData {
   @Field
   public String[] remarks;
   @Field
+  public String serie;
+  @Field
   public String species;
   @Field
   public String stationFieldNumber;
@@ -79,6 +85,9 @@ public class SolrData {
   public String typeStatus;
   @Field
   public String txFullName;
+  @Field
+  public String[] taxa;       
+          
 
   boolean selected = false;
   boolean imageExist;
@@ -215,7 +224,15 @@ public class SolrData {
   public void setCountry(String country) {
     this.country = country;
   } 
-  
+
+  public String getCounty() {
+    return county;
+  }
+
+  public void setCounty(String county) {
+    this.county = county;
+  }
+   
   public String getHigherTx() {
     return higherTx;
   }
@@ -255,7 +272,16 @@ public class SolrData {
   public void setLocality(String locality) {
     this.locality = locality;
   }
- 
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+  
+   
   public String[] getRemarks() {
     return remarks;
   }
@@ -263,7 +289,15 @@ public class SolrData {
   public void setRemarks(String[] remarks) {
     this.remarks = remarks;
   }
- 
+
+  public String getSerie() {
+    return serie;
+  }
+
+  public void setSerie(String serie) {
+    this.serie = serie;
+  }
+   
   public String getStationFieldNumber() {
     return stationFieldNumber;
   }
@@ -304,6 +338,15 @@ public class SolrData {
     this.txFullName = txFullName;
   }
 
+  public String[] getTaxa() {
+    return taxa;
+  }
+
+  public void setTaxa(String[] taxa) {
+    this.taxa = taxa;
+  }
+ 
+   
   public boolean isSelected() {
     return selected;
   }
@@ -346,6 +389,10 @@ public class SolrData {
   
   public String getCollectors() {
     return StringUtils.join(collector, ", ");
+  }
+  
+  public String getTaxaList() {
+    return StringUtils.join(taxa, "; ");
   }
   
   public String getAllRemarkes() {
@@ -391,6 +438,10 @@ public class SolrData {
   
   public List<String> getJpgs() {
     return jpgs;
+  }
+  
+  public boolean isMineral() {
+    return collectionId.equals("557057");
   }
     
   public String getCoordinateString() {
