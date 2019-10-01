@@ -81,13 +81,12 @@ public class SolrService implements Serializable {
     addSearchFilters(filters);
     query.setStart(start);
     query.setRows(numPerPage);
-    query.setSort(CommonText.getInstance().getId(), SolrQuery.ORDER.asc);
+    query.setSort(CommonText.getInstance().getCatalogedDate(), SolrQuery.ORDER.desc);
 
     try {
-      response = client.query(query);
-      log.info("num: {}", response.getResults().getNumFound());
-
-      return new SolrResult((int) response.getResults().getNumFound(), response.getBeans(SolrData.class));
+      response = client.query(query);   
+      return new SolrResult((int) response.getResults().getNumFound(), 
+              response.getBeans(SolrData.class));
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return null;

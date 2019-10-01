@@ -152,20 +152,8 @@ public class HelpClass {
     return dropDayList;
   }
   
-  public int getDayOfYear(int month, int day) {
-    int year = 2000;
-
-    dayOfYearSb = new StringBuilder();
-    dayOfYearSb.append(year);
-    dayOfYearSb.append("-");
-    dayOfYearSb.append(month);
-    dayOfYearSb.append("-");
-    dayOfYearSb.append(day);
-
-    Date date = stringToDate(dayOfYearSb.toString().trim()); 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date); 
-    return cal.get(Calendar.DAY_OF_YEAR);
+  public int getDayOfYear(int month, int day) { 
+    return LocalDate.of(2000, month, day).getDayOfYear(); 
   }
 
   public int getNumberOfDaysInMonth(int numberOfMonth) {

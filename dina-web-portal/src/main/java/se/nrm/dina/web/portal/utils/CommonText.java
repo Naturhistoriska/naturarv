@@ -115,7 +115,7 @@ public class CommonText {
 
   private static final String ID = "id";
   private static final String COLLECTION_NAME = "collectionName";
-  private static final String COLLECTION_ID = "collectionId";
+  private static final String COLLECTION_ID = "collectionId"; 
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
   private static final String ACCESSION_NUMBER = "accessionNumber";
