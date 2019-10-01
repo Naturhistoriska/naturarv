@@ -24,9 +24,8 @@
 
             <h:outputText value="#{msg.cataloguenumber}:" />   
             <h:outputText value="#{record.catalogNumber}" />  
-
-
-            <h:outputText value="#{msg.speciesname}:" />   
+ 
+            <h:outputText value="#{record.mineral ? msg.mineral : msg.speciesname}:" />   
             <h:outputText value="#{record.txFullName}" /> 
 
             <h:outputText value="#{msg.highertaxa}:" />   
@@ -37,6 +36,12 @@
 
             <h:outputText value="#{msg.type}:"  />   
             <h:outputText value="#{record.typeStatus}" /> 
+            
+            <h:outputText value="#{msg.minAssociatedMineral}:" rendered="#{record.mineral}" />   
+            <h:outputText value="#{record.taxaList}" rendered="#{record.mineral}" /> 
+            
+            <h:outputText value="#{msg.serie}:" rendered="#{record.mineral}" />   
+            <h:outputText value="#{record.serie}" rendered="#{record.mineral}" /> 
 
             <h:outputText value="#{msg.author}:"  />   
             <h:outputText value="#{record.authors}" /> 
@@ -59,6 +64,13 @@
 
             <h:outputText value="#{msg.locality}:"   />   
             <h:outputText value="#{record.locality}" /> 
+             
+            <h:outputText value="#{msg.localityCounty}:"   />   
+            <h:outputText value="#{record.county}" /> 
+             
+            <h:outputText value="#{msg.state}:"   />   
+            <h:outputText value="#{record.state}" /> 
+
 
             <h:outputText value="#{msg.country}:"  />   
             <h:outputText value="#{record.country}" />   

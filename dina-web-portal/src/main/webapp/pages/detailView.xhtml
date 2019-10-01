@@ -9,7 +9,8 @@
       <p:dataTable id="detailResultTable" var="record" value="#{searchBean.resultList}"  
                    rowKey="#{record.catalogNumber}"  styleClass="detailTable"
                    paginator="false" rowIndexVar="indexCount"   >    
-
+        
+        
         <p:column style="font-size: 11px; width : 15px; "  > 
           <h:selectBooleanCheckbox value="#{record.selected}" 
                                    style="margin-top: 2px; margin-left: 2px; margin-top: 5px; ">
@@ -31,8 +32,8 @@
                            action="#{searchBean.displayImages(record)}" update="imagePanel"  >
               <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
                               title="#{msg.showimages}" alt="#{msg.showimages}" /> 
-            </p:commandLink>  
-            <h:outputText value="#{msg.speciesname}:" />   
+            </p:commandLink>   
+            <h:outputText value="#{record.mineral ? msg.mineral : msg.speciesname}:" />   
             <h:outputText value="#{record.txFullName}" /> 
 
             <p:spacer width="5" height="5" />
@@ -46,6 +47,15 @@
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.type}:"  />   
             <h:outputText value="#{record.typeStatus}" /> 
+
+            <p:spacer width="5" height="5" rendered="#{record.mineral}" />
+            <h:outputText value="#{msg.minAssociatedMineral}:" rendered="#{record.mineral}" />   
+            <h:outputText value="#{record.taxaList}" rendered="#{record.mineral}" /> 
+
+            <p:spacer width="5" height="5" rendered="#{record.mineral}" />
+            <h:outputText value="#{msg.serie}:" rendered="#{record.mineral}" />   
+            <h:outputText value="#{record.serie}" rendered="#{record.mineral}" /> 
+
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.author}:"  />   
@@ -74,6 +84,14 @@
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.locality}:"   />   
             <h:outputText value="#{record.locality}" /> 
+            
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.localityCounty}:"   />   
+            <h:outputText value="#{record.county}" /> 
+            
+            <p:spacer width="5" height="5" />
+            <h:outputText value="#{msg.state}:"   />   
+            <h:outputText value="#{record.state}" /> 
 
             <p:spacer width="5" height="5" />
             <h:outputText value="#{msg.country}:"  />   
