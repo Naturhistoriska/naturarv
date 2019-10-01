@@ -144,7 +144,7 @@ public class SolrHelper {
 
     String field = data.getField();
     String searchText;
-    switch (field) {
+    switch (field) { 
       case "date":
         return buildDate(data);
       case "season":
@@ -198,6 +198,7 @@ public class SolrHelper {
   }
 
   private String buildFullTextSearchText(QueryData data) {
+    log.info("buildFullTextSearchText");
 
     StringBuilder sb = new StringBuilder(); 
     switch (data.getOperation()) {
@@ -218,26 +219,26 @@ public class SolrHelper {
         sb.append(buildStartsWithString(value, CommonText.getInstance().getTextField()));
         break;
       default:
-        sb.append(buildFullTextSearchText(value));
+        sb.append(buildContainsString(value, CommonText.getInstance().getTextField()));
         break;
     }
     sb.append(")");
     return sb.toString().trim();
   }
   
-  private String buildFullTextSearchText(String value) { 
-      StringBuilder sb = new StringBuilder();
-      sb.append("(");
-      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
-      sb.append(") ");
-      sb.append("(");
-      sb.append(buildStartsWithString(value, CommonText.getInstance().getTxSearch()));
-      sb.append(") ");
-      sb.append("(");
-      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
-      sb.append(")");
-      return sb.toString().trim(); 
-  }
+//  private String buildFullTextSearchText(String value) { 
+//      StringBuilder sb = new StringBuilder();
+//      sb.append("(");
+//      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+//      sb.append(") ");
+//      sb.append("(");
+//      sb.append(buildStartsWithString(value, CommonText.getInstance().getTxSearch()));
+//      sb.append(") ");
+//      sb.append("(");
+//      sb.append(buildContainsString(value, CommonText.getInstance().getTxSearch()));
+//      sb.append(")");
+//      return sb.toString().trim(); 
+//  }
 
   private String buildDeterminationSearch(QueryData data) {
     String value = HelpClass.getInstance().resetValue(data.getValue());
