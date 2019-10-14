@@ -8,7 +8,7 @@ package se.nrm.dina.web.portal.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;  
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.beans.Field;
@@ -66,13 +66,19 @@ public class SolrData {
   @Field
   public String higherTx;
   @Field
-  public String map;
+  public boolean map;
   @Field
   public String morphbankId;
   @Field
   public String[] morphbankImageId;
   @Field
+  public String[] prepration;
+  @Field
+  public String[] prepCount;
+  @Field
   public String[] remarks;
+  @Field
+  public String[] colremarks;
   @Field
   public String serie;
   @Field
@@ -86,17 +92,16 @@ public class SolrData {
   @Field
   public String txFullName;
   @Field
-  public String[] taxa;       
-          
+  public String[] taxa;
 
   boolean selected = false;
   boolean imageExist;
   boolean displayMap;
-  boolean displayImage; 
+  boolean displayImage;
 
   private List<String> thumbs;
   private List<String> jpgs;
- 
+
   public String getAccessionNumber() {
     return accessionNumber;
   }
@@ -104,7 +109,7 @@ public class SolrData {
   public void setAccessionNumber(String accessionNumber) {
     this.accessionNumber = accessionNumber;
   }
-   
+
   public String[] getAccessionRemarks() {
     return accessionRemarks;
   }
@@ -120,7 +125,7 @@ public class SolrData {
   public void setAuthor(String[] author) {
     this.author = author;
   }
-   
+
   public String getCatalogNumber() {
     return catalogNumber;
   }
@@ -128,11 +133,11 @@ public class SolrData {
   public void setCatalogNumber(String catalogNumber) {
     this.catalogNumber = catalogNumber;
   }
- 
+
   public Date getCatalogedDate() {
     return catalogedDate;
   }
-   
+
   public void setCatalogedDate(Date catalogedDate) {
     this.catalogedDate = catalogedDate;
   }
@@ -144,7 +149,7 @@ public class SolrData {
   public void setCollector(String[] collector) {
     this.collector = collector;
   }
- 
+
   public String getDeterminer() {
     return determiner;
   }
@@ -152,7 +157,7 @@ public class SolrData {
   public void setDeterminer(String determiner) {
     this.determiner = determiner;
   }
- 
+
   public Date getStartDate() {
     return startDate;
   }
@@ -160,15 +165,15 @@ public class SolrData {
   public void setStartDate(Date startDate) {
     this.startDate = startDate;
   }
- 
+
   public String getCollectionName() {
     return collectionName;
   }
-   
+
   public void setCollectionName(String collectionName) {
     this.collectionName = collectionName;
   }
- 
+
   public String getCollectionId() {
     return collectionId;
   }
@@ -176,7 +181,7 @@ public class SolrData {
   public void setCollectionId(String collectionId) {
     this.collectionId = collectionId;
   }
-   
+
   public String getContinent() {
     return continent;
   }
@@ -184,7 +189,7 @@ public class SolrData {
   public void setContinent(String continent) {
     this.continent = continent;
   }
- 
+
   public String getLatitudeText() {
     return latitudeText;
   }
@@ -192,7 +197,7 @@ public class SolrData {
   public void setLatitudeText(String latitudeText) {
     this.latitudeText = latitudeText;
   }
- 
+
   public double getLatitude() {
     return latitude;
   }
@@ -200,7 +205,7 @@ public class SolrData {
   public void setLatitude(double latitude) {
     this.latitude = latitude;
   }
- 
+
   public double getLongitude() {
     return longitude;
   }
@@ -208,7 +213,7 @@ public class SolrData {
   public void setLongitude(double longitude) {
     this.longitude = longitude;
   }
- 
+
   public String getLongitudeText() {
     return longitudeText;
   }
@@ -216,14 +221,14 @@ public class SolrData {
   public void setLongitudeText(String longitudeText) {
     this.longitudeText = longitudeText;
   }
- 
+
   public String getCountry() {
     return country;
   }
 
   public void setCountry(String country) {
     this.country = country;
-  } 
+  }
 
   public String getCounty() {
     return county;
@@ -232,7 +237,7 @@ public class SolrData {
   public void setCounty(String county) {
     this.county = county;
   }
-   
+
   public String getHigherTx() {
     return higherTx;
   }
@@ -241,13 +246,14 @@ public class SolrData {
     this.higherTx = higherTx;
   }
 
-  public String getMap() {
+  public boolean isMap() {
     return map;
   }
 
-  public void setMap(String map) {
+  public void setMap(boolean map) {
     this.map = map;
   }
+
  
   public String getMorphbankId() {
     return morphbankId;
@@ -264,7 +270,7 @@ public class SolrData {
   public void setMorphbankImageId(String[] morphbankImageId) {
     this.morphbankImageId = morphbankImageId;
   }
- 
+
   public String getLocality() {
     return locality;
   }
@@ -280,8 +286,23 @@ public class SolrData {
   public void setState(String state) {
     this.state = state;
   }
-  
-   
+
+  public String[] getPrepration() {
+    return prepration;
+  }
+
+  public void setPrepration(String[] prepration) {
+    this.prepration = prepration;
+  }
+
+  public String[] getColremarks() {
+    return colremarks;
+  }
+
+  public void setColremarks(String[] colremarks) {
+    this.colremarks = colremarks;
+  }
+
   public String[] getRemarks() {
     return remarks;
   }
@@ -297,7 +318,7 @@ public class SolrData {
   public void setSerie(String serie) {
     this.serie = serie;
   }
-   
+
   public String getStationFieldNumber() {
     return stationFieldNumber;
   }
@@ -305,7 +326,7 @@ public class SolrData {
   public void setStationFieldNumber(String stationFieldNumber) {
     this.stationFieldNumber = stationFieldNumber;
   }
- 
+
   public String getSpecies() {
     return species;
   }
@@ -321,7 +342,7 @@ public class SolrData {
   public void setSynonym(String[] synonym) {
     this.synonym = synonym;
   }
-  
+
   public String getTypeStatus() {
     return typeStatus;
   }
@@ -329,7 +350,7 @@ public class SolrData {
   public void setTypeStatus(String typeStatus) {
     this.typeStatus = typeStatus;
   }
- 
+
   public String getTxFullName() {
     return txFullName;
   }
@@ -345,8 +366,7 @@ public class SolrData {
   public void setTaxa(String[] taxa) {
     this.taxa = taxa;
   }
- 
-   
+
   public boolean isSelected() {
     return selected;
   }
@@ -378,31 +398,53 @@ public class SolrData {
   public void setDisplayImage(boolean displayImage) {
     this.displayImage = displayImage;
   }
- 
+
   public String getAuthors() {
     return StringUtils.join(author, ", ");
   }
-  
+
   public String getSynonyms() {
     return StringUtils.join(synonym, ", ");
   }
-  
+
   public String getCollectors() {
     return StringUtils.join(collector, ", ");
   }
-  
+
   public String getTaxaList() {
     return StringUtils.join(taxa, "; ");
   }
-  
-  public String getAllRemarkes() {
-    return StringUtils.join(remarks, ", ");
+
+  public List<String> getAllRemarkes() {
+    List<String> remarkList = new ArrayList();
+    Arrays.asList(colremarks).stream()
+            .forEach(r -> {
+              remarkList.addAll(Arrays.asList(r.split("\n")));
+            });
+    return remarkList;
+//    return StringUtils.join(remarks, ", ");
   }
- 
+
+  public String getAllCoAttrRemarkes() {
+    return StringUtils.join(colremarks, ", ");
+  }
+
+  public String[] getPrepCount() {
+    return prepCount;
+  }
+
+  public void setPrepCount(String[] prepCount) {
+    this.prepCount = prepCount;
+  }
+
+  public String getAllPreparations() {
+    return StringUtils.join(prepration, ", ");
+  }
+
   public LatLng getLatLng() {
     return new LatLng(latitude, longitude);
   }
-  
+
   public String getCoordinate() {
     return coordinate;
   }
@@ -411,7 +453,7 @@ public class SolrData {
     this.coordinate = coordinate;
   }
 
-  public void setImages(String morphbankImageUrl) {  
+  public void setImages(String morphbankImageUrl) {
     thumbs = new ArrayList<>();
     jpgs = new ArrayList<>();
     if (morphbankImageId != null) {
@@ -420,30 +462,55 @@ public class SolrData {
               .forEach(i -> {
                 thumbs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance().getImageTypeThumb(), morphbankImageUrl));
                 jpgs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance().getImageTypeJpg(), morphbankImageUrl));
-              }); 
+              });
     }
   }
-  
+
   public boolean isOpenMap() {
-    return map != null && !displayMap;
+    return map && !displayMap;
   }
-  
+
   public boolean isSingleMapLink() {
-    return map != null;
+    return map;
   }
- 
+
   public List<String> getThumbs() {
     return thumbs;
   }
-  
+
   public List<String> getJpgs() {
     return jpgs;
   }
-  
+
   public boolean isMineral() {
     return collectionId.equals("557057");
   }
-    
+
+  public int getTotalPreparations() {
+    return prepration.length;
+  }
+
+  public String getPrepCountList() {
+    StringBuilder sb = new StringBuilder();
+    if (prepCount != null) {
+      Arrays.asList(prepCount).stream()
+              .forEach(p -> {
+                String[] preAndCount = p.split("=&&=");
+                sb.append(preAndCount[0]);
+                int count = Integer.parseInt(preAndCount[1]);
+                if (count > 0) {
+                  sb.append(" (");
+                  sb.append(count);
+                  sb.append(") ");
+                } else {
+                  sb.append("; ");
+                }
+              });
+    }
+
+    return sb.toString().trim();
+  }
+
   public String getCoordinateString() {
 
     if (latitudeText != null && latitudeText.length() > 0) {
