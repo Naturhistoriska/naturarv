@@ -123,6 +123,7 @@ public class CommonText {
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
   private static final String CATALOGED_DATE = "catalogedDate";
+  private static final String CREATED_DATE = "createdDate";
   private static final String IMAGE_VIEW = "morphBankView";
   private static final String IMAGE_ID = "morphbankImageId";
   private static final String MORPHBANK_ID = "morphbankId";
@@ -288,6 +289,10 @@ public class CommonText {
   
   public String getCatalogedDate() {
     return CATALOGED_DATE;
+  }
+  
+  public String getCreatedDate() {
+    return CREATED_DATE;
   }
   
   public String getCommonName() {
