@@ -6,51 +6,49 @@
 
   <body>
     <ui:composition>    
-      <h:panelGrid id="mapPanel"  >  
+      <h:panelGrid id="mapPanel"  >   
 
-        <p:gmap id="largeMap" center="#{geo.centerLat},#{geo.centerLng}"  widgetVar="map" 
-                type="ROADMAP" styleClass="largeMap" streetView="true" 
-                model="#{geo.model}" zoom="#{geo.zoom}"  
-                mapTypeControl="false" fitBounds="false"    > 
-       
-          <p:ajax event="stateChange" listener="#{geo.onStateChange}" 
-                update="mapPanel" partialSubmit="true"  />  
-          <p:ajax event="overlaySelect" listener="#{geo.onMarkerSelect}" 
-                    partialSubmit="true"  /> 
+        <p:gmap id="largeMap" center="#{geoHash.centerLat}, #{geoHash.centerLng}" type="ROADMAP"
+                zoom="#{geoHash.zoom}" model="#{geoHash.model}"  streetView="true" 
+                styleClass="largeMap"  mapTypeControl="false"  >  
 
+          <p:ajax event="stateChange" listener="#{geoHash.onStateChange}" 
+                  update="mapPanel" partialSubmit="true"  />  
+          <p:ajax event="overlaySelect" listener="#{geoHash.onMarkerSelect}" 
+                  partialSubmit="true" global="false"  /> 
 
           <p:gmapInfoWindow >  
-            <p:outputPanel  styleClass="mapInfoWindos" rendered="#{geo.selectedData != null}">  
+            <p:outputPanel  styleClass="mapInfoWindos" rendered="#{geoHash.selectedData != null}">  
               <h:panelGrid columns="2" >
                 <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" />  
-                <h:outputText value="#{geo.selectedData.txFullName}" style=" font-size: 9px;" />  
+                <h:outputText value="#{geoHash.selectedData.txFullName}" style=" font-size: 9px;" />  
                 <h:column />
-                <h:outputText value="#{geo.selectedData.locality}"  style=" font-size: 9px;" />   
+                <h:outputText value="#{geoHash.selectedData.locality}"  style=" font-size: 9px;" />   
                 <h:column />
-                <h:outputText value="#{geo.selectedData.coordinateString}" style=" font-size: 9px;"  />  
+                <h:outputText value="#{geoHash.selectedData.coordinateString}" style=" font-size: 9px;"  />  
 
                 <h:column />
                 <h:panelGrid columns="3" style="font-size: 9px; float: right;" > 
                   <p:commandLink value="#{msg.showdetail}"  oncomplete="PF('detailDlg').show()"  
-                                 action="#{geo.showSelectedMarkDetail()}"     
+                                 action="#{geoHash.showSelectedMarkDetail()}"     
                                  update="dialogsPanel"   
                                  style="font-size: 10px; float: right; text-decoration: underline;"/> 
                   <p:spacer width="10" height="30" /> 
                   <p:commandLink value="#{msg.errorreport}"  process="@this"  global="false"
-                                 action="#{error.reportError(geo.selectedData)}"  
+                                 action="#{error.reportError(geoHash.selectedData)}"  
                                  style="font-size: 10px; float: right; text-decoration: underline;" />  
                 </h:panelGrid>   
               </h:panelGrid> 
             </p:outputPanel>   
-            
-            <p:outputPanel  styleClass="mapInfoWindos" rendered="#{not empty geo.selectedDataList}">  
+
+            <p:outputPanel  styleClass="mapInfoWindos" rendered="#{not empty geoHash.selectedDataList}">  
               <h:panelGrid columns="2" >
                 <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" />  
-                <h:outputText value="#{geo.selectedListSize}" style=" font-size: 9px;" />  
+                <h:outputText value="#{msg.totalcount}: #{geoHash.selectedDataList.size()}" style=" font-size: 9px;" />  
                 <h:column />
-                <h:outputText value="#{geo.selectedLocality}"  style=" font-size: 9px;" />   
+                <h:outputText value="#{geoHash.selectedLocality}"  style=" font-size: 9px;" />   
                 <h:column />
-                <h:outputText value="#{geo.selectedCoordinate}" style=" font-size: 9px;"  />  
+                <h:outputText value="#{geoHash.selectedCoordinate}" style=" font-size: 9px;"  />  
 
                 <h:column />
                 <h:panelGrid columns="3" style="font-size: 9px; float: right;" > 
@@ -60,202 +58,95 @@
                 </h:panelGrid>   
               </h:panelGrid> 
             </p:outputPanel> 
-          </p:gmapInfoWindow>  
-        </p:gmap>
-
-        <h:panelGrid  id="densityPanel"  style="border: solid 1px #A9A9A9;" rendered="#{geo.displayingColorBar}" > 
+          </p:gmapInfoWindow>   
+        </p:gmap> 
+ 
+        <!--        density panel    -->
+        <h:panelGrid  id="densityPanel"  style="border: solid 1px #A9A9A9;" rendered="#{geoHash.displayingColorBar}" > 
           <h:outputText value=" #{msg.density}"   />
           <hr />
           <h:panelGroup layout="block"> 
-            <h:outputText value="#{geo.minCount} " />   
-            <ui:repeat value="#{geo.colorBar}" var="color">   
+            <h:outputText value="#{geoHash.minCount} " />   
+            <ui:repeat value="#{geoHash.colorBar}" var="color">   
               <p:spacer width="5" height="5" />
               <p:spacer width="12" height="10" style="background-color: #{color};" /> 
             </ui:repeat> 
             <p:spacer width="5" height="5" /> 
-            <h:outputText value="#{geo.maxCount}"   />
-          </h:panelGroup>
-
+            <h:outputText value="#{geoHash.maxCount}"   />
+          </h:panelGroup> 
         </h:panelGrid> 
-        
-        
+
+
         <h:panelGroup id="dialogsPanel" layout="block"> 
-            <p:dialog id="detailDialog" header="#{msg.showdetail}" widgetVar="detailDlg" 
-                      modal="true" height="450" width="700" >  
-              <h:panelGrid columns="2" columnClasses="detailDlgLabel,detailDlgText"   id="detailDlgPanel"> 
+          <p:dialog id="detailDialog" header="#{msg.showdetail}" widgetVar="detailDlg" 
+                    modal="true" height="450" width="700" >  
+            <h:panelGrid columns="2" columnClasses="detailDlgLabel,detailDlgText"   id="detailDlgPanel"> 
 
-                <h:outputText value="#{msg.cataloguenumber}:" />   
-                <h:outputText value="#{geo.selectedData.catalogNumber}" />  
-
-
-                <h:outputText value="#{msg.speciesname}:" />   
-                <h:outputText value="#{geo.selectedData.txFullName}" /> 
-
-                <h:outputText value="#{msg.highertaxa}:" />   
-                <h:outputText value="#{geo.selectedData.higherTx}" />
-
-                <h:outputText value="#{msg.collection}:" />   
-                <h:outputText value="#{geo.selectedData.collectionName}" />
-
-                <h:outputText value="#{msg.type}:"  />   
-                <h:outputText value="#{geo.selectedData.typeStatus}" /> 
-
-                <h:outputText value="#{msg.author}:"  />   
-                <h:outputText value="#{geo.selectedData.authors}" /> 
-
-                <h:outputText value="#{msg.synonyms}:" />   
-                <h:outputText value="#{geo.selectedData.synonyms}" /> 
-
-                <h:outputText value="#{msg.stationfieldnumber}:"  />   
-                <h:outputText value="#{geo.selectedData.stationFieldNumber}" /> 
-
-                <h:outputText value="#{msg.collectiondate}:"  />     
-                <h:outputText value="#{geo.selectedData.startDate}"  >
-                  <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
-                </h:outputText>
-
-                <h:outputText value="#{msg.catalogeddate}:"  />     
-                <h:outputText value="#{geo.selectedData.catalogedDate}"  >
-                  <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
-                </h:outputText>
-
-                <h:outputText value="#{msg.locality}:"   />   
-                <h:outputText value="#{geo.selectedData.locality}" /> 
-
-                <h:outputText value="#{msg.country}:"  />   
-                <h:outputText value="#{geo.selectedData.country}" />   
-
-                <h:outputText value="#{msg.continent}:"   />   
-                <h:outputText value="#{geo.selectedData.continent}" />  
-
-                <h:outputText value="#{msg.coordinate}:" />    
-                <h:panelGroup layout="block"   >
-                  <h:outputText value="#{geo.selectedData.coordinateString}" />
-                </h:panelGroup>
- 
-                <h:outputText value="#{msg.collector}:" />   
-                <h:outputText value="#{geo.selectedData.collectors}" />   
-
-                <h:outputText value="#{msg.determiner}:" />   
-                <h:outputText value="#{geo.selectedData.determiner}" />   
-
-                <h:outputText value="#{msg.remarks}:" />  
-                <h:panelGrid cellpadding="0" cellspacing="0">
-                  <ui:repeat value="#{geo.selectedData.remarks}" var="remark">   
-                    <h:outputText value="#{remark}" />  <br />
-                  </ui:repeat>  
-                </h:panelGrid>
-
-              </h:panelGrid>
-            </p:dialog>  
-          </h:panelGroup>
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        <ui:remove>
- 
-          <p:gmap center="#{geoMap.centerLat},#{geoMap.centerLng}" zoom="#{geoMap.zoom}" 
-                  type="ROADMAP"  id="largeMap"   mapTypeControl="false"   streetView="true"
-                  fitBounds="false" 
-                  model="#{geoMap.model}"  style="width:700px;height:500px"  widgetVar="myMap" >  
-
-            <p:ajax event="stateChange" listener="#{geoMap.onStateChange}" 
-                    update="colorpanel largeMap" partialSubmit="true"  />  
-
-            <p:ajax event="overlaySelect" listener="#{geoMap.onMarkerSelect}" 
-                    partialSubmit="true"  /> 
+              <h:outputText value="#{msg.cataloguenumber}:" />   
+              <h:outputText value="#{geoHash.selectedData.catalogNumber}" />  
 
 
+              <h:outputText value="#{msg.speciesname}:" />   
+              <h:outputText value="#{geoHash.selectedData.txFullName}" /> 
 
-            <p:gmapInfoWindow >  
-              <p:outputPanel  style="text-align:center;display:block;margin:auto; overflow: visible; width: 300px; " >   
-                <h:panelGrid columns="2" >
-                  <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" />  
-                  <h:outputText value="#{geoMap.taxon}" style=" font-size: 9px;" />  
-                  <h:column />
-                  <h:outputText value="#{geoMap.locality}"  style=" font-size: 9px;" />   
-                  <h:column />
-                  <h:outputText value="#{geoMap.coordinate}" style=" font-size: 9px;"  />  
+              <h:outputText value="#{msg.highertaxa}:" />   
+              <h:outputText value="#{geoHash.selectedData.higherTx}" />
 
-                  <h:column />
-                  <h:panelGrid columns="3" style="font-size: 9px; float: right;" rendered="#{geoMap.infoLink == 0}"> 
-                    <p:commandLink value="#{msg.showdetail}"  oncomplete="PF('detailDlg').show()"  
-                                   action="#{geo.showSelectedMarkDetail()}"     
-                                   update=":searchform:detailDlgPanel"   
-                                   style="font-size: 10px; float: right; text-decoration: underline;"/> 
-                    <p:spacer width="10" height="30" />
+              <h:outputText value="#{msg.collection}:" />   
+              <h:outputText value="#{geoHash.selectedData.collectionName}" />
 
+              <h:outputText value="#{msg.type}:"  />   
+              <h:outputText value="#{geoHash.selectedData.typeStatus}" /> 
 
+              <h:outputText value="#{msg.author}:"  />   
+              <h:outputText value="#{geoHash.selectedData.authors}" /> 
 
-                    <p:commandLink value="#{msg.errorreport}"    process="@this"  global="false"
-                                   action="#{search.errorreportFromMap(geoMap.selectedRecord)}" 
-                                   update=":searchform:result :searchform:welcomepagepanel"
-                                   style="font-size: 10px; float: right; text-decoration: underline;" /> 
-                    <ui:remove>
-                      <p:commandLink value="#{msg.errorreport}" oncomplete="PF('dlg').show()" 
-                                     action="#{search.errorreportFromMap(geoMap.selectedRecord)}"     
-                                     update=":searchform:errorreportPanel"  
-                                     style="font-size: 10px; float: right; text-decoration: underline;"/> 
-                    </ui:remove>
+              <h:outputText value="#{msg.synonyms}:" />   
+              <h:outputText value="#{geoHash.selectedData.synonyms}" /> 
 
-                  </h:panelGrid> 
+              <h:outputText value="#{msg.stationfieldnumber}:"  />   
+              <h:outputText value="#{geoHash.selectedData.stationFieldNumber}" /> 
 
-                  <h:panelGrid style="font-size: 9px; float: right;" rendered="#{geoMap.infoLink == 1}"> 
-                    <p:commandLink value="#{msg.showdetail}"  
-                                   action="#{search.listMapData(geoMap.records)}"     
-                                   update=":searchform:result"   
-                                   style="font-size: 10px; float: right; text-decoration: underline;"/> 
-                  </h:panelGrid>
-                </h:panelGrid> 
-              </p:outputPanel>   
-            </p:gmapInfoWindow>  
+              <h:outputText value="#{msg.collectiondate}:"  />     
+              <h:outputText value="#{geoHash.selectedData.startDate}"  >
+                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
+              </h:outputText>
 
-          </p:gmap>      
-          <h:panelGrid  id="colorpanel"  >
-            <h:panelGrid  style="border: solid 1px #A9A9A9;"  rendered="#{geoMap.colors.size() > 0}" >
-              <h:outputText value="Density"   />
-              <hr />
-              <h:panelGroup layout="block"> 
-                <h:outputText value="#{geoMap.min} " />   
+              <h:outputText value="#{msg.catalogeddate}:"  />     
+              <h:outputText value="#{geoHash.selectedData.catalogedDate}"  >
+                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
+              </h:outputText>
 
-                <ui:repeat value="#{geoMap.colors}" var="color">   
-                  <p:spacer width="5" height="5" />
-                  <p:spacer width="12" height="10" style="background-color: #{color};" /> 
-                </ui:repeat>
-                <p:spacer width="5" height="5" /> 
-                <h:outputText value="#{geoMap.max}"   />
+              <h:outputText value="#{msg.locality}:"   />   
+              <h:outputText value="#{geoHash.selectedData.locality}" /> 
+
+              <h:outputText value="#{msg.country}:"  />   
+              <h:outputText value="#{geoHash.selectedData.country}" />   
+
+              <h:outputText value="#{msg.continent}:"   />   
+              <h:outputText value="#{geoHash.selectedData.continent}" />  
+
+              <h:outputText value="#{msg.coordinate}:" />    
+              <h:panelGroup layout="block"   >
+                <h:outputText value="#{geoHash.selectedData.coordinateString}" />
               </h:panelGroup>
 
+              <h:outputText value="#{msg.collector}:" />   
+              <h:outputText value="#{geoHash.selectedData.collectors}" />   
+
+              <h:outputText value="#{msg.determiner}:" />   
+              <h:outputText value="#{geoHash.selectedData.determiner}" />   
+
+              <h:outputText value="#{msg.remarks}:" />  
+              <h:panelGrid cellpadding="0" cellspacing="0">
+                <ui:repeat value="#{geo.selectedData.colremarks}" var="remark">   
+                  <h:outputText value="#{remark}" />  <br />
+                </ui:repeat>  
+              </h:panelGrid>
+
             </h:panelGrid>
-          </h:panelGrid>
-
-
-
-
-
-
-
-
-
-
-
-          
-
-
-        </ui:remove>
-
+          </p:dialog>  
+        </h:panelGroup> 
       </h:panelGrid>
     </ui:composition>
   </body>

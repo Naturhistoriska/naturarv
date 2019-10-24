@@ -414,7 +414,10 @@ body * {
 
 
 
-
+.collectionChart {
+  height:300px; 
+  width: 550px;  
+}
 
 
 
@@ -705,3 +708,8 @@ a:hover {
   width: 400px !important;
 }
  
+
+/*test leaflet map*/
+#clusteringMap { 
+  height: 180px; 
+}

@@ -18,8 +18,7 @@
               <f:selectItem itemValue="Lateral" itemLabel="#{msg.lateral}" />
               <f:selectItem itemValue="Frontal" itemLabel="#{msg.frontal}" />
               <f:selectItem itemValue="Caudal" itemLabel="#{msg.caudal}" />
-
-              <f:ajax render="imagePanel" listener="#{galleria.selectViews}" event="change" execute="@this" /> 
+              <p:ajax event="change" listener="#{galleria.selectViews}" global="false"  update="imagePanel" />    
             </h:selectManyCheckbox> 
           </p:panel>  
 
@@ -42,8 +41,7 @@
               <f:selectItem itemValue="Labrum"  itemLabel="#{msg.labrum}"/>  
               <f:selectItem itemValue="Notum" itemLabel="#{msg.notum}" />  
               <f:selectItem itemValue="Mouth"  itemLabel="#{msg.mouth}"/>  
-              <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />   
-
+              <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />    
               <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="imagePanel" />   
             </h:selectManyCheckbox> 
           </p:panel> 
@@ -53,7 +51,7 @@
               <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
               <f:selectItem itemValue="/male/" itemLabel="#{msg.male}" />  
               <f:selectItem itemValue="female"  itemLabel="#{msg.female}"/>   
-              <f:ajax render="imagePanel" listener="#{galleria.selectSexes}" event="change" execute="@this" />  
+              <p:ajax event="change" listener="#{galleria.selectSexes}" global="false"  update="imagePanel" />   
             </h:selectManyCheckbox>  
           </p:panel> 
 
@@ -61,21 +59,19 @@
             <h:selectManyCheckbox value="#{galleria.stageList}" layout="pageDirection" >
               <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
               <f:selectItem itemValue="larva" itemLabel="#{msg.larva}" />  
-              <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>   
-              <f:ajax render="imagePanel" listener="#{galleria.selectStages}" event="change" execute="@this" />  
+              <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>    
+              <p:ajax event="change" listener="#{galleria.selectStages}" global="false"  update="imagePanel" />   
             </h:selectManyCheckbox>   
           </p:panel>   
         </h:panelGrid >
 
         <h:panelGrid width="500" > 
-          <p:dataScroller var="image" value="#{galleria.model}" lazy="true" 
-                          scrollHeight="800" rows="50" chunkSize="50"  rowIndexVar="rowIndex"
-                          mode="inline" > 
-
+          <p:dataScroller var="image" value="#{galleria.model}" lazy="true" rowIndexVar="rowIndex"
+                          scrollHeight="800" rows="50" chunkSize="50" mode="inline" >  
             <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
               <h:panelGrid columns="1" style="width:100%" > 
-                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.morphbankId}'}])"  id="imagePanelLink"
-                            update=":resultsForm:imageGalleria">
+                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.morphbankId}'}])"  
+                                id="imagePanelLink" update=":resultsForm:imageGalleria" global="false">
                   <p:graphicImage value="#{image.imageId}"  
                                 alt="#{image.catalogNumber}" 
                                 title="#{image.txFullName}"  styleClass="imageswithpedding" />    
@@ -86,53 +82,8 @@
             </p:dataScroller>  
         </h:panelGrid> 
       </h:panelGrid>   
-      <p:remoteCommand name="displayIndex" process="@this"  
-                       actionListener="#{switch.imageSwitch()}" oncomplete="PF('imgswitchdlg').show();"/>
-         
-           <ui:remove>
-             
-             
-             <h:panelGrid width="500">   
-          <ui:repeat value="#{galleria.images}" var="subImages" > 
-            <p:outputPanel deferred="true" deferredMode="visible" 
-                           layout="block" style="width: 500px; float:right;"  >  
-              <ui:repeat value="#{subImages}" var="image" >  
-                <p:commandLink  action="#{switch.imageSwitch(image)}" 
-                                oncomplete="PF('imgswitchdlg').show();" update="@this">
-                  <p:graphicImage value="#{switch.thumbPath}" title="#{image.txFullName}/#{image.catalogNumber}" 
-                                  alt="#{thumb.catalogNumber}" style="padding: 5px; border: none;"  /> 
-
-                </p:commandLink>   
-              </ui:repeat> 
-            </p:outputPanel>  
-          </ui:repeat> 
-        </h:panelGrid >
-      
-                  <p:dialog id="imgswitchdialog" closable="true"  widgetVar="imgswitchdlg"   
-                      draggable="false" header="#{msg.imageswitcher} (#{msg.imgmouseover})" > 
-              <p:panel id="imageswitchpanel">
-                <p:galleria id="images" widgetVar="gallery" value="#{imageSwitcher.thumbs}" 
-                            panelWidth="420" panelHeight="500"   autoPlay="false"
-                            var="thumb"  showCaption="true" >    
-                  <p:graphicImage value="#{thumb}" alt="#{imageSwitcher.catalogNumber}" 
-                                  title="#{imageSwitcher.txFullName}"  styleClass="imageswithpedding" />     
-
-                </p:galleria>     
-                <p:contextMenu for="images" style="z-index:50; font-size: 10px;">  
-                  <p:menuitem value="Morphbank" url="http://morphbank.nrm.se/Browse/ByImage/?specimenId=#{imageSwitcher.mbid}"   
-                              target="_blank"   icon="ui-icon-extlink"/>    
-                  <p:menuitem value="Naturforskaren" url="http://naturforskaren.se/search/#{imageSwitcher.txFullName}"    
-                              target="_blank"   icon="ui-icon-extlink"/>   
-                  <p:menuitem value="GIBF.se" url="http://old.gbif.se/search/#{imageSwitcher.txFullName}"    
-                              target="_blank"   icon="ui-icon-extlink"/>  
-                  <p:menuitem value="GIBF" url="http://data.gbif.org/search/#{imageSwitcher.txFullName}"    
-                              target="_blank"   icon="ui-icon-extlink"/>  
-                  <p:menuitem value="#{msg.btnclose}" url="javascript:void(0)" onclick="PF('imgswitchdlg').hide();" icon="ui-icon-close"/>    
-                </p:contextMenu> 
-              </p:panel>
-
-            </p:dialog>
-        </ui:remove>
+      <p:remoteCommand name="displayIndex" actionListener="#{switch.imageSwitch()}" 
+                       process="@this" global="false" oncomplete="PF('imgswitchdlg').show();"/> 
     </ui:composition>
   </body>
 </html>

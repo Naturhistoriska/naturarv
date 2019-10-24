@@ -20,10 +20,8 @@
                   <div class="ui-g-7">
                     <div class="ui-g-12 baggimg" > 
                       <p:cache region="3baggcache" key="3baggimg">
-                        <h:graphicImage library="images" 
-                                        name="3bagg_rising.png" alt="3bagg" 
-                                        title="3bagg" styleClass="images"  
-                                        width="350" height="292"  /> 
+                        <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
+                                        title="3bagg" styleClass="images" width="350" height="292"  /> 
                       </p:cache>  
                     </div>   
                     <div class="ui-g-12 baggimgtext" >
@@ -70,7 +68,7 @@
 
 
                 <h:outputText value="#{msg.commonsearch}" style="font-weight: bold;" /> 
-                <p:commandLink actionListener="#{searchBean.all()}"  process="@this" > 
+                <p:commandLink actionListener="#{searchBean.all()}"  process="@this"  > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0"  styleClass="statistic"   >
                     <h:outputText value="#{msg.allspecimens}" />  

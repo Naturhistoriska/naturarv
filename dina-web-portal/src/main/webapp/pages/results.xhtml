@@ -8,9 +8,9 @@
     <ui:composition  template="/templates/masterLayout.xhtml">    
 
       <ui:define name="content"  >    
-        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  >  
           <h:form id="resultsForm" prependId="false">    
-            <h:panelGroup  id="result" layout="block" > 
+            <h:panelGroup  id="result" layout="block" >  
               <h:panelGrid columns="2" columnClasses="searchColumn,statistic" styleClass="topAlign"  >  
                 <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
                   <!-- result header --> 
@@ -19,7 +19,7 @@
                                  columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
                       <h:outputText value="#{searchBean.resultHeaderSummary}" /> 
                       <p:commandLink actionListener="#{searchBean.backToListView}" process="@this" 
-                                     rendered="#{resultHeader.displayBackToListLink}" 
+                                     rendered="#{resultHeader.displayBackToListLink}"  
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.listView}"    style="font-size: 11px;"  /> 
                       </p:commandLink>  
@@ -34,7 +34,7 @@
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
                       </p:commandLink> 
-
+                      
                       <p:commandLink id="downlodlink" action="#{searchBean.export}"  
                                      styleClass="downLink" process="@this" global="false">   
                         <h:outputText value="#{msg.downLoadAll}"  rendered="#{searchBean.selectedRecords.size() == 0}" />  
@@ -125,8 +125,8 @@
                     <p:spacer width="8" />
                     <h:selectOneMenu value="#{searchBean.sortby}" id="sort" style="width: 90px;">
                       <f:selectItem itemValue="score" itemLabel="#{msg.relevance}" /> 
-                      <f:selectItem itemValue="ftx" itemLabel="#{msg.taxon}" /> 
-                      <f:selectItem itemValue="sd" itemLabel="#{msg.collectiondate}" /> 
+                      <f:selectItem itemValue="txFullName" itemLabel="#{msg.taxon}" /> 
+                      <f:selectItem itemValue="startDate" itemLabel="#{msg.collectiondate}" /> 
                       <p:ajax event="change" update=":resultsForm:resultContent" 
                               listener="#{searchBean.sortResult()}" />   
                     </h:selectOneMenu> 
@@ -162,7 +162,7 @@
                   <!-- result page include -->
                   <ui:include src="#{resultHeader.viewPath}" />   
 
-                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  > 
+                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  >  
                     <h:panelGroup  id="floatleftcol"  layout="block" rendered="#{resultHeader.displayPaging}"> 
                       <p:commandLink actionListener="#{searchBean.firstPage}" process="@this" 
                                      disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent" >  
@@ -180,7 +180,7 @@
                       <p:spacer width="15" height="5" />  
                       <ui:repeat var="page" value="#{paging.pages}" varStatus="status" >
                         <p:commandLink actionListener="#{searchBean.changePage(page)}" process="@this" 
-                                       disabled="#{page == paging.currentPage}" 
+                                       disabled="#{page == paging.currentPage}"  
                                        update=":resultsForm:resultContent" styleClass="pagingNumberText">   
                           <h:outputText value= "${page}"    /> 
                         </p:commandLink>   
@@ -198,7 +198,7 @@
                         <h:graphicImage library="images" name="icons/last.gif" alt="#{msg.last}" 
                                         title="#{msg.last}" />
                       </p:commandLink>  
-                    </h:panelGroup>    
+                    </h:panelGroup>     
                   </h:panelGrid> 
                 </h:panelGrid>
 
@@ -347,13 +347,15 @@
                               target="_blank"   icon="ui-icon-extlink"/>  
                   <p:menuitem value="GIBF" url="http://data.gbif.org/search/#{switch.scientificName}"    
                               target="_blank"   icon="ui-icon-extlink"/>  
-                  <p:menuitem value="#{msg.btnclose}" url="javascript:void(0)" onclick="PF('imgswitchdlg').hide();" icon="ui-icon-close"/>    
+                  <p:menuitem value="#{msg.btnclose}" url="javascript:void(0)" 
+                              onclick="PF('imgswitchdlg').hide();" icon="ui-icon-close"/>    
                 </p:contextMenu> 
               </p:panel> 
             </p:dialog> 
  
 
-            <h:panelGrid id="exportDataTablePanel" cellpadding="0" cellspacing="0" styleClass="searchColumn" rendered="false"> 
+            <h:panelGrid id="exportDataTablePanel" cellpadding="0" cellspacing="0" 
+                         styleClass="searchColumn" rendered="false"> 
 
               <p:dataTable id="exportDataTable" var="record" value="#{searchBean.exportDataSet}"   
                            paginator="true" rows="#{search.numDisplay}"  >    

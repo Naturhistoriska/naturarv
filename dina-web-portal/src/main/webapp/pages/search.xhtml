@@ -18,16 +18,14 @@
               <p:spacer width="20" height="5" />  
               <h:panelGroup styleClass="ui-inputgroup simplesearchpanel" layout="block" >
                 <p:inputText placeholder="${searchBean.defaultText}" 
-                             value="${searchBean.freeText}" size="60"  > 
-
-                  <p:ajax event="keyup" listener="#{searchBean.freeTextKeyup}" 
-                          update=":searchForm:simpleSearchPanel" global="false"   />   
+                             value="${searchBean.freeText}" size="60"  >  
+                  <p:ajax event="keyup" update=":searchForm:simpleSearchPanel" global="false"   />   
                 </p:inputText>
-                <p:commandButton icon="fa fa-search" action="#{searchBean.simpleSearch()}" 
+                <p:commandButton id="simpleSearchBtn" icon="fa fa-search" 
+                                 action="#{searchBean.simpleSearch()}" 
                                  styleClass="white-button" update="mainPanel" global="true" />  
               </h:panelGroup> 
-              <p:spacer width="20" height="5" /> 
-
+              <p:spacer width="20" height="5" />  
               <p:spacer width="20" height="5" /> 
               <h:panelGroup styleClass="searchBoxPanelSimple textLink"    layout="block"   >   
                 <p:commandLink actionListener="#{searchBean.openAdvanceSearch}" 
@@ -36,7 +34,6 @@
               </h:panelGroup>  
               <p:spacer width="20" height="5" />    
             </h:panelGrid>   
-
           </h:panelGroup> 
 
 
@@ -123,7 +120,7 @@
                       <h:panelGrid rendered="#{query.field == 'date'}"  >  
                         <h:panelGrid columns="5"  cellpadding="0" cellspacing="0" >  
                           <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="fromdatepanel">
-                            <p:calendar id="fromdate" pattern="yyyy-MM-dd"  yearRange="1800:2500" maxdate="#{searchBean.maxDate}"
+                            <p:calendar id="fromdate" pattern="yyyy-MM-dd"  yearRange="1200:2500" maxdate="#{searchBean.maxDate}"
                                         showButtonPanel="true" size="23" value="#{query.fromDate}" 
                                         navigator="true" > 
                               <p:ajax event="dateSelect" listener="#{searchBean.handleDateSelect}" 

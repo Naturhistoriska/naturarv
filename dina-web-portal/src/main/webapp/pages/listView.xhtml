@@ -40,7 +40,13 @@
                             columnClasses="simpleTableLabelCol,simpleTableValueCol" > 
                 <h:outputText value="#{msg.highertaxa}: " />  
                 <h:outputText value="#{record.higherTx}"  style="word-break: break-all;"  />
+                
+                <h:outputText value="#{msg.type}:" rendered="#{record.typeStatus != null}" />   
+                <h:outputText value="#{record.typeStatus}" rendered="#{record.typeStatus != null}" /> 
 
+                <h:outputText value="#{msg.preparationstype}:" />   
+                <h:outputText value="#{record.prepCountList}" /> 
+            
                 <h:outputText value="#{msg.collectiondate}: " /> 
                 <h:outputText value="#{record.startDate}"  > 
                   <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
@@ -48,6 +54,20 @@
 
                 <h:outputText value="#{msg.locality}: " />  
                 <h:outputText value="#{record.locality}" />
+
+
+                <h:outputText value="#{msg.localityCounty}:"   />   
+                <h:outputText value="#{record.county}" /> 
+
+                <h:outputText value="#{msg.state}:"   />   
+                <h:outputText value="#{record.state}" /> 
+
+                <h:outputText value="#{msg.country}:"  />   
+                <h:outputText value="#{record.country}" />   
+
+                <h:outputText value="#{msg.continent}:"   />   
+                <h:outputText value="#{record.continent}" />  
+
 
                 <h:outputText value="#{msg.cataloguenumber}: " /> 
                 <h:outputText value="#{record.catalogNumber}" /> 

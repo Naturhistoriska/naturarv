@@ -4,27 +4,23 @@
       xmlns:p="http://primefaces.org/ui" >
   <body>
     <ui:composition>   
-      <h:form id="headerForm"> 
-
-
+      <h:form id="headerForm">  
         <h:panelGrid id="header" styleClass="naturarvHeader" cellpadding="0" cellspacing="0">  
           <h:panelGrid styleClass="headerText" cellpadding="0" cellspacing="0" >   
             <p:commandLink actionListener="#{navigate.gotoHome()}" 
                            value="#{msg.naturarv}" style="font-size: 30px;"
-                           process="@this" />  
+                           process="@this" global="false"/>  
           </h:panelGrid> 
 
           <h:panelGrid columns="4" id="languagePanel"  styleClass="languagePanel" >  
             <p:commandLink actionListener="#{languages.changeLanguage('sv')}" 
-                           value="Svenska" styleClass="#{style.svLink}" process="@this"   />  
+                           value="Svenska" styleClass="#{style.svLink}" process="@this" global="false"  />  
             <p:spacer width="10" /> 
             <p:commandLink actionListener="#{languages.changeLanguage('en')}" 
-                           value="English" styleClass="#{style.enLink}" process="@this"  />   
+                           value="English" styleClass="#{style.enLink}" process="@this" global="false"  />   
             <p:spacer width="10" />
           </h:panelGrid>    
-        </h:panelGrid>   
-    
-
+        </h:panelGrid>    
       </h:form> 
     </ui:composition>
   </body>

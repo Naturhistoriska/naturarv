@@ -1,156 +1,139 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"   
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:f="http://java.sun.com/jsf/core" 
-      xmlns:p="http://primefaces.org/ui" 
-      > 
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
   <h:head>
-    <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/> 
+    <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon-default.ico']}"/>
     <title>
       <ui:insert name="windowTitle">
         #{msg.naturarv}
-      </ui:insert> 
-    </title>     
+      </ui:insert>
+    </title>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>   
-    <script name="jquery/jquery.js" library="primefaces"></script>   
-  </h:head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>
+    <script name="jquery/jquery.js" library="primefaces"></script> 
 
 
+
+    <!--    <script type='text/javascript'>
+          
+    
+    
+          window.onhashchange = function () {
+            alert("hash changed!");
+          };
+          window.location.hash = Math.random(); // alerts "hash changed!"
+    
+    
+    
+        </script>-->
+  </h:head> 
   <f:view locale="#{languages.locale}" > 
-
     <ui:remove>
-      <f:metadata> 
-        <f:event listener="#{search.init()}"  type="preRenderView"  /> 
+      <f:metadata>
+        <f:event listener="#{search.init()}"  type="preRenderView"  />
       </f:metadata>
-    </ui:remove> 
+    </ui:remove>
 
-    <h:body  styleClass="mainbody" >  	      
-      <h:outputStylesheet library="css" name="style.css"  />  
+    <h:body  styleClass="mainbody" >
+      <h:outputStylesheet library="css" name="style.css"  />
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
 
-      <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   /> 
-      <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false" 
-                resizable="false" showHeader="false">   
-        <h:panelGrid columns="3"  >  
-          <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" /> 
+      <ui:remove>
+        <h:outputScript library="js" name="jquery.ba-bbq.min.js" /> 
+        <h:outputScript library="js" name="main.js" /> 
+      </ui:remove>
+
+
+      <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   />
+      <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false"
+                resizable="false" showHeader="false">
+        <h:panelGrid columns="3"  >
+          <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" />
           <p:spacer width="10" />
-          <p:outputLabel value="#{msg.wait}" styleClass="inprocess" /> 
-        </h:panelGrid>  
+          <p:outputLabel value="#{msg.wait}" styleClass="inprocess" />
+        </h:panelGrid>
       </p:dialog>
 
       <h:form id="idelForm">
-        <p:idleMonitor id="idleMonitor" timeout="1800000000" >  
+        <p:idleMonitor id="idleMonitor" timeout="1800000000" > 
+          <p:ajax id="idleEvent" event="idle" listener="#{idle.idleListener}"  /> 
+        </p:idleMonitor>
+      </h:form>
 
-          <p:ajax id="idleEvent" event="idle" listener="#{idle.idleListener}"  />   
-
-        </p:idleMonitor>  
-      </h:form> 
-
-      <div styleClass="templet">
-        <div  id="header" layout="block"  >
+      <h:panelGroup id="templet" layout="block" styleClass="templet">
+        <h:panelGroup  id="header" layout="block"  >
           <ui:insert name="header" >
             <ui:include src="/pages/header.xhtml" />
           </ui:insert> 
-        </div>
+        </h:panelGroup>
 
-        <div  id="topmenu" layout="block"  >
+        <h:panelGroup  id="topmenu" layout="block"  >
           <ui:insert name="topmenu" >
             <ui:include src="/pages/topMenu.xhtml" />
-          </ui:insert>  
-        </div>
-
-        <div  id="search"  >
+          </ui:insert>
+        </h:panelGroup>
+        
+        <h:panelGroup  id="search" layout="block" rendered="#{navigate.showSearchPanel}"  >
           <ui:insert name="search" >
             <ui:include src="/pages/search.xhtml" />
-          </ui:insert>  
-        </div>
+          </ui:insert>
+        </h:panelGroup>
+        
+        <h:panelGroup  id="main" layout="block"  >
+          <ui:insert name="content"/> 
+        </h:panelGroup>
 
-        <div id="main"  > 
-          <ui:insert name="content"/>
-        </div> 
-
-        <div  id="footer"  >
+        <h:panelGroup  id="footer" layout="block"  >
           <ui:insert name="footer" >
             <ui:include src="/pages/footer.xhtml" />
-          </ui:insert>
-        </div>
+          </ui:insert> 
+        </h:panelGroup>
 
 
-      </div> 
-
-
-
-
+      </h:panelGroup>
 
       <ui:remove> 
-
-        <h:panelGroup layout="block" styleClass="templet">
-          <h:panelGroup  id="header" layout="block"  >
+        <div styleClass="templet">
+          <div  id="header" layout="block"  >
             <ui:insert name="header" >
               <ui:include src="/pages/header.xhtml" />
-            </ui:insert> 
-          </h:panelGroup>
-
-          <h:panelGroup  id="topmenu" layout="block"  >
-            <ui:insert name="topmenu" >
-              <ui:include src="/pages/topMenu.xhtml" />
-            </ui:insert>  
-          </h:panelGroup>
-
-          <h:panelGroup  id="search" layout="block"  >
-            <ui:insert name="search" >
-              <ui:include src="/pages/search.xhtml" />
-            </ui:insert>  
-          </h:panelGroup>
-
-          <h:panelGroup id="main" layout="block"  > 
-            <ui:insert name="content"/>
-          </h:panelGroup> 
-
-          <h:panelGroup  id="footer" layout="block"  >
-            <ui:insert name="footer" >
-              <ui:include src="/pages/footer.xhtml" />
-            </ui:insert>
-          </h:panelGroup>
-
-
-        </h:panelGroup>   
-
-        <div style="width: 960px; margin: auto;"> 
-          <div id="header" style="width: 960px; ">
-            <ui:insert name="header" >
-              <ui:include src="/pages/header.xhtml" />
-            </ui:insert> 
-          </div> 
-
-          <div id="topmenu" style="width: 960px; float: left; ">
-            <ui:insert name="topmenu" >
-              <ui:include src="/pages/topMenu.xhtml" />
-            </ui:insert> 
-          </div> 
-
-          <div id="mainimages" style="width: 960px; float: left;  ">
-            <ui:insert name="search" >
-              <ui:include src="/pages/search.xhtml" />
-            </ui:insert> 
-          </div> 
-
-          <div id="main" style="width: 960px; float: left;  ">
-            <ui:insert name="content"/>
-          </div>  
-
-          <div id="footer" >
-            <ui:insert name="footer" >
-              <ui:include src="/pages/footer.xhtml" />
             </ui:insert>
           </div>
 
+          <div  id="topmenu" layout="block"  >
+            <ui:insert name="topmenu" >
+              <ui:include src="/pages/topMenu.xhtml" />
+            </ui:insert>
+          </div>
+
+          <div  id="search"  > 
+            <ui:insert name="search"  >
+              <ui:include src="/pages/search.xhtml" />
+            </ui:insert>
+          </div>
+
+          <div id="main"  >
+            <ui:remove>
+              <h:panelGroup id="centerpanel" layout="block">
+                <ui:include id="include" src="#{mainBean.currentNav}" />
+              </h:panelGroup>
+            </ui:remove>
+            <ui:insert name="content"/> 
+          </div>
+
+          <div  id="footer"  >
+            <ui:insert name="footer" >
+              <ui:include src="/pages/footer.xhtml" /> 
+            </ui:insert>
+          </div> 
         </div>
 
       </ui:remove>
     </h:body>
-  </f:view> 
-</html> 
+  </f:view>
+</html>

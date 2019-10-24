@@ -16,14 +16,14 @@
 
               <p:ajax event="tabChange" listener="#{collections.onTabChange}" global="false"  />
               <p:ajax event="tabClose" listener="#{collections.onTabClose}" global="false"  />
-              <p:tab title="#{collection}"  >    
+              <p:tab title="#{collection.name}"  >    
                 <p:chart type="bar" 
-                         model="#{chart.getCollectionMonthChart(collection)}" 
-                         style="height:300px; width: 550px;  " />  
+                         model="#{chart.getCollectionMonthChart(collection.code)}" 
+                         styleClass="collectionChart" />  
                 <p:spacer width="20" height="20" />  
-                 <p:chart type="bar" 
-                          model="#{chart.getCollectionYearChart(collection)}" 
-                         style="height:300px; width: 550px;  " />  
+                <p:chart type="bar" 
+                          model="#{chart.getCollectionYearChart(collection.code)}" 
+                          styleClass="collectionChart" />  
               </p:tab>   
             </p:accordionPanel>   
           </h:form>
