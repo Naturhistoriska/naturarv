@@ -3,9 +3,9 @@
 all: build
 
 build:
-	docker build -t dina/naturarv:v0.1 .
+	docker build -t dina/naturarv:v0.2 .
 
 
 # docker login
-# release:
-# 	docker push dina/naturarv:v0.1
+release:
+	docker push dina/naturarv:v0.2
