@@ -30,28 +30,27 @@ public class About implements Serializable {
     about = AboutPageText.getInstance();
   }
   
-  public String getWhatIsNaturarvText() { 
-    log.info("getText....");
-    return about.getWhatIsNaturarv(language.isIsSwedish()); 
+  public String getWhatIsNaturarvText() {  
+    return about.getWhatIsNaturarv(language.isSwedish()); 
   }
   
   public String getWhatIsNaurarvSubText() {
-    return about.getWhatIsNaturarvSub(language.isIsSwedish());
+    return about.getWhatIsNaturarvSub(language.isSwedish());
   }
   
   public String getPartInfrastructureText() {
-    return about.getInfrastrcutureText(language.isIsSwedish());
+    return about.getInfrastrcutureText(language.isSwedish());
   }
   
   public String getPartInfrastructureSubText() {
-    return about.getInfrastrcutureSubText(language.isIsSwedish());
+    return about.getInfrastrcutureSubText(language.isSwedish());
   }
   
   public String getDevelopmentText() {
-    return about.getDevelopmentText(language.isIsSwedish());
+    return about.getDevelopmentText(language.isSwedish());
   }
   
   public String getFinancialSupportText() {
-    return about.getFinancialSupportText(language.isIsSwedish());
+    return about.getFinancialSupportText(language.isSwedish());
   }
 }
