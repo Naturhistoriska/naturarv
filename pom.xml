@@ -7,7 +7,7 @@
 
   <groupId>se.nrm.dina</groupId>
   <artifactId>naturarv</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
 
@@ -134,7 +134,5 @@
         </plugin>
       </plugins>
     </pluginManagement>
-  </build>
-
-
+  </build> 
 </project>
