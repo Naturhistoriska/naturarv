@@ -4,17 +4,10 @@
  * and open the template in the editor.
  */
 package se.nrm.dina.web.portal.utils;
-
-import java.text.DateFormat; 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+ 
+import java.time.LocalDate; 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;  
 import java.util.List; 
 import javax.faces.model.SelectItem;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +23,7 @@ public class HelpClass {
   private static HelpClass instance = null;
   private StringBuilder resultHeaderSummarySb;
   private StringBuilder imagePathSb;
-  private StringBuilder dayOfYearSb;
- 
-  private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//  private StringBuilder dayOfYearSb; 
 //  private final SimpleDateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 //  private final SimpleDateFormat genericDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SSS'Z'");
 
@@ -42,9 +33,29 @@ public class HelpClass {
     }
     return instance;
   }
+  
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
 
-  public String buildResultHeaderSummaryForMapView(int totalResult, boolean isSwedish) {
-
+  public String buildResultHeaderSummaryForMapView(int totalResult, boolean isSwedish) { 
     resultHeaderSummarySb = new StringBuilder();
     resultHeaderSummarySb.append("(");
     resultHeaderSummarySb.append(totalResult);
@@ -78,62 +89,8 @@ public class HelpClass {
     return " ";
   }
 
-  public String dateToString(Date date) {
-    if (date == null) {
-      return null;
-    }
-    return dateFormat.format(date);
-  }
-  
-  public Date stringToDate(String strDate) {
-    try {
-      return dateFormat.parse(strDate); 
-    } catch(ParseException e) {
-      return null;
-    }
-  }
-  
-  
-  
-  public LocalDate convertDateToLocalDate(Date date) {
-     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-  }
-  
-  public LocalDateTime convertDateToLocalDateTime(Date date) {
-     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-  }
-  
-  public LocalDateTime convertDateToLocalDateTime(Date date, boolean isStartDay, boolean isEndDay) {
-    if(isStartDay) {
-      return convertDateToLocalDate(date).atStartOfDay();
-    }
-    if(isEndDay) {
-      return convertDateToLocalDate(date).atTime(23, 59, 59);
-    }
-    return convertDateToLocalDateTime(date);
-  }
-  
-  public String convertLocalDateTimeToString(LocalDateTime fromDate, 
-          LocalDateTime toDate, String field,  String fromZoom, String toZoom) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(field);
-    sb.append(":[");
-    if(fromDate != null) {
-      sb.append(fromDate);
-      sb.append(fromZoom);
-    } else {
-      sb.append(CommonText.getInstance().getWildCard());
-    } 
-    sb.append(" TO ");
-    if(toDate != null) {
-      sb.append(toDate);
-      sb.append(toZoom); 
-    } else {
-      sb.append(CommonText.getInstance().getWildCard());
-    } 
-    sb.append("]");
-    return sb.toString();
-  }
+   
+ 
 
   public String replaceChars(String value) {
     String s = value.replaceAll("[\\[\\](),]", " ");
@@ -152,9 +109,7 @@ public class HelpClass {
     return dropDayList;
   }
   
-  public int getDayOfYear(int month, int day) { 
-    return LocalDate.of(2000, month, day).getDayOfYear(); 
-  }
+
 
   public int getNumberOfDaysInMonth(int numberOfMonth) {
     switch (numberOfMonth) {
@@ -194,6 +149,10 @@ public class HelpClass {
 
   public void updateView(String viewId) {
     PrimeFaces.current().ajax().update(viewId);
+  }
+  
+  public void updateView(List<String> viewIds) {
+    PrimeFaces.current().ajax().update(viewIds); 
   }
 //
 //  public String convertDateToUTCString(Date date, String time) { 

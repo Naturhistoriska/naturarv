@@ -44,6 +44,7 @@ public class PagingNavigation implements Serializable {
     end = numPerPage;
     startPage = 1;
     currentPage = 1;
+    totalPages = 1;
     if (totalFound > numPerPage) {
       totalPages = totalFound / numPerPage;
       if (totalFound % numPerPage > 0) {

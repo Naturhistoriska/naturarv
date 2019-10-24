@@ -10,8 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named; 
-import java.util.stream.Collectors; 
+import javax.inject.Named;  
 import lombok.extern.slf4j.Slf4j; 
 import org.primefaces.event.TabChangeEvent; 
 import org.primefaces.event.TabCloseEvent;
@@ -25,8 +24,8 @@ import se.nrm.dina.web.portal.model.CollectionData;
 @ApplicationScoped
 @Slf4j
 public class CollectionsView implements Serializable {
-    
-  private List<String> collections;
+     
+  private List<CollectionData> collectionData;
   private int activeIndex;
 
   @Inject
@@ -38,9 +37,7 @@ public class CollectionsView implements Serializable {
 
   @PostConstruct
   public void init() {
-    log.info("init");  
-    
-    buildCollections();
+    log.info("init");    
   }
   
   public void onTabChange(TabChangeEvent event) {
@@ -51,32 +48,21 @@ public class CollectionsView implements Serializable {
     log.info("onTabChange: {}", event.getTab().getTitle()); 
     activeIndex = -1;
   }
-    
-  private void buildCollections() {
-    log.info("collection: {} -- {}", data, data.getCollections());
-    collections = data.getCollections()
-            .stream()
-            .map(CollectionData::getName)
-            .collect(Collectors.toList()); 
-  }
-   
-  
-  public List<String> getCollections() {  
+     
+  public List<CollectionData> getCollections() {  
     log.info("collections");
-    if(collections == null) {
-      buildCollections();
+    if(collectionData == null) {
+      collectionData = data.getCollections();
     } 
-    return collections;
+    return collectionData;
   } 
-
+  
+ 
   public int getActiveIndex() {
     return activeIndex;
   }
 
   public void setActiveIndex(int activeIndex) {
     this.activeIndex = activeIndex;
-  }
-  
-  
-  
+  } 
 }

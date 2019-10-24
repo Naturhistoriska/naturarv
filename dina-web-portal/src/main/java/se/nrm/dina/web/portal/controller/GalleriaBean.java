@@ -17,7 +17,7 @@ import org.primefaces.model.LazyDataModel;
 import se.nrm.dina.web.portal.logic.lazy.datamodel.ImageLazyDataModel;
 import se.nrm.dina.web.portal.logic.utils.GalleriaHelper;
 import se.nrm.dina.web.portal.model.ImageModel;
-import se.nrm.dina.web.portal.solr.SolrService; 
+import se.nrm.dina.web.portal.solr.SolrImageService; 
 
 /**
  *
@@ -44,7 +44,7 @@ public class GalleriaBean implements Serializable {
   private List<String> stageList;
    
   @Inject
-  private SolrService solr;
+  private SolrImageService solr;
  
   ImageLazyDataModel dataModel;
 
@@ -57,7 +57,7 @@ public class GalleriaBean implements Serializable {
   }
  
   public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {  
-    dataModel = new ImageLazyDataModel(solr, filterMap, filters, searchText, totalImages);
+    dataModel = new ImageLazyDataModel(solr, filterMap, filters, searchText, totalImages); 
   }
 
   public LazyDataModel<ImageModel> getModel() {

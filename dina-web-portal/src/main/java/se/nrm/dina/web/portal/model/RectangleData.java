@@ -3,29 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.nrm.dina.web.portal.model;
-
-import org.primefaces.model.map.LatLngBounds;
+package se.nrm.dina.web.portal.model; 
 
 /**
  *
  * @author idali
  */
 public class RectangleData {
-  
-  private final LatLngBounds bounds;
+   
   private final int count;
+  private final String geohash;
   
-  public RectangleData(LatLngBounds bounds, int count) {
-    this.bounds = bounds;
+  public RectangleData(int count, String geohash) { 
     this.count = count;
+    this.geohash = geohash;
   }
-
-  public LatLngBounds getBounds() {
-    return bounds;
-  }
+ 
 
   public int getCount() {
     return count;
+  } 
+
+  public String getGeohash() {
+    return geohash;
   } 
 }

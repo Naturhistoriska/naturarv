@@ -39,6 +39,7 @@ import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.solr.SolrService;
 import se.nrm.dina.web.portal.utils.CommonText;
 import se.nrm.dina.web.portal.utils.HelpClass;
+import se.nrm.dina.web.portal.utils.SearchHelper;
 
 /**
  *
@@ -147,31 +148,31 @@ public class GeoMap implements Serializable {
     set = new TreeSet<>();
     listData = new ArrayList<>();
     model = new DefaultMapModel();
-    if (zoom < 15) {
-      fetchDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()),
-              MapHelper.getInstance().getGridLevel(zoom));
-    } else {
-      fetchSmallDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()));
-    }
+//    if (zoom < 15) {
+//      fetchDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()),
+//              MapHelper.getInstance().getGridLevel(zoom));
+//    } else {
+//      fetchSmallDataSet(MapHelper.getInstance().buildSearchRegion(event.getBounds()));
+//    }
     setMapData(false);
   }
 
   private void fetchDataSet(String regionText, int gridLevel) {
     log.info("fetchDataSet: {} -- {}", regionText, gridLevel);
 
-    HeatmapData data = solr.searchHeatmapWithFilter(searchText, filters, regionText, gridLevel);
+//    HeatmapData data = solr.searchHeatmapWithFilter(searchText, filters, regionText, gridLevel);
 
-    if (data != null) {
-      totalFound = data.getTotal();
-      if (totalFound > 0) {
-        displayingColorBar = totalFound > 500;
-        if (totalFound > 500) {
-          extractData(data);
-        } else {
-          fetchSmallDataSet(regionText);
-        }
-      }
-    }
+//    if (data != null) {
+//      totalFound = data.getTotal();
+//      if (totalFound > 0) {
+//        displayingColorBar = totalFound > 500;
+//        if (totalFound > 500) {
+//          extractData(data);
+//        } else {
+//          fetchSmallDataSet(regionText);
+//        }
+//      }
+//    }
   }
 
   private void extractData(HeatmapData data) {
@@ -194,16 +195,18 @@ public class GeoMap implements Serializable {
     maxCount = set.last();
     if (set.size() >= 6) {
       if (colorBar.size() < 6) {
-        MapHelper.getInstance().setDefaultColorBar(colorBar);
+        colorBar = MapHelper.getInstance().setDefaultColorBar();
       }
     } else {
-      MapHelper.getInstance().setColorBar(set.size(), colorBar);
+      colorBar = MapHelper.getInstance().setColorBar(set.size());
     }
   }
 
   private void buildGeoData(int rowIndex, int columnIndex, int count, HeatmapData data) {
     if (count == 1) {
-      SolrData solrData = searchSingleData(data.getSearchRegionText(rowIndex, columnIndex));
+//      SolrData solrData = searchSingleData(data.getSearchRegionText(rowIndex, columnIndex));
+
+      SolrData solrData = null;
       listData.add(new GeoData(count, solrData));
     } else {
       listData.add(new GeoData(count, data.getLowLat(rowIndex), data.getLowLng(columnIndex),
@@ -214,7 +217,7 @@ public class GeoMap implements Serializable {
 
   private void fetchSmallDataSet(String regionText) {
     displayingColorBar = false;
-    listData = solr.searchSmallDataSet(searchText, filters, regionText);
+//    listData = solr.searchSmallDataSet(searchText, filters, regionText);
   }
 
   private void setMapData(boolean resetMinMaxLatLng) {
@@ -240,7 +243,7 @@ public class GeoMap implements Serializable {
     if (resetMinMaxLatLng) {
       setMinAndMaxLatLng(data.getLatitude(), data.getLongitude());
     }
-    String text = MapHelper.getInstance().buildMultipleDataText(geoData.getTotal(), geoData.getSolrDataList());
+    String text = SearchHelper.getInstance().buildMultipleDataText(geoData.getTotal(), geoData.getSolrDataList());
     Marker marker = new Marker(data.getLatLng(), text, geoData.getSolrDataList(), plusMarkerPath);
     model.addOverlay(marker);
   }
@@ -253,7 +256,8 @@ public class GeoMap implements Serializable {
       setMaxLng(bounds.getNorthEast().getLat()); 
     }
 
-    String colorCode = MapHelper.getInstance().getColorCode(count, set);
+//    String colorCode = MapHelper.getInstance().getColorCode(count, set);
+    String colorCode = "";
     Rectangle rect = new Rectangle(bounds);
     rect.setStrokeColor(colorCode);
     rect.setStrokeOpacity(0.8);
@@ -262,7 +266,7 @@ public class GeoMap implements Serializable {
     rect.setFillColor(colorCode);
     rect.setFillOpacity(0.8);
 
-    rect.setData(new RectangleData(bounds, count));
+//    rect.setData(new RectangleData(bounds, count));
     model.addOverlay(rect);
   }
 
@@ -272,13 +276,14 @@ public class GeoMap implements Serializable {
     }
 
     model.addOverlay(new Marker(solrData.getLatLng(),
-            MapHelper.getInstance().buildMakerTitle(solrData, 1),
+            SearchHelper.getInstance().buildMakerTitle(solrData, 1),
             solrData, singleMarkerPath));
   }
 
   private SolrData searchSingleData(String regionText) {
 //    log.info("searchSingleData: {}", regionText);
-    return solr.searchSpatialData(searchText, filters, regionText).get(0);
+//    return solr.searchSpatialData(searchText, filters, regionText).get(0);
+    return null;
   }
 
   private void addPolyline(SolrData solrData) {
@@ -290,7 +295,7 @@ public class GeoMap implements Serializable {
             .forEach(i -> {
               int index = (int) i.getIndex();
               SolrData data = i.getValue();
-              String title = MapHelper.getInstance().buildMakerTitle(data, 1);
+              String title = SearchHelper.getInstance().buildMakerTitle(data, 1);
               LatLng latLng = MapHelper.getInstance().getLatLng(coordOrg, index, size, zoom);
               Marker newMarker = new Marker(latLng, title, data, pinkMarkerPath, pinkMarkerPath);
               model.addOverlay(newMarker);
@@ -368,8 +373,8 @@ public class GeoMap implements Serializable {
       maxLng = bound.getNorthEast().getLng(); 
       resetZoom();
 
-      String searchRegion = MapHelper.getInstance().buildSearchRegion(bound);
-      
+//      String searchRegion = MapHelper.getInstance().buildSearchRegion(bound);
+      String searchRegion = "";
       if (zoom < 15) {
         fetchDataSet(searchRegion, MapHelper.getInstance().getGridLevel(zoom));
       } else {

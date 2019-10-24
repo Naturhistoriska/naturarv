@@ -7,251 +7,181 @@ package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.LocalDateTime; 
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.ArrayList; 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import java.util.Map; 
+import javax.annotation.PostConstruct;  
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.primefaces.model.chart.Axis;
-import org.primefaces.model.chart.AxisType;
-import org.primefaces.model.chart.BarChartModel;
-import org.primefaces.model.chart.ChartSeries;
-import se.nrm.dina.web.portal.solr.SolrService;
-import se.nrm.dina.web.portal.utils.CommonText;
-import se.nrm.dina.web.portal.utils.MonthElement;
+import lombok.extern.slf4j.Slf4j; 
+import org.primefaces.model.chart.BarChartModel;   
+import se.nrm.dina.web.portal.logic.ChartCreator; 
+import se.nrm.dina.web.portal.logic.utils.ChartHelper;
+import se.nrm.dina.web.portal.solr.SolrChartService; 
+import se.nrm.dina.web.portal.utils.CommonText;  
+import se.nrm.dina.web.portal.utils.SearchHelper;
 
 /**
  *
  * @author idali
  */
 @Named("chart")
-@ApplicationScoped
+@SessionScoped
 @Slf4j
 public class ChartView implements Serializable {
 
   private BarChartModel totalMonthChart;
   private BarChartModel totalTenYearsChart;
 
-  private Map<String, Map<String, Integer>> collectionMonthsDataMap;
-  private Map<String, Map<String, Integer>> collectionYearsDataMap;
-  private final List<String> collectionNameList;
-
-  private boolean isSwedish;
-
-  private final HttpSession session;
-  private final LocalDateTime startDate;
-  private final int yearOfStartDate;
-  private final int yearOfToday;
-  private final int monthOfToday;
-  private final int lastTenYear;
-  private final int nextYear;
+  private Map<String, Integer> resultMap;  
+  private final List<String> collectionCodeList;
+ 
+  private HttpSession session;
+  private LocalDateTime startDate; 
+  private int yearOfToday; 
+  private int lastTenYear;
+  private int nextYear;
+  
+  private String searchDateRange;
 
   private final CommonText common;
-
+  private final static String YEAR_SURFFIX = "_year";
+    
   @Inject
-  private SolrService solr;
+  private SolrChartService solr;
+  @Inject
+  private ChartCreator chartCreator;
 
-  public ChartView() {
-    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-    isSwedish = true;
-
-    YearMonth yearMonth = YearMonth.from(LocalDate.now());
-    yearOfToday = yearMonth.getYear();
-    monthOfToday = yearMonth.getMonth().getValue();
-    startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay();
-    yearOfStartDate = startDate.getYear();
-    nextYear = yearOfToday + 1;
-    lastTenYear = yearOfStartDate - 10;
-
+  public ChartView() { 
     common = CommonText.getInstance();
-    collectionNameList = new ArrayList<>();
+    collectionCodeList = new ArrayList<>();
   }
 
   @PostConstruct
   public void init() {
     log.info("init");
-    isSwedish = ((String) session.getAttribute(common.getLocale())).equals("sv");
-    createTotalMonthChart();
-    createSpecimenModelForLastTenYears();
-
-//    initCollectionMonthChartData();
-//    initCollectionYearChartData();
+    initData();  
   }
-
-  private void initCollectionMonthChartData() {
-    log.info("initCollectionMonthChartData");
-    collectionMonthsDataMap = solr.getCollectionsMonthChartData(startDate);
-    if (collectionMonthsDataMap != null && collectionMonthsDataMap.size() > 0) {
-      session.setAttribute(common.getCollectionsMonthChart(), solr);
-    }
+  
+  private void initData() { 
+    YearMonth yearMonth = YearMonth.from(LocalDate.now());
+    yearOfToday = yearMonth.getYear(); 
+    startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay(); 
+    nextYear = yearOfToday + 1;
+    lastTenYear = yearOfToday - 10;  
+    searchDateRange = SearchHelper.getInstance().buildSearchDateRange(startDate, null);
   }
-
-  private void initCollectionYearChartData() {
-    log.info("initCollectionYearChartData");
-    collectionYearsDataMap = solr.getCollectionsYearData(lastTenYear, nextYear);
-    if (collectionYearsDataMap != null && collectionYearsDataMap.size() > 0) {
-      session.setAttribute(common.getCollectionsYearChart(), solr);
-    }
-  }
-
-  private void createCollectionMonthChart(BarChartModel collectionMonthChart, String collectionName) {
-    log.info("createCollectionMonthChart");
-    if (session.getAttribute(common.getCollectionsMonthChart()) == null) {
-      initCollectionMonthChartData();
-    }
-    Map<String, Integer> monthData = collectionMonthsDataMap.get(collectionName);
-
-    if (monthData == null) {
-      monthData = new HashMap<>();
-    }
-    createMonthChart(collectionMonthChart, monthData);
-    session.setAttribute(collectionName, collectionMonthChart);
-    if (!collectionNameList.contains(collectionName)) {
-      collectionNameList.add(collectionName);
-    }
-  }
-
-  private void createCollectionYearChart(BarChartModel collectionYearChart, String collectionName) {
-    log.info("createCollectionrYeaChart");
-    if (session.getAttribute(common.getCollectionsYearChart()) == null) {
-      initCollectionYearChartData();
-    }
-    Map<String, Integer> yearData = collectionYearsDataMap.get(collectionName);
-
-    if (yearData == null) {
-      yearData = new HashMap<>();
-    }
-    createYearChart(collectionYearChart, yearData);
-    session.setAttribute(collectionName + "_year", collectionYearChart);
-  }
-
-  private void createSpecimenModelForLastTenYears() {
-    log.info("createSpecimenModelForLastTenYears");
-
-    Map<String, Integer> yearMap = solr.getLastTenYearsRegistedData(lastTenYear, nextYear);
-    session.setAttribute(common.getYearChartData(), yearMap);
-    totalTenYearsChart = new BarChartModel();
-    createYearChart(totalTenYearsChart, yearMap);
-  }
-
-  private void createYearChart(BarChartModel model, Map<String, Integer> dataMap) {
-    ChartSeries series = new ChartSeries();
-    dataMap.entrySet().stream().forEach(e -> {
-      series.set(e.getKey(), e.getValue());
-    });
-
-    model.addSeries(series);
-    model.setTitle(common.getYearChartTitle(isSwedish));
-    addOptions(model, common.getYearChartXAxisLabel(isSwedish));
-  }
-
-  private void createTotalMonthChart() {
-    log.info("createTotalMonthChart"); 
-    
-    totalMonthChart = new BarChartModel();
-    Map<String, Integer> result = solr.getLastYearRegistedData(startDate);
-    if (result != null) {
-      session.setAttribute(common.getMonthChartData(), result); 
-      createMonthChart(totalMonthChart, result);
-    }
-  }
-
-  private void createMonthChart(BarChartModel model, Map<String, Integer> dataMap) {
-    ChartSeries series = new ChartSeries();
-    IntStream.range(0, 12)
-            .forEach(x -> {
-              Month month = startDate.plusMonths(x).getMonth();
-              series.set(buildSeriesLabel(month),
-                      dataMap.get(month.name()) == null ? 0 : dataMap.get(month.name()));
-            });
-
-    model.addSeries(series);
-    model.setTitle(common.getMonthChartTitle(isSwedish));
-    addOptions(model, common.getMonthChartXAxisLabel(isSwedish));
-  }
-
-  private void addOptions(BarChartModel model, String label) {
-    model.setShowPointLabels(true);
-    model.setShowDatatip(false);
-
-    Axis xAxis = model.getAxis(AxisType.X);
-    xAxis.setTickAngle(-50);
-    xAxis.setLabel(label);
-
-    Axis yAxis = model.getAxis(AxisType.Y);
-    yAxis.setLabel(common.getChartYAxisLabel(isSwedish));
-  }
-
-  private String buildSeriesLabel(Month month) {
-    int year = month.getValue() <= monthOfToday ? yearOfToday : yearOfStartDate;
-    StringBuilder sb = new StringBuilder();
-    sb.append(MonthElement.valueOfShortName(month.name(), isSwedish));
-    sb.append(" ");
-    sb.append(year);
-
-    return sb.toString();
-  }
-
+  
   public BarChartModel getTotalMonthChart() {
-    return totalMonthChart;
+    session = getSession();
+    
+    if(session.getAttribute(common.getMonthChartData()) != null) {
+      return (BarChartModel) session.getAttribute(common.getMonthChartData());
+    }  
+    totalMonthChart = new BarChartModel(); 
+    resultMap = solr.getLastYearRegistedData(searchDateRange, null); 
+    if (resultMap != null) {
+      chartCreator.createMonthChart(totalMonthChart, resultMap, startDate, isSwedish());
+      getSession().setAttribute(common.getMonthChartData(), totalMonthChart);  
+    } 
+    return totalMonthChart;    
   }
-
+  
   public BarChartModel getTotalTenYearsChart() {
+    session = getSession();
+    
+    if(session.getAttribute(common.getYearChartData()) != null) {
+      return (BarChartModel) session.getAttribute(common.getYearChartData());
+    } 
+    resultMap = solr.getLastTenYearsRegistedData(lastTenYear, nextYear, null);  
+    totalTenYearsChart = new BarChartModel();
+    chartCreator.createYearChart(totalTenYearsChart, resultMap, isSwedish()); 
+    session.setAttribute(common.getYearChartData(), totalTenYearsChart);  
     return totalTenYearsChart;
   }
 
-  public BarChartModel getCollectionMonthChart(String collectionName) {
-    log.info("getCollectionMonthChart: {}", collectionName);
-    if (session.getAttribute(collectionName) == null) {
-      BarChartModel collectionMonthChart = new BarChartModel();
-      createCollectionMonthChart(collectionMonthChart, collectionName);
+  /**
+   * Create chart for register data from last ten years
+   * @param collectionCode
+   * @return 
+   */
+  public BarChartModel getCollectionMonthChart(String collectionCode) {
+    log.info("getCollectionMonthChart: {}", collectionCode);
+    
+    if(!collectionCodeList.contains(collectionCode)) {
+      collectionCodeList.add(collectionCode);
     }
-    return (BarChartModel) session.getAttribute(collectionName);
+    session = getSession();
+    if (session.getAttribute(collectionCode) != null) {
+      return (BarChartModel) session.getAttribute(collectionCode); 
+    } 
+    BarChartModel collectionMonthChart = new BarChartModel();  
+    chartCreator.createMonthChart(collectionMonthChart, 
+            solr.getLastYearRegistedData(searchDateRange, collectionCode), 
+            startDate, isSwedish());
+    session.setAttribute(collectionCode, collectionMonthChart);
+    return collectionMonthChart;  
   }
-
-  public BarChartModel getCollectionYearChart(String collectionName) {
-    log.info("getCollectionYearChart: {}", collectionName);
-    if (session.getAttribute(collectionName + "_year") == null) {
-      BarChartModel collectionYearChart = new BarChartModel();
-      createCollectionYearChart(collectionYearChart, collectionName);
+  
+  public BarChartModel getCollectionYearChart(String collectionCode) {
+    log.info("getCollectionYearChart: {}", collectionCode);
+    
+    session = getSession();
+    if (session.getAttribute(collectionCode + YEAR_SURFFIX) != null) {
+      return (BarChartModel) session.getAttribute(collectionCode + YEAR_SURFFIX); 
     }
-    return (BarChartModel) session.getAttribute(collectionName + "_year");
+    BarChartModel collectionYearChart = new BarChartModel(); 
+    chartCreator.createYearChart(collectionYearChart, 
+            solr.getLastTenYearsRegistedData(lastTenYear, nextYear, collectionCode), isSwedish()); 
+    session.setAttribute(collectionCode + YEAR_SURFFIX, collectionYearChart);
+    return collectionYearChart;
   }
-
-  public void changeLanguage() {
-    isSwedish = ((String) session.getAttribute(common.getLocale())).equals("sv");
-
-    totalMonthChart = new BarChartModel();
-    totalTenYearsChart = new BarChartModel();
+  
+  public void changeLanguage(boolean isSwedish) {
+    session = getSession();   
     
     if(session.getAttribute(common.getMonthChartData()) != null) {
-      createMonthChart(totalMonthChart, (Map) session.getAttribute(common.getMonthChartData()));
-    } 
+      totalMonthChart = (BarChartModel) session.getAttribute(common.getMonthChartData());  
+      session.setAttribute(common.getMonthChartData(), 
+            ChartHelper.getInstance().changeMonthChartLanguage(totalMonthChart, isSwedish));
+    }
     
     if(session.getAttribute(common.getYearChartData()) != null) {
-      createYearChart(totalTenYearsChart, (Map) session.getAttribute(common.getYearChartData()));
+      totalTenYearsChart = (BarChartModel) session.getAttribute(common.getYearChartData());  
+      session.setAttribute(common.getYearChartData(), 
+            ChartHelper.getInstance().changeYearChartLanguage(totalTenYearsChart, isSwedish));
     } 
-    collectionNameList.stream()
+    
+    collectionCodeList.stream()
             .forEach(c -> {
-              if (session.getAttribute(c) != null) {
-                BarChartModel collectionMonthChart = (BarChartModel) session.getAttribute(c);
-                collectionMonthChart.clear();
-                createCollectionMonthChart(collectionMonthChart, c);
-
-                BarChartModel collectionYearChart = (BarChartModel) session.getAttribute(c + "_year");
-                collectionYearChart.clear();
-                createCollectionYearChart(collectionYearChart, c);
+              if(session.getAttribute(c) != null) { 
+                session.setAttribute(c, ChartHelper.getInstance()
+                        .changeMonthChartLanguage(
+                                (BarChartModel)session.getAttribute(c), isSwedish));
               }
-            });
+              String attString = c + YEAR_SURFFIX;
+              if(session.getAttribute(attString) != null) {  
+                session.setAttribute(attString, ChartHelper.getInstance()
+                        .changeYearChartLanguage(
+                                (BarChartModel)session.getAttribute(attString), isSwedish));
+              }
+            }); 
   }
+  
+  private HttpSession getSession() {
+    if(session == null) {
+      session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+    }
+    return session;
+  } 
+  
+  private boolean isSwedish() {
+    return ((String)getSession().getAttribute(CommonText.getInstance().getLocale()))
+            .equals(CommonText.getInstance().getSv());
+  } 
 }

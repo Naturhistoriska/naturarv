@@ -42,8 +42,10 @@ public class Navigator implements Serializable {
   private final static String PARTNERS = "partners";
   private final static String FAQ = "faq";
   private final static String ABOUT = "about";
-  private final static String CONTACT = "contact";
-
+  private final static String CONTACT = "contact"; 
+   
+  private boolean isHomeView;
+  
   private HttpServletRequest req;
 
   @Inject
@@ -51,17 +53,26 @@ public class Navigator implements Serializable {
  
   public Navigator() {
     log.info("Navigator");
+    isHomeView = true;
   }
 
   public void gotoHome() {
     log.info("gotoHome"); 
     style.setTabStyle(HOME);
-    redirectPage(HOME_PATH);
+    
+    if(isResultView()) {
+      isHomeView = true;
+      redirectPage(HOME_PATH);
+    } else {
+      redirectPage(isHomeView ? HOME_PATH : RESULTS_PATH);
+    }
+    
   }
 
   public void gotoResults() {
     log.info("gotoResults");
 
+    isHomeView = false;
     style.setTabStyle(HOME);
     redirectPage(RESULTS_PATH);
   }
@@ -115,6 +126,25 @@ public class Navigator implements Serializable {
     redirectPage(ERROR_REPORT_PATH);
   }
 
+  public boolean isShowSearchPanel() {
+    req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    String url = req.getRequestURL().toString();
+    
+    if(url.contains(COLLECTIONS_PATH)) {
+      return false;
+    }
+    if(url.contains(ABOUT_PATH)) {
+      return false;
+    }
+    if(url.contains(CONTACT_PATH)) {
+      return false;
+    }
+    if(url.contains(FAQ_PATH)) {
+      return false;
+    }
+    return !url.contains(PARTNERS_PATH);
+  }
+
   public boolean isResultView() {
     req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     String url = req.getRequestURL().toString();
@@ -129,4 +159,12 @@ public class Navigator implements Serializable {
     } catch (IOException ex) {
     }
   }
+  
+  
+    
+//  public void updateHashNav() {
+//    log.info("updateHashNav");
+//    redirectPage(RESULTS_PATH + "#result");
+//  }
+  
 }

@@ -4,16 +4,19 @@
  * and open the template in the editor.
  */
 package se.nrm.dina.web.portal.logic.utils;
- 
+
+import ch.hsr.geohash.GeoHash;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors; 
 import lombok.extern.slf4j.Slf4j;
-import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.LatLng; 
 import org.primefaces.model.map.LatLngBounds;
+import org.primefaces.model.map.Rectangle;
+import se.nrm.dina.web.portal.model.RectangleData; 
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.utils.CommonText;
 
@@ -24,9 +27,20 @@ import se.nrm.dina.web.portal.utils.CommonText;
 @Slf4j
 public class MapHelper {
 
-  private static final String DEFAULT_REGION_TEXT = "[\"-180 -90\" TO \"180 90\"]";
-  private static final int DEFAULT_REGION_ZOOM = 2; 
+  private final String defaultSearchRange = "[\"-180 -90\" TO \"180 90\"]";
+  private final int defaultRangeZoom = 2;
   private static final Map<String, String> DEFAULT_COLOR_MAP;
+//  private StringBuilder markTitleSb;
+//  private StringBuilder searchRegionSb;
+  private GeoHash geohash;
+//  private double maxLat;
+//  private double maxLng;
+//  private double minLat;
+//  private double minLng;
+  private LatLng northEast;
+  private LatLng southWest;
+  private LatLngBounds bounds; 
+  private Rectangle rect; 
 
   private static MapHelper instance = null;
 
@@ -36,7 +50,7 @@ public class MapHelper {
     }
     return instance;
   }
-  
+
   static {
     DEFAULT_COLOR_MAP = new TreeMap<>();
     DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor1(), "#F7C7C7");
@@ -46,86 +60,107 @@ public class MapHelper {
     DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor5(), "#8E0028");
     DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor6(), "#790022");
   }
-   
 
   public String getDefaultRegion() {
-    return DEFAULT_REGION_TEXT;
+    return defaultSearchRange;
   }
 
   public int getDefaultZoom() {
-    return DEFAULT_REGION_ZOOM;
+    return defaultRangeZoom;
   }
 
-  public String buildSearchRegion(double lowLat, double lowLng, double upperLat, double upperLng) {
-//    log.info("searchRegion: {} -- {}", lowLat + " -- " + lowLng, upperLat + " -- " + upperLng);
+  public Rectangle buildRectangle(String geoHashData, int total, String colorCode) { 
+    geohash = GeoHash.fromGeohashString(geoHashData);   
+    northEast = new LatLng(geohash.getBoundingBox().getMaxLat(), geohash.getBoundingBox().getMinLon());
+    southWest = new LatLng(geohash.getBoundingBox().getMinLat(), geohash.getBoundingBox().getMaxLon()); 
+    bounds = new LatLngBounds(southWest, northEast);  
+    rect = new Rectangle(bounds);
+    rect.setStrokeColor(colorCode);
+    rect.setStrokeOpacity(0.8);
+    rect.setStrokeWeight(0);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("[");
-    sb.append(lowLat);
-    sb.append(",");
-    sb.append(lowLng);
-    sb.append(" TO ");
-    sb.append(upperLat);
-    sb.append(",");
-    sb.append(upperLng);
-    sb.append("]");
-    return sb.toString();
+    rect.setFillColor(colorCode);
+    rect.setFillOpacity(0.8);
+    rect.setData(new RectangleData(total, geoHashData));
+    return rect;
   }
 
-  public String buildSearchRegion(LatLngBounds bound) {
+//  /**
+//   * Build search region with low latitude, low longitude, upper latitude, upper longitude
+//   * 
+//   * @param lowLat - double
+//   * @param lowLng - double
+//   * @param upperLat - double
+//   * @param upperLng - double
+//   * 
+//   * @return String
+//   */
+//  private String buildSearchRegion(double lowLat, double lowLng, double upperLat, double upperLng) {
+////    log.info("searchRegion: {} -- {}", lowLat + " -- " + lowLng, upperLat + " -- " + upperLng);
+//
+//    StringBuilder sb = new StringBuilder();
+//    sb.append("[");
+//    sb.append(lowLat);
+//    sb.append(",");
+//    sb.append(lowLng);
+//    sb.append(" TO ");
+//    sb.append(upperLat);
+//    sb.append(",");
+//    sb.append(upperLng);
+//    sb.append("]");
+//    return sb.toString();
+//  }
 
-    double north = bound.getNorthEast().getLat();
-    double south = bound.getSouthWest().getLat();
-    double east = bound.getNorthEast().getLng();
-    double west = bound.getSouthWest().getLng(); 
-    return buildSearchRegion(south, west, north, east);
-  }
+ 
+//  public String buildSearchRegion(LatLngBounds bound) { 
+////    double north = bound.getNorthEast().getLat();
+////    double south = bound.getSouthWest().getLat();
+////    double east = bound.getNorthEast().getLng();
+////    double west = bound.getSouthWest().getLng();
+//    searchRegionSb = new StringBuilder();
+//    searchRegionSb.append("[");
+//    searchRegionSb.append(bound.getSouthWest().getLat());
+//    searchRegionSb.append(",");
+//    searchRegionSb.append(bound.getSouthWest().getLng());
+//    searchRegionSb.append(" TO ");
+//    searchRegionSb.append(bound.getNorthEast().getLat());
+//    searchRegionSb.append(",");
+//    searchRegionSb.append(bound.getNorthEast().getLng());
+//    searchRegionSb.append("]");
+//    return searchRegionSb.toString(); 
+//  }
 
-  public String buildMakerTitle(SolrData data, int count) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(data.getTxFullName());
-    sb.append("\n");
-    sb.append(data.getLocality());
-    sb.append("\n");
-    sb.append(data.getLatitudeText());
-    sb.append(" -- ");
-    sb.append(data.getLongitudeText());
-    if (count > 1) {
-      sb.append("\nTotal: ");
-      sb.append(count);
-    }
-
-    return sb.toString().trim();
-  }
-
-  public String buildMultipleDataText(int count, List<SolrData> solrDataList) {
-
-    SolrData solrData = solrDataList.get(0);
-    StringBuilder mapInfoSb = new StringBuilder();
-    mapInfoSb.append("Total count: ");
-    mapInfoSb.append(solrDataList.size());
-    mapInfoSb.append("\n");
-    mapInfoSb.append(solrData.getLocality());
-    mapInfoSb.append("\n");
-    mapInfoSb.append(solrData.getLatitudeText());
-    mapInfoSb.append(" -- ");
-    mapInfoSb.append(solrData.getLongitude());
-    mapInfoSb.append("\n\n");
-
-    int index = count > 10 ? 10 : count - 1;
-
-    IntStream.range(0, index)
-            .forEach(i -> {
-              SolrData data = solrDataList.get(i);
-              mapInfoSb.append(data.getCatalogNumber());
-              mapInfoSb.append("\t");
-              mapInfoSb.append(data.getTxFullName());
-              mapInfoSb.append("\n");
-            });
-
-    return mapInfoSb.toString();
-  }
-
+//  /**
+//   * Build title for marker
+//   * 
+//   * @param data - SolrData
+//   * @param count - int
+//   * 
+//   * @return - String
+//   */
+//  public String buildMakerTitle(SolrData data, int count) {
+//    markTitleSb = new StringBuilder();
+//    markTitleSb.append(data.getTxFullName());
+//    markTitleSb.append(newLine);
+//    markTitleSb.append(data.getLocality());
+//    markTitleSb.append(newLine);
+//    markTitleSb.append(data.getLatitudeText());
+//    markTitleSb.append(" -- ");
+//    markTitleSb.append(data.getLongitudeText());
+//    if (count > 1) {
+//      markTitleSb.append(newLine);
+//      markTitleSb.append("Total: ");
+//      markTitleSb.append(count);
+//    } 
+//    return markTitleSb.toString().trim();
+//  }
+ 
+   /**
+   * Build search region with LatLngBounds
+   * @param zoom - int
+   * 
+   * @return int
+   */
   public int getGridLevel(int zoom) {
     switch (zoom) {
       case 1:
@@ -154,7 +189,7 @@ public class MapHelper {
     }
   }
 
-  public LatLng getLatLng(LatLng coordOrg, int index, int size, int zoom) {
+  public LatLng getLatLng(LatLng coordOrg, int index, int size, int zoom) { 
     double d = getDestance(zoom);
     double dAngle = index * getAngleIncrease(size) * Math.PI / 180;
     return new LatLng(coordOrg.getLat() + d * Math.sin(dAngle), coordOrg.getLng() + d * Math.cos(dAngle));
@@ -224,9 +259,76 @@ public class MapHelper {
       default:
         return 30;
     }
-  }  
+  }
   
-  public int getZoomLevel(double latD, double lngD) {
+  public String getGeoHashPrefix(int zoom) {
+    switch(zoom) { 
+      case 1:
+      case 2:
+        return "2_";
+      case 3:
+      case 4:
+      case 5:   
+        return "3_"; 
+      case 6:
+      case 7:
+        return "4_";
+      case 8:
+      case 9:
+      case 10:
+        return "5_"; 
+      case 11:
+      case 12:
+        return "6_";
+      case 13:
+      case 14:
+      case 15: 
+        return "7_";
+      case 16: 
+      case 17: 
+      case 18: 
+        return "8_";
+      case 19: 
+      case 20: 
+      case 21: 
+        return "9_";
+      default:
+        return "2_"; 
+    } 
+  }
+  
+//  public double getCenterLat() {
+//    return  maxLat + minLat / 2; 
+//  }
+//  
+//  public double getCenterLng() {
+//    return maxLng + minLng / 2;
+//  }
+  
+//  public int setZoom(List<SolrData> results) {
+//    log.info("setZoom :  {}", results.size());
+//    results.stream()
+//            .forEach(data -> {
+//              maxLat = maxLat > data.getLatitude() ? maxLat : data.getLatitude();
+//              minLat = minLat > data.getLatitude() ? data.getLatitude() : minLat;
+//              maxLng = maxLng > data.getLongitude() ? maxLng : data.getLongitude();
+//              minLng = minLng > data.getLongitude() ? data.getLongitude() : minLng;
+//            });
+//    return resetZoom(minLat, minLng, maxLat, maxLng);
+//  }
+  
+  public int resetZoom(double minLat, double minLng, double maxLat, double maxLng) { 
+    double lngD = maxLng < minLng ? 360 + maxLng - minLng : maxLng - minLng;
+    double latD = maxLat - minLat;
+    return getZoomLevel(latD, lngD); 
+  }
+  
+  public int resetZoom(GeoHash geoHash) {     
+    return resetZoom(geoHash.getBoundingBox().getMinLat(), geoHash.getBoundingBox().getMinLon(), 
+            geoHash.getBoundingBox().getMaxLat(), geoHash.getBoundingBox().getMaxLon());
+  }
+
+  public int getZoomLevel(double latD, double lngD) { 
     int zoomLevelLng = 1;
     if (lngD >= 240) {
       zoomLevelLng = 1;
@@ -259,7 +361,7 @@ public class MapHelper {
     } else if (lngD < 0.03) {
       zoomLevelLng = 15;
     }
-    
+
     int zoomLevelLat = 1;
     if (latD >= 107) {
       zoomLevelLat = 1;
@@ -294,19 +396,20 @@ public class MapHelper {
     }
     return zoomLevelLng > zoomLevelLat ? zoomLevelLat : zoomLevelLng;
   }
-  
-  public void setDefaultColorBar(List<String> colorBar) {
-    colorBar.clear();
-    colorBar.addAll(DEFAULT_COLOR_MAP.values()
-                .stream().collect(Collectors.toList()));
+
+  public List<String> setDefaultColorBar() { 
+    return DEFAULT_COLOR_MAP.values()
+            .stream()
+            .collect(Collectors.toList());
   }
-  
-  public void setColorBar(int size, List<String> colorBar) {
+
+  public List<String> setColorBar(int size ) {
     log.info("setColorBar: {}", size); 
-    colorBar.clear(); 
+    
+    List<String> colorBar = new ArrayList<>();  
     switch (size) {
       case 1:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
+        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
         break;
       case 2:
         colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
@@ -331,78 +434,178 @@ public class MapHelper {
         colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
         break;
       default:
-        colorBar.addAll(DEFAULT_COLOR_MAP.values()
-                .stream().collect(Collectors.toList())); 
-        break;
-    } 
+        return setDefaultColorBar();
+    }
+    return colorBar;
   }
-  
-  public String getColorCode(int count, TreeSet<Integer> set) {
 
-    int setSize = set.size();
-    if (setSize >= 6) {
-      if (count == set.first()) {
+//  public String getColorCode(int count, int index) {
+//    if (count == 1) {
+//      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//    }
+//
+//    if (count == 2) {
+//      return index == 0
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//    }
+//
+//    if (count == 3) {
+//      switch (index) {
+//        case 0:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//        case 1:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//        case 2:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//        default:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//    }
+//
+//    if (count == 4) {
+//      switch (index) {
+//        case 0:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//        case 1:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//        case 2:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//        case 3:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//        default:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//    }
+//
+//    if (count == 5) {
+//      switch (index) {
+//        case 0:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//        case 1:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//        case 2:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//        case 3:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//        case 4:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//        default:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//    }
+//
+//    if (count == 6) {
+//      switch (index) {
+//        case 0:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//        case 1:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5());
+//        case 2:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//        case 3:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//        case 4:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//        case 5:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//        default:
+//          return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//    }
+//
+//    if (count > 6) {
+//      int step = (int) Math.floor(count / 6);
+//
+//      if (index < step) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//
+//      if (index < step * 2) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5());
+//      }
+//
+//      if (index < step * 3) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//      }
+//
+//      if (index < step * 4) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//      }
+//
+//      if (index < step * 5) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//      }
+//
+//      if (index <= step * 6) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//    }
+//    return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//  }
+  
+  public String getColorCode(int colorIndex, int setSize, boolean isFirst, boolean isLast) {
+    if(setSize >= 6) {
+      if(isFirst) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
       }
-
-      if (count == set.last()) {
+      if(isLast) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
       }
-
-      int colorIndex = set.headSet(count).size();
-      double divid = set.size() / 4;
+      
+      double divid = setSize / 4;
       if (colorIndex > 0 && colorIndex <= divid) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
       }
-
-      if (colorIndex > divid && colorIndex <= divid * 2) {
+      
+       if (colorIndex > divid && colorIndex <= divid * 2) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
       }
 
       if (colorIndex > divid * 2 && colorIndex <= divid * 3) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
-      } else if (colorIndex > divid * 3 && colorIndex < set.size() - 1) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5());
-      }
+      }   
+      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5()); 
     }
-
+    
     if (setSize == 5) {
-      if (count == set.first()) {
+      if (isFirst) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
       }
-      if (count == set.last()) {
+      if (isLast) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
       }
-
-      return set.headSet(count).size() == 2
-              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2())
-              : set.headSet(count).size() == 5
+      if(colorIndex == 2) {
+        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+      }
+      return colorIndex == 5
               ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
-              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()); 
     }
-
+    
     if (setSize == 4) {
-      if (count == set.first()) {
+      if (isFirst) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
       }
-      if (count == set.last()) {
+      if (isLast) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
       }
 
-      return set.headSet(count).size() == 2
+      return colorIndex == 2
               ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
               : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
     }
 
     if (setSize == 3) {
-      return count == set.first()
-              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
-              : count == set.last() ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
+      if(isFirst) {
+        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+      }
+      return isLast ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
               : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
     }
 
     if (setSize == 2) {
-      return count == set.first()
+      return isFirst
               ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
               : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
     }
@@ -413,4 +616,80 @@ public class MapHelper {
 
     return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
   }
+
+//  public String getColorCode(int count, TreeSet<Integer> set) { 
+//    int setSize = set.size();
+//    if (setSize >= 6) {
+//      if (count == set.first()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//
+//      if (count == set.last()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//
+//      int colorIndex = set.headSet(count).size();
+//      double divid = set.size() / 4;
+//      if (colorIndex > 0 && colorIndex <= divid) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//      }
+//
+//      if (colorIndex > divid && colorIndex <= divid * 2) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//      }
+//
+//      if (colorIndex > divid * 2 && colorIndex <= divid * 3) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//      } else if (colorIndex > divid * 3 && colorIndex < set.size() - 1) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5());
+//      }
+//    }
+//
+//    if (setSize == 5) {
+//      if (count == set.first()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      if (count == set.last()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//
+//      return set.headSet(count).size() == 2
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2())
+//              : set.headSet(count).size() == 5
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//    }
+//
+//    if (setSize == 4) {
+//      if (count == set.first()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      if (count == set.last()) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//
+//      return set.headSet(count).size() == 2
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//    }
+//
+//    if (setSize == 3) {
+//      return count == set.first()
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
+//              : count == set.last() ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//    }
+//
+//    if (setSize == 2) {
+//      return count == set.first()
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//    }
+//
+//    if (setSize == 1) {
+//      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//    }
+//
+//    return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//  }
 }

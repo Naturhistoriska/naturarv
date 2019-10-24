@@ -59,11 +59,11 @@ public class HeatmapData {
     return getLowLng(columnIndex) + widthRatio;
   }
 
-  public String getSearchRegionText(int rowIndex, int columnIndex) {
-    return MapHelper.getInstance().buildSearchRegion(getLowLat(rowIndex),
-            getLowLng(columnIndex), getUpperLat(rowIndex), getUpperLng(columnIndex));
-
-  }
+//  public String getSearchRegionText(int rowIndex, int columnIndex) {
+//    return MapHelper.getInstance().buildSearchRegion(getLowLat(rowIndex),
+//            getLowLng(columnIndex), getUpperLat(rowIndex), getUpperLng(columnIndex));
+//
+//  }
 
   public int getTotal() {
     return total;

@@ -31,46 +31,46 @@ public class FQAPage implements Serializable {
   }
   
   public String getWhatIsNaturarvText() {
-    return fqa.getWhatIsNaturarvText(language.isIsSwedish());
+    return fqa.getWhatIsNaturarvText(language.isSwedish());
   }
   
   public String getWhoIsResponsibleText1() {
-    return fqa.getWhoIsResponsible1(language.isIsSwedish());
+    return fqa.getWhoIsResponsible1(language.isSwedish());
   }
 
   public String getWhoIsResponsibleText2() {
-    return fqa.getWhoIsResponsible2(language.isIsSwedish());
+    return fqa.getWhoIsResponsible2(language.isSwedish());
   }
 
   public String getWhatInformationText1() {
-    return fqa.getWhatInformation1(language.isIsSwedish());
+    return fqa.getWhatInformation1(language.isSwedish());
   }
 
   public String getWhatInformationText2() {
-    return fqa.getWhatInformation2(language.isIsSwedish());
+    return fqa.getWhatInformation2(language.isSwedish());
   }
 
   public String getWhatInformationText3() {
-    return fqa.getWhatInformation3(language.isIsSwedish());
+    return fqa.getWhatInformation3(language.isSwedish());
   }
 
   public String getWhatSourceText1() {
-    return fqa.getWhatSource1(language.isIsSwedish());
+    return fqa.getWhatSource1(language.isSwedish());
   }
 
   public String getWhatSourceText2() {
-    return fqa.getWhatSource2(language.isIsSwedish());
+    return fqa.getWhatSource2(language.isSwedish());
   }
 
   public String getTrustText() {
-    return fqa.getTrust(language.isIsSwedish());
+    return fqa.getTrust(language.isSwedish());
   }
 
   public String getHowOftenText() {
-    return fqa.getHowOfter(language.isIsSwedish());
+    return fqa.getHowOfter(language.isSwedish());
   }
 
   public String getHowContactText() {
-    return fqa.getHowContact(language.isIsSwedish());
+    return fqa.getHowContact(language.isSwedish());
   }
 }

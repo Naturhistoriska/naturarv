@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;  
 import se.nrm.dina.web.portal.model.SolrData; 
-import se.nrm.dina.web.portal.solr.SolrService;
+import se.nrm.dina.web.portal.solr.SolrImageService; 
 
 /**
  *
@@ -30,32 +30,37 @@ public class ImageSwitcher implements Serializable {
   private List<String> thumbs;
   private List<String> jpgs;
   
+  private static final String IMAGE_ID = "imageId";
+  
   @Inject
-  private SolrService solr;
+  private SolrImageService solr;
  
   public ImageSwitcher() {
   } 
   
+  /**
+   * imageSwitch
+   */
   public void imageSwitch() {
     log.info("imageSwitch" );
     
-    String imageId =  FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("imageId");
-          
-    log.info("imageId: {}", imageId);
-    SolrData data = solr.getImagesByMorphbankId(imageId);
-    log.info("data: {}", data);
+    String imageId =  FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(IMAGE_ID); 
+    SolrData data = solr.getImagesByMorphbankId(imageId); 
     catalogNumber = data.getCatalogNumber();
     scientificName = data.getTxFullName();
     jpgs = data.getJpgs();
   }
   
+  /**
+   * 
+   * @param data - SolrData
+   */
   public void imageSwitch(SolrData data) {
     this.mbid = data.getMorphbankId();
     this.catalogNumber = data.getCatalogNumber();
     this.scientificName = data.getTxFullName(); 
     this.thumbs = data.getThumbs();
-    this.jpgs = data.getJpgs();
-//    PrimeFaces.current().ajax().update("resultsForm:imgswitchdialog");
+    this.jpgs = data.getJpgs(); 
   }
 
   public String getMbid() {

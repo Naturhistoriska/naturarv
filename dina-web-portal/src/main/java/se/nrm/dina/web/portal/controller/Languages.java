@@ -13,9 +13,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j; 
-import org.primefaces.PrimeFaces;
+import lombok.extern.slf4j.Slf4j;  
 import se.nrm.dina.web.portal.utils.CommonText;
+import se.nrm.dina.web.portal.utils.HelpClass;
 
 /**
  *
@@ -27,10 +27,8 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class Languages implements Serializable {
 
   private String locale = "sv";
-  private final List<String> updateList;
-  
-  private final FacesContext facesContext;
-  private final HttpSession session;  
+  private final List<String> updateList; 
+  private HttpSession session;  
   
   @Inject
   private ChartView chart;
@@ -47,9 +45,8 @@ public class Languages implements Serializable {
     updateList.add("searchForm:searchPanel");
     updateList.add("footerPanel"); 
     updateList.add("mainPanel"); 
-    
-    facesContext = FacesContext.getCurrentInstance();
-    session = (HttpSession) facesContext.getExternalContext().getSession(false);
+     
+    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
     session.setAttribute(CommonText.getInstance().getLocale(), locale);
   }
 
@@ -62,17 +59,18 @@ public class Languages implements Serializable {
     
     style.setLanguageStyle(locale);
     this.locale = locale;
+    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
     session.setAttribute(CommonText.getInstance().getLocale(), locale);
      
-    chart.changeLanguage();
-    PrimeFaces.current().ajax().update(updateList); 
+    chart.changeLanguage(isSwedish());
+    HelpClass.getInstance().updateView(updateList);
   }
 
   public String getLanguage() {
     return locale.equals("sv") ? "English" : "Svenska";
   }
 
-  public boolean isIsSwedish() {
+  public boolean isSwedish() {
     return locale.equals("sv");
   }
 }

@@ -13,17 +13,18 @@ import javax.faces.context.ExceptionHandlerFactory;
  * @author idali
  */
 public class CustomExceptionHandlerFactory extends ExceptionHandlerFactory {
-private ExceptionHandlerFactory exceptionHandlerFactory;
 
-    public CustomExceptionHandlerFactory() {
-    }
+  private ExceptionHandlerFactory exceptionHandlerFactory;
 
-    public CustomExceptionHandlerFactory(ExceptionHandlerFactory exceptionHandlerFactory) {
-        this.exceptionHandlerFactory = exceptionHandlerFactory;
-    }
+  public CustomExceptionHandlerFactory() {
+  }
 
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new CustomExceptionHandler(exceptionHandlerFactory.getExceptionHandler());
-    }
+  public CustomExceptionHandlerFactory(ExceptionHandlerFactory exceptionHandlerFactory) {
+    this.exceptionHandlerFactory = exceptionHandlerFactory;
+  }
+
+  @Override
+  public ExceptionHandler getExceptionHandler() {
+    return new CustomExceptionHandler(exceptionHandlerFactory.getExceptionHandler());
+  }
 }

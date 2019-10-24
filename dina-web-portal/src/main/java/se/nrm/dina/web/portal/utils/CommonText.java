@@ -18,9 +18,10 @@ public class CommonText {
   private static final String SIMPLE_SEARCH_DEFAULT_TEXT_SV = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
   
   private static final String EMPTY_STRING = "";
+  private static final String EMPTY_SPACE = " ";
 
-  private static final String NRM_CODE = "nrm";
-  private static final String GNM_CODE = "gnm";
+  private static final String NRM_CODE = "nrm*";
+  private static final String GNM_CODE = "gnm*";
   private static final String NRM_EN = "Swedish Museum of Natural History";
   private static final String NRM_SV = "Naturhistoriska riksmuseet";
   private static final String GNM_EN = "Gothenburg Natural History Museum";
@@ -104,7 +105,7 @@ public class CommonText {
   private static final String COLLECTION_CODE_KEY = "collectionId:";
   private static final String COLLECTION_NAME_KEY = "collectionName:";
   private static final String ID_KEY = "id:";
-  private static final String GEO_KEY = "geo:";
+//  private static final String GEO_KEY = "geo:";
   private static final String MAP_KEY = "map:";
   private static final String COORDINATE_KEY = "coordinate:";
 
@@ -119,7 +120,7 @@ public class CommonText {
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
   private static final String ACCESSION_NUMBER = "accessionNumber";
-  private static final String LOCATIONS = "locations";
+  private static final String LOCATIONS = "locations"; 
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
   private static final String CATALOGED_DATE = "catalogedDate";
@@ -143,7 +144,13 @@ public class CommonText {
   private static final String COLLECTOR_SEARCH = "clt";
   
   
-  
+  private static final String DNA = "dna";
+  private static final String IMAGE = "image";
+  private static final String MAP = "map";
+  private static final String SWEDEN = "sweden";
+  private static final String TYPE = "type";
+  private static final String IS_TYPE = "isType";
+  private static final String IN_SWEDEN = "inSweden";
   
   private static final String ALL = "all";
   private static final String CONTAINS = "contains";
@@ -229,6 +236,34 @@ public class CommonText {
   
   public String getSv() {
     return SV;
+  }
+  
+  public String getDna() {
+    return DNA;
+  }
+  
+  public String getImage() {
+    return IMAGE;
+  }
+  
+  public String getSweden() {
+    return SWEDEN;
+  }
+  
+  public String getMap() {
+    return MAP;
+  }
+  
+  public String getType() {
+    return TYPE;
+  }
+  
+  public String getIsType() {
+    return IS_TYPE;
+  }
+  
+  public String getInSweden() {
+    return IN_SWEDEN;
   }
 
   public String getColor1() {
@@ -423,9 +458,9 @@ public class CommonText {
     return ID_KEY;
   }
 
-  public String getGeoKey() {
-    return GEO_KEY;
-  }
+//  public String getGeoKey() {
+//    return GEO_KEY;
+//  }
 
   public String getMapKey() {
     return MAP_KEY;
@@ -538,6 +573,10 @@ public class CommonText {
   public String getEmptyString() {
     return EMPTY_STRING;
   }
+  
+  public String getEmptySpace() {
+    return EMPTY_SPACE;
+  }
 
   public String getSearchDefaultText(boolean isSwedish) {
     return isSwedish ? SIMPLE_SEARCH_DEFAULT_TEXT_SV : SIMPLE_SEARCH_DEFAULT_TEXT_EN;
@@ -551,6 +590,10 @@ public class CommonText {
     return isSwedish ? GNM_SV : GNM_EN;
   }
 
+  public String getInstitutionCode(String institutionName, boolean isSwedish) {
+    return institutionName.equals(getNrmName(isSwedish)) ? NRM_CODE : GNM_CODE;
+  }
+  
   public String getMonthChartTitle(boolean isSwedish) {
     return isSwedish ? MONTH_CHART_TITLE_SV : MONTH_CHART_TITLE_EN;
   }

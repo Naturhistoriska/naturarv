@@ -4,11 +4,12 @@
  * and open the template in the editor.
  */
 package se.nrm.dina.web.portal.controller;
-
+ 
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -39,12 +40,14 @@ public class ResultHeader implements Serializable {
     log.info("simpleview");
     viewPath = LIST_VIEW_PATH;
     resultView = "list";
+    PrimeFaces.current().scrollTo("#resultTable"); 
   }
 
   public void setDetailView() {
     log.info("detialview");
     viewPath = DETAIL_VIEW_PATH;
     resultView = "detail";
+//    PrimeFaces.current().scrollTo("#detailResultTable"); 
   }
 
   public void setSelectedView() {
@@ -96,4 +99,14 @@ public class ResultHeader implements Serializable {
   public boolean isImageView() { 
     return resultView.equals("image");
   } 
+  
+//  public void updateHashNav() {
+//    log.info("updateHashNav"); 
+//
+//    if (viewPath.equals(LIST_VIEW_PATH)) {
+//      PrimeFaces.current().scrollTo("#resultTable"); 
+//    } else {
+//      PrimeFaces.current().scrollTo("#detailResultTable"); 
+//    }
+//  }
 }

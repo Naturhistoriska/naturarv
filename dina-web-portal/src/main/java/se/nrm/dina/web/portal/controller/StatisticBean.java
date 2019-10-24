@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.StatisticData;
 import se.nrm.dina.web.portal.solr.SolrService;
+import se.nrm.dina.web.portal.solr.SolrStatisticService;
 import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
@@ -33,28 +34,23 @@ public class StatisticBean implements Serializable {
   
   private StatisticData data; 
   private StatisticData filteredData;
-  private final HttpSession session;  
+  private HttpSession session;  
   
   private boolean isSwedish; 
   
   @Inject
-  private SolrService solr;
+  private SolrStatisticService solr;
   
-  public StatisticBean() {
-    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);  
+  public StatisticBean() { 
   }
   
   @PostConstruct
   public void init() {
     log.info("StatisticData.init");
+    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);  
     isSwedish =  ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");
-            
-    initStatisticData();
-  }
-
-  public void initStatisticData() {
     data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null);  
-  }
+  } 
   
   public void resetData(String text, Map<String, String> queries) {
     filteredData = solr.getStatisticData(text, queries);   
@@ -62,7 +58,7 @@ public class StatisticBean implements Serializable {
   
   public void resetAllData() {
     if(data == null) {
-      initStatisticData();
+      data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null); 
     }
     filteredData = data;
   }
@@ -73,14 +69,14 @@ public class StatisticBean implements Serializable {
   
   public List<CollectionData> getCollections() { 
     if (data == null) { 
-      initStatisticData();
+      resetAllData();
     }
     return data.getCollections();
   }
    
   public int getTotalRecords() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotal(); 
   }
@@ -91,7 +87,7 @@ public class StatisticBean implements Serializable {
   
   public int getTotalDnas() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotalDnas();
   }
@@ -102,7 +98,7 @@ public class StatisticBean implements Serializable {
  
   public int getTotalImages() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotalImages();
   }
@@ -113,7 +109,7 @@ public class StatisticBean implements Serializable {
 
   public int getTotalMaps() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotalMaps();
   }
@@ -124,7 +120,7 @@ public class StatisticBean implements Serializable {
   
   public int getTotalInSweden() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotalInSweden();
   }
@@ -135,7 +131,7 @@ public class StatisticBean implements Serializable {
   
   public int getTotalType() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return data.getTotalType();
   }
@@ -146,7 +142,7 @@ public class StatisticBean implements Serializable {
 
   public Map<String, Integer> getInstitutions() {
     if (data == null) {
-      initStatisticData();
+      resetAllData();
     }
     return buildInstitutionsMap(data); 
   }
@@ -161,8 +157,8 @@ public class StatisticBean implements Serializable {
                               .mapToInt(CollectionData::getTotal)
                               .sum());
     map.put(CommonText.getInstance().getGnmName(isSwedish), partitions.get(false).stream()
-            .mapToInt(CollectionData::getTotal)
-            .sum()); 
+                              .mapToInt(CollectionData::getTotal)
+                              .sum()); 
     return map;
   }
 } 

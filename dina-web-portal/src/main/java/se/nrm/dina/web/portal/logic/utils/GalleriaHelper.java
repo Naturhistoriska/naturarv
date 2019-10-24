@@ -58,6 +58,10 @@ public class GalleriaHelper {
     return instance;
   }
 
+  /**
+   * 
+   * @param viewList 
+   */
   public void setAllViewList(List<String> viewList) {
     viewList.clear();
     viewList.add(ALL);
@@ -69,6 +73,10 @@ public class GalleriaHelper {
     viewList.add(CAUDAL);
   }
 
+  /**
+   * 
+   * @param partsList 
+   */
   public void setAllPartsList(List<String> partsList) {
     partsList.clear();
     partsList.add(ALL);
@@ -92,6 +100,10 @@ public class GalleriaHelper {
     partsList.add(CHELICERAE);
   }
 
+  /**
+   * 
+   * @param sexList 
+   */
   public void setAllSexList(List<String> sexList) {
     sexList.clear();
     sexList.add(ALL);
@@ -99,6 +111,10 @@ public class GalleriaHelper {
     sexList.add(FEMALE);
   }
 
+  /**
+   * 
+   * @param stagesList 
+   */
   public void setAllStagesList(List<String> stagesList) {
     stagesList.clear();
     stagesList.add(ALL);
@@ -109,7 +125,8 @@ public class GalleriaHelper {
   public void viewOptionChanged(List<String> selectedViews, List<String> viewList,
           List<String> partsList, List<String> sexList, List<String> stagesList) {
 
-    boolean isDefaultView = (viewList.isEmpty() && partsList.isEmpty() && sexList.isEmpty() && stagesList.isEmpty());
+    boolean isDefaultView = (viewList.isEmpty() && partsList.isEmpty() 
+                              && sexList.isEmpty() && stagesList.isEmpty());
     selectedViews.clear();
     if (!isDefaultView) {
       Stream.of(viewList, partsList, sexList, stagesList)
