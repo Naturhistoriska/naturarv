@@ -3,21 +3,27 @@ version: '3.1'
 services:
 
   ui:
-    image: dina/naturarv:v0.1
+    image: dina/naturarv:v0.3
     environment:
-      - VIRTUAL_HOST=beta-naturarv.nrm.se
+      - VIRTUAL_HOST=local-naturarv.nrm.se
       - VIRTUAL_PORT=8180
     ports:
       - 8180:8180
     volumes:
       - ./project-initdata.yml:/usr/src/myapp/project-initdata.yml
+      - ./logs/naturarv.log:/usr/src/myapp/logs/naturarv.log
     external_links:
        - solr:solr
     networks:
       - default
 
-
 networks:
   default:
     external:
-      name: dina-collections_default
+      name: dwproxy_default
+
+
+# networks:
+#   default:
+#     external:
+#       name: dina-collections_default
