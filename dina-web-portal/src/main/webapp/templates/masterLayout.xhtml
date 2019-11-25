@@ -14,23 +14,9 @@
       </ui:insert>
     </title>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=#{geo.mapKey}" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=#{geoHash.mapKey}" type="text/javascript"></script>
     <script name="jquery/jquery.js" library="primefaces"></script> 
-
-
-
-    <!--    <script type='text/javascript'>
-          
-    
-    
-          window.onhashchange = function () {
-            alert("hash changed!");
-          };
-          window.location.hash = Math.random(); // alerts "hash changed!"
-    
-    
-    
-        </script>-->
+ 
   </h:head> 
   <f:view locale="#{languages.locale}" > 
     <ui:remove>
@@ -42,18 +28,13 @@
     <h:body  styleClass="mainbody" >
       <h:outputStylesheet library="css" name="style.css"  />
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
-
-      <ui:remove>
-        <h:outputScript library="js" name="jquery.ba-bbq.min.js" /> 
-        <h:outputScript library="js" name="main.js" /> 
-      </ui:remove>
-
-
+ 
       <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   />
       <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false"
                 resizable="false" showHeader="false">
         <h:panelGrid columns="3"  >
-          <p:graphicImage value="/resources/images/loaderA32.gif"   alt="#{msg.progress}" title="#{msg.progress}" styleClass="images" />
+          <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
+                          title="#{msg.progress}" styleClass="images" />
           <p:spacer width="10" />
           <p:outputLabel value="#{msg.wait}" styleClass="inprocess" />
         </h:panelGrid>
@@ -92,48 +73,8 @@
           <ui:insert name="footer" >
             <ui:include src="/pages/footer.xhtml" />
           </ui:insert> 
-        </h:panelGroup>
-
-
-      </h:panelGroup>
-
-      <ui:remove> 
-        <div styleClass="templet">
-          <div  id="header" layout="block"  >
-            <ui:insert name="header" >
-              <ui:include src="/pages/header.xhtml" />
-            </ui:insert>
-          </div>
-
-          <div  id="topmenu" layout="block"  >
-            <ui:insert name="topmenu" >
-              <ui:include src="/pages/topMenu.xhtml" />
-            </ui:insert>
-          </div>
-
-          <div  id="search"  > 
-            <ui:insert name="search"  >
-              <ui:include src="/pages/search.xhtml" />
-            </ui:insert>
-          </div>
-
-          <div id="main"  >
-            <ui:remove>
-              <h:panelGroup id="centerpanel" layout="block">
-                <ui:include id="include" src="#{mainBean.currentNav}" />
-              </h:panelGroup>
-            </ui:remove>
-            <ui:insert name="content"/> 
-          </div>
-
-          <div  id="footer"  >
-            <ui:insert name="footer" >
-              <ui:include src="/pages/footer.xhtml" /> 
-            </ui:insert>
-          </div> 
-        </div>
-
-      </ui:remove>
+        </h:panelGroup> 
+      </h:panelGroup> 
     </h:body>
   </f:view>
 </html>
