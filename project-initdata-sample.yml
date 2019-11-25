@@ -1,0 +1,21 @@
+## YAML Template.
+---
+swarm:
+  port:
+    offset: 100
+  solr:
+    path: http://solr:8983/solr
+    core: nrm
+  map:
+    key: mapkey
+  morphbank:
+    base: morphbank_base_url
+    services: morphbank_service_url
+    images: morphbank_image_url
+    thumns: morphbank_image_thumb_url
+    browser: morphbank_image_browser_uri
+  mail:
+    host: mail.nrm.se
+    hostname: mail.smtp.host
+    support: support@mail.com
+
