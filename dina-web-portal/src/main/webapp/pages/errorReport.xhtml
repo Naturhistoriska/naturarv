@@ -89,10 +89,14 @@
               </p:inputText> 
               <p:messages showDetail="false" for="erroryouremail" closable="true"   />  
             </h:panelGrid>
-            <h:panelGrid>
+            
+            <ui:remove>
+              <h:panelGrid>
               <p:messages showDetail="true"/>
               <p:captcha label="Captcha"   />
             </h:panelGrid>
+            </ui:remove>
+            
 
 
             <h:panelGrid id="sendErrorReportBtnPanel" style="float: right; " >  

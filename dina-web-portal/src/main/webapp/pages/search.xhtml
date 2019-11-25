@@ -19,7 +19,7 @@
               <h:panelGroup styleClass="ui-inputgroup simplesearchpanel" layout="block" >
                 <p:inputText placeholder="${searchBean.defaultText}" 
                              value="${searchBean.freeText}" size="60"  >  
-                  <p:ajax event="keyup" update=":searchForm:simpleSearchPanel" global="false"   />   
+                  <!--<p:ajax event="keyup" update=":searchForm:simpleSearchPanel" global="false"   />-->   
                 </p:inputText>
                 <p:commandButton id="simpleSearchBtn" icon="fa fa-search" 
                                  action="#{searchBean.simpleSearch()}" 
@@ -83,17 +83,18 @@
                         </h:selectOneMenu> 
 
                         <h:selectOneMenu value="#{query.field}" styleClass="queryDropdownBoxField"> 
-                          <f:selectItem itemValue="text" itemLabel="#{msg.allfields}" />
+                          <f:selectItem itemValue="textsearch" itemLabel="#{msg.allfields}" />
                           <f:selectItem itemValue="ftx" itemLabel="#{msg.scientificname}" /> 
                           <f:selectItem itemValue="eftx" itemLabel="#{msg.exactsearch}" /> 
-                          <f:selectItem itemValue="commonName" itemLabel="#{msg.swedishname}" /> 
-                          <f:selectItem itemValue="author" itemLabel="#{msg.author}" /> 
-                          <f:selectItem itemValue="catalogNumber"  itemLabel="#{msg.cataloguenumber}" />  
-                          <f:selectItem itemValue="locality" itemLabel="#{msg.locality} / #{msg.geography}" />
-                          <f:selectItem itemValue="stationFieldNumber"  itemLabel="#{msg.stationfieldnumber}" />   
-                          <f:selectItem itemValue="collector"   itemLabel="#{msg.collector}" />  
-                          <f:selectItem itemValue="determiner"  itemLabel="#{msg.determiner}" />  
-                          <f:selectItem itemValue="accessionNumber"   itemLabel="#{msg.accession}" />
+                          <f:selectItem itemValue="cm" itemLabel="#{msg.swedishname}" /> 
+                          <f:selectItem itemValue="auth" itemLabel="#{msg.author}" /> 
+                          <f:selectItem itemValue="cn"  itemLabel="#{msg.cataloguenumber}" />  
+                          <f:selectItem itemValue="lc" itemLabel="#{msg.locality} / #{msg.geography}" />
+                          <f:selectItem itemValue="sfn"  itemLabel="#{msg.stationfieldnumber}" />   
+                          <f:selectItem itemValue="clt"   itemLabel="#{msg.collector}" />  
+                          <f:selectItem itemValue="ts"   itemLabel="#{msg.type}" />
+                          <f:selectItem itemValue="dtm"  itemLabel="#{msg.determiner}" />   
+                          <f:selectItem itemValue="acc"   itemLabel="#{msg.accession}" /> 
                           <f:selectItem itemValue="date"  itemLabel="#{msg.collectbetween}" />   
                           <f:selectItem itemValue="season"  itemLabel="#{msg.partofseason}" /> 
                           <p:ajax event="change" listener="#{searchBean.operationChange(query, status.index)}"
@@ -101,7 +102,9 @@
                         </h:selectOneMenu>   
                       </h:panelGrid>
 
-                      <h:panelGrid rendered="#{query.field != 'date' and query.field != 'season'}"   > 
+                       
+                   
+                      <h:panelGrid rendered="#{query.field != 'date' and query.field != 'season' and query.field != 'ts'}"   > 
                         <p:autoComplete value="#{query.value}"  id="autoComplete"
                                         size="55" required="false"
                                         forceSelection="false" 
@@ -115,6 +118,30 @@
                           <p:ajax event="keyup" listener="#{searchBean.keyup}" 
                                   update=":searchForm:querytext :searchForm:searchBtnPanel" global="false"   />   
                         </p:autoComplete>  
+                      </h:panelGrid>
+                      
+                      <h:panelGrid columns="6" rendered="#{query.field == 'ts'}"  > 
+                        <p:autoComplete value="#{query.value}"  id="autoTypeStatusComplete"
+                                        size="40" required="false"
+                                        forceSelection="false" 
+                                        minQueryLength="3"
+                                        completeMethod="#{searchBean.queryComplete(query)}"  
+                                        scrollHeight="208"  
+                                        dynamic="true"  disabled="#{query.isSearchAllType}"
+                                        >
+                          <p:ajax event="itemSelect" listener="#{searchBean.itemSelect}" 
+                                  update=":searchForm:queryBuildPanel" global="false"   />   
+                          <p:ajax event="keyup" listener="#{searchBean.keyup}" 
+                                  update=":searchForm:querytext :searchForm:searchBtnPanel" global="false"   />   
+                        </p:autoComplete> 
+                        <p:spacer width="12" height="10" />
+                        <h:selectBooleanCheckbox value="#{query.isSearchAllType}"  styleClass="listViewCheckbox" > 
+                          <p:ajax event="click" listener="#{searchBean.handleTypeStatusSelect}" 
+                                  update=":searchForm:queryBuildPanel" global="false"/>    
+                        </h:selectBooleanCheckbox>  
+                        <p:spacer width="5" height="5" />
+                        <h:outputLabel value="#{msg.isType}" />
+                        <p:spacer width="11" height="10" rendered="#{!languages.swedish}"/>
                       </h:panelGrid>
 
                       <h:panelGrid rendered="#{query.field == 'date'}"  >  
@@ -152,7 +179,7 @@
                           <p:spacer width="70" height="10" />
                           <h:outputLabel value="#{msg.day}" />
                         </h:panelGrid> 
- 
+                          
                         <h:panelGrid id="seasonpanel"     > 
                           <h:panelGrid columns="9"  cellpadding="0" cellspacing="0" id="seasonSearch">   
                             <h:selectOneMenu value="#{query.startMonth}" id="startmonth" style="width: 120px;" > 
@@ -226,7 +253,7 @@
               </h:panelGrid>
             </h:panelGrid> 
           </h:panelGrid> 
- 
+
           <h:panelGrid styleClass="searchBoxPanelSimple textLink"  rendered="#{!navigate.resultView}" > 
             <h:panelGrid  cellpadding="0" cellspacing="0"   
                           styleClass="searchBoxPanelSimple" rendered="#{!searchBean.resultList.isEmpty()}" > 

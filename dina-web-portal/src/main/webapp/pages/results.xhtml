@@ -54,19 +54,22 @@
                         </h:panelGrid>
 
                         <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  > 
-                          <p:spacer width="55" />
-                          <h:commandLink>     
-                            <p:graphicImage value="/resources/images/excel.png" 
-                                            alt="XLS"  title="XLS" styleClass="images"/>    
-                            <p:dataExporter type="xls" target="exportDataTable" fileName="dina_data" />  
-                          </h:commandLink>  
-                          <p:spacer width="55" />
-                          <h:commandLink>     
-                            <p:graphicImage value="/resources/images/csv.png"  
+                          
+                          <ui:remove>
+                            <p:spacer width="55" />
+                            <p:commandLink ajax="false" immediate="true">     
+                              <p:graphicImage value="/resources/images/excel.png" 
+                                              alt="XLS"  title="XLS" styleClass="images"/>    
+                              <p:dataExporter type="xls" target="exportDataTable"  fileName="dina_data"  />  
+                            </p:commandLink>  
+                            <p:spacer width="55" />
+                          </ui:remove>
+                          <p:commandLink ajax="false" immediate="true">     
+                            <p:graphicImage value="/resources/images/csv.png"   
                                             alt="CSV"  title="CSV" styleClass="images"/>       
                             <p:dataExporter type="csv" target="exportDataTable" 
                                             fileName="dina_data" />  
-                          </h:commandLink>   
+                          </p:commandLink>     
                         </h:panelGrid>  
                       </p:overlayPanel>  
                     </h:panelGrid>  
@@ -162,7 +165,8 @@
                   <!-- result page include -->
                   <ui:include src="#{resultHeader.viewPath}" />   
 
-                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"  >  
+                  <h:panelGrid id="navigationPanel" columnClasses="navigationPanel"   >  
+                    <p:spacer width="8" height="20" /> 
                     <h:panelGroup  id="floatleftcol"  layout="block" rendered="#{resultHeader.displayPaging}"> 
                       <p:commandLink actionListener="#{searchBean.firstPage}" process="@this" 
                                      disabled="#{paging.currentPage == 1}" update=":resultsForm:resultContent" >  
@@ -412,7 +416,7 @@
                   <f:facet name="header">  
                     <h:outputText value="#{msg.synonyms}" />  
                   </f:facet> 
-                  <h:outputText value="#{record.synonyms}"  />  
+                  <h:outputText value="#{record.synonymAuthors}"  />  
                 </p:column>  
 
                 <p:column> 
@@ -476,8 +480,8 @@
                 <p:column> 
                   <f:facet name="header">  
                     <h:outputText value="#{msg.remarks}" />  
-                  </f:facet>     
-                  <h:outputText value="#{record.allRemarkes}" />  
+                  </f:facet>    
+                  <h:outputText value="#{record.exportRemarks}" /> 
                 </p:column> 
               </p:dataTable> 
 
