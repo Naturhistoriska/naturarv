@@ -1,5 +1,6 @@
 # Naturarv 
-[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?branch=master)]
+[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?branch=master)](https://travis-ci.com/Naturhistoriska/naturarv)
+
 
 Naturarv is a web portal for searching data from Swedish natural history collections.
 
