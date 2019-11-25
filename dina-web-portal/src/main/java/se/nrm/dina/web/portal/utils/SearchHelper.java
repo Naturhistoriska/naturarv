@@ -1,13 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.utils;
 
+import java.nio.charset.Charset;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.dina.web.portal.model.QueryData;
@@ -25,6 +23,14 @@ public class SearchHelper {
   private final String postWildCard = "* ";
   private final String querySeparator = ":";
   private final String comma = ",";
+   
+  private final String taxonSearch = "ftx";
+  private final String startDateKey = "startDate";
+  private final String notStartDateKey = "-startDate";
+  private final String andStartDateKey = "+startDate";
+  private final String totalCount = "Total count: ";
+  private final String total = "Total: ";
+  private final String dashDash = " -- ";
 
   private final String fromZoom = ":00Z";
   private final String toZoom = "Z";
@@ -36,6 +42,10 @@ public class SearchHelper {
   private final String startBlock = "(";
   private final String endBlock = ")";
   private final String newLine = "\n";
+  private final String tab = "\t";
+  
+  private final String usAscii = "US-ASCII";
+  private final String inCombiningDiacriticalMarks = "\\p{InCombiningDiacriticalMarks}+";
 
   private StringBuilder searchTextSb;
   private StringBuilder advanceSearchText;
@@ -43,9 +53,7 @@ public class SearchHelper {
   private StringBuilder classificationSb;
   private StringBuilder determinationSb;
   private StringBuilder imageSb;
-  private StringBuilder dateRangeSb;
-  private StringBuilder commonNameSb;
-  private StringBuilder fullTextSb;
+  private StringBuilder dateRangeSb; 
   private StringBuilder searchRegionSb;
   private StringBuilder markTitleSb;
 
@@ -58,6 +66,22 @@ public class SearchHelper {
       }
     }
     return instance;
+  }
+
+  /**
+   * Map diacritical marks to US-ASCII
+   *
+   * @param string
+   * @return String
+   */
+  public String unAccent(String string) {
+    if (Charset.forName(usAscii).newEncoder().canEncode(string)) {
+      return string.toLowerCase();
+    }
+    String temp = Normalizer.normalize(string, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile(inCombiningDiacriticalMarks);
+    
+    return pattern.matcher(temp).replaceAll("").toLowerCase();
   }
 
   /**
@@ -82,31 +106,44 @@ public class SearchHelper {
             .filter(s -> !s.isEmpty())
             .forEach(s -> {
               searchTextSb.append(plusSign);
-              searchTextSb.append(CommonText.getInstance().getTextField());
+              searchTextSb.append(CommonText.getInstance().getTextSearch());
               searchTextSb.append(preWildCard);
               searchTextSb.append(s);
               searchTextSb.append(postWildCard);
             });
     return searchTextSb.toString().trim();
-  }
-
+  } 
+  
   /**
    * Build search string
    *
-   * @param text - String. Text to search for
-   * @param field - String. Solr index field
-   * @param method - String. An condition either 'AND', 'OR', or 'EXACT'
-   *
+   * @param data - QueryData
    * @return String
    */
-  public String buildSearchString(String text, String field, String method) {
+  public String buildSearchString(QueryData data) {
+    String value = HelpClass.getInstance().resetValue(data.getValue());
+    if (value == null || value.equals(CommonText.getInstance().getWildCard())) {
+      return buildWildCardSearch(data.getField());
+    }
 
-    text = text == null ? CommonText.getInstance().getWildCard() : text;
+    String field = data.getField();
+    if (field.contains(taxonSearch)) {
+      field = CommonText.getInstance().getTxSearch();
+    }
+    String method = data.getContent();
     if (method.equals(CommonText.getInstance().getExact())) {
-      return buildExactSearch(text, field);
+      return buildExactSearch(value, field);
     }
     return method.equals(CommonText.getInstance().getStartWith())
-            ? buildStartsWithSearch(text, field) : buildContainsTextSearch(text, field);
+            ? buildStartsWithSearch(value, field) : buildContainsTextSearch(value, field);
+  }
+
+  private String buildWildCardSearch(String field) {
+    advanceSearchText = new StringBuilder();
+    advanceSearchText.append(field);
+    advanceSearchText.append(querySeparator);
+    advanceSearchText.append(CommonText.getInstance().getWildCard());
+    return advanceSearchText.toString();
   }
 
   /**
@@ -119,7 +156,8 @@ public class SearchHelper {
   public String buildExactSearch(String text, String field) {
     advanceSearchText = new StringBuilder();
     advanceSearchText.append(field);
-    advanceSearchText.append(":\"");
+    advanceSearchText.append(querySeparator);
+    advanceSearchText.append("\"");
     advanceSearchText.append(text);
     advanceSearchText.append("\"");
     return advanceSearchText.toString();
@@ -133,9 +171,9 @@ public class SearchHelper {
    * @return String
    */
   public String buildStartsWithSearch(String text, String field) {
+    advanceSearchText = new StringBuilder();
 
     text = HelpClass.getInstance().replaceChars(text);
-    advanceSearchText = new StringBuilder();
     String[] strings = text.split(CommonText.getInstance().getEmptySpace());
 
     advanceSearchText.append(plusSign);
@@ -144,27 +182,18 @@ public class SearchHelper {
     advanceSearchText.append(strings[0]);
     advanceSearchText.append(postWildCard);
 
-    IntStream.range(1, strings.length)
-            .forEach(i -> {
-              if (!strings[i].isEmpty()) {
-                advanceSearchText.append(plusSign);
-                advanceSearchText.append(field);
-                advanceSearchText.append(preWildCard);
-                advanceSearchText.append(strings[i]);
-                advanceSearchText.append(postWildCard);
-              }
-            });
-//    if (strings.length > 1) {
-//      for (int i = 1; i < strings.length; i++) {
-//        if (!strings[i].isEmpty()) {
-//          advanceSearchText.append("+");
-//          advanceSearchText.append(field);
-//          advanceSearchText.append(":*");
-//          advanceSearchText.append(strings[i]);
-//          advanceSearchText.append("* ");
-//        }
-//      }
-//    }
+    if (!text.equals(CommonText.getInstance().getWildCard())) {
+      IntStream.range(1, strings.length)
+              .forEach(i -> {
+                if (!strings[i].isEmpty()) {
+                  advanceSearchText.append(plusSign);
+                  advanceSearchText.append(field);
+                  advanceSearchText.append(preWildCard);
+                  advanceSearchText.append(strings[i]);
+                  advanceSearchText.append(postWildCard);
+                }
+              });
+    }
     return advanceSearchText.toString().trim();
   }
 
@@ -202,23 +231,12 @@ public class SearchHelper {
         return buildClassificationSearch(data);
       case "eftx":
         return buildDeterminationSearch(data);
-      case "text":
-        return buildFullTextSearchText(data);
-      case "commonName":
-        return buildCommonNameSearchText(data);
       default:
         return buildAdvanceSearchText(data);
     }
   }
 
   private String buildAdvanceSearchText(QueryData data) {
-    String value = data.getValue();
-//    if (value != null && !value.isEmpty()) {
-//      value = replaceChars(value.trim());
-//    } else {
-//      value = "*";
-//    }
-
     StringBuilder sb = new StringBuilder();
     switch (data.getOperation()) {
       case "not":
@@ -230,76 +248,12 @@ public class SearchHelper {
     }
 
     sb.append(startBlock);
-    sb.append(buildSearchString(value, data.getField(), data.getContent()));
+    sb.append(buildSearchString(data));
     sb.append(endBlock);
     return sb.toString().trim();
   }
 
-  private String buildCommonNameSearchText(QueryData data) {
-
-    String value = HelpClass.getInstance().resetValue(data.getValue());
-
-    commonNameSb = new StringBuilder();
-    switch (data.getOperation()) {
-      case "not":
-        commonNameSb.append(minusSign);
-        break;
-      case "and":
-        commonNameSb.append(plusSign);
-        break;
-    }
-    commonNameSb.append(startBlock);
-//    commonNameSb.append(buildExactString(value, CommonText.getInstance().getCommonName()));
-    commonNameSb.append(buildSearchString(value, CommonText.getInstance().getCommonName(), data.getContent()));
-//    switch (data.getContent()) {
-//      case "startswith":
-////        commonNameSb.append(" ");
-//        commonNameSb.append(buildStartsWithSearch(value, CommonText.getInstance().getCommonName()));
-//        break;
-//      case "exact":
-////        commonNameSb.append(" ");
-//        commonNameSb.append(buildExactSearch(value, CommonText.getInstance().getCommonName()));
-//        break; 
-//      default:
-//        commonNameSb.append(buildContainsTextSearch(value, CommonText.getInstance().getCommonName()));
-//        break;
-//    }
-    commonNameSb.append(endBlock);
-    return commonNameSb.toString().trim();
-  }
-
-  private String buildFullTextSearchText(QueryData data) {
-
-    fullTextSb = new StringBuilder();
-    switch (data.getOperation()) {
-      case "and":
-        fullTextSb.append(plusSign);
-        break;
-      case "not":
-        fullTextSb.append(minusSign);
-        break;
-    }
-    fullTextSb.append(startBlock);
-    String value = HelpClass.getInstance().resetValue(data.getValue());
-    fullTextSb.append(buildSearchString(value, CommonText.getInstance().getTextField(), data.getContent()));
-//    switch (data.getContent()) {
-//      case "exact":
-//        sb.append(buildExactSearch(value, CommonText.getInstance().getTextField()));
-//        break;
-//      case "startswith":
-//        sb.append(buildStartsWithSearch(value, CommonText.getInstance().getTextField()));
-//        break;
-//      default:
-//        sb.append(buildContainsTextSearch(value, CommonText.getInstance().getTextField()));
-//        break;
-//    }
-    fullTextSb.append(endBlock);
-    return fullTextSb.toString().trim();
-  }
-
-  private String buildDeterminationSearch(QueryData data) {
-    String value = HelpClass.getInstance().resetValue(data.getValue());
-
+  private String buildDeterminationSearch(QueryData data) {  
     determinationSb = new StringBuilder();
     switch (data.getOperation()) {
       case "not":
@@ -310,19 +264,8 @@ public class SearchHelper {
         break;
     }
     determinationSb.append(startBlock);
-    determinationSb.append(buildSearchString(value, CommonText.getInstance().getTxSearch(), data.getContent()));
+    determinationSb.append(buildSearchString(data));
 
-//    switch (data.getContent()) {
-//      case "exact":
-//        determinationSb.append(buildExactSearch(value, CommonText.getInstance().getTxSearch()));
-//        break;
-//      case "startswith":
-//        determinationSb.append(buildStartsWithSearch(value, CommonText.getInstance().getTxSearch()));
-//        break;
-//      default:
-//        determinationSb.append(buildContainsTextSearch(value, CommonText.getInstance().getTxSearch()));
-//        break;
-//    }
     determinationSb.append(endBlock);
     return determinationSb.toString().trim();
   }
@@ -386,7 +329,7 @@ public class SearchHelper {
         sessionSb.append(plusSign);
         break;
     }
-    sessionSb.append(dayOfTheYear); 
+    sessionSb.append(dayOfTheYear);
     sessionSb.append(squareStart);
     sessionSb.append(fromDayOfYear);
     sessionSb.append(to);
@@ -397,13 +340,13 @@ public class SearchHelper {
   }
 
   private String buildDate(QueryData data) {
-    String key = "startDate";
+    String key = startDateKey;
     switch (data.getOperation()) {
       case "not":
-        key = "-startDate";
+        key = notStartDateKey;
         break;
       case "and":
-        key = "+startDate";
+        key = andStartDateKey;
         break;
     }
     return DateHelper.getInstance().convertLocalDateTimeToString(
@@ -446,50 +389,43 @@ public class SearchHelper {
     imageSb.append(startBlock);
     imageSb.append(text);
     imageSb.append(endBlock);
-//    imageSb.append(CommonText.getInstance().getEmptySpace());
-
-    if (!filters.isEmpty()) {
-      imageSb.append(CommonText.getInstance().getEmptySpace());
-      imageSb.append(plusSign);
-      imageSb.append(startBlock);
-      imageSb.append(CommonText.getInstance().getImageViewKey());
-      imageSb.append(CommonText.getInstance().getEmptySpace());
-      imageSb.append(startBlock);
-      imageSb.append(CommonText.getInstance().getWildCard());
-
-//      StringJoiner imageSearchSj = new StringJoiner("* *"); 
-      filters.stream()
-              .forEach(v -> {
-                imageSb.append(CommonText.getInstance().getWildCard());
-                imageSb.append(v);
-                imageSb.append(CommonText.getInstance().getWildCard());
-                imageSb.append(CommonText.getInstance().getEmptySpace());
-//                imageSearchSj.add(v);
-              });
-//      imageSb.append(imageSearchSj.toString());
-//      imageSb.append(")) ");
-      imageSb.append(endBlock);
-      imageSb.append(endBlock);
-      imageSb.append(CommonText.getInstance().getEmptySpace());
+    if (filters.isEmpty()) {
+      return imageSb.toString().trim();
     }
+
+    imageSb.append(CommonText.getInstance().getEmptySpace());
+    imageSb.append(plusSign);
+    imageSb.append(startBlock);
+    imageSb.append(CommonText.getInstance().getImageViewKey());
+    imageSb.append(CommonText.getInstance().getEmptySpace());
+    imageSb.append(startBlock);
+    imageSb.append(CommonText.getInstance().getWildCard());
+
+    filters.stream()
+            .forEach(v -> {
+              imageSb.append(CommonText.getInstance().getWildCard());
+              imageSb.append(v);
+              imageSb.append(CommonText.getInstance().getWildCard());
+              imageSb.append(CommonText.getInstance().getEmptySpace());
+            });
+    imageSb.append(endBlock);
+    imageSb.append(endBlock);
+    imageSb.append(CommonText.getInstance().getEmptySpace());
+
     return imageSb.toString().trim();
   }
-  
-    /**
+
+  /**
    * Build search region
-   * 
+   *
    * @param north
    * @param south
    * @param east
    * @param west
-   * 
+   *
    * @return String
    */
-  public String buildSearchRegion(double north, double south, double east, double west) { 
-//    double north = bound.getNorthEast().getLat();
-//    double south = bound.getSouthWest().getLat();
-//    double east = bound.getNorthEast().getLng();
-//    double west = bound.getSouthWest().getLng();
+  public String buildSearchRegion(double north, double south, double east, double west) {
     searchRegionSb = new StringBuilder();
     searchRegionSb.append(squareStart);
     searchRegionSb.append(south);
@@ -500,15 +436,15 @@ public class SearchHelper {
     searchRegionSb.append(comma);
     searchRegionSb.append(east);
     searchRegionSb.append(squareEnd);
-    return searchRegionSb.toString(); 
+    return searchRegionSb.toString();
   }
-  
-   /**
+
+  /**
    * Build title for marker
-   * 
+   *
    * @param data - SolrData
    * @param count - int
-   * 
+   *
    * @return - String
    */
   public String buildMakerTitle(SolrData data, int count) {
@@ -518,38 +454,38 @@ public class SearchHelper {
     markTitleSb.append(data.getLocality());
     markTitleSb.append(newLine);
     markTitleSb.append(data.getLatitudeText());
-    markTitleSb.append(" -- ");
+    markTitleSb.append(dashDash);
     markTitleSb.append(data.getLongitudeText());
     if (count > 1) {
       markTitleSb.append(newLine);
-      markTitleSb.append("Total: ");
+      markTitleSb.append(total);
       markTitleSb.append(count);
-    } 
+    }
     return markTitleSb.toString().trim();
   }
-  
-   /**
+
+  /**
    * Build text for multiple data
-   * 
+   *
    * @param count - int
    * @param solrDataList - List<>
-   * 
+   *
    * @return String
    */
   public String buildMultipleDataText(int count, List<SolrData> solrDataList) {
 
     SolrData solrData = solrDataList.get(0);
     StringBuilder mapInfoSb = new StringBuilder();
-    mapInfoSb.append("Total count: ");
+    mapInfoSb.append(totalCount);
     mapInfoSb.append(solrDataList.size());
     mapInfoSb.append(newLine);
     mapInfoSb.append(solrData.getLocality());
     mapInfoSb.append(newLine);
     mapInfoSb.append(solrData.getLatitudeText());
-    mapInfoSb.append(" -- ");
+    mapInfoSb.append(dashDash);
     mapInfoSb.append(solrData.getLongitude());
     mapInfoSb.append(newLine);
-    mapInfoSb.append(newLine); 
+    mapInfoSb.append(newLine);
 
     int index = count > 10 ? 10 : count - 1;
 
@@ -557,7 +493,7 @@ public class SearchHelper {
             .forEach(i -> {
               SolrData data = solrDataList.get(i);
               mapInfoSb.append(data.getCatalogNumber());
-              mapInfoSb.append("\t");
+              mapInfoSb.append(tab);
               mapInfoSb.append(data.getTxFullName());
               mapInfoSb.append(newLine);
             });

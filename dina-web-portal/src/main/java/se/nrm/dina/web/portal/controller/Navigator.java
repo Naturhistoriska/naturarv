@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.IOException;
@@ -158,13 +153,5 @@ public class Navigator implements Serializable {
       externalContext.redirect(externalContext.getRequestContextPath() + path);
     } catch (IOException ex) {
     }
-  }
-  
-  
-    
-//  public void updateHashNav() {
-//    log.info("updateHashNav");
-//    redirectPage(RESULTS_PATH + "#result");
-//  }
-  
+  }  
 }

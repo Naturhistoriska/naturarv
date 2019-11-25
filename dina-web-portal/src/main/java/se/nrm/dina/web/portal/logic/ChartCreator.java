@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic;
 
 import java.io.Serializable;
@@ -24,14 +19,17 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class ChartCreator implements Serializable {
   
   /**
-   * Create a month chart
-   * @param model - BarChartModel
+   * Create a month chart 
    * @param dataMap - Map<String, Integer>
    * @param startDate - LocalDateTime
    * @param isSwedish - boolean
+   * @return BarChartModel
    */
-  public void createMonthChart(BarChartModel model, Map<String, Integer> dataMap, 
-          LocalDateTime startDate, boolean isSwedish) { 
+  public BarChartModel createMonthChart(Map<String, Integer> dataMap, 
+          LocalDateTime startDate, boolean isSwedish) {  
+    log.info("createMonthChart : {}", isSwedish);
+    
+    BarChartModel model = new BarChartModel();
     ChartSeries series = new ChartSeries();
     IntStream.range(0, 12)
             .forEach(x -> {
@@ -43,6 +41,7 @@ public class ChartCreator implements Serializable {
     model.addSeries(series);
     model.setTitle(CommonText.getInstance().getMonthChartTitle(isSwedish));
     ChartHelper.getInstance().addOptions(model, true, isSwedish);
+    return model;
   }
    
   /**

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.utils;
  
 import java.time.Month;  
@@ -82,12 +77,14 @@ public class ChartHelper {
    * @return - BarChartModel
    */
   public BarChartModel changeMonthChartLanguage(BarChartModel chart, boolean isSwedish) { 
+    log.info("changeMonthChartLanguage : {}", isSwedish);
+    
     ChartSeries newSeries = new ChartSeries(); 
     chart.getSeries().get(0)
             .getData().entrySet()
             .stream()
-            .forEach(e -> { 
-              String key = MonthElement.changeMonthLanguageWithYear((String)e.getKey(), isSwedish); 
+            .forEach(e -> {  
+              String key = MonthElement.changeMonthLanguageWithYear((String)e.getKey(), isSwedish);   
               newSeries.set(key, 
                       e.getValue());
             });

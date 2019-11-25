@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.utils;
 
 import java.util.HashMap;
@@ -76,6 +71,20 @@ public class CommonText {
   private static final String DESCRIPTION_EN = "Description: ";
   private static final String REPORT_BY_SV = "Rapporterat av: ";
   private static final String REPORT_BY_EN = "Report by: ";
+  
+  private static final String ALL_TYPE_EN = "All type";
+  private static final String ALL_TYPE_SV = "alla typer";
+  
+  private static final String FROM_DATE_EN = "[From date] ";
+  private static final String FROM_DATE_SV = "[från datum] ";
+  
+  private static final String TO_DATE_EN = " [To date] ";
+  private static final String TO_DATE_SV = " [till datum] ";
+  
+  private static final String FROM_EN = " [Form] ";
+  private static final String FROM_SV = " [från] ";
+  private static final String TO_EN = " [To] ";
+  private static final String TO_SV = " [till] ";
 
   private static final String HITS_EN = "hits";
   private static final String HITS_SV = "träffar";
@@ -104,14 +113,14 @@ public class CommonText {
   private static final String SWEDEN_KEY = "inSweden:";
   private static final String COLLECTION_CODE_KEY = "collectionId:";
   private static final String COLLECTION_NAME_KEY = "collectionName:";
-  private static final String ID_KEY = "id:";
-//  private static final String GEO_KEY = "geo:";
+  private static final String ID_KEY = "id:"; 
   private static final String MAP_KEY = "map:";
   private static final String COORDINATE_KEY = "coordinate:";
 
   private static final String IMAGE_VIEW_KEY = "morphBankView:";
   private static final String MORPHBANK_ID_KEY = "morphbankId:";
   private static final String TEXT_FIELD = "text";
+  private static final String TEXT_SEARCH = "textsearch";
   private static final String GEOPOINT = "geopoint";
 
   private static final String ID = "id";
@@ -120,6 +129,7 @@ public class CommonText {
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
   private static final String ACCESSION_NUMBER = "accessionNumber";
+  private static final String STATION_FIELD = "stationFieldNumber";
   private static final String LOCATIONS = "locations"; 
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
@@ -133,16 +143,11 @@ public class CommonText {
   private static final String COMMON_NAME = "commonName";
   private static final String COLLECTOR = "collector";
   private static final String HIGH_TAXA = "higherTx";
-  
+  private static final String LOCALITY = "locality";
+  private static final String DETERMINER = "determiner";
+  private static final String TYPESTATUS = "typeStatus";
+
   private static final String TX_SEARCH = "tx";
-  private static final String LOCALITY_SEARCH = "lc";
-  private static final String ACCESSION_SEARCH = "acc";
-  private static final String DETERMINER_SEARCH = "dtm";
-  private static final String STATION_FIELD_SEARCH = "sfn";
-  private static final String AUTHOR_SEARCH = "auth";
-  private static final String CATALOG_NUMBER_SEARCH = "cn";
-  private static final String COLLECTOR_SEARCH = "clt";
-  
   
   private static final String DNA = "dna";
   private static final String IMAGE = "image";
@@ -185,6 +190,7 @@ public class CommonText {
   private static final String EN = "en";
 
   private static final Map<String, String> FIELD_NAME_MAP = new HashMap<>();
+  private static final Map<String, String> SEARCH_FIELD_MAP = new HashMap<>();
   private static CommonText instance = null;
 
   static {
@@ -197,29 +203,42 @@ public class CommonText {
     FIELD_NAME_MAP.put("eftx_en", "Determination");
     FIELD_NAME_MAP.put("eftx_sv", "Bestämning");
 
-    FIELD_NAME_MAP.put("commonName_en", "Common name");
-    FIELD_NAME_MAP.put("commonName_sv", "Svenska namn");
+    FIELD_NAME_MAP.put("cm_en", "Common name");
+    FIELD_NAME_MAP.put("cm_sv", "Svenska namn");
     FIELD_NAME_MAP.put("au_en", "Author");
     FIELD_NAME_MAP.put("au_sv", "Auktor");
 
-    FIELD_NAME_MAP.put("author_en", "Author");
-    FIELD_NAME_MAP.put("author_sv", "Auktor");
+    FIELD_NAME_MAP.put("auth_en", "Author");
+    FIELD_NAME_MAP.put("auth_sv", "Auktor");
 
-    FIELD_NAME_MAP.put("catalogNumber_en", "Catalog number");
-    FIELD_NAME_MAP.put("catalogNumber_sv", "Cataloguenumber");
+    FIELD_NAME_MAP.put("cn_en", "Catalog number");
+    FIELD_NAME_MAP.put("cn_sv", "Cataloguenumber");
 
-    FIELD_NAME_MAP.put("locality_en", "Locality");
-    FIELD_NAME_MAP.put("locality_sv", "Lokal / Geografi");
+    FIELD_NAME_MAP.put("lc_en", "Locality");
+    FIELD_NAME_MAP.put("lc_sv", "Lokal / Geografi");
 
-    FIELD_NAME_MAP.put("stationFieldNumber_en", "Station field number");
-    FIELD_NAME_MAP.put("stationFieldNumber_sv", "Station field number");
+    FIELD_NAME_MAP.put("sfn_en", "Station field number");
+    FIELD_NAME_MAP.put("sfn_sv", "Station field number");
 
-    FIELD_NAME_MAP.put("collector_en", "Collector");
-    FIELD_NAME_MAP.put("collector_sv", "Insamlare av");
-    FIELD_NAME_MAP.put("determiner_en", "Determiner");
-    FIELD_NAME_MAP.put("determiner_sv", "Bestämd av");
-    FIELD_NAME_MAP.put("accessionNumber_en", "Accession");
-    FIELD_NAME_MAP.put("accessionNumber_sv", "Accession"); 
+    FIELD_NAME_MAP.put("clt_en", "Collector");
+    FIELD_NAME_MAP.put("clt_sv", "Insamlare av");
+    FIELD_NAME_MAP.put("dtm_en", "Determiner");
+    FIELD_NAME_MAP.put("dtm_sv", "Bestämd av");
+    FIELD_NAME_MAP.put("aacc_en", "Accession");
+    FIELD_NAME_MAP.put("acc_sv", "Accession"); 
+    FIELD_NAME_MAP.put("ts_en", "Type status");
+    FIELD_NAME_MAP.put("ts_sv", "Typ-status"); 
+    
+    SEARCH_FIELD_MAP.put("textsearch", TEXT_FIELD);
+    SEARCH_FIELD_MAP.put("auth", AUTHOR);
+    SEARCH_FIELD_MAP.put("clt", COLLECTOR);
+    SEARCH_FIELD_MAP.put("cm", COMMON_NAME);
+    SEARCH_FIELD_MAP.put("dtm", DETERMINER);
+    SEARCH_FIELD_MAP.put("lc", LOCALITY);
+    SEARCH_FIELD_MAP.put("acc", ACCESSION_NUMBER);
+    SEARCH_FIELD_MAP.put("sfn", STATION_FIELD);
+    SEARCH_FIELD_MAP.put("cn", CATALOG_NUMBER);
+    SEARCH_FIELD_MAP.put("ts", TYPESTATUS);
   }
 
   public static synchronized CommonText getInstance() {
@@ -232,6 +251,10 @@ public class CommonText {
   public String getFieldName(String key, boolean isSwedish) {
     key = isSwedish ? key + "_" + SV : key + "_" + EN;
     return FIELD_NAME_MAP.get(key);
+  }
+  
+  public String getSearchField(String key) {
+    return SEARCH_FIELD_MAP.get(key);
   }
   
   public String getSv() {
@@ -329,15 +352,7 @@ public class CommonText {
   public String getCreatedDate() {
     return CREATED_DATE;
   }
-  
-  public String getCommonName() {
-    return COMMON_NAME;
-  }
-  
-  public String getCollector() {
-    return COLLECTOR;
-  }
-
+   
   public String getTaxonFullName() {
     return TAXON_FULL_NAME;
   }
@@ -348,36 +363,8 @@ public class CommonText {
   
   public String getTxSearch() {
     return TX_SEARCH;
-  }
+  } 
   
-  public String getLocalitySearch() {
-    return LOCALITY_SEARCH;
-  }
-  
-  public String getCollectorSearch() {
-    return COLLECTOR_SEARCH;
-  }
-  
-  public String getDeterminerSearch() {
-    return DETERMINER_SEARCH;
-  }
-  
-  public String getCatalogNumberSearch() {
-    return CATALOG_NUMBER_SEARCH;
-  }
-  
-  public String getAuthorSearch() {
-    return AUTHOR_SEARCH;
-  }
-  
-  public String getAccessionSearch() {
-    return ACCESSION_SEARCH;
-  }
-  
-  public String getStationFieldSearch() {
-    return STATION_FIELD_SEARCH;
-  }
-
   public String getCollectionId() {
     return COLLECTION_ID;
   }
@@ -457,11 +444,7 @@ public class CommonText {
   public String getIdKey() {
     return ID_KEY;
   }
-
-//  public String getGeoKey() {
-//    return GEO_KEY;
-//  }
-
+ 
   public String getMapKey() {
     return MAP_KEY;
   }
@@ -476,6 +459,10 @@ public class CommonText {
 
   public String getTextField() {
     return TEXT_FIELD;
+  }
+  
+  public String getTextSearch() {
+    return TEXT_SEARCH;
   }
 
   public String getCoordinateKey() {
@@ -682,6 +669,10 @@ public class CommonText {
     return isSwedish ? HITS_SV : HITS_EN;
   }
 
+  public String getAllType(boolean isSwedish) {
+    return isSwedish ? ALL_TYPE_SV : ALL_TYPE_EN;
+  }
+  
   public String getSelected(boolean isSwedish) {
     return isSwedish ? SELECTED_SV : SELECTED_EN;
   }
@@ -689,85 +680,21 @@ public class CommonText {
   public String getSelectMonth(boolean isSwedish) {
     return isSwedish ? SELECT_MONTH_SV : SELECT_MONTH_EN;
   }
+  
+  public String getFromDate(boolean isSwedish) {
+    return isSwedish ? FROM_DATE_SV : FROM_DATE_EN;
+  }
+  
+  public String getToDate(boolean isSwedish) {
+    return isSwedish ? TO_DATE_SV : TO_DATE_EN;
+  }
+  
+  public String getFrom(boolean isSwedish) {
+    return isSwedish ? FROM_SV : FROM_EN;
+  }
+  
+  public String getTo(boolean isSwedish) {
+    return isSwedish ? TO_SV : TO_EN;
+  }
 }
-
-//  private final static String JAN = "Jan";
-//  private final static String FEB = "Feb";
-//  private final static String MAR = "Mar";
-//  private final static String APR = "Apr";
-//  private final static String MAY = "May";
-//  private final static String JUN = "Jun";
-//  private final static String JUL = "Jul";
-//  private final static String AUG = "Aug";
-//  private final static String SEP = "Sep";
-//  private final static String OCT = "Oct";
-//  private final static String NOV = "Nov";
-//  private final static String DEC = "Dec";
-//  private final static String JAN_SHORT = "Jan";
-//  private final static String FEB_SHORT = "Feb";
-//  private final static String MAR_SHORT = "Mar";
-//  private final static String APR_SHORT = "Apr";
-//  private final static String MAY_SHORT = "May";
-//  private final static String JUN_SHORT = "Jun";
-//  private final static String JUL_SHORT = "Jul";
-//  private final static String AUG_SHORT = "Aug";
-//  private final static String SEP_SHORT = "Sep";
-//  private final static String OCT_SHORT = "Oct";
-//  private final static String NOV_SHORT = "Nov";
-//  private final static String DEC_SHORT = "Dec";
-//
-//  private final static String JAN_SV_SHORT = "jan";
-//  private final static String FEB_SV_SHORT = "feb";
-//  private final static String MAR_SV_SHORT = "mar";
-//  private final static String APR_SV_SHORT = "apr";
-//  private final static String MAY_SV_SHORT = "maj";
-//  private final static String JUN_SV_SHORT = "jun";
-//  private final static String JUL_SV_SHORT = "jul";
-//  private final static String AUG_SV_SHORT = "aug";
-//  private final static String SEP_SV_SHORT = "sep";
-//  private final static String OCT_SV_SHORT = "okt";
-//  private final static String NOV_SV_SHORT = "nov";
-//  private final static String DEC_SV_SHORT = "dec";
-//  private String languageMonthMatch(String mon, boolean isSwedish) {
-//
-//    switch (mon) {
-//      case JAN_SHORT:
-//      case JAN_SV_SHORT:
-//        return isSwedish ? JAN_SV_SHORT : JAN_SHORT;
-//      case FEB_SHORT:
-//      case FEB_SV_SHORT:
-//        return isSwedish ? FEB_SV_SHORT : FEB_SHORT;
-//      case MAR_SHORT:
-//      case MAR_SV_SHORT:
-//        return isSwedish ? MAR_SV_SHORT : MAR_SHORT;
-//      case APR_SHORT:
-//      case APR_SV_SHORT:
-//        return isSwedish ? APR_SV_SHORT : APR_SHORT;
-//      case MAY_SHORT:
-//      case MAY_SV_SHORT:
-//        return isSwedish ? MAY_SV_SHORT : MAR_SHORT;
-//      case JUN_SHORT:
-//      case JUN_SV_SHORT:
-//        return isSwedish ? JUN_SV_SHORT : JUN_SHORT;
-//      case JUL_SHORT:
-//      case JUL_SV_SHORT:
-//        return isSwedish ? JUL_SV_SHORT : JUL_SHORT;
-//      case AUG_SHORT:
-//      case AUG_SV_SHORT:
-//        return isSwedish ? AUG_SV_SHORT : AUG_SHORT;
-//      case SEP_SHORT:
-//      case SEP_SV_SHORT:
-//        return isSwedish ? SEP_SV_SHORT : SEP_SHORT;
-//      case OCT_SHORT:
-//      case OCT_SV_SHORT:
-//        return isSwedish ? OCT_SV_SHORT : OCT_SHORT;
-//      case NOV_SHORT:
-//      case NOV_SV_SHORT:
-//        return isSwedish ? NOV_SV_SHORT : NOV_SHORT;
-//      case DEC_SHORT:
-//      case DEC_SV_SHORT:
-//        return isSwedish ? DEC_SV_SHORT : DEC_SHORT;
-//      default:
-//        return mon;
-//    }
-//  }
+ 

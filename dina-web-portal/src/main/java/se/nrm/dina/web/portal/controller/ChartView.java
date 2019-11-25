@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
@@ -13,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map; 
 import javax.annotation.PostConstruct;  
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped; 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -24,6 +18,7 @@ import se.nrm.dina.web.portal.logic.ChartCreator;
 import se.nrm.dina.web.portal.logic.utils.ChartHelper;
 import se.nrm.dina.web.portal.solr.SolrChartService; 
 import se.nrm.dina.web.portal.utils.CommonText;  
+import se.nrm.dina.web.portal.utils.HelpClass;
 import se.nrm.dina.web.portal.utils.SearchHelper;
 
 /**
@@ -51,6 +46,8 @@ public class ChartView implements Serializable {
 
   private final CommonText common;
   private final static String YEAR_SURFFIX = "_year";
+  
+  private boolean isSwedish;
     
   @Inject
   private SolrChartService solr;
@@ -60,15 +57,16 @@ public class ChartView implements Serializable {
   public ChartView() { 
     common = CommonText.getInstance();
     collectionCodeList = new ArrayList<>();
+    isSwedish = true;
   }
 
   @PostConstruct
   public void init() {
     log.info("init");
-    initData();  
+    initData();   
   }
   
-  private void initData() { 
+  private void initData() {  
     YearMonth yearMonth = YearMonth.from(LocalDate.now());
     yearOfToday = yearMonth.getYear(); 
     startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay(); 
@@ -78,7 +76,7 @@ public class ChartView implements Serializable {
   }
   
   public BarChartModel getTotalMonthChart() {
-    session = getSession();
+    session = HelpClass.getInstance().getSession();
     
     if(session.getAttribute(common.getMonthChartData()) != null) {
       return (BarChartModel) session.getAttribute(common.getMonthChartData());
@@ -86,21 +84,21 @@ public class ChartView implements Serializable {
     totalMonthChart = new BarChartModel(); 
     resultMap = solr.getLastYearRegistedData(searchDateRange, null); 
     if (resultMap != null) {
-      chartCreator.createMonthChart(totalMonthChart, resultMap, startDate, isSwedish());
-      getSession().setAttribute(common.getMonthChartData(), totalMonthChart);  
+      totalMonthChart = chartCreator.createMonthChart(resultMap, startDate, isSwedish);
+      session.setAttribute(common.getMonthChartData(), totalMonthChart);  
     } 
     return totalMonthChart;    
   }
   
   public BarChartModel getTotalTenYearsChart() {
-    session = getSession();
+    session = HelpClass.getInstance().getSession();
     
     if(session.getAttribute(common.getYearChartData()) != null) {
       return (BarChartModel) session.getAttribute(common.getYearChartData());
     } 
     resultMap = solr.getLastTenYearsRegistedData(lastTenYear, nextYear, null);  
     totalTenYearsChart = new BarChartModel();
-    chartCreator.createYearChart(totalTenYearsChart, resultMap, isSwedish()); 
+    chartCreator.createYearChart(totalTenYearsChart, resultMap, isSwedish); 
     session.setAttribute(common.getYearChartData(), totalTenYearsChart);  
     return totalTenYearsChart;
   }
@@ -111,39 +109,36 @@ public class ChartView implements Serializable {
    * @return 
    */
   public BarChartModel getCollectionMonthChart(String collectionCode) {
-    log.info("getCollectionMonthChart: {}", collectionCode);
+//    log.info("getCollectionMonthChart: {}", collectionCode);
     
     if(!collectionCodeList.contains(collectionCode)) {
       collectionCodeList.add(collectionCode);
     }
-    session = getSession();
+    session = HelpClass.getInstance().getSession();
     if (session.getAttribute(collectionCode) != null) {
       return (BarChartModel) session.getAttribute(collectionCode); 
     } 
-    BarChartModel collectionMonthChart = new BarChartModel();  
-    chartCreator.createMonthChart(collectionMonthChart, 
-            solr.getLastYearRegistedData(searchDateRange, collectionCode), 
-            startDate, isSwedish());
+    BarChartModel collectionMonthChart =  chartCreator.createMonthChart(
+            solr.getLastYearRegistedData(searchDateRange, collectionCode), startDate, isSwedish);
     session.setAttribute(collectionCode, collectionMonthChart);
     return collectionMonthChart;  
   }
   
-  public BarChartModel getCollectionYearChart(String collectionCode) {
-    log.info("getCollectionYearChart: {}", collectionCode);
-    
-    session = getSession();
+  public BarChartModel getCollectionYearChart(String collectionCode) {  
+    session = HelpClass.getInstance().getSession();
     if (session.getAttribute(collectionCode + YEAR_SURFFIX) != null) {
       return (BarChartModel) session.getAttribute(collectionCode + YEAR_SURFFIX); 
     }
     BarChartModel collectionYearChart = new BarChartModel(); 
     chartCreator.createYearChart(collectionYearChart, 
-            solr.getLastTenYearsRegistedData(lastTenYear, nextYear, collectionCode), isSwedish()); 
+            solr.getLastTenYearsRegistedData(lastTenYear, nextYear, collectionCode), isSwedish); 
     session.setAttribute(collectionCode + YEAR_SURFFIX, collectionYearChart);
     return collectionYearChart;
   }
   
-  public void changeLanguage(boolean isSwedish) {
-    session = getSession();   
+  public void changeLanguage(boolean isSwedish) { 
+    session = HelpClass.getInstance().getSession();
+    this.isSwedish = isSwedish;
     
     if(session.getAttribute(common.getMonthChartData()) != null) {
       totalMonthChart = (BarChartModel) session.getAttribute(common.getMonthChartData());  
@@ -171,17 +166,5 @@ public class ChartView implements Serializable {
                                 (BarChartModel)session.getAttribute(attString), isSwedish));
               }
             }); 
-  }
-  
-  private HttpSession getSession() {
-    if(session == null) {
-      session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-    }
-    return session;
-  } 
-  
-  private boolean isSwedish() {
-    return ((String)getSession().getAttribute(CommonText.getInstance().getLocale()))
-            .equals(CommonText.getInstance().getSv());
   } 
 }

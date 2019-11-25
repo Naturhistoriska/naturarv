@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
@@ -87,7 +82,9 @@ public class PagingNavigation implements Serializable {
     start = numDisplay * (totalPages - 1) + 1;
     end = totalFound;
     endPage = totalPages;
-    startPage = totalPages - 9;
+    if(totalPages > 10) {
+      startPage = totalPages - 9;
+    } 
     currentPage = totalPages;
     setPageNumber();
   }
@@ -96,7 +93,9 @@ public class PagingNavigation implements Serializable {
     this.start = start + 1;
     end = start + numPerPage;
     this.currentPage = currentPage;
-    setPageRange();
+    if(totalPages > 10) {
+      setPageRange();
+    } 
   }
  
   private void setPageNumber() {
@@ -111,7 +110,7 @@ public class PagingNavigation implements Serializable {
   private void setPageRange() {
     if(currentPage > 6 || totalPages - currentPage < 5) { 
       startPage = currentPage - 5;
-      endPage = currentPage + 4;
+      endPage = currentPage + 4 >= totalPages ? totalPages : currentPage + 4;
     }
     setPageNumber();
   }

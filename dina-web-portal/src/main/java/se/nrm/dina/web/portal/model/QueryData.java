@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.model;
 
 import java.io.Serializable;
@@ -26,16 +21,18 @@ public class QueryData implements Serializable {
   private int endMon = 12;
   private int startDay = 1;
   private int endDay = 1;
+  private boolean isSearchAllType;
 
   public QueryData() {
     
   }
   
-  public QueryData(String operation, String content, String field, String value) {
+  public QueryData(String operation, String content, String field, String value, boolean isSearchAllType) {
     this.operation = operation;
     this.content = content;
     this.field = field;
     this.value = value;
+    this.isSearchAllType = isSearchAllType;
   }
 
   public String getOperation() {
@@ -135,12 +132,28 @@ public class QueryData implements Serializable {
   }
   
   public boolean isAppendValue() {
-    boolean isAppandValue = true;
-    if(!field.equals("date") && !field.equals("season")) {
-      isAppandValue = value != null && !value.isEmpty();
+    if(field.equals("date")) {
+      return fromDate != null || toDate != null;
     }
-    return isAppandValue;
+    if(field.equals("season")) {
+      return startMonth != 0 || endMonth != 0;
+    }
+     
+    if(field.equals("ts")) {
+      return isSearchAllType || value != null && !value.isEmpty();
+    }
+    
+    return value != null && !value.isEmpty(); 
   }
+
+  public boolean isIsSearchAllType() {
+    return isSearchAllType;
+  }
+
+  public void setIsSearchAllType(boolean isSearchAllType) {
+    this.isSearchAllType = isSearchAllType;
+  }
+   
   
   @Override
   public String toString() {

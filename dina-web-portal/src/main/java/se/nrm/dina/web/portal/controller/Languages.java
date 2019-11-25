@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable; 
@@ -27,11 +22,20 @@ import se.nrm.dina.web.portal.utils.HelpClass;
 public class Languages implements Serializable {
 
   private String locale = "sv";
+  private final String english = "English";
+  private final String swedish = "Svenska";
+  
   private final List<String> updateList; 
   private HttpSession session;  
   
   @Inject
   private ChartView chart;
+  
+  @Inject
+  private SearchBean search;
+  
+  @Inject
+  private StatisticBean statistic;
  
   @Inject
   private StyleBean style;
@@ -57,20 +61,23 @@ public class Languages implements Serializable {
   public void changeLanguage(String locale) { 
     log.info("changeLanguage - locale: {}", locale); 
     
-    style.setLanguageStyle(locale);
-    this.locale = locale;
-    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-    session.setAttribute(CommonText.getInstance().getLocale(), locale);
-     
-    chart.changeLanguage(isSwedish());
-    HelpClass.getInstance().updateView(updateList);
+    if(!this.locale.equals(locale)) {
+      style.setLanguageStyle(locale);
+      this.locale = locale;
+      session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+      session.setAttribute(CommonText.getInstance().getLocale(), locale);
+      chart.changeLanguage(isSwedish()); 
+      search.changeLanguage(isSwedish());
+      statistic.changeLanguage(isSwedish());
+      HelpClass.getInstance().updateView(updateList);
+    } 
   }
 
   public String getLanguage() {
-    return locale.equals("sv") ? "English" : "Svenska";
+    return locale.equals(CommonText.getInstance().getSv()) ? english : swedish;
   }
 
   public boolean isSwedish() {
-    return locale.equals("sv");
+    return locale.equals(CommonText.getInstance().getSv());
   }
 }

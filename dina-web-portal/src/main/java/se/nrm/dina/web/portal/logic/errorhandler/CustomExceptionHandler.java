@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.errorhandler;
 
 import java.io.IOException;
@@ -46,16 +41,14 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
       ExceptionQueuedEventContext exceptionQueuedEventContext = (ExceptionQueuedEventContext) item.getSource();
 
       try {
-        Throwable throwable = exceptionQueuedEventContext.getException();
-        log.error(throwable.getMessage());
+        Throwable throwable = exceptionQueuedEventContext.getException(); 
 
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
         NavigationHandler nav = context.getApplication().getNavigationHandler();
 
         requestMap.put("error-message", throwable.getMessage());
-        requestMap.put("error-stack", throwable.getStackTrace());
-//        nav.handleNavigation(context, null, "/start.xhtml");
+        requestMap.put("error-stack", throwable.getStackTrace()); 
 
         context.renderResponse();
 

@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+import java.util.List; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.beans.Field;
 import org.primefaces.model.map.LatLng;
 import se.nrm.dina.web.portal.utils.CommonText;
+import se.nrm.dina.web.portal.utils.DateHelper;
 import se.nrm.dina.web.portal.utils.HelpClass;
 
 /**
@@ -23,6 +19,8 @@ import se.nrm.dina.web.portal.utils.HelpClass;
 @Slf4j
 public class SolrData {
 
+  @Field
+  public String[] additionalDet;
   @Field
   public String accessionNumber;
   @Field
@@ -53,6 +51,8 @@ public class SolrData {
   public String coordinate;
   @Field
   public String determiner;
+  @Field
+  public Date determinedDate;
   @Field
   public double latitude;
   @Field
@@ -88,6 +88,8 @@ public class SolrData {
   @Field
   public String[] synonym;
   @Field
+  public String[] synonymAuthor;
+  @Field
   public String typeStatus;
   @Field
   public String txFullName;
@@ -98,10 +100,17 @@ public class SolrData {
   boolean imageExist;
   boolean displayMap;
   boolean displayImage;
+  boolean openRemark = false;
+    
+  private final String closeArrow = "hidearrow.gif";
+  private final String openArrow = "downarrow.gif";
+  private final String mineralCode = "557057";
 
   private List<String> thumbs;
   private List<String> jpgs;
-
+  
+  private StringBuilder exportRemarksSb;
+   
   public String getAccessionNumber() {
     return accessionNumber;
   }
@@ -254,7 +263,6 @@ public class SolrData {
     this.map = map;
   }
 
- 
   public String getMorphbankId() {
     return morphbankId;
   }
@@ -403,8 +411,20 @@ public class SolrData {
     return StringUtils.join(author, ", ");
   }
 
-  public String getSynonyms() {
-    return StringUtils.join(synonym, ", ");
+  public boolean isOpenRemark() {
+    return openRemark;
+  }
+
+  public void setOpenRemark(boolean openRemark) {
+    this.openRemark = openRemark;
+  }
+
+  public String getRemarkBtn() {
+    return openRemark ? "hidearrow.git" : "downarrow.gif";
+  }
+
+  public String getSynonymAuthors() {
+    return StringUtils.join(synonymAuthor, ", ");
   }
 
   public String getCollectors() {
@@ -417,12 +437,58 @@ public class SolrData {
 
   public List<String> getAllRemarkes() {
     List<String> remarkList = new ArrayList();
-    Arrays.asList(colremarks).stream()
-            .forEach(r -> {
-              remarkList.addAll(Arrays.asList(r.split("\n")));
-            });
-    return remarkList;
-//    return StringUtils.join(remarks, ", ");
+    if (collectionId.equals(mineralCode)) {
+      Arrays.asList(remarks).stream()
+              .forEach(r -> {
+                remarkList.addAll(Arrays.asList(r.split("\n")));
+              });
+    } else {
+      Arrays.asList(colremarks).stream()
+              .forEach(r -> {
+                remarkList.addAll(Arrays.asList(r.split("\n")));
+              });
+    }
+    return remarkList; 
+  }
+  
+  public String getExportRemarks() {
+    exportRemarksSb = new StringBuilder();
+    if (collectionId.equals(mineralCode)) {
+      if(remarks != null) {
+        Arrays.asList(remarks)
+              .stream()   
+              .forEach(r -> {    
+                Arrays.asList(r.split("\n"))
+                        .stream()
+                        .forEach(s -> {
+                          exportRemarksSb.append(s.trim());
+                          exportRemarksSb.append(" ");
+                        });
+              });
+      } 
+    } else {
+      if(colremarks != null) {
+        Arrays.asList(colremarks)
+              .stream()   
+              .forEach(r -> {    
+                Arrays.asList(r.split("\n"))
+                        .stream()
+                        .forEach(s -> {
+                          exportRemarksSb.append(s.trim());
+                          exportRemarksSb.append(" ");
+                        });
+              });
+      } 
+    }
+    return exportRemarksSb.toString().trim();
+  }
+  
+  public String getGeopointText() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(latitudeText);
+    sb.append(" ");
+    sb.append(longitudeText);
+    return sb.toString();
   }
 
   public String getAllCoAttrRemarkes() {
@@ -451,6 +517,14 @@ public class SolrData {
 
   public void setCoordinate(String coordinate) {
     this.coordinate = coordinate;
+  }
+
+  public String[] getAdditionalDet() {
+    return additionalDet;
+  }
+
+  public void setAdditionalDet(String[] additionalDet) {
+    this.additionalDet = additionalDet;
   }
 
   public void setImages(String morphbankImageUrl) {
@@ -483,32 +557,32 @@ public class SolrData {
   }
 
   public boolean isMineral() {
-    return collectionId.equals("557057");
+    return collectionId.equals(mineralCode);
   }
 
   public int getTotalPreparations() {
     return prepration.length;
   }
 
-  public String getPrepCountList() {
-    StringBuilder sb = new StringBuilder();
-    if (prepCount != null) {
-      Arrays.asList(prepCount).stream()
-              .forEach(p -> {
-                String[] preAndCount = p.split("=&&=");
-                sb.append(preAndCount[0]);
-                int count = Integer.parseInt(preAndCount[1]);
-                if (count > 0) {
-                  sb.append(" (");
-                  sb.append(count);
-                  sb.append(") ");
-                } else {
-                  sb.append("; ");
-                }
-              });
-    }
+  public String getDetermination() {
+    return determinedDate == null ? determiner
+            : determiner + ", " + DateHelper.getInstance().dateToString(determinedDate);
+  }
 
-    return sb.toString().trim();
+  public void openCloseRemarks() { 
+    openRemark = !openRemark;
+  }
+
+  public String getOpenCloseRemarkImg() {
+    return openRemark ? openArrow : closeArrow;
+  }
+
+  public String getAllAdditionalDeterminations() {
+    return StringUtils.join(additionalDet, "; ");
+  }
+
+  public String getPrepCountList() {
+    return StringUtils.join(prepCount, "; "); 
   }
 
   public String getCoordinateString() {

@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.utils;
  
 import java.time.LocalDate; 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;  
 import java.util.List; 
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.PrimeFaces;
 
@@ -23,38 +20,18 @@ public class HelpClass {
   private static HelpClass instance = null;
   private StringBuilder resultHeaderSummarySb;
   private StringBuilder imagePathSb;
-//  private StringBuilder dayOfYearSb; 
-//  private final SimpleDateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//  private final SimpleDateFormat genericDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SSS'Z'");
-
+ 
   public static synchronized HelpClass getInstance() {
     if (instance == null) {
       instance = new HelpClass();
     }
     return instance;
   }
-  
+   
+  public HttpSession getSession() { 
+    return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+  } 
  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 
-
   public String buildResultHeaderSummaryForMapView(int totalResult, boolean isSwedish) { 
     resultHeaderSummarySb = new StringBuilder();
     resultHeaderSummarySb.append("(");
@@ -88,10 +65,7 @@ public class HelpClass {
   public String buildEmptyString() {
     return " ";
   }
-
-   
  
-
   public String replaceChars(String value) {
     String s = value.replaceAll("[\\[\\](),]", " ");
     return s.trim();
@@ -153,19 +127,5 @@ public class HelpClass {
   
   public void updateView(List<String> viewIds) {
     PrimeFaces.current().ajax().update(viewIds); 
-  }
-//
-//  public String convertDateToUTCString(Date date, String time) { 
-//    dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-//    String strTimeStamp = convertTimeStampString(date, time);
-//    try { 
-//      return dateFormatUTC.format(genericDateFormat.parse(strTimeStamp));
-//    } catch (ParseException ex) {
-//      return null;
-//    }
-//  }
-//  
-//  private String convertTimeStampString(Date date, String time) {
-//    return dateToString(date) + time;
-//  }
+  } 
 }

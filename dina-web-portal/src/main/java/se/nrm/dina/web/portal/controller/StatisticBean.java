@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable; 
@@ -11,15 +6,12 @@ import java.util.List;
 import java.util.Map; 
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped; 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
+import javax.inject.Named; 
 import lombok.extern.slf4j.Slf4j;
 import se.nrm.dina.web.portal.model.CollectionData;
-import se.nrm.dina.web.portal.model.StatisticData;
-import se.nrm.dina.web.portal.solr.SolrService;
+import se.nrm.dina.web.portal.model.StatisticData; 
 import se.nrm.dina.web.portal.solr.SolrStatisticService;
 import se.nrm.dina.web.portal.utils.CommonText;
 
@@ -34,7 +26,7 @@ public class StatisticBean implements Serializable {
   
   private StatisticData data; 
   private StatisticData filteredData;
-  private HttpSession session;  
+//  private HttpSession session;  
   
   private boolean isSwedish; 
   
@@ -42,15 +34,18 @@ public class StatisticBean implements Serializable {
   private SolrStatisticService solr;
   
   public StatisticBean() { 
+    isSwedish = true;
   }
   
   @PostConstruct
   public void init() {
     log.info("StatisticData.init");
-    session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);  
-    isSwedish =  ((String) session.getAttribute(CommonText.getInstance().getLocale())).equals("sv");
     data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null);  
   } 
+  
+  public void changeLanguage(boolean isSwedish) {
+    this.isSwedish = isSwedish;
+  }
   
   public void resetData(String text, Map<String, String> queries) {
     filteredData = solr.getStatisticData(text, queries);   
