@@ -18,4 +18,6 @@ swarm:
     host: mail.nrm.se
     hostname: mail.smtp.host
     support: support@mail.com
-
+  support:
+    mail: team@teamsupport.net
+    phone: 111111111

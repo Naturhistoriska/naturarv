@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.config;
 
 import java.io.Serializable;
@@ -30,6 +25,8 @@ public class InitialProperties implements Serializable {
   private String supportMail;
   private String mailHost;
   private String mailHostName;
+  private String teamSupportMail;
+  private String supportPhone;
 
   public InitialProperties() {
   }
@@ -43,7 +40,9 @@ public class InitialProperties implements Serializable {
           @ConfigurationValue("swarm.captcha.private") String captchaPrivateKey,
           @ConfigurationValue("swarm.mail.host") String mailHost,
           @ConfigurationValue("swarm.mail.hostname") String mailHostName,
-          @ConfigurationValue("swarm.mail.support") String supportMail) {
+          @ConfigurationValue("swarm.mail.support") String supportMail,
+          @ConfigurationValue("swarm.support.mail") String teamsupportMail,
+          @ConfigurationValue("swarm.support.phone") String supportPhone) {
     this.solrPath = solrPath;
     this.solrCore = solrCore;
     this.morphbankThumbPath = morphbankThumbPath;
@@ -53,6 +52,8 @@ public class InitialProperties implements Serializable {
     this.mailHost = mailHost;
     this.mailHostName = mailHostName;
     this.supportMail = supportMail;
+    this.teamSupportMail = teamsupportMail;
+    this.supportPhone = supportPhone;
   }
 
   public String getSolrPath() {
@@ -116,5 +117,19 @@ public class InitialProperties implements Serializable {
       throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
     }
     return supportMail;
+  }
+  
+  public String getTeamSupportMail() {
+    if (teamSupportMail == null) {
+      throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+    }
+    return teamSupportMail;
+  }
+    
+  public String getSupportPhone() {
+    if (supportPhone == null) {
+      throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+    }
+    return supportPhone;
   }
 }
