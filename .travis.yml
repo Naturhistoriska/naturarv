@@ -1,0 +1,20 @@
+language: java
+sudo: required
+services:
+  - docker
+jdk:
+  - oraclejdk8
+install: true
+script:
+  - mvn clean verify
+before_install:
+  - pip install --user codecov
+after_success:
+  - codecov
+before_deploy:
+  - docker build --tag dina/naturarv:$TRAVIS_TAG .
+  - docker build --tag dina/naturarv .
+
+after_deploy:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push dina/naturarv
