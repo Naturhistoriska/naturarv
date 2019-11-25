@@ -21,7 +21,7 @@ Setup specify database
 git clone https://github.com/Naturhistoriska/dina-solr-index.git
 Build and run dina-index-builder to build index data from stpecify database into solr
 
-git clone $THIS_REPO_SLUG
+git clone https://github.com/Naturhistoriska/naturarv.git
 
 cd naturarv
 
