@@ -1,6 +1,6 @@
 # Naturarv 
 [![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?token=8adMzdoTdDamxVzytzzx&branch=master)](https://travis-ci.com/Naturhistoriska/naturarv)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Naturarv is a web portal for searching data from Swedish natural history collections.
 
