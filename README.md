@@ -1,6 +1,5 @@
-# Naturarv
-|Build-Status|
-[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?branch=master)](https://travis-ci.com/Naturhistoriska/naturarv)
+# Naturarv 
+[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?branch=master)]
 
 Naturarv is a web portal for searching data from Swedish natural history collections.
 
@@ -11,7 +10,7 @@ specify database
 Solr: 8.1.0
 dina-solr-index
 morphbank
-
+ 
 
 # Setup
 
@@ -34,5 +33,4 @@ To build source code, run:
 To start naturarv web portal, run
 
 **java -jar dina-web-portal/target/naturarv-portal-thorntail.jar -Sinitdata**
-
-.. |Build-Status| image:: https://travis-ci.com/naturhistoriska/naturarv.svg?branch=master
+ 
