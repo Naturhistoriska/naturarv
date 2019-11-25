@@ -63,7 +63,7 @@ body * {
 .topAlign {
   vertical-align: top;
 }
-  
+
 .pageContent.ui-g {
   width: 980px; 
   padding-top: 20px;
@@ -90,7 +90,7 @@ body * {
   font-weight: bold;
   font-style: italic;
 }
- 
+
 .imageViewPanel {
   font-family: Arial,sans-serif; 
   font-weight: bold;
@@ -231,10 +231,10 @@ body * {
 
 
 .advancesearchpanel { 
-    width: 940px;  
-    margin-left: 20px; 
-    margin-top: 10px; 
-    margin-right: 20px; 
+  width: 940px;  
+  margin-left: 20px; 
+  margin-top: 10px; 
+  margin-right: 20px; 
 }
 
 .queryDropdownBox {
@@ -249,6 +249,11 @@ body * {
 
 .queryDropdownBoxField {
   width:170px; 
+  margin-top: 4px;
+}
+
+.typeStatusDropdwon {
+  width:270px; 
   margin-top: 4px;
 }
 
@@ -289,8 +294,8 @@ body * {
 }
 
 .imagePanel {
-   width: 700px; 
-   float:right;
+  width: 700px; 
+  float:right;
 }
 
 .imagePanel>tbody>tr>td {
@@ -306,15 +311,15 @@ body * {
 
 
 .simpleTableIconCol {
-   width: 20px; 
+  width: 20px; 
 }
 
 .simpleTableLabelCol {
   text-align: left;
   font-weight: bold; 
-  width: 160px;
+  width: 180px;
 }
- 
+
 .simpleTableValueCol {
   text-align: left; 
   width: 480px;
@@ -328,7 +333,7 @@ body * {
   /*    vertical-align: top;*/
   width: 180px;
 }
- 
+
 
 .downLink {
   font-family: verdana,arial,helvetica,sans-serif; 
@@ -337,11 +342,11 @@ body * {
 }
 
 
-.navigationPanel {
-    text-align: center; 
-    width: 730px; 
-    margin-left: auto;
-    margin-right: auto;
+.navigationPanel { 
+  text-align: center; 
+  width: 730px; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pagingNumberText {
@@ -350,8 +355,8 @@ body * {
   padding-left: 5px;
   padding-right: 5px !important;
 }
- 
- 
+
+
 .searchColumn {
   vertical-align: top;
   width: 730px; 
@@ -376,38 +381,38 @@ body * {
   overflow: visible; 
   width: 300px; 
 }
- 
+
 .detailDlgLabel {
-    vertical-align: top;
-    width: 150px;
+  vertical-align: top;
+  width: 150px;
 }
 
 
 .detailDlgText {
-    vertical-align: top;
-    width: 450px;
+  vertical-align: top;
+  width: 450px;
 }
 
 
 /* error report page */ 
 .errorcol1 {
-    vertical-align: top;
-    width: 150px;
-    text-align: left;
-    padding-right: 20px;
+  vertical-align: top;
+  width: 150px;
+  text-align: left;
+  padding-right: 20px;
 }
 
 .errorcol2 {
-    vertical-align: top;
-    width: 580px;
-    padding-right: 20px;
+  vertical-align: top;
+  width: 580px;
+  padding-right: 20px;
 }
 
 .errorcol3 {
-    vertical-align: top;
-    float: right;
-    width: 15px;
-    padding-right: 20px;
+  vertical-align: top;
+  float: right;
+  width: 15px;
+  padding-right: 20px;
 }
 
 
@@ -536,6 +541,11 @@ a:hover {
   border: none;
 }
 
+.imageBottomAlign {
+  border: none;
+  vertical-align: bottom;
+}
+
 .imagesbottomepadding {
   border:  none;
   padding-bottom: 250px;
@@ -662,6 +672,7 @@ a:hover {
 }
 
 
+ 
 
 .historyTableStyle.ui-datatable table { 
   border: solid 1px !important;  
@@ -675,41 +686,54 @@ a:hover {
 
 /* for fix datatable column width */
 .ui-datatable table {
-   table-layout: auto !important;
+  table-layout: auto !important;
 }
 
 
 .ui-datatable .ui-paginator {
-    background: transparent;
+  background: transparent; 
 }
 
- 
+
 .hide-column-names.ui-datatable table  {     
-   font-family: cursive;
-   color: #000000; 
-   display: none !important;
+  font-family: cursive;
+  color: #000000; 
+  display: none !important;
 }
- 
+
 .noheader.ui-datatable table thead {
   display: none;
+} 
+
+.noheader.ui-datatable * {
+  padding: 1px !important;  
 }
+
+
+noheader.ui-datatable .ui-paginator {
+  padding-top: 20px !important;
+}
+
+
 
 
 .ui-datascroller .ui-datascroller-item {
-    width: 33%;
-    display: inline-block;
+  width: 33%;
+  display: inline-block;
 }
 
 .ui-datascroller-content { 
-    border: none;
+  border: none;
 }
 
 .ui-autocomplete-panel {
   width: 400px !important;
 }
+
  
 
 /*test leaflet map*/
 #clusteringMap { 
   height: 180px; 
 }
+ 
