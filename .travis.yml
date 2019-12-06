@@ -1,16 +1,21 @@
 language: java
-sudo: required
+sudo: false
 services:
   - docker
 jdk:
   - openjdk8
 install: true
-script:
-  - mvn clean verify
+# script:
+#   - mvn clean verify
+script: "mvn cobertura:cobertura"
+env:
+  global:
+    - CODECOV_TOKEN=:uuid-repo-token
 before_install:
   - pip install --user codecov
 after_success:
-  - codecov
+  # - codecov
+  - bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
 before_deploy:
   - docker build --tag dina/naturarv:$TRAVIS_TAG .
   - docker build --tag dina/naturarv .
