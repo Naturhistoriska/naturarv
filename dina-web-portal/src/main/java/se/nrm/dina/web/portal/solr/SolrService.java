@@ -37,6 +37,7 @@ public class SolrService implements Serializable {
   private final String defaultSort;
   
   private String unAccentString;
+  private String text = "text";
 
   @Inject
   @Solr
@@ -194,6 +195,7 @@ public class SolrService implements Serializable {
     log.info("autoComleteSearch: {}", data);
      
     String field = CommonText.getInstance().getSearchField(data.getField()); 
+    field = field == null ? text : field;
 
     final TermsFacetMap termsFacet = new TermsFacetMap(field).setLimit(80);
     final JsonQueryRequest request = new JsonQueryRequest()

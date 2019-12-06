@@ -438,15 +438,19 @@ public class SolrData {
   public List<String> getAllRemarkes() {
     List<String> remarkList = new ArrayList();
     if (collectionId.equals(mineralCode)) {
-      Arrays.asList(remarks).stream()
+      if(remarks != null) {
+        Arrays.asList(remarks).stream()
               .forEach(r -> {
                 remarkList.addAll(Arrays.asList(r.split("\n")));
               });
+      } 
     } else {
-      Arrays.asList(colremarks).stream()
+      if(colremarks != null) {
+        Arrays.asList(colremarks).stream()
               .forEach(r -> {
                 remarkList.addAll(Arrays.asList(r.split("\n")));
               });
+      } 
     }
     return remarkList; 
   }
