@@ -25,6 +25,11 @@ public class About implements Serializable {
     about = AboutPageText.getInstance();
   }
   
+  public About(Languages languages) {
+    this.language = languages;
+    about = AboutPageText.getInstance();
+  }
+  
   public String getWhatIsNaturarvText() {  
     return about.getWhatIsNaturarv(language.isSwedish()); 
   }
