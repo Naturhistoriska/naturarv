@@ -1,6 +1,5 @@
 # Naturarv
-[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?token=8adMzdoTdDamxVzytzzx&branch=master)](https://travis-ci.com/Naturhistoriska/naturarv)
-[![codecov](https://codecov.io/gh/Naturhistoriska/naturarv/branch/master/graph/badge.svg)](https://codecov.io/gh/Naturhistoriska/naturarv)
+[![Build Status](https://travis-ci.com/Naturhistoriska/naturarv.svg?token=8adMzdoTdDamxVzytzzx&branch=master)](https://travis-ci.com/Naturhistoriska/naturarv) 
 [![codecov](https://codecov.io/gh/Naturhistoriska/naturarv/branch/master/graph/badge.svg)](https://codecov.io/gh/Naturhistoriska/naturarv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
