@@ -34,7 +34,7 @@ public class ChartView implements Serializable {
   private BarChartModel totalTenYearsChart;
 
   private Map<String, Integer> resultMap;  
-  private final List<String> collectionCodeList;
+  private List<String> collectionCodeList;
  
   private HttpSession session;
   private LocalDateTime startDate; 
@@ -44,7 +44,7 @@ public class ChartView implements Serializable {
   
   private String searchDateRange;
 
-  private final CommonText common;
+  private CommonText common;
   private final static String YEAR_SURFFIX = "_year";
   
   private boolean isSwedish;
@@ -54,10 +54,16 @@ public class ChartView implements Serializable {
   @Inject
   private ChartCreator chartCreator;
 
+
   public ChartView() { 
     common = CommonText.getInstance();
     collectionCodeList = new ArrayList<>();
     isSwedish = true;
+  }
+  
+  public ChartView(SolrChartService solr, ChartCreator chartCreator) {
+    this.solr = solr;
+    this.chartCreator = chartCreator;
   }
 
   @PostConstruct
