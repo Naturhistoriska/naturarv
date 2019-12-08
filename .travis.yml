@@ -6,4 +6,4 @@ install: true
 script: "mvn cobertura:cobertura"
 after_success:
   # - codecov
-  - bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
+  - bash <(curl -s https://codecov.io/bash)
