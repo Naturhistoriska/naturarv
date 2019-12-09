@@ -78,25 +78,25 @@ public class ChartView implements Serializable {
   private void initData() {  
     YearMonth yearMonth = YearMonth.from(LocalDate.now());
     yearOfToday = yearMonth.getYear(); 
-    startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay(); 
+    startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay();
     nextYear = yearOfToday + 1;
-    lastTenYear = yearOfToday - 10;  
-    searchDateRange = SearchHelper.getInstance().buildSearchDateRange(startDate, null); 
+    lastTenYear = yearOfToday - 10;
+    searchDateRange = SearchHelper.getInstance().buildSearchDateRange(startDate, null);
   }
-  
+
   public BarChartModel getTotalMonthChart() {
-    session = HelpClass.getInstance().getSession(); 
-    
-    if(session.getAttribute(common.getMonthChartData()) != null) {
+    session = HelpClass.getInstance().getSession();
+
+    if (session.getAttribute(common.getMonthChartData()) != null) {
       return (BarChartModel) session.getAttribute(common.getMonthChartData());
-    }  
-    totalMonthChart = new BarChartModel(); 
-    resultMap = solr.getLastYearRegistedData(searchDateRange, null); 
-    if (resultMap != null) {
-      totalMonthChart = chartCreator.createMonthChart(resultMap, startDate, isSwedish); 
-      session.setAttribute(common.getMonthChartData(), totalMonthChart);  
-    } 
-    return totalMonthChart;    
+    }
+    totalMonthChart = new BarChartModel();
+    resultMap = solr.getLastYearRegistedData(searchDateRange, null);
+
+    totalMonthChart = chartCreator.createMonthChart(resultMap, startDate, isSwedish);
+    session.setAttribute(common.getMonthChartData(), totalMonthChart);
+
+    return totalMonthChart;
   }
   
   public BarChartModel getTotalTenYearsChart() {
@@ -184,9 +184,5 @@ public class ChartView implements Serializable {
   
   public int getNextYear() {
     return nextYear;
-  }
-  
-  public String getSearchDateRange() {
-    return searchDateRange;
-  }
+  } 
 }

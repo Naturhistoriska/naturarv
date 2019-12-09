@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable; 
@@ -34,6 +29,11 @@ public class CollectionsView implements Serializable {
   public CollectionsView() {
     activeIndex = -1;
   }
+  
+  public CollectionsView(StatisticBean data) {
+    this.data = data;
+    activeIndex = -1;
+  }
 
   @PostConstruct
   public void init() {
@@ -41,11 +41,11 @@ public class CollectionsView implements Serializable {
   }
   
   public void onTabChange(TabChangeEvent event) {
-    log.info("onTabChange: {}", event.getTab().getTitle()); 
+    log.info("onTabChange: {}", event.getTab());  
   }
    
   public void onTabClose(TabCloseEvent event) {
-    log.info("onTabChange: {}", event.getTab().getTitle()); 
+    log.info("onTabChange: {}", event); 
     activeIndex = -1;
   }
      

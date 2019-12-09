@@ -18,9 +18,11 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions; 
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -32,15 +34,14 @@ import org.primefaces.model.chart.ChartSeries;
 import se.nrm.dina.web.portal.ContextMocker;
 import se.nrm.dina.web.portal.logic.ChartCreator;
 import se.nrm.dina.web.portal.solr.SolrChartService;
-import se.nrm.dina.web.portal.utils.CommonText;
-import se.nrm.dina.web.portal.utils.HelpClass;
+import se.nrm.dina.web.portal.utils.CommonText; 
 
 /**
  *
  * @author idali
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ChartView.class, HelpClass.class})
+@PrepareForTest({ChartView.class})
 @PowerMockIgnore({"javax.management.*",
   "org.apache.http.conn.ssl.*",
   "com.amazonaws.http.conn.ssl.*",
@@ -129,6 +130,27 @@ public class ChartViewTest {
     verify(solr, times(1)).getLastYearRegistedData(any(String.class), eq(null));
     verify(chartCreator, times(1)).createMonthChart(eq(map), any(LocalDateTime.class), any(Boolean.class));
   }
+  
+  @Test
+  public void testGetTotalMonthChartWithNullResult() throws Exception {
+    System.out.println("getTotalMonthChart");
+
+    when(session.getAttribute(any(String.class))).thenReturn(null);
+    Map<String, Integer> map = null;
+    when(solr.getLastYearRegistedData(any(String.class), eq(null))).thenReturn(map);
+
+    PowerMockito.whenNew(BarChartModel.class).withNoArguments().thenReturn(model);
+    when(chartCreator.createMonthChart(eq(map), any(LocalDateTime.class), any(Boolean.class))).thenReturn(model);
+
+    instance.init();
+    BarChartModel result = instance.getTotalMonthChart();
+    assertNotNull(result);
+
+    verify(session, times(1)).getAttribute(any(String.class));
+    verify(session, times(1)).setAttribute(any(String.class), eq(model));
+    verify(solr, times(1)).getLastYearRegistedData(any(String.class), eq(null));
+    verify(chartCreator, times(1)).createMonthChart(eq(map), any(LocalDateTime.class), any(Boolean.class));
+  }
 
   /**
    * Test of getTotalTenYearsChart method, of class ChartView.
@@ -183,7 +205,7 @@ public class ChartViewTest {
     verifyZeroInteractions(chartCreator);
     verifyZeroInteractions(solr);
   }
-
+    
   @Test
   public void testGetCollectionMonthChart() throws Exception {
     System.out.println("getCollectionMonthChart");
@@ -199,8 +221,7 @@ public class ChartViewTest {
     BarChartModel result = instance.getCollectionMonthChart(collectionCode);
     assertNotNull(result);
     verify(session, times(1)).getAttribute(any(String.class));
-    verify(session, times(1)).setAttribute(any(String.class), eq(model));
-
+    verify(session, times(1)).setAttribute(any(String.class), eq(model));  
   }
 
   /**
@@ -283,6 +304,54 @@ public class ChartViewTest {
   }
   
   @Test
+  public void testChangeLanguageWithCollectionsFromSession() throws Exception {
+    System.out.println("changeLanguage");
+
+    String monthChart = CommonText.getInstance().getMonthChartData();
+    String yearChart = CommonText.getInstance().getYearChartData();
+    when(session.getAttribute(monthChart)).thenReturn(null);
+    when(session.getAttribute(yearChart)).thenReturn(null);
+
+    Map<Object, Number> map = new HashMap<>();
+    map.put("Jan 2019", 3);
+    map.put("Feb 2019", 3);
+    boolean isSwedish = false;
+    ChartSeries series = mock(ChartSeries.class);
+    when(series.getData()).thenReturn(map);
+    
+    PowerMockito.whenNew(ChartSeries.class).withNoArguments().thenReturn(series);
+    
+    
+    List<ChartSeries> list = new ArrayList();
+    list.add(series);
+    
+    when(model.getSeries()).thenReturn(list);
+    
+    Axis xAxis = mock(Axis.class);  
+    Axis yAxis = mock(Axis.class);
+    when(model.getAxis(AxisType.X)).thenReturn(xAxis);
+    when(model.getAxis(AxisType.Y)).thenReturn(yAxis);
+     
+    instance.init();
+    List<String> collectionList = new ArrayList();
+    collectionList.add("1234"); 
+    collectionList.add("6789");
+    collectionList.stream()
+            .forEach(c -> {
+              instance.getCollectionMonthChart(c); 
+              when(session.getAttribute(c)).thenReturn(model);
+              when(session.getAttribute(c + "_year")).thenReturn(model);
+            }); 
+    instance.changeLanguage(isSwedish);
+
+    collectionList.stream()
+            .forEach(c -> {
+              verify(session, times(3)).getAttribute(c);
+              verify(session, times(2)).getAttribute(c + "_year");
+            });  
+  }
+  
+  @Test
   public void testChangeLanguageWithCollections() throws Exception {
     System.out.println("changeLanguage");
 
@@ -314,19 +383,21 @@ public class ChartViewTest {
     instance.init();
     List<String> collectionList = new ArrayList();
     collectionList.add("1234");
+    collectionList.add("1234");
     collectionList.add("6789");
     collectionList.stream()
             .forEach(c -> {
-              instance.getCollectionMonthChart(c); 
-              when(session.getAttribute(c)).thenReturn(model);
-              when(session.getAttribute(c + "_year")).thenReturn(model);
+              when(session.getAttribute(c)).thenReturn(null);
+              when(session.getAttribute(c + "_year")).thenReturn(null);
+              instance.getCollectionMonthChart(c);  
             }); 
     instance.changeLanguage(isSwedish);
 
     collectionList.stream()
             .forEach(c -> {
-              verify(session, times(3)).getAttribute(c);
-              verify(session, times(2)).getAttribute(c + "_year");
+              verify(session, atLeast(2)).getAttribute(c);
+              verify(session, atMost(3)).getAttribute(c);
+              verify(session, times(1)).getAttribute(c + "_year");
             });  
   }
 

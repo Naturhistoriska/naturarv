@@ -1,17 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.*; 
+import org.junit.runner.RunWith; 
+import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when; 
+import org.mockito.runners.MockitoJUnitRunner; 
+import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 import se.nrm.dina.web.portal.model.CollectionData;
@@ -19,105 +22,109 @@ import se.nrm.dina.web.portal.model.CollectionData;
 /**
  *
  * @author idali
- */
+ */ 
+@RunWith(MockitoJUnitRunner.class)   
 public class CollectionsViewTest {
   
+  private CollectionsView instance;
+  
+  @Mock
+  private StatisticBean data;
+  
+  private List<CollectionData> list;
+  
   public CollectionsViewTest() {
-  }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
+  } 
   
   @Before
   public void setUp() {
+    list = new ArrayList();
+    
+    when(data.getCollections()).thenReturn(list);
+    instance = new CollectionsView(data);
   }
   
   @After
   public void tearDown() {
+    instance = null;
+  }
+  
+  @Test
+  public void testDefaultConstruction() {
+    instance = new CollectionsView();
+    assertNotNull(instance);
+    assertEquals(-1, instance.getActiveIndex());
   }
 
   /**
    * Test of init method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testInit() {
-    System.out.println("init");
-    CollectionsView instance = new CollectionsView();
-    instance.init();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("init"); 
+    instance.init(); 
   }
 
   /**
    * Test of onTabChange method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testOnTabChange() {
     System.out.println("onTabChange");
-    TabChangeEvent event = null;
-    CollectionsView instance = new CollectionsView();
-    instance.onTabChange(event);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    TabChangeEvent event = mock(TabChangeEvent.class);  
+    Tab tab = mock(Tab.class); 
+    when(event.getTab()).thenReturn(tab);
+  
+    instance.onTabChange(event);   
   }
 
   /**
    * Test of onTabClose method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testOnTabClose() {
     System.out.println("onTabClose");
-    TabCloseEvent event = null;
-    CollectionsView instance = new CollectionsView();
-    instance.onTabClose(event);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    TabCloseEvent event = mock(TabCloseEvent.class); 
+    instance.onTabClose(event); 
+    assertEquals(-1, instance.getActiveIndex());
   }
 
   /**
    * Test of getCollections method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testGetCollections() {
-    System.out.println("getCollections");
-    CollectionsView instance = new CollectionsView();
-    List<CollectionData> expResult = null;
+    System.out.println("getCollections");  
     List<CollectionData> result = instance.getCollections();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    verify(data, times(1)).getCollections();
+    
+    result = instance.getCollections();
+    assertNotNull(result); 
+    verifyZeroInteractions(data);
   }
 
   /**
    * Test of getActiveIndex method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testGetActiveIndex() {
-    System.out.println("getActiveIndex");
-    CollectionsView instance = new CollectionsView();
-    int expResult = 0;
+    System.out.println("getActiveIndex"); 
+    int expResult = 2;
+    instance.setActiveIndex(2);
     int result = instance.getActiveIndex();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of setActiveIndex method, of class CollectionsView.
    */
-//  @Test
+  @Test
   public void testSetActiveIndex() {
     System.out.println("setActiveIndex");
-    int activeIndex = 0;
-    CollectionsView instance = new CollectionsView();
-    instance.setActiveIndex(activeIndex);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    int activeIndex = 5; 
+    instance.setActiveIndex(activeIndex); 
+    assertEquals(activeIndex, instance.getActiveIndex());
   }
   
 }
