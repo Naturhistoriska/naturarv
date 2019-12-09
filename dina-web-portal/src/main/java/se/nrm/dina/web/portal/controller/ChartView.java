@@ -34,7 +34,7 @@ public class ChartView implements Serializable {
   private BarChartModel totalTenYearsChart;
 
   private Map<String, Integer> resultMap;  
-  private List<String> collectionCodeList;
+  private final List<String> collectionCodeList;
  
   private HttpSession session;
   private LocalDateTime startDate; 
@@ -44,7 +44,7 @@ public class ChartView implements Serializable {
   
   private String searchDateRange;
 
-  private CommonText common;
+  private final CommonText common;
   private final static String YEAR_SURFFIX = "_year";
   
   private boolean isSwedish;
@@ -64,6 +64,9 @@ public class ChartView implements Serializable {
   public ChartView(SolrChartService solr, ChartCreator chartCreator) {
     this.solr = solr;
     this.chartCreator = chartCreator;
+    common = CommonText.getInstance();
+    collectionCodeList = new ArrayList<>();
+    isSwedish = true;
   }
 
   @PostConstruct
@@ -78,11 +81,11 @@ public class ChartView implements Serializable {
     startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay(); 
     nextYear = yearOfToday + 1;
     lastTenYear = yearOfToday - 10;  
-    searchDateRange = SearchHelper.getInstance().buildSearchDateRange(startDate, null);
+    searchDateRange = SearchHelper.getInstance().buildSearchDateRange(startDate, null); 
   }
   
   public BarChartModel getTotalMonthChart() {
-    session = HelpClass.getInstance().getSession();
+    session = HelpClass.getInstance().getSession(); 
     
     if(session.getAttribute(common.getMonthChartData()) != null) {
       return (BarChartModel) session.getAttribute(common.getMonthChartData());
@@ -90,7 +93,7 @@ public class ChartView implements Serializable {
     totalMonthChart = new BarChartModel(); 
     resultMap = solr.getLastYearRegistedData(searchDateRange, null); 
     if (resultMap != null) {
-      totalMonthChart = chartCreator.createMonthChart(resultMap, startDate, isSwedish);
+      totalMonthChart = chartCreator.createMonthChart(resultMap, startDate, isSwedish); 
       session.setAttribute(common.getMonthChartData(), totalMonthChart);  
     } 
     return totalMonthChart;    
@@ -102,6 +105,7 @@ public class ChartView implements Serializable {
     if(session.getAttribute(common.getYearChartData()) != null) {
       return (BarChartModel) session.getAttribute(common.getYearChartData());
     } 
+  
     resultMap = solr.getLastTenYearsRegistedData(lastTenYear, nextYear, null);  
     totalTenYearsChart = new BarChartModel();
     chartCreator.createYearChart(totalTenYearsChart, resultMap, isSwedish); 
@@ -173,4 +177,16 @@ public class ChartView implements Serializable {
               }
             }); 
   } 
+   
+  public int getLastTenYear() {
+    return lastTenYear;
+  }
+  
+  public int getNextYear() {
+    return nextYear;
+  }
+  
+  public String getSearchDateRange() {
+    return searchDateRange;
+  }
 }

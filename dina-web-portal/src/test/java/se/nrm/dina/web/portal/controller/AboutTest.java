@@ -118,7 +118,7 @@ public class AboutTest {
   /**
    * Test of getPartInfrastructureSubText method, of class About.
    */
-//  @Test
+  @Test
   public void testGetPartInfrastructureSubTextEn() {
     System.out.println("getPartInfrastructureSubText"); 
     when(languages.isSwedish()).thenReturn(false);
