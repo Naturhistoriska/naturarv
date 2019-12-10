@@ -3,6 +3,7 @@ package se.nrm.dina.web.portal.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -176,12 +177,19 @@ public class GeoHashMapTest {
     
     List<GeoHashData> mockList = mock(List.class);
     when(mockList.size()).thenReturn(210);   
-    
+     
+    List<String> geoHashList = new ArrayList();
+    geoHashList.add("2_u3");
+    geoHashList.add("3_u3f");
+    geoHashList.add("4_u3fh");
+    geoHashList.add("5_u3fhu");
+    geoHashList.add("6_u3fhu0");
     
     GeoHashData data = mock(GeoHashData.class); 
     when(data.getGeohashString()).thenReturn(geohash);
-    when(data.getTotal()).thenReturn(1);
+    when(data.getTotal()).thenReturn(11);
     when(data.getCoordinates()).thenReturn(coordinates);
+    when(data.getGeohashList()).thenReturn(geoHashList);
     when(mockList.get(any(int.class))).thenReturn(data);
      
     Stream<GeoHashData> value = Stream.of(data, data, data, data, data, data, data, data, data, data, data); 
@@ -189,11 +197,17 @@ public class GeoHashMapTest {
      
     when(solr.searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class))).thenReturn(mockList); 
      
+    TreeSet<Integer> set = mock(TreeSet.class);
+    when(set.first()).thenReturn(2);
+    when(set.last()).thenReturn(20);
+    when(set.size()).thenReturn(8);
+    when(solr.getSet()).thenReturn(set);
+    
     instance.onStateChange(event); 
     verify(solr, times(1)).searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class)); 
-    assertFalse(instance.isDisplayingColorBar());
-    assertTrue(instance.getColorBar().isEmpty());
-    assertEquals(instance.getModel().getMarkers().size(), 11);
+    assertTrue(instance.isDisplayingColorBar());
+    assertEquals(instance.getColorBar().size(), 6);
+    assertEquals(instance.getModel().getRectangles().size(), 11);
   }
   
  /**
