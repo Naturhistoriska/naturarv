@@ -1,72 +1,149 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import org.junit.After; 
+import org.junit.Before; 
 import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import org.mockito.Mock; 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner; 
 import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.MapModel;
+import se.nrm.dina.web.portal.ContextMocker;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
+import se.nrm.dina.web.portal.model.GeoHashData;
 import se.nrm.dina.web.portal.model.SolrData;
+import se.nrm.dina.web.portal.solr.SolrMapService;
 
 /**
  *
  * @author idali
- */
+ */ 
+@RunWith(MockitoJUnitRunner.class)  
 public class GeoHashMapTest {
+  
+  private GeoHashMap instance;
+  private FacesContext context;  
+  private String serverName;
+  private int serverPort;
+  private String path;
+  
+  @Mock
+  private InitialProperties properties;
+  @Mock
+  private SolrMapService solr;
+  @Mock
+  private ExternalContext externalContext; 
+  @Mock
+  HttpServletRequest request;
   
   public GeoHashMapTest() {
   }
   
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
   @Before
   public void setUp() {
+    
+    serverName = "naturarv";
+    serverPort = 8080;
+    context = ContextMocker.mockFacesContext(); 
+    path = "https://naturarv.nrm.se";
+    
+    when(request.getServerName()).thenReturn(serverName); 
+    when(request.getServerPort()).thenReturn(serverPort); 
+    when(externalContext.getRequest()).thenReturn(request);    
+    when(externalContext.getRequestContextPath()).thenReturn(path);        
+    when(context.getExternalContext()).thenReturn(externalContext);
+    instance = new GeoHashMap(properties, solr);
   }
   
   @After
   public void tearDown() {
+    instance = null;
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void testDefaultConstructor() {
+    instance = new GeoHashMap();
+    assertNotNull(instance);
+    
+    instance.getMapKey();
   }
 
   /**
    * Test of init method, of class GeoHashMap.
    */
-//  @Test
+  @Test
   public void testInit() {
-    System.out.println("init");
-    GeoHashMap instance = new GeoHashMap();
-    instance.init();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("init"); 
+    instance.init(); 
+    assertNotNull(instance.getModel());
+    assertEquals(1, instance.getZoom());
   }
 
   /**
    * Test of setMapView method, of class GeoHashMap.
    */
-//  @Test
+  @Test
   public void testSetMapView() {
     System.out.println("setMapView");
-    String searchText = "";
-    Map<String, String> filters = null;
-    GeoHashMap instance = new GeoHashMap();
-    instance.setMapView(searchText, filters);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    String searchText = "text:sweden";
+    Map<String, String> filters = null; 
+    List<GeoHashData> mapData = new ArrayList(); 
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    instance.setMapView(searchText, filters); 
+    verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    assertFalse(instance.isDisplayingColorBar());
+    assertTrue(instance.getColorBar().isEmpty());
+  }
+  
+  @Test
+  public void testSetMapViewNull() {
+    System.out.println("setMapView");
+    String searchText = "text:sweden";
+    Map<String, String> filters = null; 
+    List<GeoHashData> mapData = null; 
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    instance.setMapView(searchText, filters); 
+    verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    assertFalse(instance.isDisplayingColorBar());
+    assertTrue(instance.getColorBar().isEmpty());
+  }
+  
+  @Test
+  public void testSetMapViewWithData() {
+    System.out.println("setMapView");
+    String searchText = "text:sweden";
+    String coordinates = "N55.6800000000E14.2400000000";
+    String geohash = "4_u3fh";
+    Map<String, String> filters = null; 
+    List<GeoHashData> mapData = new ArrayList(); 
+    GeoHashData data = mock(GeoHashData.class);
+    
+    when(data.getGeohashString()).thenReturn(geohash);
+    when(data.getTotal()).thenReturn(1);
+    when(data.getCoordinates()).thenReturn(coordinates);
+    mapData.add(data);
+    
+    
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    instance.setMapView(searchText, filters); 
+    verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    assertFalse(instance.isDisplayingColorBar());
+    assertTrue(instance.getColorBar().isEmpty());
+    assertEquals(instance.getModel().getMarkers().size(), 1);
   }
 
   /**

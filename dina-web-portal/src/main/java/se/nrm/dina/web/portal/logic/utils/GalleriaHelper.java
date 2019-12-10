@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.utils;
 
 import java.util.List;
@@ -89,8 +84,7 @@ public class GalleriaHelper {
     partsList.add(LOBE);
     partsList.add(PRONOTUM);
     partsList.add(VARI);
-    partsList.add(MESONOTUM);
-    partsList.add(GENITALIA);
+    partsList.add(MESONOTUM); 
     partsList.add(POSTERIOR);
     partsList.add(PALPS);
     partsList.add(TARSI);
@@ -98,6 +92,7 @@ public class GalleriaHelper {
     partsList.add(NOTUM);
     partsList.add(MOUTH);
     partsList.add(CHELICERAE);
+                   
   }
 
   /**

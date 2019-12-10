@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import ch.hsr.geohash.GeoHash;
@@ -14,11 +9,9 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors; 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped; 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest; 
+import javax.inject.Named; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -50,14 +43,13 @@ import se.nrm.dina.web.portal.utils.SearchHelper;
 @Slf4j
 public class GeoHashMap implements Serializable {
 
-  private static final String GMAP_MARKER_PATH = "http://maps.google.com/mapfiles/ms/micons/red-dot.png";
-
-  private final String relativeImagePath = "/resources/images/icons/red10.png";
-  private final String relativeImagePathPink = "/resources/images/icons/pink_10.png";
-  private final String relativeImagePathPlus = "/resources/images/icons/marker_red_plus_19.png";
-  private final String relativeImagePathMinus = "/resources/images/icons/marker_red_minus_19.png";
+//  private static final String GMAP_MARKER_PATH = "http://maps.google.com/mapfiles/ms/micons/red-dot.png"; 
 
   private final String coordinatesSeparator = "E";
+  private final String single = "single";
+  private final String pink = "pink";
+  private final String plus = "plus";
+  private final String minus = "minus";
 
   private final String singleMarkerPath;
   private final String pinkMarkerPath;
@@ -100,21 +92,29 @@ public class GeoHashMap implements Serializable {
   private SolrMapService solr;
 
   public GeoHashMap() {
-    String servername = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerName();
-    int serverport = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerPort();
-    String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("http://");
-    sb.append(servername);
-    sb.append(":");
-    sb.append(serverport);
-    sb.append(path);
-
-    singleMarkerPath = sb.toString() + relativeImagePath;
-    pinkMarkerPath = sb.toString() + relativeImagePathPink;
-    plusMarkerPath = sb.toString() + relativeImagePathPlus;
-    minusMarkerPath = sb.toString() + relativeImagePathMinus; 
+//    String servername = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerName();
+//    int serverport = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerPort();
+//    String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+//
+//    StringBuilder sb = new StringBuilder();
+//    sb.append("http://");
+//    sb.append(servername);
+//    sb.append(":");
+//    sb.append(serverport);
+//    sb.append(path); 
+    singleMarkerPath = MapHelper.getInstance().getMapMarkPath(single);
+    pinkMarkerPath = MapHelper.getInstance().getMapMarkPath(pink);
+    plusMarkerPath = MapHelper.getInstance().getMapMarkPath(plus);
+    minusMarkerPath = MapHelper.getInstance().getMapMarkPath(minus); 
+  }
+   
+  public GeoHashMap(InitialProperties properties, SolrMapService solr) {
+    this.properties = properties;
+    this.solr = solr; 
+    singleMarkerPath = MapHelper.getInstance().getMapMarkPath(single);
+    pinkMarkerPath = MapHelper.getInstance().getMapMarkPath(pink);
+    plusMarkerPath = MapHelper.getInstance().getMapMarkPath(plus);
+    minusMarkerPath = MapHelper.getInstance().getMapMarkPath(minus); 
   }
 
   @PostConstruct

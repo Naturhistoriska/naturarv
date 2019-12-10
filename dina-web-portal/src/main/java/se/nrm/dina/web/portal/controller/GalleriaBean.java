@@ -50,8 +50,17 @@ public class GalleriaBean implements Serializable {
     stageList = new ArrayList<>(); 
     filters = new ArrayList<>(); 
   }
+  
+  public GalleriaBean(SolrImageService solr) {
+    this.solr = solr;
+    viewList = new ArrayList<>();
+    partsList = new ArrayList<>();
+    sexList = new ArrayList<>();
+    stageList = new ArrayList<>(); 
+    filters = new ArrayList<>(); 
+  }
  
-  public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {  
+  public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {   
     dataModel = new ImageLazyDataModel(solr, filterMap, filters, searchText, totalImages); 
   }
 
