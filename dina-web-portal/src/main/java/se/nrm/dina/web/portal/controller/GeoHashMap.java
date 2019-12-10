@@ -245,8 +245,7 @@ public class GeoHashMap implements Serializable {
       if(marker.getIcon().equals(pinkMarkerPath)) {
         selectedData = (SolrData) marker.getData();
       } else {
-        selectedDataList = solr.searchSpatialData(searchText, filters, marker.getTitle()); 
-        log.info("selectedList : {}", selectedDataList.size());
+        selectedDataList = solr.searchSpatialData(searchText, filters, marker.getTitle());   
         SolrData solrData = selectedDataList.get(0);
         if(marker.getIcon().equals(singleMarkerPath)) {
           selectedData = solrData;
@@ -415,5 +414,23 @@ public class GeoHashMap implements Serializable {
   public String getSelectedCoordinate() {
     return selectedCoordinate;
   }
+
+  public String getSingleMarkerPath() {
+    return singleMarkerPath;
+  }
+
+  public String getPinkMarkerPath() {
+    return pinkMarkerPath;
+  }
+
+  public String getPlusMarkerPath() {
+    return plusMarkerPath;
+  }
+
+  public String getMinusMarkerPath() {
+    return minusMarkerPath;
+  }
+  
+  
 
 }

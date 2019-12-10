@@ -24,6 +24,8 @@ import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.LatLngBounds;
 import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
+import org.primefaces.model.map.Overlay;
 import se.nrm.dina.web.portal.ContextMocker;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.GeoHashData;
@@ -154,8 +156,10 @@ public class GeoHashMapTest {
   @Test
   public void testOnStateChange() {
     System.out.println("onStateChange");
+    
     StateChangeEvent event = mock(StateChangeEvent.class); 
     when(event.getZoomLevel()).thenReturn(5);
+    
     LatLng latLng = mock(LatLng.class);
     when(latLng.getLat()).thenReturn(55.680);
     when(latLng.getLng()).thenReturn(14.2400);
@@ -165,12 +169,9 @@ public class GeoHashMapTest {
     when(bounds.getNorthEast()).thenReturn(latLng);
     when(bounds.getSouthWest()).thenReturn(latLng);
     when(event.getBounds()).thenReturn(bounds);
-    
-    
-    String searchText = "text:sweden";
+     
     String coordinates = "N55.6800000000E14.2400000000";
-    String geohash = "4_u3fh";
-    Map<String, String> filters = null; 
+    String geohash = "4_u3fh"; 
     List<GeoHashData> mapData = new ArrayList(); 
     GeoHashData data = mock(GeoHashData.class);
     
@@ -178,11 +179,10 @@ public class GeoHashMapTest {
     when(data.getTotal()).thenReturn(1);
     when(data.getCoordinates()).thenReturn(coordinates);
     mapData.add(data); 
-    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
-    
-    instance.setMapView(searchText, filters);  
+    when(solr.searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class))).thenReturn(mapData); 
+     
     instance.onStateChange(event); 
-    verify(solr, times(2)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    verify(solr, times(1)).searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
     assertEquals(instance.getModel().getMarkers().size(), 1);
@@ -191,14 +191,26 @@ public class GeoHashMapTest {
   /**
    * Test of onMarkerSelect method, of class GeoHashMap.
    */
-//  @Test
-  public void testOnMarkerSelect() {
+  @Test
+  public void testOnMarkerSelectWithSingleMarker() {
     System.out.println("onMarkerSelect");
-    OverlaySelectEvent event = null;
-    GeoHashMap instance = new GeoHashMap();
-    instance.onMarkerSelect(event);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+     
+    String singleMarkerPath = instance.getSingleMarkerPath();
+    OverlaySelectEvent event = mock(OverlaySelectEvent.class); 
+    Marker marker = mock(Marker.class);  
+    when(marker.getIcon()).thenReturn(singleMarkerPath);
+    when(event.getOverlay()).thenReturn(marker);
+    
+    Map<String, String> filters = null; 
+    List<SolrData> list = new ArrayList();
+    SolrData data = mock(SolrData.class);
+    list.add(data); 
+    when(solr.searchSpatialData(any(String.class), eq(filters), any(String.class))).thenReturn(list);  
+    
+    instance.onMarkerSelect(event); 
+    verify(solr, times(1)).searchSpatialData(any(String.class), eq(filters), any(String.class)); 
+    assertNotNull(instance.getSelectedData());
+             
   }
 
   /**
