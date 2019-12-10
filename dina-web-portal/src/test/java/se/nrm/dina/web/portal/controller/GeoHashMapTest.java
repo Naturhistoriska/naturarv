@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner; 
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -187,7 +188,23 @@ public class GeoHashMapTest {
     assertTrue(instance.getColorBar().isEmpty());
     assertEquals(instance.getModel().getMarkers().size(), 1);
   }
-
+  
+ /**
+   * Test of onMarkerSelect method, of class GeoHashMap.
+   */
+  @Test
+  public void testOnMarkerSelect() {
+    System.out.println("onMarkerSelect");
+      
+    OverlaySelectEvent event = mock(OverlaySelectEvent.class); 
+    Overlay overlay = mock(Overlay.class);   
+    when(event.getOverlay()).thenReturn(overlay);
+     
+    instance.onMarkerSelect(event); 
+    verifyZeroInteractions(solr); 
+    assertTrue(instance.getSelectedData() == null); 
+  }
+  
   /**
    * Test of onMarkerSelect method, of class GeoHashMap.
    */
@@ -209,8 +226,56 @@ public class GeoHashMapTest {
     
     instance.onMarkerSelect(event); 
     verify(solr, times(1)).searchSpatialData(any(String.class), eq(filters), any(String.class)); 
-    assertNotNull(instance.getSelectedData());
-             
+    assertNotNull(instance.getSelectedData()); 
+  }
+  
+  @Test
+  public void testOnMarkerSelectWithPinkMarker() {
+    System.out.println("onMarkerSelect");
+    
+    SolrData data = mock(SolrData.class);
+     
+    String pinkMarkerPath = instance.getPinkMarkerPath();
+    OverlaySelectEvent event = mock(OverlaySelectEvent.class); 
+    Marker marker = mock(Marker.class);  
+    when(marker.getIcon()).thenReturn(pinkMarkerPath);
+    when(marker.getData()).thenReturn(data);
+    when(event.getOverlay()).thenReturn(marker); 
+    
+    instance.onMarkerSelect(event); 
+    verifyZeroInteractions(solr); 
+    assertNotNull(instance.getSelectedData()); 
+  }
+  
+  @Test
+  public void testOnMarkerSelectWithLargeSize() {
+    System.out.println("onMarkerSelect");
+    
+    String locality = "Tyreso, Sweden";
+    String coordinateString = "N55.6800000000E14.2400000000"; 
+    
+    String plusMarkerPath = instance.getPlusMarkerPath();
+    OverlaySelectEvent event = mock(OverlaySelectEvent.class); 
+    Marker marker = mock(Marker.class);  
+    when(marker.getIcon()).thenReturn(plusMarkerPath); 
+    when(event.getOverlay()).thenReturn(marker); 
+    
+    Map<String, String> filters = null;  
+    
+    SolrData data = mock(SolrData.class);
+    when(data.getLocality()).thenReturn(locality);
+    when(data.getCoordinateString()).thenReturn(coordinateString);
+    List<SolrData> mockList = mock(List.class);
+    when(mockList.size()).thenReturn(210);  
+    when(mockList.get(0)).thenReturn(data);
+     
+    when(solr.searchSpatialData(any(String.class), eq(filters), any(String.class))).thenReturn(mockList);  
+     
+    instance.onMarkerSelect(event); 
+    verify(solr, times(1)).searchSpatialData(any(String.class), eq(filters), any(String.class)); 
+    assertTrue(instance.getSelectedData() == null); 
+    assertEquals(instance.getSelectedCoordinate(), coordinateString);
+    assertEquals(instance.getSelectedLocality(), locality);
   }
 
   /**
