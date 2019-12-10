@@ -3,6 +3,7 @@ package se.nrm.dina.web.portal.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -141,8 +142,7 @@ public class GeoHashMapTest {
     when(data.getTotal()).thenReturn(1);
     when(data.getCoordinates()).thenReturn(coordinates);
     mapData.add(data);
-    
-    
+     
     when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
     instance.setMapView(searchText, filters); 
     verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
@@ -172,21 +172,28 @@ public class GeoHashMapTest {
     when(event.getBounds()).thenReturn(bounds);
      
     String coordinates = "N55.6800000000E14.2400000000";
-    String geohash = "4_u3fh"; 
-    List<GeoHashData> mapData = new ArrayList(); 
-    GeoHashData data = mock(GeoHashData.class);
+    String geohash = "4_u3fh";  
     
+    List<GeoHashData> mockList = mock(List.class);
+    when(mockList.size()).thenReturn(210);   
+    
+    
+    GeoHashData data = mock(GeoHashData.class); 
     when(data.getGeohashString()).thenReturn(geohash);
     when(data.getTotal()).thenReturn(1);
     when(data.getCoordinates()).thenReturn(coordinates);
-    mapData.add(data); 
-    when(solr.searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class))).thenReturn(mapData); 
+    when(mockList.get(any(int.class))).thenReturn(data);
+     
+    Stream<GeoHashData> value = Stream.of(data, data, data, data, data, data, data, data, data, data, data); 
+    when(mockList.stream()).thenReturn(value);
+     
+    when(solr.searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class))).thenReturn(mockList); 
      
     instance.onStateChange(event); 
     verify(solr, times(1)).searchGeoHash(any(String.class), any(String.class), eq(null), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
-    assertEquals(instance.getModel().getMarkers().size(), 1);
+    assertEquals(instance.getModel().getMarkers().size(), 11);
   }
   
  /**
