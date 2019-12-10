@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner; 
 import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.event.map.StateChangeEvent;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.LatLngBounds;
 import org.primefaces.model.map.MapModel;
 import se.nrm.dina.web.portal.ContextMocker;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
@@ -149,14 +151,41 @@ public class GeoHashMapTest {
   /**
    * Test of onStateChange method, of class GeoHashMap.
    */
-//  @Test
+  @Test
   public void testOnStateChange() {
     System.out.println("onStateChange");
-    StateChangeEvent event = null;
-    GeoHashMap instance = new GeoHashMap();
-    instance.onStateChange(event);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    StateChangeEvent event = mock(StateChangeEvent.class); 
+    when(event.getZoomLevel()).thenReturn(5);
+    LatLng latLng = mock(LatLng.class);
+    when(latLng.getLat()).thenReturn(55.680);
+    when(latLng.getLng()).thenReturn(14.2400);
+    when(event.getCenter()).thenReturn(latLng);
+    
+    LatLngBounds bounds = mock(LatLngBounds.class);
+    when(bounds.getNorthEast()).thenReturn(latLng);
+    when(bounds.getSouthWest()).thenReturn(latLng);
+    when(event.getBounds()).thenReturn(bounds);
+    
+    
+    String searchText = "text:sweden";
+    String coordinates = "N55.6800000000E14.2400000000";
+    String geohash = "4_u3fh";
+    Map<String, String> filters = null; 
+    List<GeoHashData> mapData = new ArrayList(); 
+    GeoHashData data = mock(GeoHashData.class);
+    
+    when(data.getGeohashString()).thenReturn(geohash);
+    when(data.getTotal()).thenReturn(1);
+    when(data.getCoordinates()).thenReturn(coordinates);
+    mapData.add(data); 
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    
+    instance.setMapView(searchText, filters);  
+    instance.onStateChange(event); 
+    verify(solr, times(2)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    assertFalse(instance.isDisplayingColorBar());
+    assertTrue(instance.getColorBar().isEmpty());
+    assertEquals(instance.getModel().getMarkers().size(), 1);
   }
 
   /**
