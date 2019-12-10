@@ -23,6 +23,14 @@ public class ContactView implements Serializable {
   @Inject
   private InitialProperties properties;
   
+  public ContactView() {
+    
+  }
+  
+  public ContactView(InitialProperties properties) {
+    this.properties = properties;
+  }
+  
   /**
    * Initialize data after class constructed
    */

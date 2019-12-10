@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
@@ -33,6 +28,12 @@ public class ErrorReportBean implements Serializable {
   
   
   public ErrorReportBean() {
+    errorReport = new ErrorReport();
+  }
+  
+  public ErrorReportBean(Navigator navigator, MailHandler mail) {
+    this.navigator = navigator;
+    this.mail = mail; 
     errorReport = new ErrorReport();
   }
   
