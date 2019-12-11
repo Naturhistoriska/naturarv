@@ -1,6 +1,7 @@
 package se.nrm.dina.web.portal.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -9,8 +10,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.After; 
+import org.junit.AfterClass;
 import org.junit.Before; 
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.Matchers.any;
@@ -44,9 +47,16 @@ public class GeoHashMapTest {
   
   private GeoHashMap instance;
   private FacesContext context;  
-  private String serverName;
-  private int serverPort;
-  private String path;
+  private static String serverName;
+  private static int serverPort;
+  private static String path;
+  
+  private static String searchText;
+  private static String coordinates;
+  private static String geohash;
+  private static Map<String, String> filters; 
+  private static List<GeoHashData> mapData; 
+  
   
   @Mock
   private InitialProperties properties;
@@ -60,14 +70,30 @@ public class GeoHashMapTest {
   public GeoHashMapTest() {
   }
   
-  @Before
-  public void setUp() {
+    
+  @BeforeClass
+  public static void setUpClass() {
+    searchText = "text:sweden";
+    coordinates = "N55.6800000000E14.2400000000";
+    geohash = "4_u3fh";
     
     serverName = "naturarv";
-    serverPort = 8080;
-    context = ContextMocker.mockFacesContext(); 
     path = "https://naturarv.nrm.se";
+    serverPort = 8080;
     
+    filters = null; 
+    mapData = new ArrayList();
+  }
+  
+  @AfterClass
+  public static void tearDownClass() {
+  }
+  
+  
+  @Before
+  public void setUp() { 
+    context = ContextMocker.mockFacesContext(); 
+     
     when(request.getServerName()).thenReturn(serverName); 
     when(request.getServerPort()).thenReturn(serverPort); 
     when(externalContext.getRequest()).thenReturn(request);    
@@ -97,46 +123,47 @@ public class GeoHashMapTest {
     System.out.println("init"); 
     instance.init(); 
     assertNotNull(instance.getModel());
-    assertEquals(1, instance.getZoom());
+    assertEquals(1, instance.getZoom()); 
   }
 
   /**
    * Test of setMapView method, of class GeoHashMap.
    */
   @Test
-  public void testSetMapView() {
+  public void testSetMapViewEmptyMapData() {
     System.out.println("setMapView");
-    String searchText = "text:sweden";
-    Map<String, String> filters = null; 
-    List<GeoHashData> mapData = new ArrayList(); 
+   
+    mapData = new ArrayList<>();
     when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
     instance.setMapView(searchText, filters); 
     verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
+    assertTrue(instance.getModel().getMarkers().isEmpty());
+    assertTrue(instance.getModel().getRectangles().isEmpty());
+    assertTrue(instance.getModel().getPolylines().isEmpty());
   }
   
   @Test
-  public void testSetMapViewNull() {
+  public void testSetMapViewNullMapData() {
     System.out.println("setMapView");
-    String searchText = "text:sweden";
-    Map<String, String> filters = null; 
-    List<GeoHashData> mapData = null; 
+ 
+    mapData = null; 
     when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
     instance.setMapView(searchText, filters); 
     verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
+    assertTrue(instance.getModel().getMarkers().isEmpty());
+    assertTrue(instance.getModel().getRectangles().isEmpty());
+    assertTrue(instance.getModel().getPolylines().isEmpty());
   }
   
   @Test
-  public void testSetMapViewWithData() {
+  public void testSetMapViewWithOneData() {
     System.out.println("setMapView");
-    String searchText = "text:sweden";
-    String coordinates = "N55.6800000000E14.2400000000";
-    String geohash = "4_u3fh";
-    Map<String, String> filters = null; 
-    List<GeoHashData> mapData = new ArrayList(); 
+  
+    mapData = new ArrayList(); 
     GeoHashData data = mock(GeoHashData.class);
     
     when(data.getGeohashString()).thenReturn(geohash);
@@ -145,11 +172,52 @@ public class GeoHashMapTest {
     mapData.add(data);
      
     when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    
     instance.setMapView(searchText, filters); 
     verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
     assertEquals(instance.getModel().getMarkers().size(), 1);
+    assertTrue(instance.getModel().getRectangles().isEmpty());
+    assertTrue(instance.getModel().getPolylines().isEmpty());
+  }
+
+  @Test
+  public void testSetMapViewWithMultipleDataTwo() {
+    System.out.println("setMapView");
+  
+    mapData = new ArrayList(); 
+    GeoHashData data1 = mock(GeoHashData.class);
+    GeoHashData data2 = mock(GeoHashData.class);  
+     
+    when(data1.getGeohashString()).thenReturn(geohash);
+    when(data1.getTotal()).thenReturn(120); 
+    when(data1.getCoordinates()).thenReturn(coordinates);
+    mapData.add(data1);
+    
+    String geohash2 = "4_u6dc";
+    String coordinates2 = "N59.28330E15.21670";
+    when(data2.getGeohashString()).thenReturn(geohash2);
+    when(data2.getTotal()).thenReturn(1); 
+    when(data2.getCoordinates()).thenReturn(coordinates2);
+    mapData.add(data2);
+     
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
+    
+    Map<String, Integer> map1 = new HashMap();
+    map1.put(coordinates, 1); 
+    map1.put(coordinates2, 11); 
+    when(solr.searchSmallDataSet(searchText, filters, geohash)).thenReturn(map1);
+     
+            
+    instance.setMapView(searchText, filters); 
+    verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
+    verify(solr, times(1)).searchSmallDataSet(searchText, filters, geohash); 
+    assertFalse(instance.isDisplayingColorBar());
+    assertTrue(instance.getColorBar().isEmpty());
+    assertEquals(instance.getModel().getMarkers().size(), 3);
+    assertTrue(instance.getModel().getRectangles().isEmpty());
+    assertEquals(instance.getModel().getPolylines().size(), 0);  
   }
 
   /**
@@ -171,10 +239,7 @@ public class GeoHashMapTest {
     when(bounds.getNorthEast()).thenReturn(latLng);
     when(bounds.getSouthWest()).thenReturn(latLng);
     when(event.getBounds()).thenReturn(bounds);
-     
-    String coordinates = "N55.6800000000E14.2400000000";
-    String geohash = "4_u3fh";  
-    
+      
     List<GeoHashData> mockList = mock(List.class);
     when(mockList.size()).thenReturn(210);   
      
@@ -238,8 +303,7 @@ public class GeoHashMapTest {
     Marker marker = mock(Marker.class);  
     when(marker.getIcon()).thenReturn(singleMarkerPath);
     when(event.getOverlay()).thenReturn(marker);
-    
-    Map<String, String> filters = null; 
+     
     List<SolrData> list = new ArrayList();
     SolrData data = mock(SolrData.class);
     list.add(data); 
@@ -280,9 +344,7 @@ public class GeoHashMapTest {
     Marker marker = mock(Marker.class);  
     when(marker.getIcon()).thenReturn(plusMarkerPath); 
     when(event.getOverlay()).thenReturn(marker); 
-    
-    Map<String, String> filters = null;  
-    
+     
     SolrData data = mock(SolrData.class);
     when(data.getLocality()).thenReturn(locality);
     when(data.getCoordinateString()).thenReturn(coordinateString);
@@ -304,8 +366,7 @@ public class GeoHashMapTest {
    */
 //  @Test
   public void testGetSelectedDataList() {
-    System.out.println("getSelectedDataList");
-    GeoHashMap instance = new GeoHashMap();
+    System.out.println("getSelectedDataList"); 
     List<SolrData> expResult = null;
     List<SolrData> result = instance.getSelectedDataList();
     assertEquals(expResult, result);
