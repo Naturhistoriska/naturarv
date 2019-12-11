@@ -53,6 +53,20 @@ public class Languages implements Serializable {
     session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
     session.setAttribute(CommonText.getInstance().getLocale(), locale);
   }
+  
+  public Languages(ChartView chart, SearchBean search, StatisticBean statistic, StyleBean style) {
+    this.chart = chart;
+    this.search = search;
+    this.statistic = statistic;
+    this.style = style;
+    
+    updateList = new ArrayList<>();
+    updateList.add("headerForm:header");
+    updateList.add("topMenuForm:topmenupanel");
+    updateList.add("searchForm:searchPanel");
+    updateList.add("footerPanel"); 
+    updateList.add("mainPanel"); 
+  }
 
   public String getLocale() {
     return locale;
