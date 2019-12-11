@@ -50,6 +50,10 @@ public class Navigator implements Serializable {
     log.info("Navigator");
     isHomeView = true;
   }
+  
+  public Navigator(StyleBean style) {
+    this.style = style;
+  }
 
   public void gotoHome() {
     log.info("gotoHome"); 
