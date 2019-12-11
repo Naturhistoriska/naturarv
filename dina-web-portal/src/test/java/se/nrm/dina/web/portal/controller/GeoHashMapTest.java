@@ -189,6 +189,7 @@ public class GeoHashMapTest {
     mapData = new ArrayList(); 
     GeoHashData data1 = mock(GeoHashData.class);
     GeoHashData data2 = mock(GeoHashData.class);  
+    GeoHashData data3 = mock(GeoHashData.class);  
      
     when(data1.getGeohashString()).thenReturn(geohash);
     when(data1.getTotal()).thenReturn(120); 
@@ -201,18 +202,23 @@ public class GeoHashMapTest {
     when(data2.getTotal()).thenReturn(1); 
     when(data2.getCoordinates()).thenReturn(coordinates2);
     mapData.add(data2);
-     
-    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData); 
     
+    when(data3.getGeohashString()).thenReturn(geohash2);
+    when(data3.getTotal()).thenReturn(130); 
+    when(data3.getCoordinates()).thenReturn(coordinates2);
+    mapData.add(data3);
+     
+    when(solr.searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class))).thenReturn(mapData);   
     Map<String, Integer> map1 = new HashMap();
     map1.put(coordinates, 1); 
     map1.put(coordinates2, 11); 
     when(solr.searchSmallDataSet(searchText, filters, geohash)).thenReturn(map1);
+    when(solr.searchSmallDataSet(searchText, filters, geohash2)).thenReturn(null);
      
             
     instance.setMapView(searchText, filters); 
     verify(solr, times(1)).searchGeoHash(eq(searchText), any(String.class), eq(filters), any(String.class)); 
-    verify(solr, times(1)).searchSmallDataSet(searchText, filters, geohash); 
+    verify(solr, times(2)).searchSmallDataSet(eq(searchText), eq(filters), any(String.class)); 
     assertFalse(instance.isDisplayingColorBar());
     assertTrue(instance.getColorBar().isEmpty());
     assertEquals(instance.getModel().getMarkers().size(), 3);
