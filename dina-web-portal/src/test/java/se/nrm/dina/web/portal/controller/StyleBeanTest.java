@@ -170,6 +170,30 @@ public class StyleBeanTest {
     assertEquals(INACTIVE_TAB_LINK, instance.getTabFaq()); 
     assertEquals(ACTIVE_LINK, instance.getTabPartners());  
   }
+  
+    @Test
+  public void testSetTabStyle6() {
+    System.out.println("setTabStyle"); 
+    instance.setTabStyle(CONTACT); 
+    
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabStart()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabAbout()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabCollections()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabFaq()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabPartners());   
+  }
+  
+  @Test
+  public void testSetTabStyle7() {
+    System.out.println("setTabStyle"); 
+    instance.setTabStyle("test"); 
+    
+    assertEquals(ACTIVE_LINK, instance.getTabStart()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabAbout()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabCollections()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabFaq()); 
+    assertEquals(INACTIVE_TAB_LINK, instance.getTabPartners());  
+  }
 
   /**
    * Test of setLanguageStyle method, of class StyleBean.
