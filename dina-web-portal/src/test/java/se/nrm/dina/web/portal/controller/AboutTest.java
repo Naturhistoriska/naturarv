@@ -40,6 +40,7 @@ public class AboutTest {
     assertNotNull(instance); 
     instance.getDevelopmentText();
   }
+  
   /**
    * Test of getWhatIsNaturarvText method, of class About.
    */

@@ -31,7 +31,7 @@ public class SingleMap implements Serializable {
     log.info("getSingledModel: {}", data);
 
     singleModal = new DefaultMapModel();
-    if (data != null) {
+    if (data != null) { 
       singleModal.addOverlay(new Marker(data.getLatLng(), data.getLocality(), null, GMAP_MARKER_PATH));
     }
     return singleModal;

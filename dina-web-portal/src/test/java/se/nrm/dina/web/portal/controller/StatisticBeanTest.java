@@ -1,304 +1,424 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith; 
+import org.mockito.Mock; 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
 import se.nrm.dina.web.portal.model.CollectionData;
+import se.nrm.dina.web.portal.model.StatisticData;
+import se.nrm.dina.web.portal.solr.SolrStatisticService;
+import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
  *
  * @author idali
  */
+@RunWith(MockitoJUnitRunner.class)   
 public class StatisticBeanTest {
+  
+  private StatisticBean instance;
+  
+  @Mock
+  private SolrStatisticService solr;
+  private StatisticData data;  
+  
+  private int total;
+  private int totalDnas;
+  private int totalImages;
+  private int totalMaps;
+  private int totalInSweden;
+  private int totalType;
+  private List<CollectionData> collections;
   
   public StatisticBeanTest() {
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+ 
   @Before
   public void setUp() {
+    total = 550;
+    total = 168;
+    totalImages = 320;
+    totalMaps = 480;
+    totalInSweden = 500;
+    totalType = 328; 
+    
+    collections = new ArrayList<>();
+    collections.add(new CollectionData("123", "collection1", 152));
+    collections.add(new CollectionData("567", "collection2", 63));
+    collections.add(new CollectionData("789", "collection3", 89));
+    collections.add(new CollectionData("4", "collection4", 58));
+    
+    data = new StatisticData(total, totalDnas, totalImages, totalMaps, 
+                             totalInSweden, totalType, collections);
+   
+    when(solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null)).thenReturn(data);
+    instance = new StatisticBean(solr);
   }
   
   @After
   public void tearDown() {
+    instance = null;
   }
+  
+  @Test(expected = NullPointerException.class)
+  public void testDefaultConstructor() {
+    instance = new StatisticBean();
+    assertNotNull(instance);  
+    
+    instance.init();
+  }
+  
 
   /**
    * Test of init method, of class StatisticBean.
    */
-//  @Test
+  @Test
   public void testInit() {
-    System.out.println("init");
-    StatisticBean instance = new StatisticBean();
-    instance.init();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("init"); 
+    instance.init(); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null); 
   }
 
   /**
    * Test of changeLanguage method, of class StatisticBean.
    */
-//  @Test
+  @Test
   public void testChangeLanguage() {
     System.out.println("changeLanguage");
-    boolean isSwedish = false;
-    StatisticBean instance = new StatisticBean();
-    instance.changeLanguage(isSwedish);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    boolean isSwedish = false; 
+    instance.changeLanguage(isSwedish);  
   }
 
   /**
    * Test of resetData method, of class StatisticBean.
-   */
-//  @Test
+   */;
+  @Test
   public void testResetData() {
     System.out.println("resetData");
-    String text = "";
-    Map<String, String> queries = null;
-    StatisticBean instance = new StatisticBean();
-    instance.resetData(text, queries);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+     
+    String text = "text:sweden";
+    Map<String, String> queries = new HashMap();
+    
+    when(solr.getStatisticData(text, queries)).thenReturn(data);
+    instance.resetData(text, queries); 
+    verify(solr, times(1)).getStatisticData(text, queries); 
   }
 
   /**
    * Test of resetAllData method, of class StatisticBean.
    */
-//  @Test
-  public void testResetAllData() {
-    System.out.println("resetAllData");
-    StatisticBean instance = new StatisticBean();
-    instance.resetAllData();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+  @Test
+  public void testResetAllData1() {
+    System.out.println("resetAllData"); 
+    
+    instance.resetAllData(); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null);    
   }
+  
+  @Test
+  public void testResetAllData2() {
+    System.out.println("resetAllData"); 
+    
+    testInit();
+    instance.resetAllData(); 
+    verifyZeroInteractions(solr);    
+  }
+
 
   /**
    * Test of getFilteredCollections method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredCollections() {
-    System.out.println("getFilteredCollections");
-    StatisticBean instance = new StatisticBean();
-    List<CollectionData> expResult = null;
+  @Test
+  public void testGetFilteredCollections1() {
+    System.out.println("getFilteredCollections");  
     List<CollectionData> result = instance.getFilteredCollections();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null);    
+  }
+  
+  @Test
+  public void testGetFilteredCollections2() {
+    System.out.println("getFilteredCollections");  
+    
+    instance.resetAllData();
+    List<CollectionData> result = instance.getFilteredCollections();
+    assertNotNull(result); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null);    
   }
 
   /**
    * Test of getCollections method, of class StatisticBean.
    */
-//  @Test
-  public void testGetCollections() {
-    System.out.println("getCollections");
-    StatisticBean instance = new StatisticBean();
-    List<CollectionData> expResult = null;
+  @Test
+  public void testGetCollections1() {
+    System.out.println("getCollections"); 
+    
     List<CollectionData> result = instance.getCollections();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null);   
+  }
+  
+  @Test
+  public void testGetCollections2() {
+    System.out.println("getCollections"); 
+    
+    instance.init();
+    List<CollectionData> result = instance.getCollections();
+    assertNotNull(result); 
+    verify(solr, times(1)).getStatisticData(CommonText.getInstance().getWildSearchText(), null);   
   }
 
   /**
    * Test of getTotalRecords method, of class StatisticBean.
    */
-//  @Test
+  @Test
   public void testGetTotalRecords() {
-    System.out.println("getTotalRecords");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+    System.out.println("getTotalRecords"); 
+ 
     int result = instance.getTotalRecords();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(total, result); 
   }
 
   /**
    * Test of getFilteredTotalDnas method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredTotalDnas() {
-    System.out.println("getFilteredTotalDnas");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetFilteredTotalDnas1() {
+    System.out.println("getFilteredTotalDnas"); 
+ 
     int result = instance.getFilteredTotalDnas();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalDnas, result); 
   }
+  
+  @Test
+  public void testGetFilteredTotalDnas2() {
+    System.out.println("getFilteredTotalDnas"); 
+ 
+    instance.resetAllData();
+    int result = instance.getFilteredTotalDnas();
+    assertEquals(totalDnas, result); 
+  }
+
 
   /**
    * Test of getTotalDnas method, of class StatisticBean.
    */
-//  @Test
-  public void testGetTotalDnas() {
-    System.out.println("getTotalDnas");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetTotalDnas1() {
+    System.out.println("getTotalDnas"); 
+     
     int result = instance.getTotalDnas();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalDnas, result); 
   }
 
+  @Test
+  public void testGetTotalDnas2() {
+    System.out.println("getTotalDnas"); 
+    
+    instance.init(); 
+    int result = instance.getTotalDnas();
+    assertEquals(totalDnas, result); 
+  }
   /**
    * Test of getFilteredTotalImages method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredTotalImages() {
-    System.out.println("getFilteredTotalImages");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetFilteredTotalImages1() {
+    System.out.println("getFilteredTotalImages"); 
+ 
     int result = instance.getFilteredTotalImages();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalImages, result); 
+  }
+  
+  @Test
+  public void testGetFilteredTotalImages2() {
+    System.out.println("getFilteredTotalImages"); 
+ 
+    instance.resetAllData();
+    int result = instance.getFilteredTotalImages();
+    assertEquals(totalImages, result); 
   }
 
   /**
    * Test of getTotalImages method, of class StatisticBean.
    */
-//  @Test
-  public void testGetTotalImages() {
-    System.out.println("getTotalImages");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetTotalImages1() {
+    System.out.println("getTotalImages");  
     int result = instance.getTotalImages();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalImages, result); 
+  }
+
+  @Test
+  public void testGetTotalImages2() {
+    System.out.println("getTotalImages");  
+    instance.init();
+    int result = instance.getTotalImages();
+    assertEquals(totalImages, result); 
   }
 
   /**
    * Test of getFilteredTotalMaps method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredTotalMaps() {
-    System.out.println("getFilteredTotalMaps");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetFilteredTotalMaps1() {
+    System.out.println("getFilteredTotalMaps");  
     int result = instance.getFilteredTotalMaps();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalMaps, result); 
   }
 
+  @Test
+  public void testGetFilteredTotalMaps2() {
+    System.out.println("getFilteredTotalMaps");  
+    instance.resetAllData();
+    int result = instance.getFilteredTotalMaps();
+    assertEquals(totalMaps, result); 
+  } 
+  
+  
   /**
    * Test of getTotalMaps method, of class StatisticBean.
    */
-//  @Test
-  public void testGetTotalMaps() {
-    System.out.println("getTotalMaps");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetTotalMaps1() {
+    System.out.println("getTotalMaps");  
     int result = instance.getTotalMaps();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalMaps, result); 
+  }
+  
+  
+  @Test
+  public void testGetTotalMaps2() {
+    System.out.println("getTotalMaps");  
+    instance.init();
+    int result = instance.getTotalMaps();
+    assertEquals(totalMaps, result); 
   }
 
   /**
    * Test of getFilteredTotalInSweden method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredTotalInSweden() {
-    System.out.println("getFilteredTotalInSweden");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetFilteredTotalInSweden1() {
+    System.out.println("getFilteredTotalInSweden"); 
     int result = instance.getFilteredTotalInSweden();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalInSweden, result); 
   }
-
+  
+  @Test
+  public void testGetFilteredTotalInSweden2() {
+    System.out.println("getFilteredTotalInSweden"); 
+    instance.resetAllData();
+    int result = instance.getFilteredTotalInSweden();
+    assertEquals(totalInSweden, result); 
+  }
+  
   /**
    * Test of getTotalInSweden method, of class StatisticBean.
    */
-//  @Test
-  public void testGetTotalInSweden() {
-    System.out.println("getTotalInSweden");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetTotalInSweden1() {
+    System.out.println("getTotalInSweden"); 
     int result = instance.getTotalInSweden();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalInSweden, result); 
+  }
+  
+  @Test
+  public void testGetTotalInSweden2() {
+    System.out.println("getTotalInSweden"); 
+    
+    instance.init();
+    int result = instance.getTotalInSweden();
+    assertEquals(totalInSweden, result); 
   }
 
   /**
    * Test of getFilteredTotalType method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredTotalType() {
-    System.out.println("getFilteredTotalType");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetFilteredTotalType1() {
+    System.out.println("getFilteredTotalType"); 
     int result = instance.getFilteredTotalType();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalType, result); 
+  }
+ 
+  @Test
+  public void testGetFilteredTotalType2() {
+    System.out.println("getFilteredTotalType"); 
+    instance.resetAllData();
+    int result = instance.getFilteredTotalType();
+    assertEquals(totalType, result); 
   }
 
   /**
    * Test of getTotalType method, of class StatisticBean.
    */
-//  @Test
-  public void testGetTotalType() {
-    System.out.println("getTotalType");
-    StatisticBean instance = new StatisticBean();
-    int expResult = 0;
+  @Test
+  public void testGetTotalType1() {
+    System.out.println("getTotalType"); 
     int result = instance.getTotalType();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(totalType, result); 
   }
 
+  @Test
+  public void testGetTotalType2() {
+    System.out.println("getTotalType"); 
+    
+    instance.init();
+    int result = instance.getTotalType();
+    assertEquals(totalType, result); 
+  }
+ 
   /**
    * Test of getFilteredInstitutions method, of class StatisticBean.
    */
-//  @Test
-  public void testGetFilteredInstitutions() {
-    System.out.println("getFilteredInstitutions");
-    StatisticBean instance = new StatisticBean();
-    Map<String, Integer> expResult = null;
+  @Test
+  public void testGetFilteredInstitutions1() {
+    System.out.println("getFilteredInstitutions");  
     Map<String, Integer> result = instance.getFilteredInstitutions();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    assertEquals(result.size(), 2); 
+  }
+  
+  @Test
+  public void testGetFilteredInstitutions2() {
+    System.out.println("getFilteredInstitutions");  
+    
+    instance.resetAllData();
+    Map<String, Integer> result = instance.getFilteredInstitutions();
+    assertNotNull(result); 
+    assertEquals(result.size(), 2); 
   }
 
   /**
    * Test of getInstitutions method, of class StatisticBean.
    */
-//  @Test
-  public void testGetInstitutions() {
-    System.out.println("getInstitutions");
-    StatisticBean instance = new StatisticBean();
-    Map<String, Integer> expResult = null;
+  @Test
+  public void testGetInstitutions1() {
+    System.out.println("getInstitutions"); 
     Map<String, Integer> result = instance.getInstitutions();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    assertEquals(result.size(), 2); 
   }
   
+  @Test
+  public void testGetInstitutions2() {
+    System.out.println("getInstitutions"); 
+    
+    instance.init();
+    Map<String, Integer> result = instance.getInstitutions();
+    assertNotNull(result); 
+    assertEquals(result.size(), 2); 
+  }
 }

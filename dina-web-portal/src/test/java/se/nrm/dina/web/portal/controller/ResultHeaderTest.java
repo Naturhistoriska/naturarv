@@ -8,8 +8,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyZeroInteractions; 
 import org.mockito.runners.MockitoJUnitRunner;
 import org.primefaces.PrimeFaces;
 import se.nrm.dina.web.portal.PrimeFacesMocker;
@@ -36,6 +35,7 @@ public class ResultHeaderTest {
   
   @After
   public void tearDown() {
+    instance = null;
   }
 
   /**

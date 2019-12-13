@@ -99,8 +99,18 @@ public class NavigatorTest {
     }  
   }
   
-  
-  
+  @Test
+  public void testGotoHome3() throws IOException {
+    System.out.println("gotoHome"); 
+    try {
+      instance.gotoResults();
+      instance.gotoHome(); 
+      verify(style, times(2)).setTabStyle("home");
+      verify(externalContext, times(2)).redirect(any(String.class));  
+    } finally {
+      context.release();
+    }  
+  }
   
   
   @Test

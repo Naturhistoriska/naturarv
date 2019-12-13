@@ -37,6 +37,11 @@ public class StatisticBean implements Serializable {
     isSwedish = true;
   }
   
+  public StatisticBean(SolrStatisticService solr) { 
+    this.solr = solr;
+    isSwedish = true;
+  }
+  
   @PostConstruct
   public void init() {
     log.info("StatisticData.init");

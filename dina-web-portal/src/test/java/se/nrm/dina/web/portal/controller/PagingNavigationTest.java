@@ -24,6 +24,7 @@ public class PagingNavigationTest {
   
   @After
   public void tearDown() {
+    instance = null;
   }
 
   /**

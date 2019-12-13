@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
 import org.junit.After;
@@ -12,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import se.nrm.dina.web.portal.model.SolrData;
 
@@ -21,51 +17,60 @@ import se.nrm.dina.web.portal.model.SolrData;
  */
 public class SingleMapTest {
   
+  private SingleMap instance;
+  
   public SingleMapTest() {
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+ 
   @Before
   public void setUp() {
+    instance = new SingleMap();
   }
   
   @After
   public void tearDown() {
+    instance = null;
   }
 
   /**
    * Test of getSingledModel method, of class SingleMap.
    */
-//  @Test
+  @Test
   public void testGetSingledModel() {
     System.out.println("getSingledModel");
-    SolrData data = null;
-    SingleMap instance = new SingleMap();
-    MapModel expResult = null;
+    
+    String locality = "Tyreso, Sweden";
+    
+    SolrData data = new SolrData();  
+    data.setLatitude(58.2);
+    data.setLongitude(18.6);
+    data.setLocality(locality);
+     
     MapModel result = instance.getSingledModel(data);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
+    assertEquals(result.getMarkers().size(), 1);
+    assertEquals(locality, result.getMarkers().get(0).getTitle());
+  }
+  
+  @Test
+  public void testGetSingledModelWithNullData() {
+    System.out.println("getSingledModel");
+     
+    SolrData data = null;   
+     
+    MapModel result = instance.getSingledModel(data);
+    assertNotNull(result);  
+    assertTrue(result.getMarkers().isEmpty());
   }
 
   /**
    * Test of onSingleMarkerSelect method, of class SingleMap.
    */
-//  @Test
+  @Test
   public void testOnSingleMarkerSelect() {
     System.out.println("onSingleMarkerSelect");
-    OverlaySelectEvent event = null;
-    SingleMap instance = new SingleMap();
-    instance.onSingleMarkerSelect(event);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    OverlaySelectEvent event = null; 
+    instance.onSingleMarkerSelect(event); 
   }
   
 }
