@@ -183,9 +183,18 @@ public class StatisticBeanTest {
    * Test of getTotalRecords method, of class StatisticBean.
    */
   @Test
-  public void testGetTotalRecords() {
+  public void testGetTotalRecords1() {
     System.out.println("getTotalRecords"); 
  
+    int result = instance.getTotalRecords();
+    assertEquals(total, result); 
+  }
+  
+  @Test
+  public void testGetTotalRecords2() {
+    System.out.println("getTotalRecords"); 
+ 
+    instance.init();
     int result = instance.getTotalRecords();
     assertEquals(total, result); 
   }
