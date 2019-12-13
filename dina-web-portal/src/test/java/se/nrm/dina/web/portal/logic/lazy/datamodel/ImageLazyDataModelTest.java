@@ -174,5 +174,4 @@ public class ImageLazyDataModelTest {
     verify(solr, times(1)).getImageTotalCount("+(text:sweden)", filterMap);
     verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
   }
-  
 }
