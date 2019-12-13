@@ -49,7 +49,7 @@ public class NavigatorTest {
     sb = new StringBuffer("https://naturarv.nrm.se"); 
     when(request.getRequestURL()).thenReturn(sb);
     when(externalContext.getRequest()).thenReturn(request);  
-    when(externalContext.getRequestContextPath()).thenReturn("https://dnakey.nrm.se");   
+    when(externalContext.getRequestContextPath()).thenReturn("https://naturarv.nrm.se");   
     when(context.getExternalContext()).thenReturn(externalContext);
     instance = new Navigator(style);
   }
@@ -71,7 +71,7 @@ public class NavigatorTest {
    * @throws java.io.IOException
    */
   @Test
-  public void testGotoHome() throws IOException {
+  public void testGotoHome1() throws IOException {
     System.out.println("gotoHome"); 
     try {
       instance.gotoHome(); 
@@ -81,6 +81,27 @@ public class NavigatorTest {
       context.release();
     }  
   }
+  
+  @Test
+  public void testGotoHome2() throws IOException {
+    System.out.println("gotoHome"); 
+    try { 
+      sb.append("/faces/pages/results.xhtml");
+      when(request.getRequestURL()).thenReturn(sb);
+      when(externalContext.getRequest()).thenReturn(request); 
+      when(context.getExternalContext()).thenReturn(externalContext);
+    
+      instance.gotoHome();  
+      verify(style, times(1)).setTabStyle("home");
+      verify(externalContext, times(1)).redirect(any(String.class));  
+    } finally {
+      context.release();
+    }  
+  }
+  
+  
+  
+  
   
   @Test
   public void testGotoHomeCatchException() throws IOException {
