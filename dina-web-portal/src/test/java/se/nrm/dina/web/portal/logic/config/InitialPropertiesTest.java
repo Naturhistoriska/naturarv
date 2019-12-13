@@ -75,6 +75,23 @@ public class InitialPropertiesTest {
     instance1.getSolrURL(); 
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testGetSolrURL3() {
+    System.out.println("getSolrURL");  
+    instance2 = new InitialProperties(solrPath, null, morphbankThumbPath, mapKey, 
+            captchaPublicKey, captchaPrivateKey, mailHost, mailHostName, supportMail, 
+            teamsupportMail, supportPhone);
+    instance2.getSolrURL(); 
+  }
+  
+  @Test(expected = RuntimeException.class)
+  public void testGetSolrURL4() {
+    System.out.println("getSolrURL");  
+    instance2 = new InitialProperties(null, solrCore, morphbankThumbPath, mapKey, 
+            captchaPublicKey, captchaPrivateKey, mailHost, mailHostName, supportMail, 
+            teamsupportMail, supportPhone);
+    instance2.getSolrURL(); 
+  }
 
   /**
    * Test of getMorphbankThumbPath method, of class InitialProperties.

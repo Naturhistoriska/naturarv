@@ -389,7 +389,7 @@ public class SearchHelper {
     imageSb.append(startBlock);
     imageSb.append(text);
     imageSb.append(endBlock);
-    if (filters.isEmpty()) {
+    if (filters == null || filters.isEmpty()) {
       return imageSb.toString().trim();
     }
 
