@@ -45,7 +45,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        NavigationHandler nav = context.getApplication().getNavigationHandler();
+//        NavigationHandler nav = context.getApplication().getNavigationHandler();
 
         requestMap.put("error-message", throwable.getMessage());
         requestMap.put("error-stack", throwable.getStackTrace()); 
