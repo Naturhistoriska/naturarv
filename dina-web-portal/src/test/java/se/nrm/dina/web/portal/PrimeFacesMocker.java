@@ -1,5 +1,6 @@
 package se.nrm.dina.web.portal;
  
+import static org.mockito.Matchers.any;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
@@ -31,7 +32,12 @@ public abstract class PrimeFacesMocker extends PrimeFaces {
     Ajax ajax = Mockito.mock(Ajax.class);
     when(primeFaces.ajax()).thenReturn(ajax);
     Mockito.doAnswer(RELEASE)
-            .when(ajax).update();
+            .when(ajax).update(); 
+    
+    
+    Mockito.doAnswer(RELEASE)
+        .when(primeFaces)
+        .scrollTo(any(String.class));
     return primeFaces;
   } 
 }

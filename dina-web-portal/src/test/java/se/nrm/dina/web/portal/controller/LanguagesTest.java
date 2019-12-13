@@ -1,6 +1,5 @@
 package se.nrm.dina.web.portal.controller;
-
-import java.util.List;
+ 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;

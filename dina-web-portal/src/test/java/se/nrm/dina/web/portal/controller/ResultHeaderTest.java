@@ -1,36 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.primefaces.PrimeFaces;
+import se.nrm.dina.web.portal.PrimeFacesMocker;
 
 /**
  *
  * @author idali
  */
+@RunWith(MockitoJUnitRunner.class)  
 public class ResultHeaderTest {
+  
+  private ResultHeader instance;
+  
+  private PrimeFaces faces;  
   
   public ResultHeaderTest() {
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+    
   @Before
-  public void setUp() {
+  public void setUp() {  
+    faces = PrimeFacesMocker.mockPrimeFaces(); 
+    instance = new ResultHeader();
   }
   
   @After
@@ -40,173 +41,231 @@ public class ResultHeaderTest {
   /**
    * Test of setSimpleView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testSetSimpleView() {
-    System.out.println("setSimpleView");
-    ResultHeader instance = new ResultHeader();
-    instance.setSimpleView();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("setSimpleView"); 
+    instance.setSimpleView(); 
+    assertEquals(instance.getViewPath(), "/pages/listView.xhtml");
+    assertEquals(instance.getResultView(), "list");
+    verify(faces, times(1)).scrollTo(any(String.class));
   }
 
   /**
    * Test of setDetailView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testSetDetailView() {
-    System.out.println("setDetailView");
-    ResultHeader instance = new ResultHeader();
-    instance.setDetailView();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("setDetailView"); 
+    instance.setDetailView(); 
+    assertEquals(instance.getViewPath(), "/pages/detailView.xhtml");
+    assertEquals(instance.getResultView(), "detail");
+    verifyZeroInteractions(faces); 
   }
 
   /**
    * Test of setSelectedView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testSetSelectedView() {
-    System.out.println("setSelectedView");
-    ResultHeader instance = new ResultHeader();
-    instance.setSelectedView();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("setSelectedView"); 
+    instance.setSelectedView(); 
+    assertEquals("/pages/selectedView.xhtml", instance.getViewPath());
+    assertEquals("selected", instance.getResultView());
+    verifyZeroInteractions(faces); 
   }
 
   /**
    * Test of setMapView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testSetMapView() {
     System.out.println("setMapView");
-    ResultHeader instance = new ResultHeader();
     instance.setMapView();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals("/pages/mapView.xhtml", instance.getViewPath());
+    assertEquals("map", instance.getResultView());
+    verifyZeroInteractions(faces); 
   }
 
   /**
    * Test of setImageView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testSetImageView() {
-    System.out.println("setImageView");
-    ResultHeader instance = new ResultHeader();
-    instance.setImageView();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("setImageView"); 
+    instance.setImageView(); 
+    assertEquals("/pages/imageView.xhtml", instance.getViewPath());
+    assertEquals("image", instance.getResultView());
+    verifyZeroInteractions(faces); 
   }
 
   /**
    * Test of getViewPath method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testGetViewPath() {
-    System.out.println("getViewPath");
-    ResultHeader instance = new ResultHeader();
-    String expResult = "";
+    System.out.println("getViewPath"); 
+    String expResult = "/pages/listView.xhtml";
     String result = instance.getViewPath();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of getResultView method, of class ResultHeader.
    */
-//  @Test
+  @Test
   public void testGetResultView() {
-    System.out.println("getResultView");
-    ResultHeader instance = new ResultHeader();
-    String expResult = "";
+    System.out.println("getResultView"); 
+    String expResult = "list";
     String result = instance.getResultView();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of isDisplayPaging method, of class ResultHeader.
    */
-//  @Test
-  public void testIsDisplayPaging() {
-    System.out.println("isDisplayPaging");
-    ResultHeader instance = new ResultHeader();
-    boolean expResult = false;
+  @Test
+  public void testIsDisplayPagingTrue1() {
+    System.out.println("isDisplayPaging"); 
+    boolean expResult = true;
     boolean result = instance.isDisplayPaging();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testIsDisplayPagingTrue2() {
+    System.out.println("isDisplayPaging"); 
+    boolean expResult = true;
+    instance.setDetailView();
+    boolean result = instance.isDisplayPaging();
+    assertEquals(expResult, result); 
   }
 
+  @Test
+  public void testIsDisplayPagingFalse() {
+    System.out.println("isDisplayPaging"); 
+    boolean expResult = false;
+    instance.setMapView();
+    boolean result = instance.isDisplayPaging();
+    assertEquals(expResult, result); 
+  }
+  
   /**
    * Test of isDisplaySelectedView method, of class ResultHeader.
    */
-//  @Test
-  public void testIsDisplaySelectedView() {
-    System.out.println("isDisplaySelectedView");
-    ResultHeader instance = new ResultHeader();
+  @Test
+  public void testIsDisplaySelectedViewFalse() {
+    System.out.println("isDisplaySelectedView"); 
     boolean expResult = false;
     boolean result = instance.isDisplaySelectedView();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
+  }
+    
+  @Test
+  public void testIsDisplaySelectedViewTrue() {
+    System.out.println("isDisplaySelectedView"); 
+    boolean expResult = true;
+    instance.setSelectedView();
+    boolean result = instance.isDisplaySelectedView();
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of isDisplayListView method, of class ResultHeader.
    */
-//  @Test
-  public void testIsDisplayListView() {
-    System.out.println("isDisplayListView");
-    ResultHeader instance = new ResultHeader();
-    boolean expResult = false;
+  @Test
+  public void testIsDisplayListViewTrue1() {
+    System.out.println("isDisplayListView"); 
+    boolean expResult = true;
     boolean result = instance.isDisplayListView();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
+  } 
+  
+  @Test
+  public void testIsDisplayListViewTrue2() {
+    System.out.println("isDisplayListView"); 
+    boolean expResult = true;
+    
+    instance.setDetailView();
+    boolean result = instance.isDisplayListView();
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testIsDisplayListViewFalse() {
+    System.out.println("isDisplayListView"); 
+    boolean expResult = false;
+    
+    instance.setMapView();
+    boolean result = instance.isDisplayListView();
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of isDisplayBackToListLink method, of class ResultHeader.
    */
-//  @Test
-  public void testIsDisplayBackToListLink() {
-    System.out.println("isDisplayBackToListLink");
-    ResultHeader instance = new ResultHeader();
+  @Test
+  public void testIsDisplayBackToListLinkFalse() {
+    System.out.println("isDisplayBackToListLink"); 
     boolean expResult = false;
     boolean result = instance.isDisplayBackToListLink();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
   }
 
+  @Test
+  public void testIsDisplayBackToListLinkTrue1() {
+    System.out.println("isDisplayBackToListLink"); 
+    boolean expResult = true;
+    instance.setMapView();
+    boolean result = instance.isDisplayBackToListLink();
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testIsDisplayBackToListLinkTrue2() {
+    System.out.println("isDisplayBackToListLink"); 
+    boolean expResult = true;
+    instance.setImageView();
+    boolean result = instance.isDisplayBackToListLink();
+    assertEquals(expResult, result); 
+  }
   /**
    * Test of isMapView method, of class ResultHeader.
    */
-//  @Test
-  public void testIsMapView() {
-    System.out.println("isMapView");
-    ResultHeader instance = new ResultHeader();
+  @Test
+  public void testIsMapViewFalse() {
+    System.out.println("isMapView"); 
     boolean expResult = false;
     boolean result = instance.isMapView();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testIsMapViewTrue() {
+    System.out.println("isMapView"); 
+    boolean expResult = true;
+    instance.setMapView();
+    boolean result = instance.isMapView();
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of isImageView method, of class ResultHeader.
    */
-//  @Test
-  public void testIsImageView() {
-    System.out.println("isImageView");
-    ResultHeader instance = new ResultHeader();
+  @Test
+  public void testIsImageViewFalse() {
+    System.out.println("isImageView"); 
     boolean expResult = false;
     boolean result = instance.isImageView();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testIsImageViewTrue() {
+    System.out.println("isImageView"); 
+    boolean expResult = true;
+    instance.setImageView();
+    boolean result = instance.isImageView();
+    assertEquals(expResult, result); 
   }
   
 }

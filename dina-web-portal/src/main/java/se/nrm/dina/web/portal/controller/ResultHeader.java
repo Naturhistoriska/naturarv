@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
  
 import java.io.Serializable;
@@ -26,45 +21,51 @@ public class ResultHeader implements Serializable {
   private static final String SELECTED_VIEW_PATH = "/pages/selectedView.xhtml";
   private static final String IMAGE_VIEW_PATH = "/pages/imageView.xhtml";
   private static final String MAP_VIEW_PATH = "/pages/mapView.xhtml";
-
+  
+  private final String list = "list";
+  private final String detail = "detail";
+  private final String selected = "selected";
+  private final String image = "image";
+  private final String map = "map";
+  
   private String viewPath;
   private String resultView;
 
   public ResultHeader() {
     log.info("ResultHeader");
     viewPath = LIST_VIEW_PATH;
-    resultView = "list";
+    resultView = list;
   }
 
   public void setSimpleView() {
     log.info("simpleview");
     viewPath = LIST_VIEW_PATH;
-    resultView = "list";
+    resultView = list;
     PrimeFaces.current().scrollTo("#resultTable"); 
   }
 
   public void setDetailView() {
     log.info("detialview");
     viewPath = DETAIL_VIEW_PATH;
-    resultView = "detail";
+    resultView = detail;
 //    PrimeFaces.current().scrollTo("#detailResultTable"); 
   }
 
   public void setSelectedView() {
     log.info("selectedview");
     viewPath = SELECTED_VIEW_PATH;
-    resultView = "selected";
+    resultView = selected;
   }
 
   public void setMapView() {
     log.info("mapView");
-    resultView = "map";
+    resultView = map;
     viewPath = MAP_VIEW_PATH;
   }
 
   public void setImageView() {
     log.info("imageView");
-    resultView = "image";
+    resultView = image;
     viewPath = IMAGE_VIEW_PATH;
   }
 
@@ -77,27 +78,27 @@ public class ResultHeader implements Serializable {
   }
 
   public boolean isDisplayPaging() {
-    return resultView.equals("list") || resultView.equals("detail");
+    return resultView.equals(list) || resultView.equals(detail);
   }
 
   public boolean isDisplaySelectedView() {
-    return resultView.equals("selected");
+    return resultView.equals(selected);
   }
   
   public boolean isDisplayListView() {
-    return resultView.equals("list") || resultView.equals("detail");
+    return resultView.equals(list) || resultView.equals(detail);
   }
 
   public boolean isDisplayBackToListLink() {
-    return resultView.equals("map") || resultView.equals("image");
+    return resultView.equals(map) || resultView.equals(image);
   }
 
   public boolean isMapView() {
-    return resultView.equals("map");
+    return resultView.equals(map);
   }
   
   public boolean isImageView() { 
-    return resultView.equals("image");
+    return resultView.equals(image);
   } 
   
 //  public void updateHashNav() {
