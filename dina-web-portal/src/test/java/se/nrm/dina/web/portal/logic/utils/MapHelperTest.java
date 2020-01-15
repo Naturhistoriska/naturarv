@@ -264,7 +264,47 @@ public class MapHelperTest {
    * Test of getLatLng method, of class MapHelper.
    */
   @Test
-  public void testGetLatLng() {
+  public void testGetLatLngZoom1() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 1;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "71.26845726811989"); 
+    assertEquals(String.valueOf(result.getLng()), "23.240000000000002"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom2() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 11;
+    int zoom = 2;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "63.86312498142362"); 
+    assertEquals(String.valueOf(result.getLng()), "17.98652713034361"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom3() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 10;
+    int zoom = 3;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "60.43528258147577"); 
+    assertEquals(String.valueOf(result.getLng()), "15.785084971874738"); 
+  }
+  
+  
+  @Test
+  public void testGetLatLngZoom4() {
     System.out.println("getLatLng");
      
     LatLng coordOrg = new LatLng(55.680, 14.2400);
@@ -274,6 +314,175 @@ public class MapHelperTest {
     LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
     assertEquals(String.valueOf(result.getLat()), "53.558679656440354"); 
     assertEquals(String.valueOf(result.getLng()), "12.118679656440356"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom5() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 5;
+    int size = 9;
+    int zoom = 5;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "54.99595971334866"); 
+    assertEquals(String.valueOf(result.getLng()), "12.360614758428184"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom6() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 5;
+    int size = 7;
+    int zoom = 6;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "54.714074173710934"); 
+    assertEquals(String.valueOf(result.getLng()), "13.98118095489748"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom7() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 6;
+    int zoom = 7;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "56.11301270189222"); 
+    assertEquals(String.valueOf(result.getLng()), "13.99"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom8() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 5;
+    int zoom = 8;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.856335575687744"); 
+    assertEquals(String.valueOf(result.getLng()), "13.997294901687516"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom9() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 4;
+    int zoom = 9;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.68"); 
+    assertEquals(String.valueOf(result.getLng()), "14.14"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom10() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 3;
+    int zoom = 10;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.61937822173509"); 
+    assertEquals(String.valueOf(result.getLng()), "14.205"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom11() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 2;
+    int zoom = 11;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.68"); 
+    assertEquals(String.valueOf(result.getLng()), "14.28"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom12() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 12;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.69732050807569"); 
+    assertEquals(String.valueOf(result.getLng()), "14.25"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom13() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 13;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.68692820323027"); 
+    assertEquals(String.valueOf(result.getLng()), "14.244"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom14() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 14;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.685196152422705"); 
+    assertEquals(String.valueOf(result.getLng()), "14.243"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom15() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 15;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.684330127018924"); 
+    assertEquals(String.valueOf(result.getLng()), "14.2425"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom16() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 16;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "55.68346410161514"); 
+    assertEquals(String.valueOf(result.getLng()), "14.242"); 
+  }
+  
+  @Test
+  public void testGetLatLngZoom17() {
+    System.out.println("getLatLng");
+     
+    LatLng coordOrg = new LatLng(55.680, 14.2400);
+    int index = 2;
+    int size = 12;
+    int zoom = 17;  
+    LatLng result = instance.getLatLng(coordOrg, index, size, zoom);
+    assertEquals(String.valueOf(result.getLat()), "56.54602540378444"); 
+    assertEquals(String.valueOf(result.getLng()), "14.74"); 
   }
 
   /**
@@ -714,7 +923,234 @@ public class MapHelperTest {
     String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
     assertEquals(expResult, result); 
   }
+  
+  @Test
+  public void testGetColorCode5() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 3;
+    int setSize = 16;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#E98990";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode6() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 1;
+    int setSize = 5;
+    boolean isFirst = true;
+    boolean isLast = false; 
+    String expResult = "#F7C7C7";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode7() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 5;
+    int setSize = 5;
+    boolean isFirst = false;
+    boolean isLast = true; 
+    String expResult = "#790022";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
 
+  @Test
+  public void testGetColorCode8() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 5;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#E98990";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode10() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 5;
+    int setSize = 5;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#DA323D";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+
+  @Test
+  public void testGetColorCode11() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 3;
+    int setSize = 5;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#A2002E";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+
+  @Test
+  public void testGetColorCode12() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 3;
+    int setSize = 4;
+    boolean isFirst = true;
+    boolean isLast = false; 
+    String expResult = "#F7C7C7";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode13() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 3;
+    int setSize = 4;
+    boolean isFirst = false;
+    boolean isLast = true; 
+    String expResult = "#790022";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode14() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 3;
+    int setSize = 4;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#A2002E";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode15() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 4;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#DA323D";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode16() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 3;
+    boolean isFirst = true;
+    boolean isLast = false; 
+    String expResult = "#F7C7C7";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
+  @Test
+  public void testGetColorCode17() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 3;
+    boolean isFirst = false;
+    boolean isLast = true; 
+    String expResult = "#790022";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
+  @Test
+  public void testGetColorCode18() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 3;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#DA323D";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetColorCode19() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 2;
+    boolean isFirst = true;
+    boolean isLast = false; 
+    String expResult = "#F7C7C7";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
+  @Test
+  public void testGetColorCode20() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 2;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#790022";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
+  @Test
+  public void testGetColorCode21() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 1;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#790022";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
+  @Test
+  public void testGetColorCode22() {
+    System.out.println("getColorCode");
+    
+    int colorIndex = 2;
+    int setSize = 0;
+    boolean isFirst = false;
+    boolean isLast = false; 
+    String expResult = "#F7C7C7";
+    String result = instance.getColorCode(colorIndex, setSize, isFirst, isLast);
+    assertEquals(expResult, result); 
+  }
+  
+  
   /**
    * Test of getMapMarkPath method, of class MapHelper.
    */
