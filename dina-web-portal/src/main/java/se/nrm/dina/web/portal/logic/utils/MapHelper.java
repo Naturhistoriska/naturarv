@@ -108,9 +108,9 @@ public class MapHelper {
       case 11:
       case 12:
         return 6;
-      case 14:
-      case 15:
       case 13:
+      case 14:
+      case 15: 
         return 7;
       default:
         return 2;
@@ -361,7 +361,7 @@ public class MapHelper {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
       }
       
-       if (colorIndex > divid && colorIndex <= divid * 2) {
+      if (colorIndex > divid && colorIndex <= divid * 2) {
         return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
       }
 
