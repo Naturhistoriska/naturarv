@@ -561,11 +561,11 @@ public class SolrData {
   }
 
   public boolean isMineral() {
-    return collectionId.equals(mineralCode);
+    return collectionId != null ? collectionId.equals(mineralCode) : false;
   }
 
   public int getTotalPreparations() {
-    return prepration.length;
+    return prepration != null ? prepration.length : 0;
   }
 
   public String getDetermination() {

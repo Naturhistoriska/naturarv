@@ -14,13 +14,13 @@ public class ImageModel {
   public String morphBankView;  
   
   public ImageModel(String catalogNumber, String collectionId, String morphbankId,
-            String imageId, String txFullName, String morphBaneView) {
+            String imageId, String txFullName, String morphBankView) {
     this.catalogNumber = catalogNumber;
     this.collectionId = collectionId;
     this.morphbankId = morphbankId;
     this.imageId = imageId;
     this.txFullName = txFullName;
-    this.morphBankView = morphBaneView; 
+    this.morphBankView = morphBankView; 
   }
 
   public String getCatalogNumber() {
