@@ -1,16 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.mail;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before;  
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.ErrorReport;
 import se.nrm.dina.web.portal.model.SolrData;
 
@@ -18,25 +19,47 @@ import se.nrm.dina.web.portal.model.SolrData;
  *
  * @author idali
  */
+@RunWith(MockitoJUnitRunner.class)
 public class MailHandlerTest {
+  
+  private MailHandler instance;
+  private SolrData data;
+  private ErrorReport error;
+  
+  private String mailHostName;
+  private String mailHost;
+  private String supportMail;
+  
+  @Mock
+  private InitialProperties properties;
   
   public MailHandlerTest() {
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+ 
   @Before
   public void setUp() {
+    data = new SolrData();
+    error = new ErrorReport();
+    
+    mailHostName = "mail.smtp.host";
+    mailHost = "mail.nrm.se";
+    supportMail = "teamsupport@nrm.se";
+    when(properties.getMailHostName()).thenReturn(mailHostName);
+    when(properties.getMailHost()).thenReturn(mailHost);
+    when(properties.getSupportMail()).thenReturn(supportMail);
+    
+    instance = new MailHandler(properties);
   }
   
   @After
   public void tearDown() {
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void testDefaultConstructor() {
+    instance = new MailHandler();
+    assertNotNull(instance); 
+    instance.sendMail(data, error, true);
   }
 
   /**
@@ -45,13 +68,11 @@ public class MailHandlerTest {
   @Test
   public void testSendMail() {
     System.out.println("sendMail");
-    SolrData data = null;
-    ErrorReport error = null;
+     
     boolean isSwedish = false;
-    MailHandler instance = new MailHandler();
-    instance.sendMail(data, error, isSwedish);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    instance.sendMail(data, error, isSwedish); 
+    
+    verify(properties, times(1)).getMailHostName();
   }
   
 }

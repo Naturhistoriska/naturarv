@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.solr;
 
 import java.io.IOException; 
@@ -36,10 +31,9 @@ public class SolrClientProducer implements Serializable {
   public SolrClientProducer() {
 
   }
-
-  public SolrClientProducer(InitialProperties properties, SolrClient client) {
-    this.properties = properties;
-    this.client = client;
+  
+  public SolrClientProducer(InitialProperties properties ) {
+    this.properties = properties; 
   }
  
   @PostConstruct
@@ -66,8 +60,8 @@ public class SolrClientProducer implements Serializable {
    */
   @PreDestroy
   public void preDestroy() {
-    try {
-      log.info("preDestroy - solrClient is closed");
+    log.info("preDestroy - solrClient is closed");
+    try { 
       client.close();
     } catch (IOException ex) { 
     }

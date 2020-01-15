@@ -1,18 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.utils;
 
 import java.time.Month;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
 
 /**
  *
@@ -20,23 +15,19 @@ import org.primefaces.model.chart.BarChartModel;
  */
 public class ChartHelperTest {
   
+  private ChartHelper instance;
+  
   public ChartHelperTest() {
-  }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
   }
   
   @Before
   public void setUp() {
+    instance = ChartHelper.getInstance();
   }
   
   @After
   public void tearDown() {
+    instance = null;
   }
 
   /**
@@ -44,12 +35,9 @@ public class ChartHelperTest {
    */
   @Test
   public void testGetInstance() {
-    System.out.println("getInstance");
-    ChartHelper expResult = null;
+    System.out.println("getInstance"); 
     ChartHelper result = ChartHelper.getInstance();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
   }
 
   /**
@@ -58,30 +46,34 @@ public class ChartHelperTest {
   @Test
   public void testBuildSeriesLabel() {
     System.out.println("buildSeriesLabel");
-    Month month = null;
-    int yearOfStartDate = 0;
-    boolean isSwedish = false;
-    ChartHelper instance = new ChartHelper();
-    String expResult = "";
+    Month month = Month.MARCH;
+    int yearOfStartDate = 2020;
+    boolean isSwedish = false; 
     String result = instance.buildSeriesLabel(month, yearOfStartDate, isSwedish);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
   }
 
   /**
    * Test of addOptions method, of class ChartHelper.
    */
   @Test
-  public void testAddOptions() {
+  public void testAddOptionsYear() {
     System.out.println("addOptions");
-    BarChartModel model = null;
+    BarChartModel model = new BarChartModel();
     boolean isMonth = false;
-    boolean isSwedish = false;
-    ChartHelper instance = new ChartHelper();
-    instance.addOptions(model, isMonth, isSwedish);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    boolean isSwedish = false; 
+    instance.addOptions(model, isMonth, isSwedish); 
+    assertEquals("Year", model.getAxis(AxisType.X).getLabel());
+  }
+  
+  @Test
+  public void testAddOptionsMonth() {
+    System.out.println("addOptions");
+    BarChartModel model = new BarChartModel();
+    boolean isMonth = true;
+    boolean isSwedish = false; 
+    instance.addOptions(model, isMonth, isSwedish); 
+    assertEquals("Month", model.getAxis(AxisType.X).getLabel());
   }
 
   /**
@@ -90,14 +82,12 @@ public class ChartHelperTest {
   @Test
   public void testChangeMonthChartLanguage() {
     System.out.println("changeMonthChartLanguage");
-    BarChartModel chart = null;
-    boolean isSwedish = false;
-    ChartHelper instance = new ChartHelper();
-    BarChartModel expResult = null;
+    BarChartModel chart = new BarChartModel(); 
+    ChartSeries series = new ChartSeries(); 
+    chart.addSeries(series);
+    boolean isSwedish = false;  
     BarChartModel result = instance.changeMonthChartLanguage(chart, isSwedish);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
   }
 
   /**
@@ -106,14 +96,10 @@ public class ChartHelperTest {
   @Test
   public void testChangeYearChartLanguage() {
     System.out.println("changeYearChartLanguage");
-    BarChartModel chart = null;
-    boolean isSwedish = false;
-    ChartHelper instance = new ChartHelper();
-    BarChartModel expResult = null;
+    BarChartModel chart = new BarChartModel();
+    boolean isSwedish = false;  
     BarChartModel result = instance.changeYearChartLanguage(chart, isSwedish);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertNotNull(result); 
   }
   
 }

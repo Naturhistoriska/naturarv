@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.solr;
 
 import java.io.IOException; 
@@ -42,8 +37,12 @@ public class SolrChartService implements Serializable  {
   @Inject
   @Solr
   private SolrClient client;
-
+ 
   public SolrChartService() {
+  }
+  
+  public SolrChartService(SolrClient client) {
+    this.client = client;
   }
  
    /**
@@ -53,7 +52,8 @@ public class SolrChartService implements Serializable  {
    * @param collectionCode - String
    * @return Map<String, Integer>
    */
-  public Map<String, Integer> getLastTenYearsRegistedData(int startYear, int endYear, String collectionCode) {  
+  public Map<String, Integer> getLastTenYearsRegistedData(int startYear, 
+                      int endYear, String collectionCode) {  
     Map<String, Integer> collectionYearsDataMap = new LinkedHashMap<>();
  
     RangeFacetMap rangeFacet = new RangeFacetMap(

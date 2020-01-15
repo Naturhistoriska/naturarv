@@ -55,6 +55,8 @@ public class GeoHashMap implements Serializable {
   private final String pinkMarkerPath;
   private final String plusMarkerPath;
   private final String minusMarkerPath;
+  
+  private final String polylineStrokeColor = "#750202";
 
   private boolean displayingColorBar;
   private List<String> colorBar;
@@ -91,17 +93,7 @@ public class GeoHashMap implements Serializable {
   @Inject
   private SolrMapService solr;
 
-  public GeoHashMap() {
-//    String servername = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerName();
-//    int serverport = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerPort();
-//    String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-//
-//    StringBuilder sb = new StringBuilder();
-//    sb.append("http://");
-//    sb.append(servername);
-//    sb.append(":");
-//    sb.append(serverport);
-//    sb.append(path); 
+  public GeoHashMap() { 
     singleMarkerPath = MapHelper.getInstance().getMapMarkPath(single);
     pinkMarkerPath = MapHelper.getInstance().getMapMarkPath(pink);
     plusMarkerPath = MapHelper.getInstance().getMapMarkPath(plus);
@@ -325,7 +317,7 @@ public class GeoHashMap implements Serializable {
               polyline.getPaths().add(latLng);
               polyline.setData(data);
               polyline.setStrokeWeight(1);
-              polyline.setStrokeColor("#750202");
+              polyline.setStrokeColor(polylineStrokeColor);
               polyline.setStrokeOpacity(1); 
               model.addOverlay(polyline);
             });
@@ -429,8 +421,5 @@ public class GeoHashMap implements Serializable {
 
   public String getMinusMarkerPath() {
     return minusMarkerPath;
-  }
-  
-  
-
+  } 
 }

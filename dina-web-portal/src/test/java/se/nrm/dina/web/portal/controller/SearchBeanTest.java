@@ -1,83 +1,108 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.faces.model.SelectItem;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import javax.faces.model.SelectItem; 
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.primefaces.event.SelectEvent;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.QueryData;
 import se.nrm.dina.web.portal.model.SolrData;
+import se.nrm.dina.web.portal.model.SolrResult;
+import se.nrm.dina.web.portal.solr.SolrService;
 
 /**
  *
  * @author idali
  */
+@RunWith(MockitoJUnitRunner.class) 
 public class SearchBeanTest {
+  
+  @Mock
+  private SolrService solr;
+  @Mock
+  private Navigator navigator;
+  @Mock
+  private PagingNavigation paging;
+  @Mock
+  private ResultHeader resultHeader;
+  @Mock
+  private StatisticBean statistic;
+  @Mock
+  private GeoHashMap geo;
+  @Mock
+  private GalleriaBean galleria;
+  @Mock
+  private InitialProperties properties;
+
+  private SearchBean instance;
+  private SolrResult result;
+  private List<SolrData> solrData;
   
   public SearchBeanTest() {
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+ 
   @Before
   public void setUp() {
+    solrData = new ArrayList();
+    result = new SolrResult(25, solrData);
+    instance = new SearchBean(solr, navigator, paging, resultHeader, statistic, geo, galleria, properties);
+    
   }
   
   @After
   public void tearDown() {
   }
+  
+  @Test(expected = NullPointerException.class)
+  public void testDefaultConstructor() {
+    instance = new SearchBean();
+    instance.all(); 
+  }
 
   /**
    * Test of init method, of class SearchBean.
    */
-//  @Test
+  @Test
   public void testInit() {
-    System.out.println("init");
-    SearchBean instance = new SearchBean();
-    instance.init();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("init"); 
+    instance.init(); 
+    assertTrue(instance.getFreeText() == null);
   }
 
   /**
    * Test of all method, of class SearchBean.
    */
-//  @Test
+  @Test
   public void testAll() {
-    System.out.println("all");
-    SearchBean instance = new SearchBean();
-    instance.all();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("all"); 
+    
+    when(solr.searchAll(0, 10)).thenReturn(result);
+    instance.all(); 
+    assertEquals(instance.getTotalResult(), 25);
+    verify(navigator, times(1)).gotoResults(); 
+    verify(statistic, times(1)).resetAllData();
+    verify(resultHeader, times(1)).setSimpleView();
   }
 
   /**
    * Test of simpleSearch method, of class SearchBean.
    */
-//  @Test
+  @Test
   public void testSimpleSearch() {
-    System.out.println("simpleSearch");
-    SearchBean instance = new SearchBean();
-    instance.simpleSearch();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("simpleSearch"); 
+    instance.simpleSearch(); 
   }
 
   /**

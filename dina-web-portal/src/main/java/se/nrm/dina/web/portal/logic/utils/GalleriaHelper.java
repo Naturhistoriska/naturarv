@@ -91,8 +91,7 @@ public class GalleriaHelper {
     partsList.add(LABRUM);
     partsList.add(NOTUM);
     partsList.add(MOUTH);
-    partsList.add(CHELICERAE);
-                   
+    partsList.add(CHELICERAE); 
   }
 
   /**

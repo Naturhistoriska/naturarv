@@ -1,6 +1,5 @@
 package se.nrm.dina.web.portal.logic;
-
-import java.time.LocalDate;
+ 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.HashMap;

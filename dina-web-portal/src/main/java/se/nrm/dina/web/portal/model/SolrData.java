@@ -437,7 +437,7 @@ public class SolrData {
 
   public List<String> getAllRemarkes() {
     List<String> remarkList = new ArrayList();
-    if (collectionId.equals(mineralCode)) {
+    if (collectionId != null && collectionId.equals(mineralCode)) {
       if(remarks != null) {
         Arrays.asList(remarks).stream()
               .forEach(r -> {
@@ -457,7 +457,7 @@ public class SolrData {
   
   public String getExportRemarks() {
     exportRemarksSb = new StringBuilder();
-    if (collectionId.equals(mineralCode)) {
+    if (collectionId != null && collectionId.equals(mineralCode)) {
       if(remarks != null) {
         Arrays.asList(remarks)
               .stream()   

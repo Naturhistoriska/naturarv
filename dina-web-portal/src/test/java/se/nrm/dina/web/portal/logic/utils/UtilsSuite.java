@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.utils;
 
 import org.junit.After;
@@ -17,7 +12,9 @@ import org.junit.runners.Suite;
  * @author idali
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.utils.MapHelperTest.class, se.nrm.dina.web.portal.logic.utils.ChartHelperTest.class, se.nrm.dina.web.portal.logic.utils.GalleriaHelperTest.class})
+@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.utils.MapHelperTest.class, 
+  se.nrm.dina.web.portal.logic.utils.ChartHelperTest.class, 
+  se.nrm.dina.web.portal.logic.utils.GalleriaHelperTest.class})
 public class UtilsSuite {
 
   @BeforeClass

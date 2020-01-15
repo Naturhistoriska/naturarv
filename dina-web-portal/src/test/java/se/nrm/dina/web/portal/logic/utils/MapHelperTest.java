@@ -1,20 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.utils;
 
 import ch.hsr.geohash.GeoHash;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.Rectangle;
+import se.nrm.dina.web.portal.model.RectangleData;
 
 /**
  *
@@ -22,23 +16,24 @@ import org.primefaces.model.map.Rectangle;
  */
 public class MapHelperTest {
   
+  private MapHelper instance;
+  
+  private final String defaultSearchRange = "[\"-180 -90\" TO \"180 90\"]";
+  private final int defaultRangeZoom = 2;
+  private final String geohash = "u3fh";
+  
   public MapHelperTest() {
+   
   }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
+ 
   @Before
   public void setUp() {
+    instance = MapHelper.getInstance();
   }
   
   @After
   public void tearDown() {
+    instance = null;
   }
 
   /**
@@ -46,12 +41,8 @@ public class MapHelperTest {
    */
   @Test
   public void testGetInstance() {
-    System.out.println("getInstance");
-    MapHelper expResult = null;
-    MapHelper result = MapHelper.getInstance();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("getInstance"); 
+    assertNotNull(instance); 
   }
 
   /**
@@ -59,13 +50,9 @@ public class MapHelperTest {
    */
   @Test
   public void testGetDefaultRegion() {
-    System.out.println("getDefaultRegion");
-    MapHelper instance = new MapHelper();
-    String expResult = "";
+    System.out.println("getDefaultRegion");  
     String result = instance.getDefaultRegion();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(defaultSearchRange, result); 
   }
 
   /**
@@ -73,13 +60,9 @@ public class MapHelperTest {
    */
   @Test
   public void testGetDefaultZoom() {
-    System.out.println("getDefaultZoom");
-    MapHelper instance = new MapHelper();
-    int expResult = 0;
+    System.out.println("getDefaultZoom");  
     int result = instance.getDefaultZoom();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(defaultRangeZoom, result); 
   }
 
   /**
@@ -87,22 +70,23 @@ public class MapHelperTest {
    */
   @Test
   public void testBuildRectangle() {
-    System.out.println("buildRectangle");
-    String geoHashData = "";
-    int total = 0;
-    String colorCode = "";
-    MapHelper instance = new MapHelper();
-    Rectangle expResult = null;
-    Rectangle result = instance.buildRectangle(geoHashData, total, colorCode);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("buildRectangle"); 
+    int total = 100;
+    String colorCode = "#750202"; 
+     
+    Rectangle result = instance.buildRectangle(geohash, total, colorCode);
+    RectangleData data = (RectangleData) result.getData();
+    
+    assertNotNull(result);  
+    assertEquals(data.getCount(), total);
+    assertEquals(data.getGeohash(), geohash);
+    assertEquals(result.getFillColor(), colorCode); 
   }
 
   /**
    * Test of getGridLevel method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetGridLevel() {
     System.out.println("getGridLevel");
     int zoom = 0;
@@ -117,7 +101,7 @@ public class MapHelperTest {
   /**
    * Test of getLatLng method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetLatLng() {
     System.out.println("getLatLng");
     LatLng coordOrg = null;
@@ -135,7 +119,7 @@ public class MapHelperTest {
   /**
    * Test of getGeoHashPrefix method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetGeoHashPrefix() {
     System.out.println("getGeoHashPrefix");
     int zoom = 0;
@@ -150,7 +134,7 @@ public class MapHelperTest {
   /**
    * Test of resetZoom method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testResetZoom_4args() {
     System.out.println("resetZoom");
     double minLat = 0.0;
@@ -160,15 +144,13 @@ public class MapHelperTest {
     MapHelper instance = new MapHelper();
     int expResult = 0;
     int result = instance.resetZoom(minLat, minLng, maxLat, maxLng);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertEquals(expResult, result); 
   }
 
   /**
    * Test of resetZoom method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testResetZoom_GeoHash() {
     System.out.println("resetZoom");
     GeoHash geoHash = null;
@@ -183,7 +165,7 @@ public class MapHelperTest {
   /**
    * Test of getZoomLevel method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetZoomLevel() {
     System.out.println("getZoomLevel");
     double latD = 0.0;
@@ -199,7 +181,7 @@ public class MapHelperTest {
   /**
    * Test of setDefaultColorBar method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testSetDefaultColorBar() {
     System.out.println("setDefaultColorBar");
     MapHelper instance = new MapHelper();
@@ -213,7 +195,7 @@ public class MapHelperTest {
   /**
    * Test of setColorBar method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testSetColorBar() {
     System.out.println("setColorBar");
     int size = 0;
@@ -228,7 +210,7 @@ public class MapHelperTest {
   /**
    * Test of getColorCode method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetColorCode() {
     System.out.println("getColorCode");
     int colorIndex = 0;
@@ -246,7 +228,7 @@ public class MapHelperTest {
   /**
    * Test of getMapMarkPath method, of class MapHelper.
    */
-  @Test
+//  @Test
   public void testGetMapMarkPath() {
     System.out.println("getMapMarkPath");
     String marker = "";

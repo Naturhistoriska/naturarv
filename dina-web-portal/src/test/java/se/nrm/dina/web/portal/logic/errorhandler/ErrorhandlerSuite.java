@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.errorhandler;
 
 import org.junit.After;
@@ -17,7 +12,8 @@ import org.junit.runners.Suite;
  * @author idali
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.errorhandler.CustomExceptionHandlerFactoryTest.class, se.nrm.dina.web.portal.logic.errorhandler.CustomExceptionHandlerTest.class})
+@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.errorhandler.CustomExceptionHandlerFactoryTest.class, 
+  se.nrm.dina.web.portal.logic.errorhandler.CustomExceptionHandlerTest.class})
 public class ErrorhandlerSuite {
 
   @BeforeClass

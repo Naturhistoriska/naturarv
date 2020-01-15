@@ -37,7 +37,7 @@ public class SolrService implements Serializable {
   private final String defaultSort;
   
   private String unAccentString;
-  private String text = "text";
+  private final String text = "text";
 
   @Inject
   @Solr

@@ -69,8 +69,7 @@ public class GeoHashMapTest {
   
   public GeoHashMapTest() {
   }
-  
-    
+   
   @BeforeClass
   public static void setUpClass() {
     searchText = "text:sweden";

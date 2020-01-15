@@ -83,6 +83,19 @@ public class SearchBean implements Serializable {
   public SearchBean() {
     isSwedish = true;
   }
+  
+  public SearchBean(SolrService solr, Navigator navigator, PagingNavigation paging, 
+          ResultHeader resultHeader, StatisticBean statistic, GeoHashMap geo, 
+          GalleriaBean galleria, InitialProperties properties) {
+    this.solr = solr;
+    this.navigator = navigator;
+    this.paging = paging;
+    this.resultHeader = resultHeader;
+    this.statistic = statistic;
+    this.geo = geo;
+    this.galleria = galleria;
+    this.properties = properties;
+  }
 
   /**
    * Initialize data after class constructed

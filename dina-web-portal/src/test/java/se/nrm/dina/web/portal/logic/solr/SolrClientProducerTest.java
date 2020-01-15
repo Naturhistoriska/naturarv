@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.logic.solr;
 
 import org.apache.solr.client.solrj.SolrClient;
@@ -12,30 +7,49 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
 
 /**
  *
  * @author idali
  */
+@RunWith(MockitoJUnitRunner.class)
 public class SolrClientProducerTest {
+   
+  @Mock
+  private InitialProperties properties;
   
+  @Mock
+  private SolrClient solr;
+  
+  private SolrClientProducer instance;
+  private String solrUrl;
+   
   public SolrClientProducerTest() {
-  }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
   }
   
   @Before
   public void setUp() {
+    solrUrl = "https://solr.nrm.se";
+    when(properties.getSolrURL()).thenReturn(solrUrl); 
+    instance = new SolrClientProducer(properties );
+    
+    instance.init();
   }
   
   @After
   public void tearDown() {
+    instance = null;
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void testDefaultConstructor() {
+    instance = new SolrClientProducer();
+    instance.init();
   }
 
   /**
@@ -43,11 +57,8 @@ public class SolrClientProducerTest {
    */
   @Test
   public void testInit() {
-    System.out.println("init");
-    SolrClientProducer instance = new SolrClientProducer();
-    instance.init();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("init");  
+    assertNotNull(instance.getSolrClient());
   }
 
   /**
@@ -55,13 +66,8 @@ public class SolrClientProducerTest {
    */
   @Test
   public void testGetSolrClient() {
-    System.out.println("getSolrClient");
-    SolrClientProducer instance = new SolrClientProducer();
-    SolrClient expResult = null;
-    SolrClient result = instance.getSolrClient();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("getSolrClient"); 
+    assertNotNull(instance.getSolrClient());
   }
 
   /**
@@ -69,11 +75,8 @@ public class SolrClientProducerTest {
    */
   @Test
   public void testPreDestroy() {
-    System.out.println("preDestroy");
-    SolrClientProducer instance = new SolrClientProducer();
-    instance.preDestroy();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    System.out.println("preDestroy"); 
+    instance.preDestroy(); 
   }
   
 }
