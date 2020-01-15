@@ -6,6 +6,7 @@
 /dina-web-portal_old/
 /docker-compose.local.yml
 /todo.md
+/notes
 /dina-web-portal/project-initdata.yml
 
 .DS_Store
