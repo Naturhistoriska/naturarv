@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.utils;
 
 import java.text.DateFormat;
@@ -59,33 +54,7 @@ public class DateHelper {
   public int getDayOfYear(int month, int day) {   
     return LocalDate.of(2000, month, day).getDayOfYear(); 
   }
-  
-  
-  
-  
-//  
-// 
-//  
-//  public int getYearOfTheDate(LocalDateTime date) {
-//    return date.getYear();
-//  }
-//   
     
-
-//  
-//  /**
-//   * Get past date with number of month and the day of the month
-//   * 
-//   * @param numOfPastMonth - Number of the month to subtract from today
-//   * @param dayOfTheMonth - Number of the day for the month
-//   * @return LocalDateTime
-//   */
-//  public LocalDateTime getPastDateWithMonthAndDay(int numOfPastMonth, int dayOfTheMonth) {
-//    return getYearMonthOfToday().minusMonths(numOfPastMonth).atDay(dayOfTheMonth).atStartOfDay(); 
-//  }
-
-  
-  
   /**
    * Convert java.util.Date to String
    * @param date
@@ -103,7 +72,7 @@ public class DateHelper {
   public Date stringToDate(String strDate) {
     try {
       return DATE_FORMAT.parse(strDate);
-    } catch (ParseException e) {
+    } catch (ParseException e) { 
       return null;
     }
   }
