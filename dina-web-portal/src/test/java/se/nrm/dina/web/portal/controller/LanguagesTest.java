@@ -124,7 +124,7 @@ public class LanguagesTest {
     System.out.println("changeLanguage");
     String locale = "en"; 
     try {
-       instance.changeLanguage(locale);  
+      instance.changeLanguage(locale);  
       verify(style, times(1)).setLanguageStyle(any(String.class)); 
       verify(chart, times(1)).changeLanguage(any(boolean.class));
       verify(statistic, times(1)).changeLanguage(any(boolean.class));
