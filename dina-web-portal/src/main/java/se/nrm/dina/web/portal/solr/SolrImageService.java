@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.solr;
 
 import java.io.IOException;
@@ -16,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.QueryResponse; 
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.ImageModel;
@@ -43,6 +38,11 @@ public class SolrImageService implements Serializable {
   
   public SolrImageService() {
   }
+   
+  public SolrImageService(SolrClient client, InitialProperties properties) {
+    this.client = client;
+    this.properties = properties;
+  }
   
   public int getImageTotalCount(String searchQueryText, Map<String, String> filters ) {
     log.info("getImageTotalCount: {}", searchQueryText);
@@ -57,8 +57,9 @@ public class SolrImageService implements Serializable {
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
     }
-    int totalCount = (int) response.getResults().getNumFound();
-    return totalCount;
+    return (int) response.getResults().getNumFound();
+//    int totalCount = (int) response.getResults().getNumFound();
+//    return totalCount;
   }
   
   
@@ -80,10 +81,10 @@ public class SolrImageService implements Serializable {
  
     SolrHelper.getInstance().addSearchFilters(query, filters);  
     List<ImageModel> images = new ArrayList();
-    try {
+    try {  
       client.query(query).getResults()
               .stream()
-              .forEach(d -> {
+              .forEach(d -> { 
                 ((List<String>) d.getFieldValue(CommonText.getInstance().getImageView())).stream()
                         .forEach(v -> {
                           String imageId = StringUtils.split(v, "/")[0];
@@ -115,8 +116,7 @@ public class SolrImageService implements Serializable {
     query.setQuery(CommonText.getInstance().getMorphbankIdKey() + morphbankId);
     try {
       response = client.query(query);
-      List<SolrData> data = response.getBeans(SolrData.class
-      );
+      List<SolrData> data = response.getBeans(SolrData.class);
       if (data != null && !data.isEmpty()) {
         SolrData solrData = data.get(0);
         solrData.setImages(morphbankImagePath);
@@ -128,9 +128,7 @@ public class SolrImageService implements Serializable {
       return null;
     }
   }
-
-
-   
+ 
   private boolean isMatchFilter(String imageView, List<String> filters) {
     if (filters == null || filters.isEmpty()) {
       return true;

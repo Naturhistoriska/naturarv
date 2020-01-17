@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.solr;
 
 import java.io.IOException;
@@ -64,7 +59,7 @@ public class SolrMapService implements Serializable {
             .returnFields(coordinate)
             .withFilter(geoKey + regionQueryText)
             .withFacet(geohash, geoHashFacet);
-
+     
     SolrHelper.getInstance().addSearchFilters(request, filters); 
     try {
       response = request.process(client);
