@@ -8,6 +8,8 @@
 /todo.md
 /dina-web-portal/project-initdata.yml
 
+notes
+
 .DS_Store
 certs/*.crt
 certs/*.key
