@@ -28,9 +28,7 @@ public class MailHandler implements Serializable {
   private static final String MAIL_SUBJECT_EN = "Error report (naturarv)";
   private static final String MAIL_SUBJECT_SV = "Felrapport (naturarv)";
   private static final String MAIL_CONTENT = "text/html; charset=ISO-8859-1";
-
-  private boolean isSwedish;
-
+ 
   public MailHandler() {
 
   }
@@ -40,8 +38,7 @@ public class MailHandler implements Serializable {
   }
 
   public void sendMail(SolrData data, ErrorReport error, boolean isSwedish) {
-    this.isSwedish = isSwedish;
-    
+ 
     ErropReportEmail report = new ErropReportEmail();
     Properties props = new Properties();
     props.put(properties.getMailHostName(), properties.getMailHost());
