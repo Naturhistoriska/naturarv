@@ -14,8 +14,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({se.nrm.dina.web.portal.utils.DateHelperTest.class, 
   se.nrm.dina.web.portal.utils.CommonTextTest.class,   
-  se.nrm.dina.web.portal.utils.HelpClassTest.class, 
-  se.nrm.dina.web.portal.utils.MonthElementTest.class})
+  se.nrm.dina.web.portal.utils.HelpClassTest.class})
 public class UtilsSuite {
 
   @BeforeClass

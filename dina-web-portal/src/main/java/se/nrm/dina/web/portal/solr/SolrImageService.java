@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse; 
+import org.apache.solr.client.solrj.response.QueryResponse;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.ImageModel;
@@ -46,7 +46,7 @@ public class SolrImageService implements Serializable {
   
   public int getImageTotalCount(String searchQueryText, Map<String, String> filters ) {
     log.info("getImageTotalCount: {}", searchQueryText);
-
+ 
     query = new SolrQuery();   
     query.setQuery(searchQueryText);
     query.addFilterQuery(CommonText.getInstance().getImageKey() + String.valueOf(true));
@@ -54,16 +54,14 @@ public class SolrImageService implements Serializable {
     SolrHelper.getInstance().addSearchFilters(query, filters);
     try {
       response = client.query(query);
-    } catch (SolrServerException | IOException ex) {
+    } catch (SolrServerException | IOException ex) { 
       log.error(ex.getMessage());
+      return 0;
     }
-    return (int) response.getResults().getNumFound();
-//    int totalCount = (int) response.getResults().getNumFound();
-//    return totalCount;
+    return (int) response.getResults().getNumFound(); 
   }
-  
-  
-   public List<ImageModel> getImageList(String searchQueryText, int start, int numPerPage, 
+   
+  public List<ImageModel> getImageList(String searchQueryText, int start, int numPerPage, 
                                         Map<String, String> filters, List<String> filterList ) {
     log.info("getImageList: {} -- {}", start, filterList);
 

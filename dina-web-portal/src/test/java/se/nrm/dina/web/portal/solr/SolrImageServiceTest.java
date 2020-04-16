@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;  
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -18,8 +18,9 @@ import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import static org.mockito.Matchers.any;
 import org.mockito.Mock; 
+import static org.mockito.Mockito.doThrow; 
 import static org.mockito.Mockito.when; 
-import org.mockito.runners.MockitoJUnitRunner; 
+import org.mockito.runners.MockitoJUnitRunner;  
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.ImageModel;
 import se.nrm.dina.web.portal.model.SolrData;
@@ -34,7 +35,7 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class SolrImageServiceTest {
   
   private SolrImageService instance;
-  
+   
   @Mock
   private SolrClient solr;
   @Mock
@@ -89,6 +90,33 @@ public class SolrImageServiceTest {
     
     int result = instance.getImageTotalCount(searchQueryText, filters);
     assertEquals(expResult, result); 
+  }
+  
+  @Test
+  public void testGetImageTotalCountWithIOException() throws SolrServerException, IOException  {
+    System.out.println("getImageTotalCount");
+    String searchQueryText = "tx:taxon";
+    Map<String, String> filters = new HashMap<>(); 
+    filters.put("cn", "cn123");
+    int expResult = 0;
+     
+    doThrow(new IOException()).when(solr).query(any(SolrQuery.class));
+    int result = instance.getImageTotalCount(searchQueryText, filters);
+    assertEquals(expResult, result);  
+  }
+  
+  @Test
+  public void testGetImageTotalCountWithSolrServerException() throws SolrServerException, IOException  {
+    System.out.println("getImageTotalCount");
+    String searchQueryText = "tx:taxon";
+    Map<String, String> filters = new HashMap<>(); 
+    filters.put("cn", "cn123");
+    int expResult = 0;
+     
+    Throwable t = new Throwable();
+    doThrow(new SolrServerException(t)).when(solr).query(any(SolrQuery.class));
+    int result = instance.getImageTotalCount(searchQueryText, filters);
+    assertEquals(expResult, result);  
   }
 
   /**

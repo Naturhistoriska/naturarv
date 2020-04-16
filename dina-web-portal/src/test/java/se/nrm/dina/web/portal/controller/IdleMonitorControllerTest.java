@@ -51,7 +51,7 @@ public class IdleMonitorControllerTest {
     
     IdleMonitorController instance = new IdleMonitorController();
     instance.idleListener(); 
-     verify(session, times(1)).invalidate();
+    verify(session, times(1)).invalidate();
   }
   
 }

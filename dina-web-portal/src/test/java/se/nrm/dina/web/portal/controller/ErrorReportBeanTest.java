@@ -1,9 +1,7 @@
 package se.nrm.dina.web.portal.controller;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.After; 
+import org.junit.Before; 
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;

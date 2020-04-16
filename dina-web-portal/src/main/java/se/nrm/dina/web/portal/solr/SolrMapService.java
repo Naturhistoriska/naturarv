@@ -43,6 +43,14 @@ public class SolrMapService implements Serializable {
   private SolrQuery query;
   
   private TreeSet<Integer> set;
+  
+  public SolrMapService() {
+    
+  }
+  
+  public SolrMapService(SolrClient client) {
+    this.client = client;
+  }
    
   public List<GeoHashData> searchGeoHash(String text, String regionQueryText,
           Map<String, String> filters, String prefix) {
