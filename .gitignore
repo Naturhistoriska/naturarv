@@ -9,6 +9,8 @@
 /notes
 /dina-web-portal/project-initdata.yml
 
+*/.DS_Store
+
 .DS_Store
 certs/*.crt
 certs/*.key
