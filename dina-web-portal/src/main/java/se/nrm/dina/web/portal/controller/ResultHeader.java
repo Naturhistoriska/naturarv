@@ -41,7 +41,7 @@ public class ResultHeader implements Serializable {
     log.info("simpleview");
     viewPath = LIST_VIEW_PATH;
     resultView = list;
-    PrimeFaces.current().scrollTo("#resultTable"); 
+//    PrimeFaces.current().scrollTo("#resultTable"); 
   }
 
   public void setDetailView() {
