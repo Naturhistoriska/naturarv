@@ -8,7 +8,7 @@
   <parent>
     <artifactId>naturarv</artifactId>
     <groupId>se.nrm.dina</groupId>
-    <version>0.3</version>
+    <version>0.5.1</version>
   </parent>
 
   <artifactId>dina-web-portal</artifactId>
@@ -82,7 +82,13 @@
       <artifactId>primefaces</artifactId>
       <version>7.0</version>
     </dependency>
-
+    <!--    <dependency>
+      <groupId>net.bootsfaces</groupId>
+      <artifactId>bootsfaces</artifactId>
+      <version>1.4.2</version>
+      <scope>compile</scope>
+    </dependency>-->
+ 
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
@@ -106,7 +112,31 @@
       <artifactId>poi</artifactId>
       <version>3.17</version>
     </dependency>
-
+    
+    
+<!--    <dependency>
+      <groupId>tr.com.terrayazilim.leaflet.jsf</groupId>
+      <artifactId>terrayazilim-leaflet.jsf</artifactId>
+      <version>1.0.2</version>
+    </dependency>-->
+    
+    <!--    <dependency>
+      <groupId>org.webjars.bowergithub.leaflet</groupId>
+      <artifactId>leaflet.markercluster</artifactId>
+      <version>1.4.1</version>
+    </dependency>-->
+   
+    <!--    <dependency>
+      <groupId>org.webjars.bowergithub.digelements</groupId>
+      <artifactId>leaflet-map</artifactId>
+      <version>2.1.2</version>
+    </dependency>-->
+    <dependency>
+      <groupId>jsf2leaf</groupId>
+      <artifactId>jsf2leaf</artifactId>
+      <version>1.0</version>
+    </dependency>
+  
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-web-api</artifactId>
@@ -133,6 +163,55 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+      
+      
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>provided</includeScope>
+              <includes>META-INF/resources/**</includes>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+
+      <!--      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                  <execution>
+                  <id>unpack</id>
+                  <phase>generate-test-sources</phase>
+                  <goals>
+                      <goal>unpack</goal>
+                  </goals>
+                  <configuration>
+                      <artifactItems>
+                          <artifactItem>
+                              <groupId>org.webjars.bowergithub.digelements</groupId>
+                              <artifactId>leaflet-map</artifactId>
+                              <version>2.1.2</version>                                    
+                              <type>jar</type>
+                              <includes>META-INF/resources/webjars/**/*</includes>
+                              <excludes>META-INF/resources/webjars/**/*index.html</excludes>
+                              <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+                              </artifactItem>
+                          </artifactItems>
+                      </configuration>
+                  </execution>
+          </executions>
+      </plugin>   -->
       <plugin>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
