@@ -874,7 +874,7 @@ public class CommonTextTest {
   @Test
   public void testGetImageTypeThumb() {
     System.out.println("getImageTypeThumb");
-    String expResult = "&imgType=thumb";
+    String expResult = "&imgType=thumbs";
     String result = instance.getImageTypeThumb();
     assertEquals(expResult, result);
   }
