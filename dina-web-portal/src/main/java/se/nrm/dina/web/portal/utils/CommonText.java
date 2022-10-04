@@ -179,7 +179,7 @@ public class CommonText {
   private static final String GROUPED = "grouped";
   private static final String MATCHES = "matches";
 
-  private static final String IMAGE_TYPE_THUMB = "&imgType=thumb";
+  private static final String IMAGE_TYPE_THUMB = "&imgType=thumbs";
   private static final String IMAGE_QUERY_ID = "?id=";
   private static final String IMAGE_TYPE_JPG = "&imgType=jpg";
   
