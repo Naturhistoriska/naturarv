@@ -34,7 +34,7 @@ public class InitialProperties implements Serializable {
   @Inject
   public InitialProperties(@ConfigurationValue("swarm.solr.path") String solrPath,
           @ConfigurationValue("swarm.solr.core") String solrCore,
-          @ConfigurationValue("swarm.morphbank.thumns") String morphbankThumbPath,
+          @ConfigurationValue("swarm.morphbank.thumbs") String morphbankThumbPath,
           @ConfigurationValue("swarm.map.key") String mapKey,
           @ConfigurationValue("swarm.captcha.public") String captchaPublicKey,
           @ConfigurationValue("swarm.captcha.private") String captchaPrivateKey,
