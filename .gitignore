@@ -10,6 +10,7 @@
 /dina-web-portal/project-initdata.yml
 
 */.DS_Store
+dina-web-portal/src/main/resources/.DS_Store
 
 .DS_Store
 certs/*.crt
