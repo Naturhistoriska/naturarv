@@ -2,24 +2,17 @@ package se.nrm.dina.web.portal.solr;
 
 import java.io.IOException;
 import java.io.Serializable; 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
+import java.util.Map;  
 import javax.inject.Inject;
+import javax.json.JsonArray;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrClient; 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
-import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
-import se.nrm.dina.web.portal.logic.solr.Solr; 
-import se.nrm.dina.web.portal.model.GeoHashData;
-import se.nrm.dina.web.portal.model.SolrData; 
+import se.nrm.dina.web.portal.logic.json.JsonConverter;
+import se.nrm.dina.web.portal.logic.solr.Solr;  
 
 /**
  *
@@ -28,21 +21,19 @@ import se.nrm.dina.web.portal.model.SolrData;
 @Slf4j
 public class SolrMapService implements Serializable {
 
-  private final String geohash = "geohash";
-  private final String geohashKey = "geohash:";
+  private final String geohash = "geohash"; 
   private final String geoKey = "geo:";
   private final String geo ="geo"; 
-  private final String coordinate = "coordinate";
-  private final String coordinateKey = "coordinate:";
+  private final String coordinate = "coordinate"; 
+  private final String localityKey = "locality";
 
   @Inject
   @Solr
   private SolrClient client;
 
-  private QueryResponse response;
-  private SolrQuery query;
+  private QueryResponse response; 
   
-  private TreeSet<Integer> set;
+//  private TreeSet<Integer> set;
   
   public SolrMapService() {
     
@@ -52,101 +43,77 @@ public class SolrMapService implements Serializable {
     this.client = client;
   }
    
-  public List<GeoHashData> searchGeoHash(String text, String regionQueryText,
+//  public List<List<MapData>> searchGeoHash(String text, String regionQueryText,
+//          Map<String, String> filters, String prefix) {
+ public JsonArray searchGeoHash(String text, String regionQueryText,
           Map<String, String> filters, String prefix) {
     log.info("searchGeoHash : {}", text);
+      
+    final TermsFacetMap coordinateFacet = new TermsFacetMap(coordinate).setLimit(8000); 
+    final TermsFacetMap localityFacet = new TermsFacetMap(localityKey).setLimit(100);   
     
-    set = new TreeSet<>();
-    final TermsFacetMap coordinateFacet = new TermsFacetMap(coordinate).setLimit(1); 
-    final TermsFacetMap geoFacet = new TermsFacetMap(geohash).setLimit(9); 
-    final TermsFacetMap geoHashFacet = new TermsFacetMap(geohash).setLimit(500).setTermPrefix(prefix);
-    geoHashFacet.withSubFacet(coordinate, coordinateFacet);
-    geoHashFacet.withSubFacet(geo, geoFacet);
+    final TermsFacetMap geoHashFacet = new TermsFacetMap(geohash)
+            .setLimit(500) 
+            .setTermPrefix(prefix);
+    coordinateFacet.withSubFacet(localityKey, localityFacet); 
+     
+    geoHashFacet.withSubFacet(coordinate, coordinateFacet); 
     final JsonQueryRequest request = new JsonQueryRequest()
             .setQuery(text)
-            .returnFields(coordinate)
-            .withFilter(geoKey + regionQueryText)
+            .returnFields(geo)
+            .withFilter(geoKey + regionQueryText) 
             .withFacet(geohash, geoHashFacet);
+            
      
     SolrHelper.getInstance().addSearchFilters(request, filters); 
     try {
       response = request.process(client);
+      
 //      log.info("json: {}", response.jsonStr());
     } catch (SolrServerException | IOException ex) {
       log.warn(ex.getMessage());
       return null;
     } 
-    
-    List<GeoHashData> list = new ArrayList<>();
-    BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
-            .getBucketBasedFacets(geohash);
- 
-    if(bucket != null) {
-      bucket.getBuckets().stream()  
-              .forEach(b -> {
-                int count = (int) b.getCount();
-                if(count > 1) {
-                  set.add(count);
-                } 
-                BucketJsonFacet subBucket = b.getBucketBasedFacets(coordinate)
-                        .getBuckets().stream()
-                        .findFirst()
-                        .get();  
-                list.add(new GeoHashData(
-                        (String) b.getVal(),  
-                        (String) subBucket.getVal(), count, 
-                        b.getBucketBasedFacets(geo).getBuckets()
-                          .stream()
-                          .map(v -> (String) v.getVal())
-                          .collect(Collectors.toList()))); 
-              });
-    } 
-    return list;
+     
+    return JsonConverter.getInstance().buildResponseJson(response.jsonStr());
+      
+//    List<List<MapData>> list = new ArrayList(); 
+//    
+//    BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
+//            .getBucketBasedFacets(geohash);
+// 
+//    if(bucket != null) {
+//      bucket.getBuckets().stream()  
+//              .forEach(b -> {
+////         
+////                BucketJsonFacet subBucket = b.getBucketBasedFacets(coordinate)
+////                        .getBuckets().stream()
+////                        .findFirst()
+////                        .get();  
+////                List<BucketJsonFacet> coordinateBuckets = b.getBucketBasedFacets(coordinate).getBuckets();
+//                
+//                List<MapData> dataList = new ArrayList();
+//                Map<String, Integer> map = new HashMap();
+//                b.getBucketBasedFacets(coordinate).getBuckets()
+//                        .stream().forEach(c -> {
+//                  BucketJsonFacet locilityBucket = c.getBucketBasedFacets(localityKey)
+//                          .getBuckets().stream()
+//                          .findFirst().get();
+//                  String locality = (String) locilityBucket.getVal(); 
+//                  dataList.add(new MapData((String)c.getVal(), locality, (int) c.getCount())); 
+//                });
+//                
+//                list.add(dataList); 
+//              });
+//      
+//                        
+////                         coordinateBuckets
+////                          .stream()
+////                          .map(v -> (String) v.getVal())
+////                          .collect(Collectors.toList()) 
+//    } 
+//    return list;
   }
   
-  public TreeSet<Integer> getSet() {
-    return set;
-  }
-
-  public Map<String, Integer> searchSmallDataSet(String searchText, Map<String, String> filters, String geohash) {
-    log.info("searchSmallDataSet: {} -- {}", filters, geohash);
  
-    final TermsFacetMap coordinateFacet = new TermsFacetMap(coordinate).setLimit(500);  
-    final JsonQueryRequest request = new JsonQueryRequest()
-            .setQuery(searchText)
-            .returnFields(coordinate)
-            .withFilter(geohashKey + geohash) 
-            .withFacet(coordinate, coordinateFacet);
-     SolrHelper.getInstance().addSearchFilters(request, filters); 
-
-    try {
-      response = request.process(client);
-//      log.info("json: {}", response.jsonStr());
-    } catch (SolrServerException | IOException ex) {
-      log.error(ex.getMessage());
-      return null;
-    }
-    BucketBasedJsonFacet bucket = response.getJsonFacetingResponse().getBucketBasedFacets(coordinate); 
-    return bucket != null ? bucket.getBuckets()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            b -> (String) b.getVal(),
-                            b -> (int) b.getCount())) : null;  
- 
-  }
-
-  public List<SolrData> searchSpatialData(String text, Map<String, String> filters, String coordinates) {
-    log.info("searchSpatialData: {}", coordinates);
-    query = new SolrQuery();
-    query.setQuery(text);
-    query.addFilterQuery(coordinateKey + coordinates);
-    SolrHelper.getInstance().addSearchFilters(query, filters);
-    query.setRows(2000);
-    try {
-      return client.query(query).getBeans(SolrData.class);
-    } catch (SolrServerException | IOException ex) {
-      log.error(ex.getMessage());
-      return null;
-    }
-  }
 }

@@ -1,6 +1,7 @@
 package se.nrm.dina.web.portal.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -8,16 +9,40 @@ import java.util.List;
  */
 public class GeoHashData {
    
-  private final String geohashString;
-  private final String coordinates;
-  private final int total;
-  private final List<String> geohashList;
+  private String geohashString;
+  private String coordinates;
+  private int total;
+  private List<String> geohashList;
+  private Map<String, Integer> map;
   
-  public GeoHashData(String geohashString, String coordinates, int total, List<String> geohashList) {
+ public GeoHashData(Map<String, Integer> map) {  
+    this.map = map; 
+  }
+  
+  public GeoHashData(String geohashString, String coordinates, int total, 
+           Map<String, Integer> map) { 
+    this.geohashString = geohashString;
+    this.coordinates = coordinates;
+    this.total = total;
+    this.map = map; 
+  }
+  
+  public GeoHashData(String geohashString, String coordinates, int total, 
+          List<String> geohashList ) {
+    this.geohashString = geohashString;
+    this.coordinates = coordinates;
+    this.total = total;
+    this.geohashList = geohashList; 
+  }
+  
+  
+  public GeoHashData(String geohashString, String coordinates, int total, 
+          List<String> geohashList, Map<String, Integer> map) {
     this.geohashString = geohashString;
     this.coordinates = coordinates;
     this.total = total;
     this.geohashList = geohashList;
+    this.map = map;
   }
 
   public String getGeohashString() {
@@ -35,4 +60,10 @@ public class GeoHashData {
   public List<String> getGeohashList() {
     return geohashList;
   }
+
+  public Map<String, Integer> getMap() {
+    return map;
+  }
+  
+  
 }

@@ -1,5 +1,5 @@
 package se.nrm.dina.web.portal.controller;
-
+ 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +28,7 @@ import se.nrm.dina.web.portal.utils.DateHelper;
 import se.nrm.dina.web.portal.utils.HelpClass;
 import se.nrm.dina.web.portal.utils.MonthElement;
 import se.nrm.dina.web.portal.utils.SearchHelper;
+ 
 
 /**
  *
@@ -73,12 +74,15 @@ public class SearchBean implements Serializable {
   private ResultHeader resultHeader;
   @Inject
   private StatisticBean statistic;
+//  @Inject
+//  private GeoHashMap geo;
   @Inject
-  private GeoHashMap geo;
+  private MyMap geo;
   @Inject
   private GalleriaBean galleria;
   @Inject
   private InitialProperties properties;
+ 
 
   public SearchBean() {
     isSwedish = true;
@@ -92,7 +96,7 @@ public class SearchBean implements Serializable {
     this.paging = paging;
     this.resultHeader = resultHeader;
     this.statistic = statistic;
-    this.geo = geo;
+//    this.geo = geo;
     this.galleria = galleria;
     this.properties = properties;
   }
@@ -539,21 +543,7 @@ public class SearchBean implements Serializable {
     geo.setMapView(getSearchText(), queries);
     resultHeader.setMapView();
   }
-
-  public void listMapData() {
-    log.info("listMapData");
-  
-    SolrData solrData = geo.getSelectedDataList().get(0);
-    queries.put(CommonText.getInstance().getCoordinateKey(), solrData.getCoordinate());
-    statistic.resetData(getSearchText(), queries);
-
-    gotoSimpleView();
-    searchData();
-    filters.put(CommonText.getInstance().getGeopoint(), solrData.getGeopointText());
-
-    HelpClass.getInstance().updateView("resultsForm:result");
-  }
-
+ 
   public void showImageView() {
     log.info("showImageView");
     clearSelectedData();
@@ -826,9 +816,14 @@ public class SearchBean implements Serializable {
   }
 
   public void showSingleMap(SolrData data) {
-    log.info("showSingleMap");
-
-    data.setDisplayMap(true);
+    log.info("showSingleMap : {}", resultList.size());
+     
+    resultList.stream()
+            .forEach(r -> {
+              r.setDisplayMap(false);
+            });
+    
+    data.setDisplayMap(true); 
   }
 
   public void closeMap(SolrData data) {
@@ -839,6 +834,7 @@ public class SearchBean implements Serializable {
     log.info("displayImages : {}", data);
 
     String mbid = data.getMorphbankId();
+    log.info("mbid : {}", mbid);
     if (mbid != null) {
       data.setImageExist(true);
       data.setDisplayImage(true);
@@ -1016,6 +1012,19 @@ public class SearchBean implements Serializable {
     this.isSwedish = isSwedish;
     appendQuery();
   }
+  
+  public double getLat() {
+    return 17.385044;
+  }
+  
+  public double getLng() {
+    return 78.486671;
+  }
+  
+  public String getText() {
+    return "test popup";
+  } 
+  
 
   private void clearAdvanceData() {
     freeText = null;
@@ -1075,7 +1084,7 @@ public class SearchBean implements Serializable {
             .filter(notCoordinateKey)
             .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
   }
-
+   
   Predicate<Entry<String, String>> notCoordinateKey
           = e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey());
 }

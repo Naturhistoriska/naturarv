@@ -70,11 +70,7 @@ public class GeoHashMap implements Serializable {
 
   private int minCount = 90000;
   private int maxCount = 0;
-
-  private double minLat;
-  private double maxLat;
-  private double minLng;
-  private double maxLng;
+ 
 
   private String geohashPrefix;
 
@@ -123,72 +119,72 @@ public class GeoHashMap implements Serializable {
 
     setDefaultMapData();
     set = new TreeSet<>();
-    fetchDataSet(MapHelper.getInstance().getDefaultRegion(), true); 
+//    fetchDataSet(MapHelper.getInstance().getDefaultRegion(), true); 
   }
 
-  private void fetchDataSet(String regionText, boolean resetZoom) {
-    log.info("fetchDataSet: {}", regionText);
+//  private void fetchDataSet(String regionText, boolean resetZoom) {
+//    log.info("fetchDataSet: {}", regionText);
+//
+//    listData = new ArrayList<>(); 
+//    geohashPrefix = MapHelper.getInstance().getGeoHashPrefix(zoom);
+//    model = new DefaultMapModel();
+//    mapData = solr.searchGeoHash(searchText, regionText, filters, geohashPrefix);
+//    if (mapData != null && !mapData.isEmpty()) {
+//      mapData.stream()
+//              .forEach(data -> {
+//                String geohashString = data.getGeohashString();
+//                GeoHash geohash = GeoHash.fromGeohashString(StringUtils.substringAfter(geohashString, "_"));
+//                if (resetZoom) {
+//                  minLat = minLat < geohash.getBoundingBox().getMinLat() ? minLat : geohash.getBoundingBox().getMinLat();
+//                  maxLat = maxLat < geohash.getBoundingBox().getMaxLat() ? geohash.getBoundingBox().getMaxLat() : maxLat;
+//                  minLng = minLng < geohash.getBoundingBox().getMinLon() ? minLng : geohash.getBoundingBox().getMinLon();
+//                  maxLng = maxLng < geohash.getBoundingBox().getMaxLon() ? geohash.getBoundingBox().getMaxLon() : maxLng; 
+//                }
+//                int total = data.getTotal();
+//                if (total == 1) {
+//                  addSingleMarker(data.getCoordinates(), singleMarkerPath);
+//                } else {
+//                  listData.add(data);
+//                } 
+//              }); 
+//      if (resetZoom) {
+//        zoom = MapHelper.getInstance().resetZoom(minLat, minLng, maxLat, maxLng); 
+//        if (zoom > 1) {
+//          centerLat = (maxLat + minLat) / 2;
+//        }
+//        centerLng = (maxLng + minLng) / 2;
+//      }
+//
+//      if (!listData.isEmpty()) {
+//        if (listData.size() > 3) {
+////          set = solr.getSet();
+//          addRectangleMarker();
+//          minCount = set.first();
+//          maxCount = set.last();
+//          displayingColorBar = model.getRectangles().size() > 0;
+//          colorBar = displayingColorBar ? set.size() >= 6 ? MapHelper.getInstance().setDefaultColorBar()
+//                  : MapHelper.getInstance().setColorBar(set.size()) : new ArrayList();
+//        } else {
+//          listData.stream()
+//                  .forEach(data -> {
+//                    addMultipleMarkers(data);
+//                  });
+//        }
+//      } 
+//    }
+//  }
 
-    listData = new ArrayList<>(); 
-    geohashPrefix = MapHelper.getInstance().getGeoHashPrefix(zoom);
-    model = new DefaultMapModel();
-    mapData = solr.searchGeoHash(searchText, regionText, filters, geohashPrefix);
-    if (mapData != null && !mapData.isEmpty()) {
-      mapData.stream()
-              .forEach(data -> {
-                String geohashString = data.getGeohashString();
-                GeoHash geohash = GeoHash.fromGeohashString(StringUtils.substringAfter(geohashString, "_"));
-                if (resetZoom) {
-                  minLat = minLat < geohash.getBoundingBox().getMinLat() ? minLat : geohash.getBoundingBox().getMinLat();
-                  maxLat = maxLat < geohash.getBoundingBox().getMaxLat() ? geohash.getBoundingBox().getMaxLat() : maxLat;
-                  minLng = minLng < geohash.getBoundingBox().getMinLon() ? minLng : geohash.getBoundingBox().getMinLon();
-                  maxLng = maxLng < geohash.getBoundingBox().getMaxLon() ? geohash.getBoundingBox().getMaxLon() : maxLng; 
-                }
-                int total = data.getTotal();
-                if (total == 1) {
-                  addSingleMarker(data.getCoordinates(), singleMarkerPath);
-                } else {
-                  listData.add(data);
-                } 
-              }); 
-      if (resetZoom) {
-        zoom = MapHelper.getInstance().resetZoom(minLat, minLng, maxLat, maxLng); 
-        if (zoom > 1) {
-          centerLat = (maxLat + minLat) / 2;
-        }
-        centerLng = (maxLng + minLng) / 2;
-      }
-
-      if (!listData.isEmpty()) {
-        if (listData.size() > 3) {
-          set = solr.getSet();
-          addRectangleMarker();
-          minCount = set.first();
-          maxCount = set.last();
-          displayingColorBar = model.getRectangles().size() > 0;
-          colorBar = displayingColorBar ? set.size() >= 6 ? MapHelper.getInstance().setDefaultColorBar()
-                  : MapHelper.getInstance().setColorBar(set.size()) : new ArrayList();
-        } else {
-          listData.stream()
-                  .forEach(data -> {
-                    addMultipleMarkers(data);
-                  });
-        }
-      } 
-    }
-  }
-
-  private void addMultipleMarkers(GeoHashData data) {
-    String geohashString = data.getGeohashString();
-    Map<String, Integer> map = solr.searchSmallDataSet(searchText, filters, geohashString); 
-    if(map != null) {
-      map.entrySet().stream()
-              .forEach(m -> {
-                String markPath = m.getValue() == 1 ? singleMarkerPath : plusMarkerPath; 
-                addSingleMarker(m.getKey(), markPath);
-              });
-    } 
-  }
+//  private void addMultipleMarkers(GeoHashData data) {
+//    String geohashString = data.getGeohashString();
+//    Map<String, Integer> map = solr.searchSmallDataSet(searchText, filters, geohashString); 
+//    if(map != null) {
+//      map.entrySet().stream()
+//              .forEach(m -> {
+//                String markPath = m.getValue() == 1 ? singleMarkerPath : plusMarkerPath; 
+//                addSingleMarker(m.getKey(), markPath);
+//              });
+//    } 
+//  }
 
   private void addRectangleMarker() {
     String prefix = MapHelper.getInstance().getGeoHashPrefix(zoom); 
@@ -222,61 +218,61 @@ public class GeoHashMap implements Serializable {
 
     LatLngBounds bounds = event.getBounds();
     model = new DefaultMapModel(); 
-    fetchDataSet(SearchHelper.getInstance().buildSearchRegion(bounds.getNorthEast().getLat(),
-            bounds.getSouthWest().getLat(), bounds.getNorthEast().getLng(), bounds.getSouthWest().getLng()), false); 
+//    fetchDataSet(SearchHelper.getInstance().buildSearchRegion(bounds.getNorthEast().getLat(),
+//            bounds.getSouthWest().getLat(), bounds.getNorthEast().getLng(), bounds.getSouthWest().getLng()), false); 
   }
 
-  public void onMarkerSelect(OverlaySelectEvent event) {
-    log.info("onMarkerSelect");
-
-    selectedData = null;
-    selectedDataList = new ArrayList();
-    Overlay overlay = event.getOverlay();
-    if (overlay instanceof Marker) {
-      Marker marker = (Marker) overlay; 
-      if(marker.getIcon().equals(pinkMarkerPath)) {
-        selectedData = (SolrData) marker.getData();
-      } else {
-        selectedDataList = solr.searchSpatialData(searchText, filters, marker.getTitle());   
-        SolrData solrData = selectedDataList.get(0);
-        if(marker.getIcon().equals(singleMarkerPath)) {
-          selectedData = solrData;
-          selectedDataList = new ArrayList();
-        } else {  
-          selectedData = null;
-          if (selectedDataList.size() <= 12) {
-            if (marker.getIcon().equals(plusMarkerPath)) {
-              addPolyline(solrData);
-              marker.setIcon(minusMarkerPath);
-            } else {
-              marker.setIcon(plusMarkerPath);
-              removePolylineAndSubMarkers(marker);
-            }
-            HelpClass.getInstance().updateView("resultsForm:largeMap");
-          } else {
-            selectedLocality = solrData.getLocality();
-            selectedCoordinate = solrData.getCoordinateString();
-          }
-        }
-      } 
-    } else if (overlay instanceof Rectangle) {
-      setDefaultMapData();
-      Rectangle rectangle = (Rectangle) overlay;
-      LatLngBounds bounds = rectangle.getBounds();
-
-      selectedRectangle = (RectangleData) rectangle.getData(); 
-      String geohashString = selectedRectangle.getGeohash();
-      GeoHash geohash = GeoHash.fromGeohashString(geohashString);
-      zoom = MapHelper.getInstance().resetZoom(geohash);
-      centerLat = geohash.getBoundingBoxCenterPoint().getLatitude();
-      centerLng = geohash.getBoundingBoxCenterPoint().getLongitude();
-
-      String searchRegion = SearchHelper.getInstance().buildSearchRegion(bounds.getSouthWest().getLat(),
-              bounds.getNorthEast().getLat(), bounds.getNorthEast().getLng(), bounds.getSouthWest().getLng());
-      fetchDataSet(searchRegion, true); 
-      HelpClass.getInstance().updateView("resultsForm:mapPanel");
-    }
-  }
+//  public void onMarkerSelect(OverlaySelectEvent event) {
+//    log.info("onMarkerSelect");
+//
+//    selectedData = null;
+//    selectedDataList = new ArrayList();
+//    Overlay overlay = event.getOverlay();
+//    if (overlay instanceof Marker) {
+//      Marker marker = (Marker) overlay; 
+//      if(marker.getIcon().equals(pinkMarkerPath)) {
+//        selectedData = (SolrData) marker.getData();
+//      } else {
+//        selectedDataList = solr.searchSpatialData(searchText, filters, marker.getTitle());   
+//        SolrData solrData = selectedDataList.get(0);
+//        if(marker.getIcon().equals(singleMarkerPath)) {
+//          selectedData = solrData;
+//          selectedDataList = new ArrayList();
+//        } else {  
+//          selectedData = null;
+//          if (selectedDataList.size() <= 12) {
+//            if (marker.getIcon().equals(plusMarkerPath)) {
+//              addPolyline(solrData);
+//              marker.setIcon(minusMarkerPath);
+//            } else {
+//              marker.setIcon(plusMarkerPath);
+//              removePolylineAndSubMarkers(marker);
+//            }
+//            HelpClass.getInstance().updateView("resultsForm:largeMap");
+//          } else {
+//            selectedLocality = solrData.getLocality();
+//            selectedCoordinate = solrData.getCoordinateString();
+//          }
+//        }
+//      } 
+//    } else if (overlay instanceof Rectangle) {
+//      setDefaultMapData();
+//      Rectangle rectangle = (Rectangle) overlay;
+//      LatLngBounds bounds = rectangle.getBounds();
+//
+//      selectedRectangle = (RectangleData) rectangle.getData(); 
+//      String geohashString = selectedRectangle.getGeohash();
+//      GeoHash geohash = GeoHash.fromGeohashString(geohashString);
+//      zoom = MapHelper.getInstance().resetZoom(geohash);
+//      centerLat = geohash.getBoundingBoxCenterPoint().getLatitude();
+//      centerLng = geohash.getBoundingBoxCenterPoint().getLongitude();
+//
+//      String searchRegion = SearchHelper.getInstance().buildSearchRegion(bounds.getSouthWest().getLat(),
+//              bounds.getNorthEast().getLat(), bounds.getNorthEast().getLng(), bounds.getSouthWest().getLng());
+////      fetchDataSet(searchRegion, true); 
+//      HelpClass.getInstance().updateView("resultsForm:mapPanel");
+//    }
+//  }
  
   private void removePolylineAndSubMarkers(Marker marker) {
     List<Marker> markers = model.getMarkers();
@@ -378,11 +374,7 @@ public class GeoHashMap implements Serializable {
   private void setDefaultMapData() {
     model = new DefaultMapModel();
     zoom = 1;
-
-    minLat = 90;
-    minLng = 180;
-    maxLat = -90;
-    maxLng = -180;
+ 
     centerLat = 32.0;
     centerLng = 31.0;
     

@@ -2,11 +2,11 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:p="http://primefaces.org/ui"  
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"    >
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
 
   <body>
-    <ui:composition>    
-
+    <ui:composition>     
       <p:dataTable id="detailResultTable" var="record" value="#{searchBean.resultList}"  
                    rowKey="#{record.catalogNumber}"  styleClass="detailTable"
                    paginator="false" rowIndexVar="indexCount"   >    
@@ -184,25 +184,16 @@
               <h:commandLink action="#{searchBean.closeMap(record)}" value="#{msg.closemap}" >    
                 <f:ajax render="singleMapPanel"/>
               </h:commandLink> 
-
-              <f:view> 
-                <p:gmap center="#{record.latitude}, #{record.longitude}" type="ROADMAP"
-                        zoom="8" model="#{map.getSingledModel(record)}" 
-                        style="width:600px; height:300px" fitBounds="false"   >  
-
-                  <p:ajax event="overlaySelect" listener="#{map.onSingleMarkerSelect}" />   
-                  <p:gmapInfoWindow >  
-                    <p:outputPanel styleClass="mapInfoWindos">   
-                      <h:panelGrid columns="2" >
-                        <h:graphicImage library="images" name="pin_1.png" alt="pin"   styleClass="images" /> 
-                        <h:outputText value="#{record.locality}"  style=" font-size: 9px;" />   
-                        <h:column />
-                        <h:outputText value="#{record.coordinateString}" style=" font-size: 9px;" />    
-                      </h:panelGrid> 
-                    </p:outputPanel>   
-                  </p:gmapInfoWindow>  
-                </p:gmap> 
-              </f:view>  
+              <leaf:map  center="#{record.latitude}, #{record.longitude}" 
+                            marker="#{record.latitude}, #{record.longitude}"
+                            popupMsg="#{record.locality}&lt;br&gt;#{record.coordinateString}" 
+                            zoomGlobal="false" 
+                            dragging="false"
+                            width="600px" height="300px" zoom="14"  
+                            urlTemplate="http://{s}.tile.osm.org/{z}/{x}/{y}.png" 
+                            attribution="OpenStreetMap" 
+                            />
+                
             </h:panelGrid>
           </h:panelGrid>
 
@@ -210,7 +201,7 @@
           <h:panelGroup layout="block" >  
             <p:commandLink value="#{msg.showmap}" rendered="#{record.singleMapLink}"
                            action="#{searchBean.showSingleMap(record)}"    
-                           update="singleMapPanel" />  
+                           update="singleMapPanel detailResultTable" />  
             <p:spacer width="10" height="5" rendered="#{record.singleMapLink}" /> 
             <h:outputLink id="scientificNameLinkNrmSingle" value="http://naturforskaren.se/search/#{record.txFullName.trim()}"  
                           title="scientificname"  target="_blank" >                   
