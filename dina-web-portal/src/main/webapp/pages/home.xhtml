@@ -1,13 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:h="http://java.sun.com/jsf/html"   
-      xmlns:p="http://primefaces.org/ui"  >
+      xmlns:p="http://primefaces.org/ui"   >
 
   <body>
     <ui:composition  template="/templates/masterLayout.xhtml">     
-      <ui:define name="content"  >   
-        <h:panelGroup id="mainPanel"  layout="block" styleClass="homePanel"  >     
-          <h:form id="homeForm" prependId="false">   
+      <ui:define name="content"  >    
+        <h:panelGroup id="mainPanel"  layout="block" styleClass="homePanel"  >    
+          <h:form id="homeForm" prependId="false">    
             <div class="ui-g" style="width: 980px;">
               <div class="ui-g-9"> 
                 <div class="ui-g-12"  > 
@@ -19,10 +19,14 @@
                 <div class="ui-g-12" >   
                   <div class="ui-g-7">
                     <div class="ui-g-12 baggimg" > 
-                      <p:cache region="3baggcache" key="3baggimg">
-                        <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
-                                        title="3bagg" styleClass="images" width="350" height="292"  /> 
-                      </p:cache>  
+                      <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
+                                      title="3bagg" styleClass="images" width="350" height="292"  /> 
+                      <ui:remove>
+                        <p:cache region="3baggcache" key="3baggimg">
+                          <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
+                                          title="3bagg" styleClass="images" width="350" height="292"  /> 
+                        </p:cache>  
+                      </ui:remove>
                     </div>   
                     <div class="ui-g-12 baggimgtext" >
                       <h:outputText value="#{msg.photo3bagg}"    /> 
@@ -107,7 +111,7 @@
                     <h:outputText value="#{statistic.totalImages}" />
                   </h:panelGrid> 
                 </p:commandLink>  
- 
+
                 <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('isType:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >
@@ -167,7 +171,7 @@
           </h:form> 
         </h:panelGroup>
       </ui:define>
-    </ui:composition>
+    </ui:composition> 
   </body>
 </html>
 

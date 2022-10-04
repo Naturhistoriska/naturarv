@@ -12,6 +12,8 @@ public class CollectionData implements Serializable {
   private String code;
   private String name; 
   private int total;
+  
+  private final String dots = "...";
 
   public CollectionData() {
 
@@ -36,7 +38,13 @@ public class CollectionData implements Serializable {
   }
 
   public String getShortName() {
-    return name.length() > 20 ? StringUtils.substring(name, 0, 19) + "..." : name;
+    if(name.trim().length() <= 20) {
+      return name;
+    }
+    StringBuilder sb = new StringBuilder();
+    sb.append(StringUtils.substring(name, 0, 19));
+    sb.append(dots);
+    return sb.toString(); 
   } 
   
   @Override

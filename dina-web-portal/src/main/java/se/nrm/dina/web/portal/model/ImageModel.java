@@ -1,6 +1,5 @@
 package se.nrm.dina.web.portal.model;
  
-
 /**
  *
  * @author idali

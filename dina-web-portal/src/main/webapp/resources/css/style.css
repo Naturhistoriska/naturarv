@@ -142,20 +142,7 @@ body * {
   color:#ffffff;
   font-family: "Arial",sans-serif;   
 }
-
-
-
-
-
-/* home page */
-/*.welcome {
-  margin-left: auto;
-  margin-right: auto; 
-  text-align: center;
-  float: left;
-  overflow: auto;
-} */
-
+ 
 .welcomeheader { 
   font-weight: bold;
   font-size: 24px;   
@@ -186,13 +173,7 @@ body * {
   width: 220px; 
   float: right;
 }
-
-/*.statistic.ui-g-3 {
-  vertical-align: top; 
-  float: right;
-  padding-left: 20px;
-}*/
-
+ 
 .leftcolumn {
   float: left;  
   width: 80%;
@@ -209,14 +190,7 @@ body * {
   color: #086A87;
   font-size: 11px;
 }
-
-
-
-/*.shoutcutpanel a {
-    text-decoration: underline;
-    color: #086A87; 
-    font-size: 11px;
-}*/
+ 
 
 /*search section*/
 .searchBoxPanelSimple {  
@@ -713,9 +687,7 @@ a:hover {
 noheader.ui-datatable .ui-paginator {
   padding-top: 20px !important;
 }
-
-
-
+ 
 
 .ui-datascroller .ui-datascroller-item {
   width: 33%;
@@ -729,11 +701,13 @@ noheader.ui-datatable .ui-paginator {
 .ui-autocomplete-panel {
   width: 400px !important;
 }
-
  
-
 /*test leaflet map*/
 #clusteringMap { 
   height: 180px; 
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+  white-space: pre-line;
 }
  

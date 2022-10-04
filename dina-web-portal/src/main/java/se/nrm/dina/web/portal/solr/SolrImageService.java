@@ -12,6 +12,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.model.ImageModel;
@@ -28,6 +29,8 @@ public class SolrImageService implements Serializable {
   
   private SolrQuery query;
   private QueryResponse response;
+  
+  private final String slash = "/";
   
   @Inject
   private InitialProperties properties;
@@ -57,15 +60,15 @@ public class SolrImageService implements Serializable {
     } catch (SolrServerException | IOException ex) { 
       log.error(ex.getMessage());
       return 0;
-    }
+    } 
     return (int) response.getResults().getNumFound(); 
   }
    
   public List<ImageModel> getImageList(String searchQueryText, int start, int numPerPage, 
                                         Map<String, String> filters, List<String> filterList ) {
     log.info("getImageList: {} -- {}", start, filterList);
-
-    String imageThumbPath = properties.getMorphbankThumbPath();
+ 
+    String imageThumbPath = properties.getMorphbankThumbPath();  
     query = new SolrQuery(); 
     query.setQuery(searchQueryText)
             .addField(CommonText.getInstance().getMorphbankId())
@@ -77,21 +80,23 @@ public class SolrImageService implements Serializable {
             .setStart(start)
             .setRows(numPerPage);
  
+    
     SolrHelper.getInstance().addSearchFilters(query, filters);  
     List<ImageModel> images = new ArrayList();
     try {  
-      client.query(query).getResults()
-              .stream()
+      SolrDocumentList documents = client.query(query).getResults(); 
+      documents.stream()
               .forEach(d -> { 
                 ((List<String>) d.getFieldValue(CommonText.getInstance().getImageView())).stream()
-                        .forEach(v -> {
-                          String imageId = StringUtils.split(v, "/")[0];
-                          String view = StringUtils.substringAfter(v, "/");
+                        .forEach(v -> { 
+                          String imageId = StringUtils.split(v, slash)[0];
+                          String view = StringUtils.substringAfter(v, slash);
                           if (isMatchFilter(v, filterList)) {
                             images.add(new ImageModel((String) d.getFieldValue(CommonText.getInstance().getCatalogNumber()),
                                     (String) d.getFieldValue(CommonText.getInstance().getCollectionId()),
                                     (String) d.getFieldValue(CommonText.getInstance().getMorphbankId()),
-                                    HelpClass.getInstance().buildImagePath(imageId, CommonText.getInstance().getImageTypeThumb(), imageThumbPath),
+                                    HelpClass.getInstance().buildImagePath(imageId, 
+                                            CommonText.getInstance().getImageTypeThumb(), imageThumbPath),
                                     (String) d.getFieldValue(CommonText.getInstance().getTaxonFullName()), view));
                           }
                         });

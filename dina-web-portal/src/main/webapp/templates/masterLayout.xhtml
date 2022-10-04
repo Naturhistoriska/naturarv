@@ -14,9 +14,27 @@
       </ui:insert>
     </title>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=#{geoHash.mapKey}" type="text/javascript"></script>
+
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa1olBKzqZdr4KaHHaC-2njZOWOinIDq8" type="text/javascript"></script>-->
+
+
     <script name="jquery/jquery.js" library="primefaces"></script> 
- 
+
+
+    
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+
   </h:head> 
   <f:view locale="#{languages.locale}" > 
     <ui:remove>
@@ -28,7 +46,7 @@
     <h:body  styleClass="mainbody" >
       <h:outputStylesheet library="css" name="style.css"  />
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
- 
+        
       <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   />
       <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false"
                 resizable="false" showHeader="false">
@@ -58,13 +76,13 @@
             <ui:include src="/pages/topMenu.xhtml" />
           </ui:insert>
         </h:panelGroup>
-        
+
         <h:panelGroup  id="search" layout="block" rendered="#{navigate.showSearchPanel}"  >
           <ui:insert name="search" >
             <ui:include src="/pages/search.xhtml" />
           </ui:insert>
         </h:panelGroup>
-        
+
         <h:panelGroup  id="main" layout="block"  >
           <ui:insert name="content"/> 
         </h:panelGroup>

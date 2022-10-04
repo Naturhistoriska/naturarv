@@ -2,7 +2,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:f="http://java.sun.com/jsf/core"  
-      xmlns:p="http://primefaces.org/ui"  >
+      xmlns:p="http://primefaces.org/ui" >
 
   <body>
     <ui:composition  template="/templates/masterLayout.xhtml">    
@@ -28,12 +28,55 @@
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
                       </p:commandLink>  
-
+ 
                       <p:commandLink actionListener="#{searchBean.showMapView()}" process="@this" 
                                      rendered="#{!resultHeader.mapView}" 
                                      update=":resultsForm:resultContent">   
                         <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
                       </p:commandLink> 
+                      <ui:remove>
+                      <p:commandLink id="collectionMapView" process="@this" global="false"
+                                     rendered="#{!resultHeader.mapView}" >   
+                        <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />       
+                      </p:commandLink> 
+                      <p:overlayPanel id="collectionsMapViewListPanel" for="collectionMapView" hideEffect="fade" >  
+                      
+                        <ui:repeat var="collection" value="#{statistic.filteredCollections}" varStatus="collectionMap" >   
+                            <h:panelGrid columns="1"   cellpadding="0" cellspacing="0"  > 
+                          <p:commandLink actionListener="#{searchBean.searchCollectionWithSingleFilter(collection)}" 
+                                         title="#{collection.name}"  
+                                         process="@this"  >  
+                            <h:panelGrid columns="1" columnClasses="leftcolumn"
+                                         cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                              <h:outputText value="#{collection.name}" /> 
+                            </h:panelGrid>  
+                          </p:commandLink>   
+                              </h:panelGrid>
+                        </ui:repeat>  
+                        
+                        <ui:remove>
+                          <h:panelGrid columns="6"   cellpadding="0" cellspacing="0"  > 
+
+
+                          <p:spacer width="55" />
+                          <p:commandLink actionListener="#{searchBean.showImageView()}" process="@this" 
+                                         rendered="#{!resultHeader.imageView}" 
+                                         update=":resultsForm:resultContent">   
+                            <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
+                          </p:commandLink>  
+                          <p:spacer width="55" />
+
+                          <p:commandLink actionListener="#{searchBean.showImageView()}" process="@this" 
+                                         rendered="#{!resultHeader.imageView}" 
+                                         update=":resultsForm:resultContent">   
+                            <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
+                          </p:commandLink>   
+                        </h:panelGrid>  
+                        </ui:remove>
+                          
+                        
+                      </p:overlayPanel>  
+                      </ui:remove>
                       
                       <p:commandLink id="downlodlink" action="#{searchBean.export}"  
                                      styleClass="downLink" process="@this" global="false">   

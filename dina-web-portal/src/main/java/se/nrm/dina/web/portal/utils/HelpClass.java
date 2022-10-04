@@ -20,7 +20,13 @@ public class HelpClass {
   private static HelpClass instance = null;
   private StringBuilder resultHeaderSummarySb;
   private StringBuilder imagePathSb;
- 
+  
+  private final String dateFormat = "yyyy-MM-dd";
+  private final String emptySpace = " ";
+  private final String replaceChars = "[\\[\\](),]";
+  private final String startParentheses = "(";
+  private final String endParentheses = ")";
+  
   public static synchronized HelpClass getInstance() {
     if (instance == null) {
       instance = new HelpClass();
@@ -34,11 +40,11 @@ public class HelpClass {
  
   public String buildResultHeaderSummaryForMapView(int totalResult, boolean isSwedish) { 
     resultHeaderSummarySb = new StringBuilder();
-    resultHeaderSummarySb.append("(");
+    resultHeaderSummarySb.append(startParentheses);
     resultHeaderSummarySb.append(totalResult);
-    resultHeaderSummarySb.append(" ");
+    resultHeaderSummarySb.append(emptySpace);
     resultHeaderSummarySb.append(CommonText.getInstance().getHits(isSwedish));
-    resultHeaderSummarySb.append(")");
+    resultHeaderSummarySb.append(endParentheses);
     return resultHeaderSummarySb.toString();
   }
 
@@ -48,7 +54,7 @@ public class HelpClass {
     }
     resultHeaderSummarySb = new StringBuilder();
     resultHeaderSummarySb.append(CommonText.getInstance().getSelected(isSwedish));
-    resultHeaderSummarySb.append(" ");
+    resultHeaderSummarySb.append(emptySpace);
     resultHeaderSummarySb.append(totalResult);
     return resultHeaderSummarySb.toString();
   }
@@ -67,12 +73,12 @@ public class HelpClass {
   }
  
   public String replaceChars(String value) {
-    String s = value.replaceAll("[\\[\\](),]", " ");
+    String s = value.replaceAll(replaceChars, emptySpace);
     return s.trim();
   }
 
   public String getTodaysDateInString() {
-    return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    return LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
   }
 
   public List getDayList(int month) {

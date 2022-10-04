@@ -60,7 +60,8 @@ public class GalleriaBean implements Serializable {
     filters = new ArrayList<>(); 
   }
  
-  public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {   
+  public void setImageView(int totalImages, String searchText, Map<String, String> filterMap) {  
+    log.info("setImageView : {} -- {}", searchText, filterMap);
     dataModel = new ImageLazyDataModel(solr, filterMap, filters, searchText, totalImages); 
   }
 

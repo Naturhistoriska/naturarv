@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.dina.web.portal.utils;
 
 import java.util.HashMap;
@@ -14,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author idali
  */
 public enum MonthElement {
+  
+
+   
   JANUARY(1, "Jan", "jan", "January", "Januari"),
   FEBRUARY(2, "Feb", "feb", "February", "Februari"),
   MARCH(3, "Mar", "mar", "March", "Mars"),
@@ -26,7 +24,7 @@ public enum MonthElement {
   OCTOBER(10, "Oct", "okt", "October", "Oktober"),
   NOVEMBER(11, "Nov", "nov", "November", "November"),
   DECEMBER(12, "Dec", "dec", "December", "December");
-
+ 
   public final String shortNameEn, shortNameSv, nameEn, nameSv;
   public final Integer numOfMonth;
  
