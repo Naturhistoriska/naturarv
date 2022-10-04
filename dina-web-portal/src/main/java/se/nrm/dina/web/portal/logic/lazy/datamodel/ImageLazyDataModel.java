@@ -21,7 +21,7 @@ public class ImageLazyDataModel extends LazyDataModel<ImageModel> {
   private final String searchText;
   private final Map<String, String> filterMap;
   private final List<String> filterList; 
-  private final String searchImageQueryText;
+  private String searchImageQueryText;
     
   public ImageLazyDataModel(SolrImageService solr, Map<String, String> filterMap, 
                             List<String> filterList, String searchText, int totalCount) { 
@@ -32,12 +32,14 @@ public class ImageLazyDataModel extends LazyDataModel<ImageModel> {
     this.filterList = filterList;
     this.setRowCount(totalCount); 
     searchImageQueryText = SearchHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+    log.info("searchImageQueryText : {}", searchImageQueryText);
   }
 
   @Override
   public List<ImageModel> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
     log.info("filterMap: {} -- {}", filterList, searchText + " --- " + filterMap );
       
+    searchImageQueryText = SearchHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
     if(filterList != null && !filterList.isEmpty() || filterMap != null && !filterMap.isEmpty()) { 
       this.setRowCount(solr.getImageTotalCount(searchImageQueryText, filterMap)); 
     } 
