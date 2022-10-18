@@ -26,6 +26,7 @@ public class StatisticBean implements Serializable {
   
   private StatisticData data; 
   private StatisticData filteredData;
+  private final String gnmEntomology = "GNM Entomology";
 //  private HttpSession session;  
   
   private boolean isSwedish; 
@@ -148,8 +149,10 @@ public class StatisticBean implements Serializable {
   }
   
   private Map<String, Integer> buildInstitutionsMap(StatisticData statisticData) {
-    Map<Boolean, List<CollectionData>> partitions = statisticData.getCollections().stream()
-            .collect(Collectors.partitioningBy(c -> Integer.parseInt(c.getCode()) != 4));
+    Map<Boolean, List<CollectionData>> partitions = 
+            statisticData.getCollections().stream()
+                    .collect(Collectors.partitioningBy(c -> !c.getName().equals(gnmEntomology)));
+//            .collect(Collectors.partitioningBy(c -> Integer.parseInt(c.getCode()) != 4));
  
     Map<String, Integer> map = new LinkedHashMap<>();
 

@@ -31,6 +31,7 @@ public class SolrChartService implements Serializable  {
  
   private QueryResponse response; 
   private int cumulateValue; 
+  private final int collectionFacetLimit = 100;
   
   private Map<String, Integer> collectionMonthsDataMap;
 
@@ -100,12 +101,14 @@ public class SolrChartService implements Serializable  {
    * 
    * @return Map<String, Integer>
    */
-  public Map<String, Integer> getLastYearRegistedData(String searchDateRange, String collectionCode) {
+  public Map<String, Integer> getLastYearRegistedData(String searchDateRange, 
+          String collectionCode) {
     log.info("getCollectionsMonthChartData : {} -- {}", searchDateRange, collectionCode);
      
     collectionMonthsDataMap = new HashMap<>();  
     final TermsFacetMap catalogedMonthFacet
-            = new TermsFacetMap(CommonText.getInstance().getCatalogedMonthString()).setLimit(20); 
+            = new TermsFacetMap(CommonText.getInstance()
+                    .getCatalogedMonthString()).setLimit(collectionFacetLimit); 
     final JsonQueryRequest request = new JsonQueryRequest()
             .setQuery(searchDateRange) 
             .returnFields(CommonText.getInstance().getCollectionName())
@@ -115,6 +118,7 @@ public class SolrChartService implements Serializable  {
     }
     try {
       response = request.process(client);
+      log.info("json: {}", response.jsonStr());
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return collectionMonthsDataMap;

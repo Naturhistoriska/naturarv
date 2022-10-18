@@ -35,7 +35,8 @@ public class HelpClass {
   }
    
   public HttpSession getSession() { 
-    return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+    return (HttpSession) FacesContext.getCurrentInstance()
+            .getExternalContext().getSession(true);
   } 
  
   public String buildResultHeaderSummaryForMapView(int totalResult, boolean isSwedish) { 

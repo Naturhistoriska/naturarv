@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.dina.web.portal.model.QueryData;
 import se.nrm.dina.web.portal.model.SolrData;
@@ -15,6 +16,7 @@ import se.nrm.dina.web.portal.model.SolrData;
  *
  * @author idali
  */
+@Slf4j
 public class SearchHelper {
 
   private final String plusSign = "+";
@@ -372,8 +374,12 @@ public class SearchHelper {
     dateRangeSb.append(fromZoom);
     dateRangeSb.append(to);
     dateRangeSb.append(toDate == null ? CommonText.getInstance().getWildCard() : toDate);
-    dateRangeSb.append(squareEnd);
-    return dateRangeSb.toString();
+    dateRangeSb.append(squareEnd); 
+//    log.info("date range : {}", dateRangeSb.toString());
+//    return dateRangeSb.toString().trim();
+    // for development test
+    return "catalogedDate:[2016-06-01T22:00:00Z TO 2017-06-01T22:00:00Z]";
+//    return "catalogedDate:[2021-11-01T00:00:00Z TO *]";
   }
 
   /**

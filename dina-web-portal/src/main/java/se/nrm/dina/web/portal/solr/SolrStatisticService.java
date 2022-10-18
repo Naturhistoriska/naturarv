@@ -27,6 +27,7 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class SolrStatisticService implements Serializable {
 
   private QueryResponse response;
+  private final int collectionFacetLimit = 100;
 
   @Inject
   @Solr
@@ -41,18 +42,22 @@ public class SolrStatisticService implements Serializable {
     List<CollectionData> collections = new ArrayList<>();
 
     final TermsFacetMap collectionNameFacet = new TermsFacetMap(
-            CommonText.getInstance().getCollectionName()).setLimit(20);
-    final TermsFacetMap collectionIdFacet = new TermsFacetMap(CommonText.getInstance().getCollectionId()).setLimit(1);
-    final TermsFacetMap dnaFacet = new TermsFacetMap(CommonText.getInstance().getDna()).setLimit(1);
-    final TermsFacetMap mapFacet = new TermsFacetMap(CommonText.getInstance().getMap()).setLimit(1);
+            CommonText.getInstance().getCollectionName()).setLimit(collectionFacetLimit);
+//    final TermsFacetMap collectionIdFacet = new TermsFacetMap(CommonText.getInstance()
+//                        .getCollectionId()).setLimit(1);
+    final TermsFacetMap dnaFacet = new TermsFacetMap(CommonText.getInstance()
+                        .getDna()).setLimit(1);
+    final TermsFacetMap mapFacet = new TermsFacetMap(CommonText.getInstance()   
+                        .getMap()).setLimit(1);
     final TermsFacetMap imageFacet = new TermsFacetMap(CommonText.getInstance().getImage()).setLimit(1);
     final TermsFacetMap inSwedenFacet = new TermsFacetMap(CommonText.getInstance().getInSweden()).setLimit(1);
     final TermsFacetMap typeFacet = new TermsFacetMap(CommonText.getInstance().getIsType()).setLimit(1);
-    collectionNameFacet.withSubFacet(CommonText.getInstance().getCollectionId(), collectionIdFacet);
+//    collectionNameFacet.withSubFacet(CommonText.getInstance().getCollectionId(), collectionIdFacet);
 
     final JsonQueryRequest request = new JsonQueryRequest()
             .setQuery(text)
-            .returnFields(CommonText.getInstance().getCollectionName(), CommonText.getInstance().getCollectionId())
+            .returnFields(CommonText.getInstance().getCollectionName(), 
+                    CommonText.getInstance().getCollectionId())
             .withFacet(CommonText.getInstance().getDna(), dnaFacet)
             .withFacet(CommonText.getInstance().getImage(), imageFacet)
             .withFacet(CommonText.getInstance().getMap(), mapFacet)
@@ -87,22 +92,33 @@ public class SolrStatisticService implements Serializable {
             .getBucketsTotal(facet.getBucketBasedFacets(CommonText.getInstance().getType()));
 
     BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName());
-    if (bucket != null) {
+    if(bucket != null) {
       bucket.getBuckets()
               .stream()
               .forEach(b -> {
-                b.getBucketBasedFacets(CommonText.getInstance().getCollectionId())
-                        .getBuckets()
-                        .stream()
-                        .forEach(sb -> {
-                          collections.add(new CollectionData(
-                                  String.valueOf(sb.getVal()),
+                collections.add(new CollectionData(
+                                  String.valueOf(b.getVal()),
                                   String.valueOf(b.getVal()),
                                   (int) b.getCount()));
-                        });
-
               });
     }
+////    if (bucket != null) {
+//      bucket.getBuckets()
+//              .stream()
+//              .forEach(b -> {
+//                b.getBucketBasedFacets(CommonText.getInstance().getCollectionId())
+////                  b.getBucketBasedFacets(CommonText.getInstance().getCollectionName())
+//                        .getBuckets()
+//                        .stream()
+//                        .forEach(sb -> {
+//                          collections.add(new CollectionData(
+//                                  String.valueOf(sb.getVal()),
+//                                  String.valueOf(b.getVal()),
+//                                  (int) b.getCount()));
+//                        });
+//
+//              });
+//    }
     return new StatisticData((int) response.getResults().getNumFound(), totalDna,
             totaImage, totalMap, totalInSweden, totalType, collections);
   }
