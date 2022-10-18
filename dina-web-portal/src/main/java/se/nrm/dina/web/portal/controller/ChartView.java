@@ -45,7 +45,7 @@ public class ChartView implements Serializable {
   private String searchDateRange;
 
   private final CommonText common;
-  private final static String YEAR_SURFFIX = "_year";
+  private final String year_surffix = "_year";
   
   private boolean isSwedish;
     
@@ -136,13 +136,13 @@ public class ChartView implements Serializable {
   
   public BarChartModel getCollectionYearChart(String collectionCode) {  
     session = HelpClass.getInstance().getSession();
-    if (session.getAttribute(collectionCode + YEAR_SURFFIX) != null) {
-      return (BarChartModel) session.getAttribute(collectionCode + YEAR_SURFFIX); 
+    if (session.getAttribute(collectionCode + year_surffix) != null) {
+      return (BarChartModel) session.getAttribute(collectionCode + year_surffix); 
     }
     BarChartModel collectionYearChart = new BarChartModel(); 
     chartCreator.createYearChart(collectionYearChart, 
             solr.getLastTenYearsRegistedData(lastTenYear, nextYear, collectionCode), isSwedish); 
-    session.setAttribute(collectionCode + YEAR_SURFFIX, collectionYearChart);
+    session.setAttribute(collectionCode + year_surffix, collectionYearChart);
     return collectionYearChart;
   }
   
@@ -169,7 +169,7 @@ public class ChartView implements Serializable {
                         .changeMonthChartLanguage(
                                 (BarChartModel)session.getAttribute(c), isSwedish));
               }
-              String attString = c + YEAR_SURFFIX;
+              String attString = c + year_surffix;
               if(session.getAttribute(attString) != null) {  
                 session.setAttribute(attString, ChartHelper.getInstance()
                         .changeYearChartLanguage(

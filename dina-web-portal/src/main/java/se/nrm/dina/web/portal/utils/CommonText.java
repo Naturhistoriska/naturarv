@@ -9,16 +9,16 @@ import java.util.Map;
  */
 public class CommonText {
 
-  private static final String SIMPLE_SEARCH_DEFAULT_TEXT_EN = "Search collections (species, genus, family, collectors, location, etc.)";
-  private static final String SIMPLE_SEARCH_DEFAULT_TEXT_SV = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
+  private final String simpleSearchDefaultTextEn = "Search collections (species, genus, family, collectors, location, etc.)";
+  private final String simpleSearchDefaultTextSv = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
   
-  private static final String EMPTY_STRING = "";
-  private static final String EMPTY_SPACE = " ";
+  private final String emptyString = "";
+  private final String emptySpace = " ";
 
-  private static final String NRM_CODE = "nrm*";
-  private static final String GNM_CODE = "gnm*";
-  private static final String NRM_EN = "Swedish Museum of Natural History";
-  private static final String NRM_SV = "Naturhistoriska riksmuseet";
+  private final String nrmCode = "nrm*";
+  private final String gnmCode = "gnm*";
+  private final String nrmEn = "Swedish Museum of Natural History";
+  private final String nrmSv = "Naturhistoriska riksmuseet";
   private static final String GNM_EN = "Gothenburg Natural History Museum";
   private static final String GNM_SV = "Göteborgs naturhistoriska museum";
 
@@ -111,7 +111,7 @@ public class CommonText {
   private static final String TYPE_KEY = "isType:";
   private static final String DNA_KEY = "dna:";
   private static final String SWEDEN_KEY = "inSweden:";
-  private static final String COLLECTION_CODE_KEY = "collectionId:";
+  private static final String collectionCodeKey = "collectionId:";
   private static final String COLLECTION_NAME_KEY = "collectionName:";
   private static final String ID_KEY = "id:"; 
   private static final String MAP_KEY = "map:";
@@ -123,9 +123,9 @@ public class CommonText {
   private static final String TEXT_SEARCH = "textsearch";
   private static final String GEOPOINT = "geopoint";
 
-  private static final String ID = "id";
-  private static final String COLLECTION_NAME = "collectionName";
-  private static final String COLLECTION_ID = "collectionId"; 
+  private final String id = "id";
+  private final String collectionName = "collectionName";
+  private final String collectionId = "collectionId"; 
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
   private static final String ACCESSION_NUMBER = "accessionNumber";
@@ -133,7 +133,7 @@ public class CommonText {
   private static final String LOCATIONS = "locations"; 
   private static final String COORDINATE = "coordinate";
   private static final String CATALOG_NUMBER = "catalogNumber";
-  private static final String CATALOGED_DATE = "catalogedDate";
+  private final String catalogedDate = "catalogedDate";
   private static final String CREATED_DATE = "createdDate";
   private static final String IMAGE_VIEW = "morphBankView";
   private static final String IMAGE_ID = "morphbankImageId";
@@ -334,7 +334,7 @@ public class CommonText {
   }
 
   public String getId() {
-    return ID;
+    return id;
   }
 
   public String getCoordinate() {
@@ -346,7 +346,7 @@ public class CommonText {
   }
   
   public String getCatalogedDate() {
-    return CATALOGED_DATE;
+    return catalogedDate;
   }
   
   public String getCreatedDate() {
@@ -366,7 +366,7 @@ public class CommonText {
   } 
   
   public String getCollectionId() {
-    return COLLECTION_ID;
+    return collectionId;
   }
 
   public String getLocations() {
@@ -426,11 +426,11 @@ public class CommonText {
   }
   
   public String getNrmCode() {
-    return NRM_CODE;
+    return nrmCode;
   }
 
   public String getGnmCode() {
-    return GNM_CODE;
+    return gnmCode;
   }
 
   public String getSortByScore() {
@@ -454,7 +454,7 @@ public class CommonText {
   }
 
   public String getCollectionCodeKey() {
-    return COLLECTION_CODE_KEY;
+    return collectionCodeKey;
   }
 
   public String getTextField() {
@@ -474,7 +474,7 @@ public class CommonText {
   }
 
   public String getCollectionName() {
-    return COLLECTION_NAME;
+    return collectionName;
   }
 
   public String getImageViewKey() {
@@ -558,19 +558,19 @@ public class CommonText {
   }
   
   public String getEmptyString() {
-    return EMPTY_STRING;
+    return emptyString;
   }
   
   public String getEmptySpace() {
-    return EMPTY_SPACE;
+    return emptySpace;
   }
 
   public String getSearchDefaultText(boolean isSwedish) {
-    return isSwedish ? SIMPLE_SEARCH_DEFAULT_TEXT_SV : SIMPLE_SEARCH_DEFAULT_TEXT_EN;
+    return isSwedish ? simpleSearchDefaultTextSv : simpleSearchDefaultTextEn;
   }
 
   public String getNrmName(boolean isSwedeish) {
-    return isSwedeish ? NRM_SV : NRM_EN;
+    return isSwedeish ? nrmSv : nrmEn;
   }
 
   public String getGnmName(boolean isSwedish) {
@@ -578,7 +578,7 @@ public class CommonText {
   }
 
   public String getInstitutionCode(String institutionName, boolean isSwedish) {
-    return institutionName.equals(getNrmName(isSwedish)) ? NRM_CODE : GNM_CODE;
+    return institutionName.equals(getNrmName(isSwedish)) ? nrmCode : gnmCode;
   }
   
   public String getMonthChartTitle(boolean isSwedish) {
