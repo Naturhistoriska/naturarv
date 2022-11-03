@@ -19,14 +19,14 @@ public class CommonText {
   private final String gnmCode = "gnm*";
   private final String nrmEn = "Swedish Museum of Natural History";
   private final String nrmSv = "Naturhistoriska riksmuseet";
-  private static final String GNM_EN = "Gothenburg Natural History Museum";
-  private static final String GNM_SV = "Göteborgs naturhistoriska museum";
+  private final String gnmEn = "Gothenburg Natural History Museum";
+  private final String gnmSv = "Göteborgs naturhistoriska museum";
 
-  private final static String MONTH_CHART_TITLE_SV = "Registrerade föremål senaste 12 månaderna";
-  private final static String YEAR_CHART_TITLE_SV = "Ackumulerat antal registrerade föremål";
+  private final String monthChartTitleSv = "Registrerade föremål senaste 12 månaderna";
+  private final String yearChartTitleSv = "Ackumulerat antal registrerade föremål";
 
-  private final static String MONTH_CHART_TITLE_EN = "Registered specimens last 12 months";
-  private final static String YEAR_CHART_TITLE_EN = "Cumulative number of registered specimens";
+  private final String monthChartTitleEn = "Registered specimens last 12 months";
+  private final String yearChartTitleEn = "Cumulative number of registered specimens";
 
   private static final String MONTH_CHART_AXIS_SV = "Månad";
   private static final String MONTH_CHART_AXIS_EN = "Month";
@@ -99,7 +99,7 @@ public class CommonText {
   private static final String YEAR_CHART_DATA = "yearChartData";
   private static final String COLLECTIONS_MONTH_CHART_DATA = "collectionsMonthChartData";
   private static final String COLLECTIONS_YEAR_CHART_DATA = "collectionsYearChartData";
-  private static final String CATALOGED_MONTH = "catalogedMonth";
+  private final String catalogedMonth = "catalogedMonth";
   private static final String CATALOGED_MONTH_STRING = "catalogedMonthString";
 
   private static final String SORT_BY_SCORE = "score";
@@ -111,8 +111,8 @@ public class CommonText {
   private static final String TYPE_KEY = "isType:";
   private static final String DNA_KEY = "dna:";
   private static final String SWEDEN_KEY = "inSweden:";
-  private static final String collectionCodeKey = "collectionId:";
-  private static final String COLLECTION_NAME_KEY = "collectionName:";
+  private final String collectionCodeKey = "collectionId:";
+  
   private static final String ID_KEY = "id:"; 
   private static final String MAP_KEY = "map:";
   private static final String COORDINATE_KEY = "coordinate:";
@@ -125,6 +125,7 @@ public class CommonText {
 
   private final String id = "id";
   private final String collectionName = "collectionName";
+  private final String collectionNameKey = "collectionName:";
   private final String collectionId = "collectionId"; 
   private static final String CATALOGED_YEAR = "catalogedYear";
   private static final String TAXON_FULL_NAME = "txFullName";
@@ -450,7 +451,7 @@ public class CommonText {
   }
 
   public String getCollectionNameKey() {
-    return COLLECTION_NAME_KEY;
+    return collectionNameKey;
   }
 
   public String getCollectionCodeKey() {
@@ -534,7 +535,7 @@ public class CommonText {
   }
 
   public String getCatalogedMonth() {
-    return CATALOGED_MONTH;
+    return catalogedMonth;
   }
 
   public String getCatalogedMonthString() {
@@ -574,7 +575,7 @@ public class CommonText {
   }
 
   public String getGnmName(boolean isSwedish) {
-    return isSwedish ? GNM_SV : GNM_EN;
+    return isSwedish ? gnmSv : gnmEn;
   }
 
   public String getInstitutionCode(String institutionName, boolean isSwedish) {
@@ -582,11 +583,11 @@ public class CommonText {
   }
   
   public String getMonthChartTitle(boolean isSwedish) {
-    return isSwedish ? MONTH_CHART_TITLE_SV : MONTH_CHART_TITLE_EN;
+    return isSwedish ? monthChartTitleSv : monthChartTitleEn;
   }
 
   public String getYearChartTitle(boolean isSwedish) {
-    return isSwedish ? YEAR_CHART_TITLE_SV : YEAR_CHART_TITLE_EN;
+    return isSwedish ? yearChartTitleSv : yearChartTitleEn;
   }
 
   public String getMonthChartXAxisLabel(boolean isSwedish) {

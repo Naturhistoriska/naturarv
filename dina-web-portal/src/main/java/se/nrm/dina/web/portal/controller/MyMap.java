@@ -45,7 +45,7 @@ public class MyMap implements Serializable {
   private final String escaptSingleQout = "\\'";
   private final String northDegree = "° N --- ";
   private final String eastDegree = "° E";
-  private final String coordinatesKey = "coordinate";
+  private final String coordinatesKey = "coordinate"; 
   private final String bucketsKey = "buckets";
   private final String valueKey = "val";
   private final String countKey = "count";

@@ -32,9 +32,7 @@ public class SolrMapService implements Serializable {
   private SolrClient client;
 
   private QueryResponse response; 
-  
-//  private TreeSet<Integer> set;
-  
+   
   public SolrMapService() {
     
   }
@@ -42,9 +40,7 @@ public class SolrMapService implements Serializable {
   public SolrMapService(SolrClient client) {
     this.client = client;
   }
-   
-//  public List<List<MapData>> searchGeoHash(String text, String regionQueryText,
-//          Map<String, String> filters, String prefix) {
+    
  public JsonArray searchGeoHash(String text, String regionQueryText,
           Map<String, String> filters, String prefix) {
     log.info("searchGeoHash : {}", text);
@@ -63,57 +59,15 @@ public class SolrMapService implements Serializable {
             .returnFields(geo)
             .withFilter(geoKey + regionQueryText) 
             .withFacet(geohash, geoHashFacet);
-            
-     
+             
     SolrHelper.getInstance().addSearchFilters(request, filters); 
     try {
-      response = request.process(client);
-      
+      response = request.process(client); 
 //      log.info("json: {}", response.jsonStr());
     } catch (SolrServerException | IOException ex) {
       log.warn(ex.getMessage());
       return null;
-    } 
-     
+    }  
     return JsonConverter.getInstance().buildResponseJson(response.jsonStr());
-      
-//    List<List<MapData>> list = new ArrayList(); 
-//    
-//    BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
-//            .getBucketBasedFacets(geohash);
-// 
-//    if(bucket != null) {
-//      bucket.getBuckets().stream()  
-//              .forEach(b -> {
-////         
-////                BucketJsonFacet subBucket = b.getBucketBasedFacets(coordinate)
-////                        .getBuckets().stream()
-////                        .findFirst()
-////                        .get();  
-////                List<BucketJsonFacet> coordinateBuckets = b.getBucketBasedFacets(coordinate).getBuckets();
-//                
-//                List<MapData> dataList = new ArrayList();
-//                Map<String, Integer> map = new HashMap();
-//                b.getBucketBasedFacets(coordinate).getBuckets()
-//                        .stream().forEach(c -> {
-//                  BucketJsonFacet locilityBucket = c.getBucketBasedFacets(localityKey)
-//                          .getBuckets().stream()
-//                          .findFirst().get();
-//                  String locality = (String) locilityBucket.getVal(); 
-//                  dataList.add(new MapData((String)c.getVal(), locality, (int) c.getCount())); 
-//                });
-//                
-//                list.add(dataList); 
-//              });
-//      
-//                        
-////                         coordinateBuckets
-////                          .stream()
-////                          .map(v -> (String) v.getVal())
-////                          .collect(Collectors.toList()) 
-//    } 
-//    return list;
-  }
-  
- 
+  } 
 }

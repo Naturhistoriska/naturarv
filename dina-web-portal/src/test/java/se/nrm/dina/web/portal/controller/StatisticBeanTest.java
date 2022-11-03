@@ -389,45 +389,45 @@ public class StatisticBeanTest {
     assertEquals(totalType, result); 
   }
  
-  /**
-   * Test of getFilteredInstitutions method, of class StatisticBean.
-   */
-  @Test
-  public void testGetFilteredInstitutions1() {
-    System.out.println("getFilteredInstitutions");  
-    Map<String, Integer> result = instance.getFilteredInstitutions();
-    assertNotNull(result); 
-    assertEquals(result.size(), 2); 
-  }
-  
-  @Test
-  public void testGetFilteredInstitutions2() {
-    System.out.println("getFilteredInstitutions");  
-    
-    instance.resetAllData();
-    Map<String, Integer> result = instance.getFilteredInstitutions();
-    assertNotNull(result); 
-    assertEquals(result.size(), 2); 
-  }
-
-  /**
-   * Test of getInstitutions method, of class StatisticBean.
-   */
-  @Test
-  public void testGetInstitutions1() {
-    System.out.println("getInstitutions"); 
-    Map<String, Integer> result = instance.getInstitutions();
-    assertNotNull(result); 
-    assertEquals(result.size(), 2); 
-  }
-  
-  @Test
-  public void testGetInstitutions2() {
-    System.out.println("getInstitutions"); 
-    
-    instance.init();
-    Map<String, Integer> result = instance.getInstitutions();
-    assertNotNull(result); 
-    assertEquals(result.size(), 2); 
-  }
+//  /**
+//   * Test of getFilteredInstitutions method, of class StatisticBean.
+//   */
+//  @Test
+//  public void testGetFilteredInstitutions1() {
+//    System.out.println("getFilteredInstitutions");  
+//    Map<String, Integer> result = instance.getFilteredInstitutions();
+//    assertNotNull(result); 
+//    assertEquals(result.size(), 2); 
+//  }
+//  
+//  @Test
+//  public void testGetFilteredInstitutions2() {
+//    System.out.println("getFilteredInstitutions");  
+//    
+//    instance.resetAllData();
+//    Map<String, Integer> result = instance.getFilteredInstitutions();
+//    assertNotNull(result); 
+//    assertEquals(result.size(), 2); 
+//  }
+//
+//  /**
+//   * Test of getInstitutions method, of class StatisticBean.
+//   */
+//  @Test
+//  public void testGetInstitutions1() {
+//    System.out.println("getInstitutions"); 
+//    Map<String, Integer> result = instance.getInstitutions();
+//    assertNotNull(result); 
+//    assertEquals(result.size(), 2); 
+//  }
+//  
+//  @Test
+//  public void testGetInstitutions2() {
+//    System.out.println("getInstitutions"); 
+//    
+//    instance.init();
+//    Map<String, Integer> result = instance.getInstitutions();
+//    assertNotNull(result); 
+//    assertEquals(result.size(), 2); 
+//  }
 }

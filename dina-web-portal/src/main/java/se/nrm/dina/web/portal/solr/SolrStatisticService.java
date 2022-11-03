@@ -43,8 +43,8 @@ public class SolrStatisticService implements Serializable {
 
     final TermsFacetMap collectionNameFacet = new TermsFacetMap(
             CommonText.getInstance().getCollectionName()).setLimit(collectionFacetLimit);
-//    final TermsFacetMap collectionIdFacet = new TermsFacetMap(CommonText.getInstance()
-//                        .getCollectionId()).setLimit(1);
+    final TermsFacetMap collectionIdFacet = new TermsFacetMap(CommonText.getInstance()
+                        .getCollectionId()).setLimit(1);
     final TermsFacetMap dnaFacet = new TermsFacetMap(CommonText.getInstance()
                         .getDna()).setLimit(1);
     final TermsFacetMap mapFacet = new TermsFacetMap(CommonText.getInstance()   
@@ -52,7 +52,7 @@ public class SolrStatisticService implements Serializable {
     final TermsFacetMap imageFacet = new TermsFacetMap(CommonText.getInstance().getImage()).setLimit(1);
     final TermsFacetMap inSwedenFacet = new TermsFacetMap(CommonText.getInstance().getInSweden()).setLimit(1);
     final TermsFacetMap typeFacet = new TermsFacetMap(CommonText.getInstance().getIsType()).setLimit(1);
-//    collectionNameFacet.withSubFacet(CommonText.getInstance().getCollectionId(), collectionIdFacet);
+    collectionNameFacet.withSubFacet(CommonText.getInstance().getCollectionId(), collectionIdFacet);
 
     final JsonQueryRequest request = new JsonQueryRequest()
             .setQuery(text)
@@ -91,34 +91,22 @@ public class SolrStatisticService implements Serializable {
     int totalType = SolrHelper.getInstance()
             .getBucketsTotal(facet.getBucketBasedFacets(CommonText.getInstance().getType()));
 
-    BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName());
-    if(bucket != null) {
+    BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(CommonText.getInstance().getCollectionName()); 
+    if (bucket != null) {
       bucket.getBuckets()
               .stream()
               .forEach(b -> {
-                collections.add(new CollectionData(
-                                  String.valueOf(b.getVal()),
+                b.getBucketBasedFacets(CommonText.getInstance().getCollectionId()) 
+                        .getBuckets()
+                        .stream()
+                        .forEach(sb -> {
+                          collections.add(new CollectionData(
+                                  String.valueOf(sb.getVal()),
                                   String.valueOf(b.getVal()),
                                   (int) b.getCount()));
+                        }); 
               });
     }
-////    if (bucket != null) {
-//      bucket.getBuckets()
-//              .stream()
-//              .forEach(b -> {
-//                b.getBucketBasedFacets(CommonText.getInstance().getCollectionId())
-////                  b.getBucketBasedFacets(CommonText.getInstance().getCollectionName())
-//                        .getBuckets()
-//                        .stream()
-//                        .forEach(sb -> {
-//                          collections.add(new CollectionData(
-//                                  String.valueOf(sb.getVal()),
-//                                  String.valueOf(b.getVal()),
-//                                  (int) b.getCount()));
-//                        });
-//
-//              });
-//    }
     return new StatisticData((int) response.getResults().getNumFound(), totalDna,
             totaImage, totalMap, totalInSweden, totalType, collections);
   }

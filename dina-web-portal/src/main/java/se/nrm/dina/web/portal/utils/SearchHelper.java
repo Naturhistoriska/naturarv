@@ -376,9 +376,9 @@ public class SearchHelper {
     dateRangeSb.append(toDate == null ? CommonText.getInstance().getWildCard() : toDate);
     dateRangeSb.append(squareEnd); 
 //    log.info("date range : {}", dateRangeSb.toString());
-//    return dateRangeSb.toString().trim();
+    return dateRangeSb.toString().trim();
     // for development test
-    return "catalogedDate:[2016-06-01T22:00:00Z TO 2017-06-01T22:00:00Z]";
+//    return "catalogedDate:[2016-06-01T22:00:00Z TO 2017-06-01T22:00:00Z]";
 //    return "catalogedDate:[2021-11-01T00:00:00Z TO *]";
   }
 

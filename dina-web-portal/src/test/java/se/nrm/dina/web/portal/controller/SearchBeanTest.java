@@ -45,6 +45,9 @@ public class SearchBeanTest {
   private GalleriaBean galleria;
   @Mock
   private InitialProperties properties;
+  
+//  @Mock
+//  private StringBuffer url; // +setter
 
   private SearchBean instance;
   private SolrResult result;
@@ -57,8 +60,7 @@ public class SearchBeanTest {
   public void setUp() {
     solrData = new ArrayList();
     result = new SolrResult(25, solrData);
-    instance = new SearchBean(solr, navigator, paging, resultHeader, statistic, geo, galleria, properties);
-    
+    instance = new SearchBean(solr, navigator, paging, resultHeader, statistic, geo, galleria, properties); 
   }
   
   @After
@@ -74,12 +76,12 @@ public class SearchBeanTest {
   /**
    * Test of init method, of class SearchBean.
    */
-  @Test
-  public void testInit() {
-    System.out.println("init"); 
-    instance.init(); 
-    assertTrue(instance.getFreeText() == null);
-  }
+//  @Test
+//  public void testInit() {
+//    System.out.println("init"); 
+//    instance.init(); 
+//    assertTrue(instance.getFreeText() == null);
+//  }
 
   /**
    * Test of all method, of class SearchBean.

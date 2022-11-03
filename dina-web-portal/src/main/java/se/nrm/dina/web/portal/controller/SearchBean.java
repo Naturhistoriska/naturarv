@@ -12,9 +12,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped; 
+import javax.faces.annotation.ManagedProperty;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named; 
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.event.SelectEvent;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
@@ -82,6 +85,7 @@ public class SearchBean implements Serializable {
   private GalleriaBean galleria;
   @Inject
   private InitialProperties properties;
+   
  
 
   public SearchBean() {
@@ -107,6 +111,13 @@ public class SearchBean implements Serializable {
   @PostConstruct
   public void init() {
     log.info("init");
+
+    HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    String url = request.getRequestURL().toString();
+    String uri = request.getRequestURI();
+    
+    log.info("url : {} -- {}", url, uri);
+    
     clearData();
   }
   
