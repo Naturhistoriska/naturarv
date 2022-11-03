@@ -26,7 +26,7 @@ public class StatisticBean implements Serializable {
   
   private StatisticData data; 
   private StatisticData filteredData;
-  private final String gnmEntomology = "GNM Entomology";
+  private final String gnmEntomologyCode = "4";
 //  private HttpSession session;  
   
   private boolean isSwedish; 
@@ -137,31 +137,30 @@ public class StatisticBean implements Serializable {
     return data.getTotalType();
   }
   
-  public Map<String, Integer> getFilteredInstitutions() {
-    return filteredData == null ? getInstitutions() : buildInstitutionsMap(filteredData);
-  }
+//  public Map<String, Integer> getFilteredInstitutions() {
+//    return filteredData == null ? getInstitutions() : buildInstitutionsMap(filteredData);
+//  }
 
-  public Map<String, Integer> getInstitutions() {
-    if (data == null) {
-      resetAllData();
-    }
-    return buildInstitutionsMap(data); 
-  }
+//  public Map<String, Integer> getInstitutions() {
+//    if (data == null) {
+//      resetAllData();
+//    }
+//    return buildInstitutionsMap(data); 
+//  }
   
-  private Map<String, Integer> buildInstitutionsMap(StatisticData statisticData) {
-    Map<Boolean, List<CollectionData>> partitions = 
-            statisticData.getCollections().stream()
-                    .collect(Collectors.partitioningBy(c -> !c.getName().equals(gnmEntomology)));
-//            .collect(Collectors.partitioningBy(c -> Integer.parseInt(c.getCode()) != 4));
- 
-    Map<String, Integer> map = new LinkedHashMap<>();
-
-    map.put(CommonText.getInstance().getNrmName(isSwedish), partitions.get(true).stream()
-                              .mapToInt(CollectionData::getTotal)
-                              .sum());
-    map.put(CommonText.getInstance().getGnmName(isSwedish), partitions.get(false).stream()
-                              .mapToInt(CollectionData::getTotal)
-                              .sum()); 
-    return map;
-  }
+//  private Map<String, Integer> buildInstitutionsMap(StatisticData statisticData) {
+//    Map<Boolean, List<CollectionData>> partitions = 
+//            statisticData.getCollections().stream() 
+//                    .collect(Collectors.partitioningBy(c ->  c.getCode().equals(gnmEntomologyCode) ));
+// 
+//    Map<String, Integer> map = new LinkedHashMap<>();
+//
+//    map.put(CommonText.getInstance().getNrmName(isSwedish), partitions.get(true).stream()
+//                              .mapToInt(CollectionData::getTotal)
+//                              .sum());
+//    map.put(CommonText.getInstance().getGnmName(isSwedish), partitions.get(false).stream()
+//                              .mapToInt(CollectionData::getTotal)
+//                              .sum()); 
+//    return map;
+//  }
 } 

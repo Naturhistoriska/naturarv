@@ -316,21 +316,23 @@
                     </p:commandLink>   
                   </ui:repeat>  
 
-                  <p:spacer width="20" height="30" />
-                  <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>  
+                  
+                  <ui:remove>
+                    <p:spacer width="20" height="30" />
+                    <h:outputText value="#{msg.institution}" style="font-weight: bold;"/>  
 
-                  <ui:repeat var="entry" value="#{statistic.filteredInstitutions.entrySet()}" varStatus="institutionStatus" >   
-                    <p:commandLink actionListener="#{searchBean.searchInstitutionWithFilter(entry.key)}" 
-                                   title="#{entry.key}"  
-                                   process="@this" rendered="#{entry.value > 0}" update=":resultsForm:result"  >  
-                      <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
-                                   cellpadding="0" cellspacing="0" styleClass="statistic"> 
-                        <h:outputText value="#{entry.key}" /> 
-                        <h:outputText value="#{entry.value}" />
-                      </h:panelGrid> 
-                    </p:commandLink>  
-                  </ui:repeat>  
-
+                    <ui:repeat var="entry" value="#{statistic.filteredInstitutions.entrySet()}" varStatus="institutionStatus" >   
+                      <p:commandLink actionListener="#{searchBean.searchInstitutionWithFilter(entry.key)}" 
+                                     title="#{entry.key}"  
+                                     process="@this" rendered="#{entry.value > 0}" update=":resultsForm:result"  >  
+                        <h:panelGrid id="institutionpanel" columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                     cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                          <h:outputText value="#{entry.key}" /> 
+                          <h:outputText value="#{entry.value}" />
+                        </h:panelGrid> 
+                      </p:commandLink>  
+                    </ui:repeat>  
+                  </ui:remove>
                   <p:spacer width="20" height="30" />
                   <h:panelGrid  id="querypanel" rendered="#{searchBean.queries.size() > 0}">  
                     <h:panelGrid style="font-weight: bold; "  >

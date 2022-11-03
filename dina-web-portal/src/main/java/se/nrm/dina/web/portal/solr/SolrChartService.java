@@ -103,7 +103,7 @@ public class SolrChartService implements Serializable  {
    */
   public Map<String, Integer> getLastYearRegistedData(String searchDateRange, 
           String collectionCode) {
-    log.info("getCollectionsMonthChartData : {} -- {}", searchDateRange, collectionCode);
+    log.info("getLastYearRegistedData : {} -- {}", searchDateRange, collectionCode);
      
     collectionMonthsDataMap = new HashMap<>();  
     final TermsFacetMap catalogedMonthFacet
@@ -113,12 +113,12 @@ public class SolrChartService implements Serializable  {
             .setQuery(searchDateRange) 
             .returnFields(CommonText.getInstance().getCollectionName())
             .withFacet(CommonText.getInstance().getCatalogedMonth(), catalogedMonthFacet);
-    if(collectionCode != null) {
+    if(collectionCode != null) { 
       request.withFilter(CommonText.getInstance().getCollectionCodeKey() + collectionCode);
     }
     try {
       response = request.process(client);
-      log.info("json: {}", response.jsonStr());
+//      log.info("json: {}", response.jsonStr());
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
       return collectionMonthsDataMap;

@@ -22,8 +22,9 @@
         <p:column style="font-size: 11px; width : 600px; "> 
           <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
                        columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  > 
-            <h:graphicImage library="images" styleClass="images" 
+            <h:graphicImage library="images" styleClass="images" rendered="#{!record.pbCollection}"
                             name="icons/discipline/#{record.collectionId}.png" />   
+            <p:spacer rendered="#{record.pbCollection}" />
             <h:outputText value="#{msg.cataloguenumber}:" />   
             <h:outputText value="#{record.catalogNumber}" />  
 
@@ -31,7 +32,7 @@
             <p:commandLink rendered="#{record.morphbankId != null}"  
                            action="#{searchBean.displayImages(record)}" update="imagePanel"  >
               <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
-                              title="#{msg.showimages}" alt="#{msg.showimages}" />  
+                              title="#{msg.showimages}" alt="#{msg.showimages}" />  "
             </p:commandLink>   
 
 
@@ -120,7 +121,26 @@
             <h:outputText value="#{msg.collector}:" />   
             <h:outputText value="#{record.collectors}" /> 
 
+            <p:spacer width="5" height="5" rendered="#{record.pbCollection}"/>
+            <h:outputText value="#{msg.miniumAge}:" rendered="#{record.pbCollection}"/>   
+            <h:outputText value="#{record.minAge}" rendered="#{record.pbCollection}"/> 
 
+            <p:spacer width="5" height="5" rendered="#{record.pbCollection}"/>
+            <h:outputText value="#{msg.maximumAge}:" rendered="#{record.pbCollection}"/>   
+            <h:outputText value="#{record.maxAge}" rendered="#{record.pbCollection}"/> 
+ 
+
+            <p:spacer width="5" height="5" rendered="#{record.pbCollection}"/>
+            <h:outputText value="#{msg.preservation}:" rendered="#{record.pbCollection}"/>   
+            <h:outputText value="#{record.preservation}" rendered="#{record.pbCollection}"/> 
+
+            <p:spacer width="5" height="5" rendered="#{record.pbCollection}"/>
+            <h:outputText value="#{msg.lithostratigraphic}:" rendered="#{record.pbCollection}"/>   
+            <h:outputText value="#{record.lithostratigraphic}" rendered="#{record.pbCollection}"/> 
+
+            <p:spacer width="5" height="5" rendered="#{record.pbCollection}"/>
+            <h:outputText value="#{msg.site}:" rendered="#{record.pbCollection}"/>   
+            <h:outputText value="#{record.site}" rendered="#{record.pbCollection}"/> 
 
             <p:spacer width="5" height="5" />
             <h:panelGroup layout="block"  >

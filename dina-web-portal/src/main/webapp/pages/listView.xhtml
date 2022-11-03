@@ -20,17 +20,13 @@
           <h:panelGrid columns="2" cellpadding="0" cellspacing="0"  >
             <h:panelGrid columns="2" columnClasses="resultTableImageColumn,resultTableDataColumn"  
                          cellpadding="0" cellspacing="0">
-              <ui:remove>
-                              
-                              
-                            <p:graphicImage value="/resources/images/icons/discipline/#{record.collectionId}.png" 
-                                title="#{msg.showimages}" alt="#{msg.showimages}"
-                                styleClass="images" />           
-              </ui:remove>
-              <h:graphicImage library="images" 
-                              name="icons/discipline/#{record.collectionId}.png"   
-                              styleClass="images" />  
-      
+              
+              
+              <h:graphicImage library="images" styleClass="images"  
+                              rendered="#{!record.pbCollection}"
+                              name="icons/discipline/#{record.collectionId}.png" />   
+              <p:spacer rendered="#{record.pbCollection}" />
+          
               <p:commandLink  action="#{searchBean.showOneDetail(record)}" 
                               update=":resultsForm:resultContent" process="@this" global="false"> 
                 <h:outputText value="#{record.txFullName}" 
