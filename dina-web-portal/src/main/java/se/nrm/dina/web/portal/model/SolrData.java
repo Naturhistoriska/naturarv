@@ -68,6 +68,24 @@ public class SolrData {
   @Field
   public boolean map;
   @Field
+  public String periodMax;
+  @Field
+  public String periodMin;
+  @Field
+  public String epochMax;
+  @Field
+  public String epochMin; 
+  @Field
+  public String stageMax;
+  @Field
+  public String stageMin; 
+  @Field
+  public String preservation;
+  @Field
+  public String lithostratigraphic;
+  @Field
+  public String site;
+  @Field
   public String morphbankId;
   @Field
   public String[] morphbankImageId;
@@ -105,11 +123,28 @@ public class SolrData {
   private final String closeArrow = "hidearrow.gif";
   private final String openArrow = "downarrow.gif";
   private final String mineralCode = "557057";
+  private final String collectionPb = "pb"; 
+  private final String slash = "/"; 
+  private final String upArrowBtn = "hidearrow.git";
+  private final String downArrowBtn = "downarrow.gif";
+  private final String comma = ", ";
+  private final String semicolon = "; ";
+  private final String newLine = "\n";
+  private final String emptySpace = " ";
+  private final String coordinatesSeparate = " --- ";
 
   private List<String> thumbs;
   private List<String> jpgs;
   
   private StringBuilder exportRemarksSb;
+  private StringBuilder minAgeSb;
+  private StringBuilder maxAgeSb;
+  
+//  private String[] minAgeArray;
+//  private String[] maxAgeArray;
+
+  
+  
    
   public String getAccessionNumber() {
     return accessionNumber;
@@ -408,7 +443,7 @@ public class SolrData {
   }
 
   public String getAuthors() {
-    return StringUtils.join(author, ", ");
+    return StringUtils.join(author, comma);
   }
 
   public boolean isOpenRemark() {
@@ -420,19 +455,19 @@ public class SolrData {
   }
 
   public String getRemarkBtn() {
-    return openRemark ? "hidearrow.git" : "downarrow.gif";
+    return openRemark ? upArrowBtn : downArrowBtn;
   }
 
   public String getSynonymAuthors() {
-    return StringUtils.join(synonymAuthor, ", ");
+    return StringUtils.join(synonymAuthor, comma);
   }
 
   public String getCollectors() {
-    return StringUtils.join(collector, ", ");
+    return StringUtils.join(collector, comma);
   }
 
   public String getTaxaList() {
-    return StringUtils.join(taxa, "; ");
+    return StringUtils.join(taxa, semicolon);
   }
 
   public List<String> getAllRemarkes() {
@@ -441,14 +476,14 @@ public class SolrData {
       if(remarks != null) {
         Arrays.asList(remarks).stream()
               .forEach(r -> {
-                remarkList.addAll(Arrays.asList(r.split("\n")));
+                remarkList.addAll(Arrays.asList(r.split(newLine)));
               });
       } 
     } else {
       if(colremarks != null) {
         Arrays.asList(colremarks).stream()
               .forEach(r -> {
-                remarkList.addAll(Arrays.asList(r.split("\n")));
+                remarkList.addAll(Arrays.asList(r.split(newLine)));
               });
       } 
     }
@@ -462,11 +497,11 @@ public class SolrData {
         Arrays.asList(remarks)
               .stream()   
               .forEach(r -> {    
-                Arrays.asList(r.split("\n"))
+                Arrays.asList(r.split(newLine))
                         .stream()
                         .forEach(s -> {
                           exportRemarksSb.append(s.trim());
-                          exportRemarksSb.append(" ");
+                          exportRemarksSb.append(emptySpace);
                         });
               });
       } 
@@ -475,11 +510,11 @@ public class SolrData {
         Arrays.asList(colremarks)
               .stream()   
               .forEach(r -> {    
-                Arrays.asList(r.split("\n"))
+                Arrays.asList(r.split(newLine))
                         .stream()
                         .forEach(s -> {
                           exportRemarksSb.append(s.trim());
-                          exportRemarksSb.append(" ");
+                          exportRemarksSb.append(emptySpace);
                         });
               });
       } 
@@ -490,13 +525,13 @@ public class SolrData {
   public String getGeopointText() {
     StringBuilder sb = new StringBuilder();
     sb.append(latitudeText);
-    sb.append(" ");
+    sb.append(emptySpace);
     sb.append(longitudeText);
     return sb.toString();
   }
 
   public String getAllCoAttrRemarkes() {
-    return StringUtils.join(colremarks, ", ");
+    return StringUtils.join(colremarks, comma);
   }
 
   public String[] getPrepCount() {
@@ -508,7 +543,7 @@ public class SolrData {
   }
 
   public String getAllPreparations() {
-    return StringUtils.join(prepration, ", ");
+    return StringUtils.join(prepration, comma);
   }
 
   public LatLng getLatLng() {
@@ -538,8 +573,10 @@ public class SolrData {
       Arrays.asList(morphbankImageId)
               .stream()
               .forEach(i -> {
-                thumbs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance().getImageTypeThumb(), morphbankImageUrl));
-                jpgs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance().getImageTypeJpg(), morphbankImageUrl));
+                thumbs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance()
+                        .getImageTypeThumb(), morphbankImageUrl));
+                jpgs.add(HelpClass.getInstance().buildImagePath(i, CommonText.getInstance()
+                        .getImageTypeJpg(), morphbankImageUrl));
               });
     }
   }
@@ -570,7 +607,84 @@ public class SolrData {
 
   public String getDetermination() {
     return determinedDate == null ? determiner
-            : determiner + ", " + DateHelper.getInstance().dateToString(determinedDate);
+            : determiner + comma + DateHelper.getInstance().dateToString(determinedDate);
+  }
+
+  public String getPeriodMax() {
+    return periodMax;
+  }
+
+  public void setPeriodMax(String periodMax) {
+    this.periodMax = periodMax;
+  }
+
+  public String getPeriodMin() {
+    return periodMin;
+  }
+
+  public void setPeriodMin(String periodMin) {
+    this.periodMin = periodMin;
+  }
+
+  public String getEpochMax() {
+    return epochMax;
+  }
+
+  public void setEpochMax(String epochMax) {
+    this.epochMax = epochMax;
+  }
+
+  public String getEpochMin() {
+    return epochMin;
+  }
+
+  public void setEpochMin(String epochMin) {
+    this.epochMin = epochMin;
+  }
+
+  public String getStageMax() {
+    return stageMax;
+  }
+
+  public void setStageMax(String stageMax) {
+    this.stageMax = stageMax;
+  }
+
+  public String getStageMin() {
+    return stageMin;
+  }
+
+  public void setStageMin(String stageMin) {
+    this.stageMin = stageMin;
+  }
+
+  
+  public String getPreservation() {
+    return preservation;
+  }
+
+  public void setPreservation(String preservation) {
+    this.preservation = preservation;
+  }
+
+  public String getLithostratigraphic() {
+    return lithostratigraphic;
+  }
+
+  public void setLithostratigraphic(String lithostratigraphic) {
+    this.lithostratigraphic = lithostratigraphic;
+  }
+
+  public String getSite() {
+    return site;
+  }
+
+  public void setSite(String site) {
+    this.site = site;
+  }
+  
+  public boolean isPbCollection() {
+    return collectionId.equals(collectionPb);
   }
 
   public void openCloseRemarks() { 
@@ -582,18 +696,50 @@ public class SolrData {
   }
 
   public String getAllAdditionalDeterminations() {
-    return StringUtils.join(additionalDet, "; ");
+    return StringUtils.join(additionalDet, semicolon);
   }
 
   public String getPrepCountList() {
-    return StringUtils.join(prepCount, "; "); 
+    return StringUtils.join(prepCount, semicolon); 
+  }
+  
+  public String getMinAge() { 
+    minAgeSb = new StringBuilder();
+    if(!StringUtils.isBlank(periodMin)) {
+      minAgeSb.append(periodMin); 
+    }
+    if(!StringUtils.isBlank(epochMin)) {
+      minAgeSb.append(slash); 
+      minAgeSb.append(epochMin); 
+    }
+    if(!StringUtils.isBlank(stageMin)) {
+      minAgeSb.append(slash); 
+      minAgeSb.append(stageMin); 
+    }
+    return minAgeSb.toString().trim();
+  }
+  
+  public String getMaxAge() {
+    maxAgeSb = new StringBuilder();
+    if(!StringUtils.isBlank(periodMax)) {
+      maxAgeSb.append(periodMax); 
+    }
+    if(!StringUtils.isBlank(epochMax)) {
+      maxAgeSb.append(slash); 
+      maxAgeSb.append(epochMax); 
+    }
+    if(!StringUtils.isBlank(stageMax)) {
+      maxAgeSb.append(slash); 
+      maxAgeSb.append(stageMax); 
+    }
+    return maxAgeSb.toString().trim(); 
   }
 
   public String getCoordinateString() {
 
     if (latitudeText != null && latitudeText.length() > 0) {
       if (longitudeText != null && longitudeText.length() > 0) {
-        return latitudeText + " --- " + longitudeText;
+        return latitudeText + coordinatesSeparate + longitudeText;
       } else {
         return latitudeText;
       }
