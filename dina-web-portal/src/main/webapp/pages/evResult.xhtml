@@ -1,0 +1,171 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
+
+    <body>
+        <ui:composition>     
+            <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
+                         columnClasses="simpleTableIconCol,simpleTableLabelCol,simpleTableValueCol"  > 
+
+                <h:graphicImage library="images" styleClass="images" 
+                                name="icons/discipline/#{record.collectionId}.png" />    
+                <h:outputText value="#{msg.cataloguenumber}:" />   
+                <h:outputText value="#{record.catalogNumber}" />  
+
+                <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
+                <p:commandLink rendered="#{record.morphbankId != null}"  
+                               action="#{searchBean.displayImages(record)}" update="evimagePanel"  >
+                    <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
+                                    title="#{msg.showimages}" alt="#{msg.showimages}" />
+                </p:commandLink>   
+
+
+                <h:outputText value="#{msg.catalogeddate}:"  />     
+                <h:outputText value="#{record.catalogedDate}"  >
+                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
+                </h:outputText> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.collection}:" />   
+                <h:outputText value="#{record.collectionName}" />
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.highertaxa}:" />   
+                <h:outputText value="#{record.higherTx}" style="word-break: break-all;" />
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.speciesname}:" />   
+                <h:outputText value="#{record.taxon}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.determiner}:" />   
+                <h:outputText value="#{record.determination}" />   
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.stationnumber}:"  />   
+                <h:outputText value="#{record.stationFieldNumber}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.collectiondate}:"  />     
+                <h:outputText value="#{record.startDate}"  >
+                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
+                </h:outputText>
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.locality}:"   />   
+                <h:outputText value="#{record.locality}" />  
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.state}:"   />   
+                <h:outputText value="#{record.state}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.country}:"  />   
+                <h:outputText value="#{record.country}" />   
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.coordinate}:" />    
+                <h:panelGroup layout="block" rendered="#{record.coordinateString != null}" >
+                    <h:outputText value="#{record.coordinateString}" /> 
+                </h:panelGroup>
+
+                <h:panelGrid rendered="#{record.coordinateString == null}">  
+                    <p:spacer width="10" height="10" />
+                </h:panelGrid> 
+
+                <p:spacer width="5" height="5"  />
+                <h:outputText value="#{msg.preservation}:" />   
+                <h:outputText value="#{record.preservation}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.specificEpithet}:" />   
+                <h:outputText value="#{record.specificEpithet}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.environment}:" />   
+                <h:outputText value="#{record.environment}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.maxDepthInMeters}:" />   
+                <h:outputText value="#{record.maxDepthInMeters}" /> 
+
+                <p:spacer width="5" height="5"  />
+                <h:outputText value="#{msg.minDepthInMeters}:"  />   
+                <h:outputText value="#{record.minDepthInMeters}" /> 
+
+                <p:spacer width="5" height="5"  />
+                <h:outputText value="#{msg.oceanOrSea}:" />   
+                <h:outputText value="#{record.oceanOrSea}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.habitat}:" />   
+                <h:outputText value="#{record.habitat}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.individualCount}:" />   
+                <h:outputText value="#{record.individualCount}" /> 
+
+                <p:spacer width="5" height="5" />
+                <h:outputText value="#{msg.remarks}:" />   
+                <h:outputText value="#{record.remarksString}" />  
+            </h:panelGrid> 
+            <p:spacer width="5" height="5" />
+            <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="evimagePanel" >   
+
+                <h:panelGrid  rendered="#{record.displayImage}"> 
+                    <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
+                        <f:ajax render="evimagePanel"/>
+                    </h:commandLink>   
+
+                    <ui:repeat value="#{record.thumbs}" var="thumb">     
+                        <p:commandLink  action="#{switch.imageSwitch(record)}" 
+                                        onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
+                            <p:graphicImage value="#{thumb}" 
+                                            title="#{record.txFullName}/#{record.catalogNumber}" 
+                                            alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                        </p:commandLink>  
+
+                    </ui:repeat>   
+                </h:panelGrid> 
+            </h:panelGrid> 
+
+            <p:spacer width="5" height="5" />
+            <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="evsingleMapPanel" >   
+                <h:panelGrid rendered="#{record.displayMap}"> 
+                    <h:commandLink action="#{searchBean.closeMap(record)}" value="#{msg.closemap}" >    
+                        <f:ajax render="evsingleMapPanel"/>
+                    </h:commandLink> 
+                    <leaf:map  center="#{record.latitude}, #{record.longitude}" 
+                               marker="#{record.latitude}, #{record.longitude}"
+                               popupMsg="#{record.locality}&lt;br&gt;#{record.coordinateString}" 
+                               zoomGlobal="false" 
+                               dragging="false"
+                               width="600px" height="300px" zoom="10"  
+                               urlTemplate="http://{s}.tile.osm.org/{z}/{x}/{y}.png" 
+                               attribution="OpenStreetMap" 
+                               />
+
+                </h:panelGrid>
+            </h:panelGrid>
+
+            <p:spacer width="10" height="5" />
+            <h:panelGroup layout="block" >  
+                <p:commandLink value="#{msg.showmap}" rendered="#{record.singleMapLink}"
+                               action="#{searchBean.showSingleMap(record)}"    
+                               update="evsingleMapPanel detailResultTable" />  
+                <p:spacer width="10" height="5" rendered="#{record.singleMapLink}" /> 
+                <h:outputLink id="evscientificNameLinkNrmSingle" value="http://naturforskaren.se/search/#{record.txFullName.trim()}"  
+                              title="scientificname"  target="_blank" >                   
+                    <h:outputText value="#{msg.showintaxonpages}"  style="font-family: Arial,sans-serif;" />   
+                </h:outputLink>   
+
+                <p:spacer width="10" height="5" /> 
+                <p:commandLink value="#{msg.errorreport}"    process="@this"  global="false" 
+                               action="#{error.reportError(record)}"  />  
+            </h:panelGroup>  
+        </ui:composition>
+    </body>
+</html>
