@@ -3,32 +3,39 @@
       xmlns:p="http://primefaces.org/ui"    
       xmlns:h="http://java.sun.com/jsf/html"   >
 
-  <body> 
-    <ui:composition>         
-        <h:panelGrid styleClass="topMenu" cellpadding="0" cellspacing="0"  >
-          <h:form  id="topMenuForm"> 
-            <h:panelGrid width="980" columns="11" id="topmenupanel"   cellpadding="5" cellspacing="5"  > 
-              <p:spacer width="1"  />
-              <p:commandLink actionListener="#{navigate.gotoHome()}" value="#{msg.startpage}" 
-                             styleClass="#{style.tabStart}"  process="@this" global="false" update="templet"  /> 
-              <p:spacer width="20"  /> 
-              <p:commandLink actionListener="#{navigate.gotoCollections()}" id="collectionLink" value="#{msg.ourcollections}" 
-                             styleClass="#{style.tabCollections}" process="@this" global="false" update="templet"  /> 
-              <p:spacer width="20"  />
-              <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
-                             styleClass="#{style.tabPartners}" process="@this" global="false" update="templet" /> 
-              <p:spacer width="20"  />
-              <p:commandLink actionListener="#{navigate.gotoFAQ()}" value="#{msg.fqa}" 
-                             styleClass="#{style.tabFaq}" process="@this" global="false" update="templet" /> 
-              <p:spacer width="20"  />
-              <p:commandLink actionListener="#{navigate.gotoAbout()}" value="#{msg.about}" 
-                             styleClass="#{style.tabAbout}" process="@this" global="false" update="templet" />  
-              <p:spacer width="120" height="20" />  
-            </h:panelGrid>   
-          </h:form> 
-        </h:panelGrid>    
-    </ui:composition>
-  </body> 
+    <body> 
+        <ui:composition>         
+            <h:panelGrid styleClass="topMenu" cellpadding="0" cellspacing="0"  >
+                <h:form  id="topMenuForm"> 
+                    <h:panelGrid width="980" columns="11" id="topmenupanel"  
+                                 cellpadding="5" cellspacing="5"  > 
+                        <p:spacer width="1"  />
+                        <p:commandLink actionListener="#{navigate.gotoHome()}" value="#{msg.startpage}" 
+                                       styleClass="#{style.tabStart}"  process="@this" 
+                                       global="false" update="templet"  /> 
+                        <p:spacer width="20"  /> 
+                        <p:commandLink actionListener="#{navigate.gotoCollections()}" 
+                                       id="collectionLink" value="#{msg.ourcollections}" 
+                                       styleClass="#{style.tabCollections}" process="@this" 
+                                       global="false" update="templet"  /> 
+                        <p:spacer width="20"  />
+                        <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
+                                       styleClass="#{style.tabPartners}" process="@this" 
+                                       global="false" update="templet" /> 
+                        <p:spacer width="20"  />
+                        <p:commandLink actionListener="#{navigate.gotoFAQ()}" value="#{msg.fqa}" 
+                                       styleClass="#{style.tabFaq}" process="@this" 
+                                       global="false" update="templet" /> 
+                        <p:spacer width="20"  />
+                        <p:commandLink actionListener="#{navigate.gotoAbout()}" value="#{msg.about}" 
+                                       styleClass="#{style.tabAbout}" process="@this" 
+                                       global="false" update="templet" />  
+                        <p:spacer width="120" height="20" />  
+                    </h:panelGrid>   
+                </h:form> 
+            </h:panelGrid>    
+        </ui:composition>
+    </body> 
 </html>
 
 

@@ -19,14 +19,10 @@
         <p:column style="font-size: 11px; width : 600px; "> 
           <h:panelGrid columns="2" cellpadding="0" cellspacing="0"  >
             <h:panelGrid columns="2" columnClasses="resultTableImageColumn,resultTableDataColumn"  
-                         cellpadding="0" cellspacing="0">
-              
+                         cellpadding="0" cellspacing="0"> 
               
               <h:graphicImage library="images" styleClass="images"  
-                              rendered="#{!record.pbCollection}"
-                              name="icons/discipline/#{record.collectionId}.png" />   
-              <p:spacer rendered="#{record.pbCollection}" />
-          
+                              name="icons/discipline/#{record.collectionId}.png" />    
               <p:commandLink  action="#{searchBean.showOneDetail(record)}" 
                               update=":resultsForm:resultContent" process="@this" global="false"> 
                 <h:outputText value="#{record.txFullName}" 
@@ -49,8 +45,14 @@
                 <h:outputText value="#{msg.type}:" rendered="#{record.typeStatus != null}" />   
                 <h:outputText value="#{record.typeStatus}" rendered="#{record.typeStatus != null}" /> 
 
-                <h:outputText value="#{msg.preparationstype}:" />   
-                <h:outputText value="#{record.prepCountList}" /> 
+                <ui:remove>
+                    <h:outputText value="#{msg.preparationstype}:"   />   
+                    <h:outputText value="#{record.prepCountList}" />  
+                </ui:remove>
+                
+                <h:outputText value="#{msg.preservation}:" />   
+                <h:outputText value="#{record.preservation}" /> 
+                
 
                 <h:outputText value="#{msg.collectiondate}: " /> 
                 <h:outputText value="#{record.startDate}"  > 
@@ -61,8 +63,8 @@
                 <h:outputText value="#{record.locality}" />
 
 
-                <h:outputText value="#{msg.localityCounty}:"   />   
-                <h:outputText value="#{record.county}" /> 
+                <h:outputText value="#{msg.localityCounty}:" rendered="#{!record.evCollection}"  />   
+                <h:outputText value="#{record.county}" rendered="#{!record.evCollection}" /> 
 
                 <h:outputText value="#{msg.state}:"   />   
                 <h:outputText value="#{record.state}" /> 
@@ -72,10 +74,15 @@
 
                 <h:outputText value="#{msg.continent}:"   />   
                 <h:outputText value="#{record.continent}" />  
-
-
+ 
                 <h:outputText value="#{msg.cataloguenumber}: " /> 
                 <h:outputText value="#{record.catalogNumber}" /> 
+                 
+                <h:outputText value="#{msg.maxDepthInMeters}:" rendered="#{record.evCollection}"/>   
+                <h:outputText value="#{record.maxDepthInMeters}" rendered="#{record.evCollection}"/> 
+ 
+                <h:outputText value="#{msg.minDepthInMeters}:" rendered="#{record.evCollection}"/>   
+                <h:outputText value="#{record.minDepthInMeters}" rendered="#{record.evCollection}"/> 
               </h:panelGrid> 
 
               <p:spacer width="5" height="5" />
@@ -99,19 +106,16 @@
 
               <p:spacer width="5" height="5" />
               <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="singleMapPanel" >   
-                <h:panelGrid rendered="#{record.displayMap}">   
-                  <leaf:map  center="#{record.latitude}, #{record.longitude}" 
-                             marker="#{record.latitude}, #{record.longitude}"
-                             popupMsg="#{record.locality}&lt;br&gt;#{record.coordinateString}" 
-                             zoomGlobal="false" 
-                             dragging="false"
-                             width="600px" height="300px" zoom="14"  
-                             urlTemplate="http://{s}.tile.osm.org/{z}/{x}/{y}.png" 
-                             attribution="OpenStreetMap" 
-                  />  
+                <h:panelGrid rendered="#{record.displayMap}">    
+                  <leaf:map center="#{record.latitude}, #{record.longitude}" 
+                            marker="#{record.latitude}, #{record.longitude}"
+                            popupMsg="#{record.locality}&lt;br&gt;#{record.coordinateString}" 
+                            width="600px" height="300px" zoom="8" 
+                            urlTemplate="http://{s}.tile.osm.org/{z}/{x}/{y}.png" 
+                            attribution="OpenStreetMap" />
                 </h:panelGrid>
               </h:panelGrid>
-
+  
               <p:spacer width="10" height="5" />
               <h:panelGroup layout="block" id="linkPanel" >   
                 <p:commandLink value="#{msg.closemap}" rendered="#{record.displayMap}"
