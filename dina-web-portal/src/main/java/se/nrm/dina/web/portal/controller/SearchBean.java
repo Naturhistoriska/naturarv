@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped; 
-import javax.faces.annotation.ManagedProperty;
+//import javax.faces.annotation.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
@@ -312,7 +312,8 @@ public class SearchBean implements Serializable {
 
     filters.clear();
     queries.clear();
-    searchData();
+    
+    searchData(); 
   }
 
   /**
@@ -813,6 +814,12 @@ public class SearchBean implements Serializable {
   public void freeTextKeyup() {
 
   }
+  
+  public boolean pbCollection(SolrData data) {
+      log.info("pbCollection : {}", data.getCollectionId());
+      
+      return true;
+  }
 
   public void selectOne(SolrData data) {
     log.info("selectOne: {}", data.isSelected());
@@ -1000,7 +1007,7 @@ public class SearchBean implements Serializable {
   }
 
   public boolean isOverMaxDownloadSize() {
-    return selectedRecords.size() > 0 ? selectedRecords.size() > 1000 : totalResult > 1000;
+    return !selectedRecords.isEmpty() ? selectedRecords.size() > 1000 : totalResult > 1000;
   }
 
   public List<QueryData> getQueryDataList() {

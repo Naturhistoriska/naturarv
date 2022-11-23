@@ -33,9 +33,7 @@ public class Languages implements Serializable {
   
   @Inject
   private SearchBean search;
-  
-  @Inject
-  private StatisticBean statistic;
+   
  
   @Inject
   private StyleBean style;
@@ -54,10 +52,9 @@ public class Languages implements Serializable {
     session.setAttribute(CommonText.getInstance().getLocale(), locale);
   }
   
-  public Languages(ChartView chart, SearchBean search, StatisticBean statistic, StyleBean style) {
+  public Languages(ChartView chart, SearchBean search, StyleBean style) {
     this.chart = chart;
-    this.search = search;
-    this.statistic = statistic;
+    this.search = search; 
     this.style = style;
     
     updateList = new ArrayList<>();
@@ -81,8 +78,7 @@ public class Languages implements Serializable {
       session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
       session.setAttribute(CommonText.getInstance().getLocale(), locale);
       chart.changeLanguage(isSwedish()); 
-      search.changeLanguage(isSwedish());
-      statistic.changeLanguage(isSwedish());
+      search.changeLanguage(isSwedish()); 
       HelpClass.getInstance().updateView(updateList);
     } 
   }

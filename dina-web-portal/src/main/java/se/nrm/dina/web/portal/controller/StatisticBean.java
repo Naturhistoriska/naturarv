@@ -1,10 +1,8 @@
 package se.nrm.dina.web.portal.controller;
 
-import java.io.Serializable; 
-import java.util.LinkedHashMap;
+import java.io.Serializable;  
 import java.util.List;
-import java.util.Map; 
-import java.util.stream.Collectors;
+import java.util.Map;  
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped; 
 import javax.inject.Inject;
@@ -25,22 +23,16 @@ import se.nrm.dina.web.portal.utils.CommonText;
 public class StatisticBean implements Serializable {
   
   private StatisticData data; 
-  private StatisticData filteredData;
-  private final String gnmEntomologyCode = "4";
-//  private HttpSession session;  
-  
-  private boolean isSwedish; 
+  private StatisticData filteredData;  
   
   @Inject
   private SolrStatisticService solr;
   
-  public StatisticBean() { 
-    isSwedish = true;
+  public StatisticBean() {  
   }
   
   public StatisticBean(SolrStatisticService solr) { 
-    this.solr = solr;
-    isSwedish = true;
+    this.solr = solr; 
   }
   
   @PostConstruct
@@ -48,11 +40,7 @@ public class StatisticBean implements Serializable {
     log.info("StatisticData.init");
     data = solr.getStatisticData(CommonText.getInstance().getWildSearchText(), null);  
   } 
-  
-  public void changeLanguage(boolean isSwedish) {
-    this.isSwedish = isSwedish;
-  }
-  
+   
   public void resetData(String text, Map<String, String> queries) {
     filteredData = solr.getStatisticData(text, queries);   
   }
@@ -136,31 +124,4 @@ public class StatisticBean implements Serializable {
     }
     return data.getTotalType();
   }
-  
-//  public Map<String, Integer> getFilteredInstitutions() {
-//    return filteredData == null ? getInstitutions() : buildInstitutionsMap(filteredData);
-//  }
-
-//  public Map<String, Integer> getInstitutions() {
-//    if (data == null) {
-//      resetAllData();
-//    }
-//    return buildInstitutionsMap(data); 
-//  }
-  
-//  private Map<String, Integer> buildInstitutionsMap(StatisticData statisticData) {
-//    Map<Boolean, List<CollectionData>> partitions = 
-//            statisticData.getCollections().stream() 
-//                    .collect(Collectors.partitioningBy(c ->  c.getCode().equals(gnmEntomologyCode) ));
-// 
-//    Map<String, Integer> map = new LinkedHashMap<>();
-//
-//    map.put(CommonText.getInstance().getNrmName(isSwedish), partitions.get(true).stream()
-//                              .mapToInt(CollectionData::getTotal)
-//                              .sum());
-//    map.put(CommonText.getInstance().getGnmName(isSwedish), partitions.get(false).stream()
-//                              .mapToInt(CollectionData::getTotal)
-//                              .sum()); 
-//    return map;
-//  }
 } 

@@ -1,10 +1,10 @@
 package se.nrm.dina.web.portal.solr;
- 
-import java.util.Map; 
-import lombok.extern.slf4j.Slf4j; 
-import org.apache.solr.client.solrj.SolrQuery; 
+
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
-import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet; 
+import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
 
 /**
  *
@@ -12,61 +12,62 @@ import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
  */
 @Slf4j
 public class SolrHelper {
+ 
+    private static SolrHelper instance = null;
 
-  private static SolrHelper instance = null; 
-  
-  public static SolrHelper getInstance(){
-    synchronized (SolrHelper.class) {
-      if(instance == null){
-        instance = new SolrHelper();
-      }
+    public static SolrHelper getInstance() {
+        synchronized (SolrHelper.class) {
+            if (instance == null) {
+                instance = new SolrHelper();
+            }
+        }
+        return instance;
     }
-    return instance;
-  } 
-  
-  /**
-   * Get total count of bucket
-   * 
-   * @param bucket - BucketBasedJsonFacet
-   * 
-   * @return int
-   */
-  public int getBucketsTotal(BucketBasedJsonFacet bucket) {
-    if(bucket == null) {
-      return 0;
+
+    /**
+     * Get total count of bucket
+     *
+     * @param bucket - BucketBasedJsonFacet
+     *
+     * @return int
+     */
+    public int getBucketsTotal(BucketBasedJsonFacet bucket) {
+        if (bucket == null) {
+            return 0;
+        }
+        if (bucket.getBuckets() == null || bucket.getBuckets().isEmpty()) {
+            return 0;
+        }
+        return (int) bucket.getBuckets().get(0).getCount();
     }
-    if(bucket.getBuckets() == null || bucket.getBuckets().isEmpty()) {
-      return 0;
+
+    /**
+     * Add filters into solr query
+     *
+     * @param query - solrQuery
+     * @param filterQueries - Map<String, String>
+     */
+    public void addSearchFilters(SolrQuery query, Map<String, String> filterQueries) {
+ 
+        if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search
+            filterQueries.entrySet()
+                    .stream()
+                    .forEach(e -> {
+                        query.addFilterQuery(e.getKey().trim() + e.getValue().trim());
+                    });
+        } 
     }
-    return (int)bucket.getBuckets().get(0).getCount();
-  }
-  
-  /**
-   * Add filters into solr query
-   * 
-   * @param query - solrQuery
-   * @param filterQueries - Map<String, String>
-   */
-  public void addSearchFilters(SolrQuery query, Map<String, String> filterQueries) { 
-    if (filterQueries != null && !filterQueries.isEmpty()) {                                                // add filters into search
-      filterQueries.entrySet()
-              .stream()
-              .forEach(e -> {
-                query.addFilterQuery(e.getKey().trim() + e.getValue().trim());
-              });
+
+    public void addSearchFilters(JsonQueryRequest request, Map<String, String> filterQuerues) {
+        if (filterQuerues != null) {
+            filterQuerues.entrySet()
+                    .stream()
+                    .forEach(e -> {
+                        request.withFilter(e.getKey().trim() + e.getValue().trim());
+                    });
+        }
     }
-  }
-  
-  public void addSearchFilters(JsonQueryRequest request, Map<String, String> filterQuerues) {
-    if (filterQuerues != null) {
-      filterQuerues.entrySet()
-              .stream()
-              .forEach(e -> {
-                request.withFilter(e.getKey().trim() + e.getValue().trim());
-              });
-    }
-  }
-   
+
 //  /**
 //   * Build search string
 //   * 
@@ -89,63 +90,10 @@ public class SolrHelper {
 //    return content.equals(CommonText.getInstance().getStartWith())
 //            ? buildStartsWithString(value, field) : buildContainsString(value, field);
 //  }
- 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  //  public String buildSearchCatalogedDateText(LocalDateTime date) {
+    //  public String buildSearchCatalogedDateText(LocalDateTime date) {
 //    return DateHelper.getInstance().convertLocalDateTimeToString(date, null,
 //            CommonText.getInstance().getCatalogedDate(), ":00Z", null);
 //  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
 //  
 //  private String buildExactString(String value, String field) {
 //    advanceSearchText = new StringBuilder();
@@ -155,13 +103,6 @@ public class SolrHelper {
 //    advanceSearchText.append("\"");
 //    return advanceSearchText.toString();
 //  }
-
-  
-
-  
-
-
-
 //  private String buildCommonNameSearchText(QueryData data) { 
 //
 //    String value = HelpClass.getInstance().resetValue(data.getValue());
@@ -194,7 +135,6 @@ public class SolrHelper {
 //    commonNameSb.append(")");
 //    return commonNameSb.toString().trim();
 //  }
-
 //  private String buildFullTextSearchText(QueryData data) {
 //    log.info("buildFullTextSearchText");
 //
@@ -223,7 +163,6 @@ public class SolrHelper {
 //    sb.append(")");
 //    return sb.toString().trim();
 //  }
-  
 //  private String buildFullTextSearchText(String value) { 
 //      StringBuilder sb = new StringBuilder();
 //      sb.append("(");
@@ -237,7 +176,6 @@ public class SolrHelper {
 //      sb.append(")");
 //      return sb.toString().trim(); 
 //  }
-
 //  private String buildDeterminationSearch(QueryData data) {
 //    String value = HelpClass.getInstance().resetValue(data.getValue());
 // 
@@ -266,8 +204,6 @@ public class SolrHelper {
 //    sb.append(")");
 //    return sb.toString().trim();
 //  }
-
-
 //  private String buildClassificationSearch(QueryData data) { 
 //    log.info("buildClassificationSearch : {}", data.getValue());
 //
@@ -313,11 +249,8 @@ public class SolrHelper {
 //
 //    return classificationSb.toString().trim();
 //  }
-
-
 //
 // 
-
 //  
 //  /**
 //   * Method build a search string for advance search
@@ -341,10 +274,6 @@ public class SolrHelper {
 //    searchTextSb.append(value);
 //    return searchTextSb.toString();
 //  }
-
-
- 
-
 //  public String buildAdvanceSearchText(QueryData data) {
 //    log.info("buildAdvanceSearchText");
 //    String value = data.getValue();
@@ -369,17 +298,10 @@ public class SolrHelper {
 //    sb.append(")");
 //    return sb.toString().trim();
 //  }
-
 //  public String buildSearchCatalogedDateText(LocalDateTime date) {
 //    return DateHelper.getInstance().convertLocalDateTimeToString(date, null,
 //            CommonText.getInstance().getCatalogedDate(), ":00Z", null);
 //  }
-
-  
- 
-  
-  
-  
 //  public String buildAdvanceFullTextSearchString(String value, String field, String content) {
 //    log.info("buildAdvanceFullTextSearchString: {} -- {}", value, field);
 //    switch (content) {
@@ -391,10 +313,6 @@ public class SolrHelper {
 //        return buildContainsString(value, field); 
 //    } 
 //  }
-  
-  
-  
-  
 //  private String buildExactString(String value, String field, boolean boost) {  
 //    StringBuilder sb = new StringBuilder();
 //

@@ -30,7 +30,7 @@ public class MyMap implements Serializable {
    
   private final String centerLat = "40.0";
   private final String centerLng = "31.0"; 
-  private final int zoom = 4; 
+  private final int zoom = 3; 
   
   private final String mapWidth = "720px";
   private final String mapHeight = "400px";
@@ -50,6 +50,7 @@ public class MyMap implements Serializable {
   private final String valueKey = "val";
   private final String countKey = "count";
   private final String localityKey = "locality";
+  private final String emptyString = "";
   
   private String searchText;
   private java.util.Map<String, String> filters; 
@@ -86,23 +87,44 @@ public class MyMap implements Serializable {
     List<Marker> markers;
     for(int i = 0; i < jsonArray.size(); i++) {
       array = jsonArray.getJsonObject(i)
-              .getJsonObject(coordinatesKey).getJsonArray(bucketsKey);
-      markers = new ArrayList();
-      for(int j = 0; j < array.size(); j++) {
-        JsonObject json = array.getJsonObject(j);
-        String coordinates = json.getString(valueKey);
-        int count = json.getInt(countKey); 
- 
-        String locality = json.getJsonObject(localityKey)
-                .getJsonArray(bucketsKey).getJsonObject(0)
-                .getString(valueKey);
+                .getJsonObject(coordinatesKey).getJsonArray(bucketsKey);
+        markers = new ArrayList();
+        for (int j = 0; j < array.size(); j++) {
+            JsonObject json = array.getJsonObject(j);
+            String coordinates = json.getString(valueKey);
+            int count = json.getInt(countKey);
+            String lat = StringUtils.substringBetween(coordinates, north, east);
+            String lng = StringUtils.substringAfter(coordinates, east);
 
-        String lat = StringUtils.substringBetween(coordinates, north, east);
-        String lng = StringUtils.substringAfter(coordinates, east);
-        for (int k = 0; k < count; k++) { 
-          Marker marker = new Marker(new LatLong(lat, lng), getPopupText(lat, lng, locality));  
-          markers.add(marker); 
-        }
+            JsonArray localityArray = json.getJsonObject(localityKey)
+                    .getJsonArray(bucketsKey);
+
+            if (localityArray != null && !localityArray.isEmpty()) {
+                for (int k = 0; k < localityArray.size(); k++) {
+                    JsonObject localityJson = localityArray.getJsonObject(k);
+
+                    String locality = localityJson.getString(valueKey);
+                    int subCount = localityJson.getInt(countKey);
+                   
+                    for (int n = 0; n < subCount; n++) {
+                        Marker marker = new Marker(new LatLong(lat, lng),
+                                getPopupText(lat, lng, locality));
+                        markers.add(marker);
+                    }
+                }
+            } else {
+                for (int n = 0; n < count; n++) {
+                    Marker marker = new Marker(new LatLong(lat, lng),
+                            getPopupText(lat, lng, emptyString));
+                    markers.add(marker);
+                }
+            }
+
+//        String locality = json.getJsonObject(localityKey)
+//                .getJsonArray(bucketsKey).getJsonObject(0)
+//                .getString(valueKey);
+
+     
       }
       clusterLayer.addMarker(markers);   
     }

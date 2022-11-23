@@ -93,12 +93,12 @@ public class StatisticBeanTest {
   /**
    * Test of changeLanguage method, of class StatisticBean.
    */
-  @Test
-  public void testChangeLanguage() {
-    System.out.println("changeLanguage");
-    boolean isSwedish = false; 
-    instance.changeLanguage(isSwedish);  
-  }
+//  @Test
+//  public void testChangeLanguage() {
+//    System.out.println("changeLanguage");
+//    boolean isSwedish = false; 
+////    instance.changeLanguage(isSwedish);  
+//  }
 
   /**
    * Test of resetData method, of class StatisticBean.

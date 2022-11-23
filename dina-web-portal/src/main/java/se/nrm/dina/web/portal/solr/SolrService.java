@@ -38,6 +38,11 @@ public class SolrService implements Serializable {
   
   private String unAccentString;
   private final String text = "text";
+  
+  
+  private final String collectionIdFilter = "collectionId:*"; 
+  private final String collectionIdKey = "collectionId:"; 
+
 
   @Inject
   @Solr
@@ -87,13 +92,19 @@ public class SolrService implements Serializable {
     log.info("searchWithFilter: {} -- {}", text, filters);
 
     query = new SolrQuery();
-    query.setQuery(text);
+    query.setQuery(text); 
     query.setStart(start);
     query.setRows(numPerPage);
     query.setSort(sort, sortAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+      
     SolrHelper.getInstance().addSearchFilters(query, filters);
+    if(!filters.containsKey(collectionIdKey)) {
+        query.addFilterQuery(collectionIdFilter);
+    }
+    
     try {
       response = client.query(query);
+//      log.info("response : {}", response.jsonStr());
       return new SolrResult((int) response.getResults().getNumFound(), response.getBeans(SolrData.class));
     } catch (SolrServerException | IOException ex) {
       log.error(ex.getMessage());
