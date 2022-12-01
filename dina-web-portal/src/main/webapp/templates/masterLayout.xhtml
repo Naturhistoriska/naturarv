@@ -12,9 +12,7 @@
       <ui:insert name="windowTitle">
         #{msg.naturarv}
       </ui:insert>
-    </title>
-
-    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa1olBKzqZdr4KaHHaC-2njZOWOinIDq8" type="text/javascript"></script>-->
+    </title> 
 
     <script name="jquery/jquery.js" library="primefaces"></script> 
 
@@ -32,12 +30,11 @@
 
   </h:head> 
   <f:view locale="#{languages.locale}" > 
-    <ui:remove>
-      <f:metadata>
-        <f:event listener="#{search.init()}"  type="preRenderView"  />
-      </f:metadata>
-    </ui:remove>
-
+ 
+    <f:metadata>
+        <f:event listener="#{f5Detector.checkF5}"  type="preRenderView"  /> 
+    </f:metadata> 
+       
     <h:body  styleClass="mainbody" >
       <h:outputStylesheet library="css" name="style.css"  />
       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
@@ -60,13 +57,13 @@
       </h:form>
 
       <h:panelGroup id="templet" layout="block" styleClass="templet">
-        <h:panelGroup  id="header" layout="block"  >
-          <ui:insert name="header" >
-            <ui:include src="/pages/header.xhtml" />
+        <h:panelGroup  id="header" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
+          <ui:insert name="header" > 
+            <ui:include src="/pages/header.xhtml" />    
           </ui:insert> 
         </h:panelGroup>
 
-        <h:panelGroup  id="topmenu" layout="block"  >
+        <h:panelGroup  id="topmenu" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
           <ui:insert name="topmenu" >
             <ui:include src="/pages/topMenu.xhtml" />
           </ui:insert>
