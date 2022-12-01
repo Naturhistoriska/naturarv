@@ -99,7 +99,7 @@ public class NavigatorTest {
     }  
   }
   
-  @Test
+//  @Test
   public void testGotoHome3() throws IOException {
     System.out.println("gotoHome"); 
     try {
@@ -130,7 +130,7 @@ public class NavigatorTest {
    * Test of gotoResults method, of class Navigator.
    * @throws java.io.IOException
    */
-  @Test
+//  @Test
   public void testGotoResults() throws IOException {
     System.out.println("gotoResults"); 
     

@@ -721,7 +721,7 @@ public class CommonTextTest {
   public void testGetTypeKey() {
     System.out.println("getTypeKey");
     String expResult = "isType:";
-    String result = instance.getTypeKey();
+    String result = instance.getIsTypeKey();
     assertEquals(expResult, result);
   }
 
@@ -732,7 +732,7 @@ public class CommonTextTest {
   public void testGetSwedenKey() {
     System.out.println("getSwedenKey");
     String expResult = "inSweden:";
-    String result = instance.getSwedenKey();
+    String result = instance.getInSwedenKey();
     assertEquals(expResult, result);
   }
 

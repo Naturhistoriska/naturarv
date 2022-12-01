@@ -56,6 +56,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
         try {
           externalContext.redirect(externalContext.getRequestContextPath() + home);
         } catch (IOException ex) {
+            log.info(ex.getMessage());
         }
 
       } finally {

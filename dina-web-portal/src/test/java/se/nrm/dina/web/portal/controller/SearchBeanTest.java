@@ -133,18 +133,7 @@ public class SearchBeanTest {
     fail("The test case is a prototype.");
   }
 
-  /**
-   * Test of searchInstitutionWithSingleFilter method, of class SearchBean.
-   */
-//  @Test
-  public void testSearchInstitutionWithSingleFilter() {
-    System.out.println("searchInstitutionWithSingleFilter");
-    String key = "";
-    SearchBean instance = new SearchBean();
-    instance.searchInstitutionWithSingleFilter(key);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
+ 
 
   /**
    * Test of searchDataWithFilter method, of class SearchBean.
@@ -171,20 +160,7 @@ public class SearchBeanTest {
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }
-
-  /**
-   * Test of searchInstitutionWithFilter method, of class SearchBean.
-   */
-//  @Test
-  public void testSearchInstitutionWithFilter() {
-    System.out.println("searchInstitutionWithFilter");
-    String key = "";
-    SearchBean instance = new SearchBean();
-    instance.searchInstitutionWithFilter(key);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
+ 
   /**
    * Test of removeFilter method, of class SearchBean.
    */
@@ -986,19 +962,7 @@ public class SearchBeanTest {
     fail("The test case is a prototype.");
   }
 
-  /**
-   * Test of getSelectedInstitution method, of class SearchBean.
-   */
-//  @Test
-  public void testGetSelectedInstitution() {
-    System.out.println("getSelectedInstitution");
-    SearchBean instance = new SearchBean();
-    String expResult = "";
-    String result = instance.getSelectedInstitution();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
+ 
 
   /**
    * Test of getResultHeaderSummary method, of class SearchBean.

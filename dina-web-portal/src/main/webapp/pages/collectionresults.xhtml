@@ -34,17 +34,18 @@
                                                            update=":resultsForm:resultContent">   
                                                 <h:outputText value="#{msg.mapView}"    style="font-size: 11px;"  />  
                                             </p:commandLink> 
-
+                                            <ui:remove>
                                             <p:commandLink actionListener="#{navigate.gotoCollections()}" 
                                                 id="collectionLink1" value="#{msg.ourcollections}" 
                                                 styleClass="#{style.tabCollections}" process="@this" 
                                                 global="false" update="templet"  /> 
-
+                                            </ui:remove>
                                             
                                         </h:panelGrid>  
                                     </h:panelGrid>
                                     <hr />
-                                    <h:panelGroup layout="block" id="resultSubHeaderSelectedView"  styleClass="resultHeader"   
+                                    <h:panelGroup layout="block" id="resultSubHeaderSelectedView"  
+                                                  styleClass="resultHeader"   
                                                   rendered="#{resultHeader.displaySelectedView}"> 
                                         <h:panelGrid columns="3">
                                             <h:panelGrid columns="3">
@@ -216,17 +217,7 @@
                                             <h:outputText value="#{statistic.filteredTotalInSweden}" />
                                         </h:panelGrid> 
                                     </p:commandLink> 
-
-                                    <p:commandLink actionListener="#{searchBean.searchDataWithFilter('dna:')}" process="@this" 
-                                                   rendered="#{statistic.filteredTotalDnas > 0}" update=":resultsForm:result"> 
-                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                                                     cellpadding="0" cellspacing="0" styleClass="statistic" >
-                                            <h:outputText value="#{msg.specimenswithdna}" />  
-                                            <h:outputText value="#{statistic.filteredTotalDnas}" />
-                                        </h:panelGrid> 
-                                    </p:commandLink> 
-
-
+ 
                                     <p:spacer width="20" height="30" />
                                     <h:outputText value="#{msg.collection}" style="font-weight: bold;" />  
 
@@ -242,25 +233,22 @@
                                         </p:commandLink>   
                                     </ui:repeat>   
                                     <p:spacer width="20" height="30" />
-                                    <h:panelGrid  id="querypanel" rendered="#{searchBean.queries.size() > 0}">  
+                                    <h:panelGrid  id="querypanel" rendered="#{searchBean.collectionFilters.size() > 0}">  
                                         <h:panelGrid style="font-weight: bold; "  >
                                             <h:outputText value="#{msg.filter}"  />
                                         </h:panelGrid>
 
-                                        <h:panelGrid style="border: solid 1px; width: 210px; "   >    
-                                            <ui:repeat var="entry" value="#{searchBean.filters.entrySet()}" varStatus="status">   
-                                                <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">   
-                                                    <h:outputText value="#{searchBean.selectedCollectionName}" rendered="#{entry.key == 'collectionId:'}"  style="font-size: 10px;" /> 
+                                        <h:panelGrid style="border: solid 1px; width: 210px; "    >    
+                                            <ui:repeat var="entry" value="#{searchBean.collectionFilters.entrySet()}" varStatus="status">   
+                                                <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">     
                                                     <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'map:'}" style="font-size: 10px;" />  
                                                     <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'isType:'}" style="font-size: 10px;" />  
-                                                    <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'inSweden:'}" style="font-size: 10px;" /> 
-                                                    <h:outputText value="#{msg.specimenswithdna}" rendered="#{entry.key == 'dna:'}" style="font-size: 10px;" /> 
+                                                    <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'inSweden:'}" style="font-size: 10px;" />  
                                                     <h:outputText value="#{msg.specimenswithimage}" rendered="#{entry.key == 'image:'}" style="font-size: 10px;" /> 
-                                                    <h:outputText value="#{msg.coordinates}: #{entry.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" />
-
+                                                    <h:outputText value="#{msg.coordinates}: #{entry.value}" rendered="#{entry.key == 'geopoint'}" style="font-size: 10px;" />    
                                                     <p:spacer width="5"  /> 
-                                                    <p:commandLink actionListener="#{searchBean.removeFilter(entry.key, entry.value)}" 
-                                                                   title="#{entry.key}" process="@this" update=":resultsForm:result"   >  
+                                                    <p:commandLink actionListener="#{searchBean.removeCollectionFilter(entry.key, entry.value)}" 
+                                                                   title="#{entry.key}" process="@this" update=":resultsForm:result"    >  
                                                         <h:graphicImage library="images" name="icons/RemoveRecord16x16.png" 
                                                                         alt="#{msg.removequery}" title="#{msg.removequery}" styleClass="images" />
                                                     </p:commandLink>   
@@ -268,7 +256,7 @@
                                             </ui:repeat> 
 
                                             <h:panelGrid  columns="2"  >   
-                                                <p:commandLink actionListener="#{searchBean.removeAllQueries}"    
+                                                <p:commandLink actionListener="#{searchBean.removeAllCollectionQueries}"    
                                                                process="@this" update=":resultsForm:result"  >  
                                                     <h:outputText value="#{msg.removeAllQueries}" style="font-size: 10px;" />   
                                                 </p:commandLink> 

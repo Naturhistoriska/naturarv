@@ -7,8 +7,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest; 
+import lombok.extern.slf4j.Slf4j; 
 
 /**
  *
@@ -21,27 +21,31 @@ public class Navigator implements Serializable {
 
   private ExternalContext externalContext;
 
-  private static final String HOME_PATH = "/faces/pages/home.xhtml";
-  private static final String COLLECTIONS_PATH = "/faces/pages/collections.xhtml";
-  private static final String PARTNERS_PATH = "/faces/pages/partners.xhtml";
-  private static final String FAQ_PATH = "/faces/pages/faq.xhtml";
-  private static final String ABOUT_PATH = "/faces/pages/about.xhtml";
-  private static final String CONTACT_PATH = "/faces/pages/contact.xhtml";
+  private final String homePath = "/faces/pages/home.xhtml";
+  private final String collectionsPath = "/faces/pages/collections.xhtml";
+  private final String partnerPath = "/faces/pages/partners.xhtml";
+  private final String faqPath = "/faces/pages/faq.xhtml";
+  private final String aboutPath = "/faces/pages/about.xhtml";
+  private final String contactPath = "/faces/pages/contact.xhtml";
 
-  private static final String RESULTS_PATH = "/faces/pages/results.xhtml";
-  private static final String NO_RESULTS_PATH = "/faces/pages/noResult.xhtml";
-  private static final String ERROR_REPORT_PATH = "/faces/pages/errorReport.xhtml";
+  private final String resultsPath = "/faces/pages/results.xhtml"; 
+  private final String resultsPathWithQueries = "/faces/pages/collectionresults.xhtml?";
+  private final String noResultsPath = "/faces/pages/noResult.xhtml";
+  private final String noResultsPathWithQueries = "/faces/pages/noResult.xhtml?";
+  private final String errorReportPath = "/faces/pages/errorReport.xhtml";
 
-  private final static String HOME = "home";
-  private final static String COLLECTIONS = "collections";
-  private final static String PARTNERS = "partners";
-  private final static String FAQ = "faq";
-  private final static String ABOUT = "about";
-  private final static String CONTACT = "contact"; 
+  private final String home = "home";
+  private final String collections = "collections";
+  private final String partners = "partners";
+  private final String faq = "faq";
+  private final String about = "about";
+  private final String contact = "contact"; 
    
   private boolean isHomeView;
   
-  private HttpServletRequest req;
+  private HttpServletRequest req; 
+  
+  private StringBuilder resultPathSb;
 
   @Inject
   private StyleBean style;
@@ -58,101 +62,125 @@ public class Navigator implements Serializable {
 
   public void gotoHome() {
     log.info("gotoHome"); 
-    style.setTabStyle(HOME);
+    style.setTabStyle(home);
     
     if(isResultView()) {
       isHomeView = true;
-      redirectPage(HOME_PATH);
+      redirectPage(homePath);
     } else {
-      redirectPage(isHomeView ? HOME_PATH : RESULTS_PATH);
+      redirectPage(isHomeView ? homePath : resultsPath);
     }
     
   }
+  
+  
+  public void gotoResults(String queries) {
+    log.info("gotoResults : {} -- {}", resultsPathWithQueries, queries); 
+    
+    isHomeView = false;
+    style.setTabStyle(home); 
+    
+    resultPathSb = new StringBuilder();
+    resultPathSb.append(resultsPathWithQueries); 
+    resultPathSb.append(queries);
+    redirectPage(resultPathSb.toString().trim());
+//      redirectPage(resultsPathWithQueries + queries);
+//      redirectPage(resultsPath);
+  }
 
   public void gotoResults() {
-    log.info("gotoResults");
-
+    log.info("gotoResults : {} -- {}", resultsPath);
+  
     isHomeView = false;
-    style.setTabStyle(HOME);
-    redirectPage(RESULTS_PATH);
+    style.setTabStyle(home); 
+    redirectPage(resultsPath); 
+  }
+  
+  public void gotoNoResults(String queries) {
+      log.info("queries : {}", queries);
+    style.setTabStyle(home);
+    resultPathSb = new StringBuilder();
+    resultPathSb.append(noResultsPathWithQueries); 
+    resultPathSb.append(queries);
+    redirectPage(resultPathSb.toString().trim());
   }
 
   public void gotoNoResults() {
     log.info("gotoNoResults");
 
-    style.setTabStyle(HOME);
-    redirectPage(NO_RESULTS_PATH);
+    style.setTabStyle(home);
+    redirectPage(noResultsPath);
   }
 
   public void gotoCollections() {
     log.info("gotoCollections");
  
-    style.setTabStyle(COLLECTIONS);
-    redirectPage(COLLECTIONS_PATH);
+    style.setTabStyle(collections);
+    redirectPage(collectionsPath);
   }
 
   public void gotoPartners() {
     log.info("gotoPartners"); 
     
-    style.setTabStyle(PARTNERS);
-    redirectPage(PARTNERS_PATH);
+    style.setTabStyle(partners);
+    redirectPage(partnerPath);
   }
 
   public void gotoFAQ() {
     log.info("gotoFAQ");
 
-    style.setTabStyle(FAQ);
-    redirectPage(FAQ_PATH);
+    style.setTabStyle(faq);
+    redirectPage(faqPath);
   }
 
   public void gotoAbout() {
     log.info("gotoAbout");
 
-    style.setTabStyle(ABOUT);
-    redirectPage(ABOUT_PATH);
+    style.setTabStyle(about);
+    redirectPage(aboutPath);
   }
 
   public void gotoContactPage() {
     log.info("gotoContactPage");
 
-    style.setTabStyle(CONTACT);
-    redirectPage(CONTACT_PATH);
+    style.setTabStyle(contact);
+    redirectPage(contactPath);
   }
 
   public void gotoErrorReportPage() {
     log.info("gotoErrorReportPage");
 
-    style.setTabStyle(HOME);
-    redirectPage(ERROR_REPORT_PATH);
+    style.setTabStyle(home);
+    redirectPage(errorReportPath);
   }
 
   public boolean isShowSearchPanel() {
     req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     String url = req.getRequestURL().toString();
     
-    if(url.contains(COLLECTIONS_PATH)) {
+    if(url.contains(collectionsPath)) {
       return false;
     }
-    if(url.contains(ABOUT_PATH)) {
+    if(url.contains(aboutPath)) {
       return false;
     }
-    if(url.contains(CONTACT_PATH)) {
+    if(url.contains(contactPath)) {
       return false;
     }
-    if(url.contains(FAQ_PATH)) {
+    if(url.contains(faqPath)) {
       return false;
     }
-    return !url.contains(PARTNERS_PATH);
+    return !url.contains(partnerPath);
   }
 
   public boolean isResultView() {
     req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     String url = req.getRequestURL().toString();
-    return url.contains(RESULTS_PATH);
+    return url.contains("results");
   }
 
   private void redirectPage(String path) {
-
+        
     externalContext = FacesContext.getCurrentInstance().getExternalContext();
     try {
       externalContext.redirect(externalContext.getRequestContextPath() + path);
