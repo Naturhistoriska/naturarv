@@ -46,8 +46,7 @@ public class SearchBean implements Serializable {
     private int numDisplay;
     private String sortby;
 
-    private CollectionData selectedCollection;
-//  private String selectedInstitution;
+    private CollectionData selectedCollection; 
     private List<SolrData> selectedRecords;
     private List<SolrData> selectedOneRecord;
     private List<SolrData> exportDataSet;
@@ -68,6 +67,9 @@ public class SearchBean implements Serializable {
     private final String chordata = "Chordata*";
     private final String vertebrates = "vertebrates";
     private final String invertebrates = "invertebrates";
+    
+    private boolean showCollectionStatisticData;
+    private String pbDataset;
 
     @Inject
     private SolrService solr;
@@ -125,12 +127,7 @@ public class SearchBean implements Serializable {
         gotoSimpleView();
         setResult();
     }
-
-//  public void collectionSearch(String collectionId) {
-//      queries = new HashMap();
-//      queries.put("collectionId", collectionId);
-//      searchCollectionWithSingleFilter(collectionId);
-//  }
+ 
     /**
      * Free text search
      */
@@ -185,7 +182,8 @@ public class SearchBean implements Serializable {
 
         clearData();
         if (dataset != null) {
-            if (dataset.equals(vertebrates)) {
+            pbDataset = dataset;
+            if (dataset.equals(vertebrates)) { 
                 queries.put(CommonText.getInstance().getHighTxKey(), chordata);
             } else if (dataset.equals(invertebrates)) {
                 queries.put(CommonText.getInstance().getHighTxNotContainKey(), chordata);
@@ -227,20 +225,18 @@ public class SearchBean implements Serializable {
             }
         }
     }
-
-//
-//  /**
-//   * Search institution data filtered institution code
-//   *
-//   * @param key
-//   */
-//  public void searchInstitutionWithSingleFilter(String key) {
-//    log.info("searchInstitution: {}", key);
-//
-//    filterSearch(CommonText.getInstance().getIdKey(),
-//            CommonText.getInstance().getInstitutionCode(key, isSwedish));
-//    selectedInstitution = key;
-//  }
+    
+    public void showCollectionStatistic() {
+        log.info("showCollectionStatistic : {}", selectedCollection);
+        showCollectionStatisticData = true; 
+        
+    }
+    
+    public void closeCollectionStatistic() {
+        log.info("closeCollectionStatistic");
+        showCollectionStatisticData = false;
+    }
+ 
     private void filterSearch(String key, String value) {
         log.info("filterSearch");
 
@@ -1012,8 +1008,8 @@ public class SearchBean implements Serializable {
         collectionFilters = new HashMap();
         
         filters.entrySet().stream()
-                .filter(e -> !CommonText.getInstance().getHighTxKey().equals(e.getKey())) 
-                .filter(e -> !CommonText.getInstance().getCollectionCodeKey().equals(e.getKey()))
+                .filter(e -> !e.getKey().contains(CommonText.getInstance().getHighTxKey())) 
+                .filter(e -> !e.getKey().equals(CommonText.getInstance().getCollectionCodeKey())) 
                 .forEach(e -> {
                     collectionFilters.put(e.getKey(), e.getValue());
                 }); 
@@ -1048,6 +1044,10 @@ public class SearchBean implements Serializable {
 
     public String getSelectedCollectionName() {
         return selectedCollection == null ? "" : selectedCollection.getShortName();
+    }
+    
+    public String getSelectedCollectionCode() {
+        return selectedCollection.getCode();
     }
  
     public String getResultHeaderSummary() {
@@ -1106,19 +1106,7 @@ public class SearchBean implements Serializable {
         this.isSwedish = isSwedish;
         appendQuery();
     }
-
-//  public double getLat() {
-//    return 17.385044;
-//  }
-//  
-//  public double getLng() {
-//    return 78.486671;
-//  }
-//  
-//  public String getText() {
-//    return "test popup";
-//  } 
-//  
+ 
     private void clearAdvanceData() {
         freeText = null;
         result = null;
@@ -1143,6 +1131,8 @@ public class SearchBean implements Serializable {
         queries = new HashMap();
         filters = new HashMap<>();
         selectedCollection = null;
+        showCollectionStatisticData = false;
+        pbDataset = null;
 //    selectedInstitution = null;
         sortby = CommonText.getInstance().getSortByScore();
         result = null;
@@ -1178,6 +1168,14 @@ public class SearchBean implements Serializable {
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 
+    public boolean isShowCollectionStatisticData() {
+        return showCollectionStatisticData;
+    }
+
+    public String getPbDataset() {
+        return pbDataset;
+    }
+     
     Predicate<Entry<String, String>> notCoordinateKey
             = e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey());
 }

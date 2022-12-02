@@ -1,16 +1,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:p="http://primefaces.org/ui"  
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"   
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
 
     <body>
         <ui:composition>      
-            <h:panelGroup>
-                chart view
-                
-                #{searchBean.selectedCollectionName}
+            <h:panelGroup layout="block">
+                <h:panelGroup style="width: 700px; text-align: right;">
+                    <br /> 
+                    <br />  
+                    <p:commandLink actionListener="#{searchBean.closeCollectionStatistic}" 
+                                           value="#{msg.close}" styleClass="link"
+                                           process="@this" global="false" update=":resultsForm:resultContent" /> 
+                      <br /> 
+                    <br />
+                </h:panelGroup>
+                <p:chart type="bar" 
+                         model="#{chart.getCollectionMonthChartWithdataset(searchBean.selectedCollectionCode, searchBean.pbDataset)}" 
+                         styleClass="collectionChart" />  
+                <p:spacer width="20" height="20" />  
+                <p:chart type="bar" 
+                         model="#{chart.getCollectionYearChartWithDataset(searchBean.selectedCollectionCode, searchBean.pbDataset)}" 
+                         styleClass="collectionChart" />  
             </h:panelGroup>
 
  

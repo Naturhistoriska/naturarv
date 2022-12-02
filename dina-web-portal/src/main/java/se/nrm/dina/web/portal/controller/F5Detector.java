@@ -24,17 +24,10 @@ public class F5Detector implements Serializable {
     private boolean isCollectionSearch;
     private final String pb = "pb";
     private final String qryDataset = "dataset";
+     
+    private final String collectionUri = "/faces/pages/collectionresults.xhtml"; 
     
-//    private final String baseUrl = "https://naturarv.nrm.se/";
-    private final String baseUrl = "http://localhost:8180/";
-    private final String collectionUri = "/faces/pages/collectionresults.xhtml";
-    private final String resultUri = "/faces/pages/results.xhtml";
-    
-    private final String slash = "/";
-//    private List<String> updateList; 
-    
-//    private HttpSession session;  
-
+    private final String slash = "/"; 
     @Inject
     private SearchBean search;
 

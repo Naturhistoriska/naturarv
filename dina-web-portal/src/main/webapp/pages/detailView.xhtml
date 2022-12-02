@@ -7,6 +7,9 @@
 
     <body>
         <ui:composition>     
+            <h:panelGroup rendered="#{searchBean.showCollectionStatisticData}">
+                <ui:include src="/pages/chartView.xhtml"   /> 
+            </h:panelGroup>
             <p:dataTable id="detailResultTable" var="record" value="#{searchBean.resultList}"  
                          rowKey="#{record.catalogNumber}"  styleClass="detailTable"
                          paginator="false" rowIndexVar="indexCount"   >    
@@ -18,7 +21,7 @@
                                 render=":resultsForm:resultContent"   />
                     </h:selectBooleanCheckbox> 
                 </p:column> 
-                 
+
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.pbCollection}"> 
                     <ui:include src="/pages/pbResult.xhtml"   /> 
                 </p:column>

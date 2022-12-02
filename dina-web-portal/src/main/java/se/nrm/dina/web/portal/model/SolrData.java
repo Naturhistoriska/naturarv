@@ -142,6 +142,7 @@ public class SolrData {
     private final String openArrow = "downarrow.gif";
     private final String mineralCode = "557057";
     private final String collectionPb = "pb";
+    private final String collectionPf = "pf";
 //    private final String collectionEv = "EV";
     private final String collectionEVmain = "ev";
     private final String collectionEVType = "et";
@@ -771,7 +772,8 @@ public class SolrData {
     }
 
     public boolean isPbCollection() {
-        return collectionId != null && collectionId.equals(collectionPb);
+        return collectionId != null && collectionId.equals(collectionPb) 
+                || collectionId.equals(collectionPf);
     }
 
     public boolean isEvCollection() {
