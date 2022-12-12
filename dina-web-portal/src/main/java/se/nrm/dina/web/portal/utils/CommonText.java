@@ -132,7 +132,7 @@ public class CommonText {
     private final String collectionNameKey = "collectionName:";
     private final String collectionId = "collectionId";
     private static final String CATALOGED_YEAR = "catalogedYear";
-    private static final String TAXON_FULL_NAME = "txFullName";
+    private final String taxonFullName = "txFullName";
     private static final String ACCESSION_NUMBER = "accessionNumber";
     private static final String STATION_FIELD = "stationFieldNumber";
     private static final String LOCATIONS = "locations";
@@ -356,7 +356,7 @@ public class CommonText {
     }
 
     public String getTaxonFullName() {
-        return TAXON_FULL_NAME;
+        return taxonFullName;
     }
 
     public String getHighTaxa() {

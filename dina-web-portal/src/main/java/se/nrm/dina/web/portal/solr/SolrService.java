@@ -112,6 +112,12 @@ public class SolrService implements Serializable {
     }
   }
 
+  
+  
+  
+  
+  
+  
   /**
    * Taxon autosuggestion search 
    *

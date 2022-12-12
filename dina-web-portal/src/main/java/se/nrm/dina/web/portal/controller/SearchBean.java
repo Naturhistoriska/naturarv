@@ -63,10 +63,11 @@ public class SearchBean implements Serializable {
     private SolrResult result;
     private Map<String, String> queries;
     private Map<String, String> filters;
-    private Map<String, String> collectionFilters;
-    private final String chordata = "Chordata*";
+    private Map<String, String> collectionFilters;  
     private final String vertebrates = "vertebrates";
     private final String invertebrates = "invertebrates";
+    private final String vertebratesSearch = "+(txFullName:Chordata higherTx:Chordata*)";
+    private final String invertebratesSearch = "-(txFullName:Chordata higherTx:Chordata*)";
     
     private boolean showCollectionStatisticData;
     private String pbDataset;
@@ -180,17 +181,18 @@ public class SearchBean implements Serializable {
     public void searchCollectionWithQuery(String collectionId, String dataset, String queryString) {
         log.info("searchCollectionWithQuery: {} -- {}", collectionId, dataset);
 
+        String searchText = SearchHelper.getInstance().buildFullSearchText(freeText); 
         clearData();
         if (dataset != null) {
             pbDataset = dataset;
-            if (dataset.equals(vertebrates)) { 
-                queries.put(CommonText.getInstance().getHighTxKey(), chordata);
+            if (dataset.equals(vertebrates)) {  
+                searchText = vertebratesSearch;
             } else if (dataset.equals(invertebrates)) {
-                queries.put(CommonText.getInstance().getHighTxNotContainKey(), chordata);
+                searchText = invertebratesSearch;
             }
-        }
+        } 
         queries.put(CommonText.getInstance().getCollectionCodeKey(), collectionId);
-        collectionSearch(queryString);
+        collectionSearch(queryString, searchText);
 
         if (result.getTotalFound() > 0) {
             SolrData data = result.getSolrData().get(0);
@@ -200,10 +202,9 @@ public class SearchBean implements Serializable {
         }
     }
 
-    private void collectionSearch(String queryString) {
+    private void collectionSearch(String queryString, String searchText) {
         log.info("collectionSearch : {}", queryString);
-
-        String searchText = SearchHelper.getInstance().buildFullSearchText(freeText);
+ 
         result = solr.searchWithFilter(searchText, queries, 0, numDisplay,
                 CommonText.getInstance().getCreatedDate(), false);
         statistic.resetData(searchText, queries);

@@ -142,8 +142,7 @@ public class SolrData {
     private final String openArrow = "downarrow.gif";
     private final String mineralCode = "557057";
     private final String collectionPb = "pb";
-    private final String collectionPf = "pf";
-//    private final String collectionEv = "EV";
+    private final String collectionPz = "pz"; 
     private final String collectionEVmain = "ev";
     private final String collectionEVType = "et";
     private final String slash = "/";
@@ -154,9 +153,14 @@ public class SolrData {
     private final String newLine = "\n";
     private final String emptySpace = " ";
     private final String emptyString = "";
-    private final String coordinatesSeparate = " --- ";
-    private final String pbCollectionName = "Paleobiology";
-
+    private final String coordinatesSeparate = " --- "; 
+    
+    private final String pbIconName = "pb.png";
+    private final String pzEvIconName = "pz.png";
+    private final String pzInEvIconName = "ev.png";
+    
+    private final String chordata = "Chordata";
+     
     private List<String> thumbs;
     private List<String> jpgs;
 
@@ -773,7 +777,7 @@ public class SolrData {
 
     public boolean isPbCollection() {
         return collectionId != null && collectionId.equals(collectionPb) 
-                || collectionId.equals(collectionPf);
+                || collectionId.equals(collectionPz);
     }
 
     public boolean isEvCollection() {
@@ -857,8 +861,7 @@ public class SolrData {
     public String getTaxon() {
         taxonSb = new StringBuilder();
         
-        if (collectionName != null && collectionName.equals(pbCollectionName) 
-                && !StringUtils.isBlank(genus)) {
+        if (isPbCollection() && !StringUtils.isBlank(genus)) {
             taxonSb.append(genus);
             taxonSb.append(emptySpace);
         }
@@ -867,4 +870,16 @@ public class SolrData {
         taxonSb.append(getAuthors());
         return taxonSb.toString().trim();
     } 
+    
+    public String getIconName() {
+        switch (collectionId) {
+            case collectionPb:
+                return pbIconName;
+            case collectionPz:
+                return higherTx != null && higherTx.contains(chordata) 
+                        ? pzEvIconName :   pzInEvIconName;
+            default:
+                return collectionId + ".png"; 
+        }
+    }
 }

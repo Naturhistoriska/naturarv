@@ -22,9 +22,13 @@ public class F5Detector implements Serializable {
  
     private final String qryCollection = "collection";
     private boolean isCollectionSearch;
-    private final String pb = "pb";
+    private final String pz = "pz";
     private final String qryDataset = "dataset";
-     
+    private final String paleobiology = "paleobiology";
+    private final String pCollection = "p*";
+    private final String all = "all";
+    private final String allCollection = "*";
+    
     private final String collectionUri = "/faces/pages/collectionresults.xhtml"; 
     
     private final String slash = "/"; 
@@ -47,11 +51,23 @@ public class F5Detector implements Serializable {
         String queryString = request.getQueryString();
         String collection = request.getParameter(qryCollection);  
         String dataset = null;
+        
+        log.info("collection : {}", collection);
 
         if (uri == null || uri.equals(slash)) {
             if (!StringUtils.isBlank(collection)) {
-                if (collection.equals(pb)) {
-                    dataset = request.getParameter(qryDataset);
+                switch (collection) {
+                    case pz:
+                        dataset = request.getParameter(qryDataset);
+                        break;
+                    case paleobiology:
+                        collection = pCollection;
+                        break;
+                    case all:
+                        collection = allCollection;
+                        break;
+                    default:
+                        break;
                 }
                 search.searchCollectionWithQuery(collection, dataset, queryString);
                 isCollectionSearch = true;

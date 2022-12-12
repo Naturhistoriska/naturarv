@@ -15,8 +15,10 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)   
 public class FQAPageTest {
+   
   
   private FQAPage instance;
+  
   
   @Mock
   private Languages language;

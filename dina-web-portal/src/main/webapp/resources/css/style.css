@@ -191,6 +191,20 @@ body * {
   font-size: 11px;
 }
  
+.leftcolumnNoLink {
+  float: left;  
+  width: 80%; 
+  font-size: 11px;
+}
+
+
+.rightcolumnNoLink {
+  float: right;  
+  width: 20%; 
+  font-size: 11px;
+}
+
+
 
 /*search section*/
 .searchBoxPanelSimple {  

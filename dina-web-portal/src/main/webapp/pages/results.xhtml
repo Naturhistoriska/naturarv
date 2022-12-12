@@ -229,7 +229,7 @@
 
                                     <p:spacer width="20" height="30" />
                                     <h:outputText value="#{msg.collection}" style="font-weight: bold;" />  
-
+                                     
                                     <ui:repeat var="collection" value="#{statistic.filteredCollections}" varStatus="collectionStatus" >   
                                         <p:commandLink actionListener="#{searchBean.searchCollectionWithFilter(collection)}" 
                                                        title="#{collection.name}"  
@@ -240,7 +240,7 @@
                                                 <h:outputText value="#{collection.total}" />
                                             </h:panelGrid>  
                                         </p:commandLink>   
-                                    </ui:repeat>   
+                                    </ui:repeat>  
                                     <p:spacer width="20" height="30" />
                                     <h:panelGrid  id="querypanel" rendered="#{searchBean.queries.size() > 0}">  
                                         <h:panelGrid style="font-weight: bold; "  >
