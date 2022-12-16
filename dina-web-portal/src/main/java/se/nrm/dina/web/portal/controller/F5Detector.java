@@ -41,19 +41,13 @@ public class F5Detector implements Serializable {
         isCollectionSearch = false;
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance()
                 .getExternalContext().getRequest();
-         
-        String url = request.getRequestURL().toString();
+          
         String uri = request.getRequestURI(); 
          
-        
-        log.info("url and uri : {} -- {}", url, uri);
-        log.info("pathInfo : {}", request.getQueryString());
         String queryString = request.getQueryString();
         String collection = request.getParameter(qryCollection);  
         String dataset = null;
-        
-        log.info("collection : {}", collection);
-
+         
         if (uri == null || uri.equals(slash)) {
             if (!StringUtils.isBlank(collection)) {
                 switch (collection) {

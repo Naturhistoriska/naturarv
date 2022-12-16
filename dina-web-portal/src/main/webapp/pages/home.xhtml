@@ -63,7 +63,7 @@
 
                 </div>
               </div>
-
+                  
               <!--              statistic panel         -->
               <h:panelGrid id="shoutcutpanel" styleClass="statistic textLink">
                 <p:spacer width="20" height="20" /> 
@@ -95,15 +95,7 @@
                     <h:outputText value="#{statistic.totalInSweden}" />
                   </h:panelGrid> 
                 </p:commandLink>  
-
-                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('dna:')}"  process="@this"   > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0" styleClass="statistic" >
-                    <h:outputText value="#{msg.specimenswithdna}" />        
-                    <h:outputText value="#{statistic.totalDnas}" />
-                  </h:panelGrid> 
-                </p:commandLink> 
-
+  
                 <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('image:')}"  process="@this"   > 
                   <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
                                cellpadding="0" cellspacing="0" styleClass="statistic" >

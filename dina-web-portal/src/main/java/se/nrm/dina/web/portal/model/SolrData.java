@@ -422,7 +422,14 @@ public class SolrData {
         this.typeStatus = typeStatus;
     }
 
-    public String getTxFullName() {
+    public String getTxFullName() {   
+        if (isPbCollection() && !StringUtils.isBlank(genus)) {
+            taxonSb = new StringBuilder();
+            taxonSb.append(genus);
+            taxonSb.append(emptySpace);  
+            taxonSb.append(txFullName); 
+            return taxonSb.toString().trim();
+        }
         return txFullName;
     }
 
@@ -776,8 +783,8 @@ public class SolrData {
     }
 
     public boolean isPbCollection() {
-        return collectionId != null && collectionId.equals(collectionPb) 
-                || collectionId.equals(collectionPz);
+        return collectionId != null && (collectionId.equals(collectionPb) 
+                || collectionId.equals(collectionPz));
     }
 
     public boolean isEvCollection() {
@@ -857,7 +864,9 @@ public class SolrData {
         }  
         return null; 
     }
-
+    
+    
+ 
     public String getTaxon() {
         taxonSb = new StringBuilder();
         
@@ -870,6 +879,10 @@ public class SolrData {
         taxonSb.append(getAuthors());
         return taxonSb.toString().trim();
     } 
+    
+    public boolean isPaleoBotanyCollection() {
+        return collectionId.equals(collectionPb);
+    }
     
     public String getIconName() {
         switch (collectionId) {

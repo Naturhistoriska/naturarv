@@ -38,6 +38,14 @@ body * {
   font-weight: bold;
 }
 
+
+.collectionslanguagePanel { 
+  float: right;   
+  margin-right: 10px;
+  font-weight: bold;
+  text-align: right;
+}
+
 .main {
   width: 980px; 
   margin: auto; 
@@ -280,6 +288,7 @@ body * {
 .resultTableDataColumn a {
   text-decoration: underline;
 }
+ 
 
 .imagePanel {
   width: 700px; 

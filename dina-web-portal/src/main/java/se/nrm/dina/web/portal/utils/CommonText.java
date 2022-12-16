@@ -12,6 +12,12 @@ public class CommonText {
     private final String simpleSearchDefaultTextEn = "Search collections (species, genus, family, collectors, location, etc.)";
     private final String simpleSearchDefaultTextSv = "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)";
 
+    private final String simpleSearchCollectionDefaultTextEn1 = "Search ";
+    private final String simpleSearchCollectionDefaultTextEn2 = " collection (species, genus, family, collectors, location, etc.)";
+    
+    private final String simpleSearchCollectionDefaultTextSv1 = "Sök i ";
+    private final String simpleSearchCollectionDefaultTextSv2 = " samling (art, släkte, familj, insamlare, plats etc.)";
+    
     private final String emptyString = "";
     private final String emptySpace = " ";
 
@@ -49,16 +55,16 @@ public class CommonText {
     private final String regNoSv = "Reg. nr.: ";
     private final String speciesNameSv = "Artnamn: ";
     private final String speciesNameEn = "Species name: ";
-    private static final String TYPE_INFORMATION_SV = "Typinformation: ";
-    private static final String TYPE_INFORMATION_EN = "Type information: ";
-    private static final String FAMILY_EN = "Family: ";
-    private static final String FAMILY_SV = "Familj: ";
-    private static final String COLLECTORS_SV = "Insamlare: ";
-    private static final String COLLECTORS_EN = "Collectors: ";
-    private static final String DATE_SV = "Datum: ";
-    private static final String DATE_EN = "Date: ";
-    private static final String LOCALITY_SV = "Lokal: ";
-    private static final String LOCALITY_EN = "Locality: ";
+    private final String typeInformationSv = "Typinformation: ";
+    private final String typeInformationEn = "Type information: ";
+    private final String familyEn = "Family: ";
+    private final String familySv = "Familj: ";
+    private final String collectorSv = "Insamlare: ";
+    private final String collectorEn = "Collectors: ";
+    private final String dateSv = "Datum: ";
+    private final String dateEn = "Date: ";
+    private final String localitySv = "Lokal: ";
+    private final String localityEn = "Locality: ";
     private static final String CONTINENT_EN = "Continent: ";
     private static final String CONTINENT_SV = "Kontinent: ";
     private static final String COUNTRY_EN = "Country: ";
@@ -578,7 +584,15 @@ public class CommonText {
     public String getSearchDefaultText(boolean isSwedish) {
         return isSwedish ? simpleSearchDefaultTextSv : simpleSearchDefaultTextEn;
     }
+    
+    public String getSearchCollectionDefaultText1(boolean isSwedish) {
+        return isSwedish ? simpleSearchCollectionDefaultTextSv1 : simpleSearchCollectionDefaultTextEn1;
+    }
 
+    public String getSearchCollectionDefaultText2(boolean isSwedish) {
+        return isSwedish ? simpleSearchCollectionDefaultTextSv2 : simpleSearchCollectionDefaultTextEn2;
+    }
+       
     public String getNrmName(boolean isSwedeish) {
         return isSwedeish ? nrmSv : nrmEn;
     }
@@ -628,23 +642,23 @@ public class CommonText {
     }
 
     public String getTypeInformation(boolean isSwedish) {
-        return isSwedish ? TYPE_INFORMATION_SV : TYPE_INFORMATION_EN;
+        return isSwedish ? typeInformationSv : typeInformationEn;
     }
 
     public String getFamily(boolean isSwedish) {
-        return isSwedish ? FAMILY_SV : FAMILY_EN;
+        return isSwedish ? familySv : familyEn;
     }
 
     public String getCollectors(boolean isSwedish) {
-        return isSwedish ? COLLECTORS_SV : COLLECTORS_EN;
+        return isSwedish ? collectorSv : collectorEn;
     }
 
     public String getDate(boolean isSwedish) {
-        return isSwedish ? DATE_SV : DATE_EN;
+        return isSwedish ? dateSv : dateEn;
     }
 
     public String getLocality(boolean isSwedish) {
-        return isSwedish ? LOCALITY_SV : LOCALITY_EN;
+        return isSwedish ? localitySv : localityEn;
     }
 
     public String getCoordinate(boolean isSwedish) {

@@ -6,25 +6,71 @@
       xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
 
     <body>
-        <ui:composition>      
+        <ui:composition>  
+
+            <h:panelGroup styleClass="advancesearchpanel" id="advanceSearchPanel1" 
+                          rendered="#{!searchBean.isSimpleSearch}" layout="block">
+
+                <h:panelGroup layout="block" rendered="#{f5Detector.isCollectionSearch}"
+                              style="width: 100%; float: left; text-align:  left;">
+                    <h:panelGroup layout="block" rendered="#{searchBean.selectedCollection}"
+                                  style="width: 80%; float: left; text-align:  left;">
+                        <h:outputText value="#{msg.resultheadertext1} #{searchBean.selectedCollectionFullName} #{msg.resultheadertext2}" 
+                                      style="font-size: 16px; font-weight: bold;"  /> 
+                    </h:panelGroup>
+                    
+                    <h:panelGroup layout="block"  rendered="#{!searchBean.selectedCollection}"
+                                  style="width: 80%; float: left; text-align:  left;">
+                        <h:outputText value="#{msg.searchincollections}"
+                                      style="font-size: 16px; font-weight: bold;"  /> 
+                    </h:panelGroup>
+                
+                    <h:panelGroup layout="block" style="width: 18%; float: left; text-align: right;">
+                        <h:panelGroup layout="block" style="width: 40%; float: right; text-align:  right;">
+                            <p:commandLink actionListener="#{languages.changeLanguage('en')}" 
+                                           value="English" styleClass="#{style.enLink}"  
+                                           process="@all" global="true"  />    
+                        </h:panelGroup> 
+                        <h:panelGroup layout="block" style="width: 60%; float: right; text-align:  right;">
+                            <p:commandLink actionListener="#{languages.changeLanguage('sv')}" 
+                                           value="Svenska" styleClass="#{style.svLink}"  
+                                           process="@all" global="true"  >   
+                            </p:commandLink>
+                        </h:panelGroup> 
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" rendered="#{searchBean.selectedCollection}" 
+                                  style="width: 100%; float: left; text-align: left; vertical-align: top; ">
+                        [<p:commandLink actionListener="#{searchBean.searchAllcollections()}" 
+                                        value="#{msg.searchAllCollections}" styleClass="link" style="font-size: 12px;"
+                                        process="@this" global="false"  />]
+                    </h:panelGroup>
+             
+                    <br /> 
+                    <br />   
+                    <br /> 
+                    <br />  
+                </h:panelGroup>
+
+
+
+        
+
+
+                <h:panelGroup layout="block" style="width: 80%; float: left; text-align:  left;">
+                    <h:outputText value="#{msg.advancesearch}" style="font-size: 16px; font-weight: bold;" /> 
+                </h:panelGroup>
+                <h:panelGroup layout="block" style="width: 18%; float: left; text-align:  right;">
+                    <h:panelGroup styleClass="searchBoxPanelSimple textLink" layout="block" >    
+                        <p:commandLink actionListener="#{searchBean.closeAdvanceSearch}" 
+                                       value="#{msg.closeadvancesearch}" styleClass="link"
+                                       process="@this" global="false" update="simpleSearchPanel"  />   
+                    </h:panelGroup>    
+                </h:panelGroup> 
+            </h:panelGroup>
             <h:panelGrid cellpadding="0" cellspacing="0" styleClass="advancesearchpanel" 
                          id="advanceSearchPanel" rendered="#{!searchBean.isSimpleSearch}"   >   
- 
-                <h:panelGrid id="advanceSearchHeaderPanel" columns="2"  >
-                    <p:spacer width="10" height="10"  />
-                    <h:panelGrid style="width: 900px; " columns="3">
-                        <h:outputText value="#{msg.advancesearch}" style="font-size: 16px; font-weight: bold;" /> 
-                        <p:spacer width="450" height="10"  />  
-                        <h:panelGroup styleClass="searchBoxPanelSimple textLink" layout="block" >    
-                            <p:commandLink actionListener="#{searchBean.closeAdvanceSearch}" 
-                                           value="#{msg.closeadvancesearch}" styleClass="link"
-                                           process="@this" global="false" update="simpleSearchPanel"  />   
-                        </h:panelGroup>   
-                    </h:panelGrid>  
-                </h:panelGrid> 
 
-                <h:panelGrid id="advanceSearchQueryPanel" columns="2"  >
-                    <p:spacer width="10" height="10"  /> 
+                <h:panelGrid id="advanceSearchQueryPanel" columns="1"  > 
                     <h:panelGrid id="queryBuildPanel" >
                         <h:panelGrid columns="2" > 
                             <p:spacer width="10" height="10"  />

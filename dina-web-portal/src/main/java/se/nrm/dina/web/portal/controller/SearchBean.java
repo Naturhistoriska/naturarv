@@ -58,6 +58,8 @@ public class SearchBean implements Serializable {
     private boolean isSelectedOne;
     private boolean isSimpleSearch;
     private boolean selectedAll;
+    
+    private String queryStringAll = "collection=all";
 
     private List<SolrData> resultList;
     private SolrResult result;
@@ -70,7 +72,7 @@ public class SearchBean implements Serializable {
     private final String invertebratesSearch = "-(txFullName:Chordata higherTx:Chordata*)";
     
     private boolean showCollectionStatisticData;
-    private String pbDataset;
+    private String pbDataset; 
 
     @Inject
     private SolrService solr;
@@ -197,10 +199,12 @@ public class SearchBean implements Serializable {
         if (result.getTotalFound() > 0) {
             SolrData data = result.getSolrData().get(0);
             CollectionData collectionData = new CollectionData(collectionId,
-                    data.getCollectionName(), result.getTotalFound());
-            this.selectedCollection = collectionData;
+                    data.getCollectionName(), result.getTotalFound()); 
+            this.selectedCollection = queryString.equals(queryStringAll) ? null : collectionData;
         }
     }
+    
+    
 
     private void collectionSearch(String queryString, String searchText) {
         log.info("collectionSearch : {}", queryString);
@@ -227,10 +231,16 @@ public class SearchBean implements Serializable {
         }
     }
     
+    public void searchAllcollections() {
+        log.info("searchAllcollections");
+         
+        searchCollectionWithQuery("*", null, queryStringAll);
+        navigator.gotoResults(queryStringAll);
+    }
+    
     public void showCollectionStatistic() {
         log.info("showCollectionStatistic : {}", selectedCollection);
         showCollectionStatisticData = true; 
-        
     }
     
     public void closeCollectionStatistic() {
@@ -683,8 +693,7 @@ public class SearchBean implements Serializable {
                 text = addBean(text, list.get(i));
             }
             sb.append(text);
-        }
-
+        } 
         return text;
     }
 
@@ -968,9 +977,20 @@ public class SearchBean implements Serializable {
             exportDataSet = data.getSolrData();
         }
     }
-
+     
     public String getDefaultText() {
-        return CommonText.getInstance().getSearchDefaultText(isSwedish);
+        if(!navigator.isIsCollectionSearch()) {
+            return CommonText.getInstance().getSearchDefaultText(isSwedish);
+        } else {
+            if(selectedCollection == null) {
+                return CommonText.getInstance().getSearchDefaultText(isSwedish);
+            }
+            StringBuilder textBuilder = new StringBuilder();
+            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText1(isSwedish));
+            textBuilder.append(selectedCollection.getName());
+            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText2(isSwedish));
+            return textBuilder.toString().trim();
+        }  
     }
 
     public String getFreeText() {
@@ -1047,8 +1067,16 @@ public class SearchBean implements Serializable {
         return selectedCollection == null ? "" : selectedCollection.getShortName();
     }
     
+    public String getSelectedCollectionFullName() {
+        return selectedCollection == null ? "" : selectedCollection.getName(); 
+    }
+    
     public String getSelectedCollectionCode() {
-        return selectedCollection.getCode();
+        return selectedCollection == null ? "" : selectedCollection.getCode();
+    }
+    
+    public boolean getSelectedCollection() {
+        return selectedCollection != null;
     }
  
     public String getResultHeaderSummary() {
@@ -1176,6 +1204,7 @@ public class SearchBean implements Serializable {
     public String getPbDataset() {
         return pbDataset;
     }
+     
      
     Predicate<Entry<String, String>> notCoordinateKey
             = e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey());
