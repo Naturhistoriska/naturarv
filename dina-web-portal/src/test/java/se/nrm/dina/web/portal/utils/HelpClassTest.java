@@ -150,17 +150,7 @@ public class HelpClassTest {
     String result = instance.buildImagePath(id, type, morphbankImagePath);
     assertEquals(expResult, result); 
   }
-
-  /**
-   * Test of buildEmptyString method, of class HelpClass.
-   */
-  @Test
-  public void testBuildEmptyString() {
-    System.out.println("buildEmptyString"); 
-    String expResult = " ";
-    String result = instance.buildEmptyString();
-    assertEquals(expResult, result); 
-  }
+ 
 
   /**
    * Test of replaceChars method, of class HelpClass.

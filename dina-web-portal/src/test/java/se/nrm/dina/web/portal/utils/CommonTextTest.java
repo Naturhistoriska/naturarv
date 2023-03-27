@@ -163,73 +163,7 @@ public class CommonTextTest {
     String result = instance.getInSweden();
     assertEquals(expResult, result); 
   }
-
-  /**
-   * Test of getColor1 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor1() {
-    System.out.println("getColor1"); 
-    String expResult = "coloer1";
-    String result = instance.getColor1();
-    assertEquals(expResult, result); 
-  }
-
-  /**
-   * Test of getColor2 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor2() {
-    System.out.println("getColor2"); 
-    String expResult = "coloer2";
-    String result = instance.getColor2();
-    assertEquals(expResult, result); 
-  }
-
-  /**
-   * Test of getColor3 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor3() {
-    System.out.println("getColor3"); 
-    String expResult = "coloer3";
-    String result = instance.getColor3();
-    assertEquals(expResult, result); 
-  }
-
-  /**
-   * Test of getColor4 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor4() {
-    System.out.println("getColor4"); 
-    String expResult = "coloer4";
-    String result = instance.getColor4();
-    assertEquals(expResult, result); 
-  }
-
-  /**
-   * Test of getColor5 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor5() {
-    System.out.println("getColor5"); 
-    String expResult = "coloer5";
-    String result = instance.getColor5();
-    assertEquals(expResult, result); 
-  }
-
-  /**
-   * Test of getColor6 method, of class CommonText.
-   */
-  @Test
-  public void testGetColor6() {
-    System.out.println("getColor6"); 
-    String expResult = "coloer6";
-    String result = instance.getColor6();
-    assertEquals(expResult, result); 
-  }
-
+ 
   /**
    * Test of getGroup method, of class CommonText.
    */

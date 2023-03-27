@@ -13,6 +13,7 @@ public class ImageModelTest {
   
   private ImageModel instance;
   
+  private final String id = "a123";
   private final String catalogNumber = "cat1234";
   private final String collectionId = "smtp";
   private final String morphbankId = "123";
@@ -25,7 +26,7 @@ public class ImageModelTest {
  
   @Before
   public void setUp() {
-    instance = new ImageModel(catalogNumber, collectionId, morphbankId, imageId, txFullName, morphBankView);
+    instance = new ImageModel(id, catalogNumber, collectionId, morphbankId, imageId, txFullName, morphBankView);
   }
   
   @After
@@ -56,7 +57,7 @@ public class ImageModelTest {
   /**
    * Test of getMorphbankId method, of class ImageModel.
    */
-  @Test
+   @Test
   public void testGetMorphbankId() {
     System.out.println("getMorphbankId"); 
     String result = instance.getMorphbankId();
