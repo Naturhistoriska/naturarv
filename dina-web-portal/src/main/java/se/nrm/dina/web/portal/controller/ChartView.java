@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -34,6 +33,7 @@ public class ChartView implements Serializable {
 
     private BarChartModel totalMonthChart;
     private BarChartModel totalTenYearsChart;
+    private BarChartModel collectionYearChart;
 
     private Map<String, Integer> resultMap;
     private final List<String> collectionCodeList;
@@ -49,6 +49,8 @@ public class ChartView implements Serializable {
     private final CommonText common;
     private final String year_surffix = "_year";
 
+    private YearMonth yearMonth;
+    
     private boolean isSwedish;
 
     @Inject
@@ -77,7 +79,7 @@ public class ChartView implements Serializable {
     }
 
     private void initData() {
-        YearMonth yearMonth = YearMonth.from(LocalDate.now());
+        yearMonth = YearMonth.from(LocalDate.now());
         yearOfToday = yearMonth.getYear();
         startDate = yearMonth.minusMonths(11).atDay(1).atStartOfDay();
         nextYear = yearOfToday + 1;
@@ -150,7 +152,7 @@ public class ChartView implements Serializable {
 
     public BarChartModel getCollectionYearChartWithDataset(String collectionCode, String dataset) {
         log.info("getCollectionYearChartWithDataset : {} -- {}", collectionCode, dataset);
-        BarChartModel collectionYearChart = new BarChartModel();
+        collectionYearChart = new BarChartModel();
         chartCreator.createYearChart(collectionYearChart,
                 solr.getLastTenYearsRegistedDataWithDataset(
                         lastTenYear, nextYear, collectionCode, dataset), isSwedish);
@@ -163,7 +165,7 @@ public class ChartView implements Serializable {
         if (session.getAttribute(collectionCode + year_surffix) != null) {
             return (BarChartModel) session.getAttribute(collectionCode + year_surffix);
         }
-        BarChartModel collectionYearChart = new BarChartModel();
+        collectionYearChart = new BarChartModel();
         chartCreator.createYearChart(collectionYearChart,
                 solr.getLastTenYearsRegistedData(lastTenYear, nextYear, collectionCode), isSwedish);
         session.setAttribute(collectionCode + year_surffix, collectionYearChart);

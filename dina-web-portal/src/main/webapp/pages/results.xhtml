@@ -236,7 +236,7 @@
                                                        process="@this" update=":resultsForm:result">  
                                             <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
                                                          cellpadding="0" cellspacing="0" styleClass="statistic"> 
-                                                <h:outputText value="#{collection.shortName}" />  
+                                                <h:outputText value="#{languages.swedish ? collection.swedishName : collection.shortName}" />  
                                                 <h:outputText value="#{collection.total}" />
                                             </h:panelGrid>  
                                         </p:commandLink>   
@@ -289,9 +289,10 @@
                             <p:panel id="imageswitchpanel">
                                 <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
                                             panelWidth="420" panelHeight="450"   autoPlay="false"
-                                            var="thumb"  showCaption="true" >    
+                                            var="thumb"  showCaption="true"  >    
                                     <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
-                                                    title="#{switch.scientificName}"  styleClass="imageswithpedding" />     
+                                                    title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
+                                                    styleClass="imageswithpedding" />     
 
                                 </p:galleria>      
                             </p:panel> 

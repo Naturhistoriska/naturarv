@@ -1,150 +1,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:p="http://primefaces.org/ui"    
+      xmlns:p="http://primefaces.org/ui"   
       xmlns:h="http://java.sun.com/jsf/html" 
-      xmlns:f="http://java.sun.com/jsf/core" 
-      xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf">
+      xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
 
-  <body>  
-    <ui:composition>   
-        <h:panelGroup rendered="#{searchBean.showCollectionStatisticData}">
-            <ui:include src="/pages/chartView.xhtml"   /> 
-        </h:panelGroup>
-      <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"  
-                   paginator="false"  rowIndexVar="indexCount"  emptyMessage="empty..."
-                   rowKey="#{record.catalogNumber}" styleClass="simpleResultTable"> 
-        <p:column style="font-size: 11px; width : 15px; "  > 
-          <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne" styleClass="listViewCheckbox"> 
-            <p:ajax event="click" listener="#{searchBean.selectOne(record)}" 
-                    update=":resultsForm:resultContent" global="false"/>   
-          </h:selectBooleanCheckbox>  
-        </p:column>
-        <p:column style="font-size: 11px; width : 600px; "> 
-          <h:panelGrid columns="2" cellpadding="0" cellspacing="0"  >
-            <h:panelGrid columns="2" columnClasses="resultTableImageColumn,resultTableDataColumn"  
-                         cellpadding="0" cellspacing="0"> 
-              
-              <h:graphicImage library="images" styleClass="images"  
-                              name="icons/discipline/#{record.iconName}" />    
-              <p:commandLink  action="#{searchBean.showOneDetail(record)}" 
-                              update=":resultsForm:resultContent" process="@this" global="false"> 
-                <h:outputText value="#{record.txFullName}" 
-                              style="font-weight: bold; font-size: 13px; color: #808080;"/>   
-              </p:commandLink> 
+    <body>
+        <ui:composition>     
+            <h:panelGroup rendered="#{searchBean.showCollectionStatisticData}">
+                <ui:include src="/pages/chartView.xhtml"   /> 
+            </h:panelGroup>
+            <p:dataTable id="resultTable" var="record" value="#{searchBean.resultList}"  
+                         paginator="false"  rowIndexVar="indexCount"  emptyMessage="empty..."
+                         rowKey="#{record.catalogNumber}" styleClass="simpleResultTable"> 
+                <p:column style="font-size: 11px; width : 15px; "  > 
+                    <h:selectBooleanCheckbox  value="#{record.selected}" id="selectOne" styleClass="listViewCheckbox"> 
+                        <p:ajax event="click" listener="#{searchBean.selectOne(record)}" 
+                                update=":resultsForm:resultContent" global="false"/>   
+                    </h:selectBooleanCheckbox>  
+                </p:column> 
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.fishCollection}"> 
+                    <ui:include src="/pages/fishListView.xhtml"   /> 
+                </p:column>
 
-              <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  /> 
-              <p:commandLink rendered="#{record.morphbankId != null}" global="false"
-                             action="#{searchBean.displayImages(record)}" update="imagePanel"  >
-                <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
-                                title="#{msg.showimages}" alt="#{msg.showimages}"
-                                styleClass="images" /> 
-              </p:commandLink> 
-
-              <h:panelGrid  columns="2"  cellpadding="0" cellspacing="0"  
-                            columnClasses="simpleTableLabelCol,simpleTableValueCol" > 
-                <h:outputText value="#{msg.highertaxa}: " rendered="#{!record.paleoBotanyCollection}" />  
-                <h:outputText value="#{record.higherTx}"  style="word-break: break-all;" rendered="#{!record.paleoBotanyCollection}" />
-
-                <h:outputText value="#{msg.type}:" rendered="#{record.typeStatus != null}" />   
-                <h:outputText value="#{record.typeStatus}" rendered="#{record.typeStatus != null}" /> 
-
-                <ui:remove>
-                    <h:outputText value="#{msg.preparationstype}:"   />   
-                    <h:outputText value="#{record.prepCountList}" />  
-                </ui:remove>
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.pbCollection}"> 
+                    <ui:include src="/pages/pbListView.xhtml"   /> 
+                </p:column>
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.evCollection}"> 
+                    <ui:include src="/pages/evListView.xhtml" />  
+                </p:column>         
                 
-                <h:outputText value="#{msg.preservation}:" />   
-                <h:outputText value="#{record.preservation}" /> 
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.fungiCollection}"> 
+                    <ui:include src="/pages/fungiListView.xhtml" />
+                </p:column>   
                 
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.vasclarPlantsCollection}"> 
+                    <ui:include src="/pages/vascularplantsListView.xhtml" />
+                </p:column>   
+                
+                
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.mammalsCollection}"> 
+                    <ui:include src="/pages/mammalsListView.xhtml" />
+                </p:column>   
 
-                <h:outputText value="#{msg.collectiondate}: " /> 
-                <h:outputText value="#{record.startDate}"  > 
-                  <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" />
-                </h:outputText>
-
-                <h:outputText value="#{msg.locality}: " />  
-                <h:outputText value="#{record.locality}" />
-
-
-                <h:outputText value="#{msg.localityCounty}:" rendered="#{!record.evCollection}"  />   
-                <h:outputText value="#{record.county}" rendered="#{!record.evCollection}" /> 
-
-                <h:outputText value="#{msg.state}:"   />   
-                <h:outputText value="#{record.state}" /> 
-
-                <h:outputText value="#{msg.country}:"  />   
-                <h:outputText value="#{record.country}" />   
-
-                <h:outputText value="#{msg.continent}:"   />   
-                <h:outputText value="#{record.continent}" />  
- 
-                <h:outputText value="#{msg.cataloguenumber}: " /> 
-                <h:outputText value="#{record.catalogNumber}" /> 
-                 
-                <h:outputText value="#{msg.maxDepthInMeters}:" rendered="#{record.evCollection}"/>   
-                <h:outputText value="#{record.maxDepthInMeters}" rendered="#{record.evCollection}"/> 
- 
-                <h:outputText value="#{msg.minDepthInMeters}:" rendered="#{record.evCollection}"/>   
-                <h:outputText value="#{record.minDepthInMeters}" rendered="#{record.evCollection}"/> 
-              </h:panelGrid> 
-
-              <p:spacer width="5" height="5" />
-              <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="imagePanel" >   
-
-                <h:panelGrid  rendered="#{record.displayImage}"> 
-                  <p:commandLink value="#{msg.closeimage}" 
-                                 action="#{searchBean.closeImage(record)}"    
-                                 update="imagePanel" global="false" process="@this" />   
-                  <ui:repeat value="#{record.thumbs}" var="thumb">     
-                    <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                    onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
-                      <p:graphicImage value="#{thumb}" 
-                                      title="#{record.txFullName}/#{record.catalogNumber}" 
-                                      alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                    </p:commandLink>  
-
-                  </ui:repeat>   
-                </h:panelGrid> 
-              </h:panelGrid> 
-
-              <p:spacer width="5" height="5" />
-              <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="singleMapPanel" >   
-                <h:panelGrid rendered="#{record.displayMap}">    
-                  <leaf:map center="#{record.latitude}, #{record.longitude}" 
-                            marker="#{record.latitude}, #{record.longitude}"
-                            popupMsg="#{record.locality}&lt;br&gt;#{record.coordinateString}" 
-                            width="600px" height="300px" zoom="8" 
-                            urlTemplate="http://{s}.tile.osm.org/{z}/{x}/{y}.png" 
-                            attribution="OpenStreetMap" />
-                </h:panelGrid>
-              </h:panelGrid>
-  
-              <p:spacer width="10" height="5" />
-              <h:panelGroup layout="block" id="linkPanel" >   
-                <p:commandLink value="#{msg.closemap}" rendered="#{record.displayMap}"
-                               action="#{searchBean.closeMap(record)}"    
-                               update="singleMapPanel linkPanel" global="false" process="@this" />  
-
-                <p:commandLink value="#{msg.showmap}" rendered="#{record.openMap}"
-                               action="#{searchBean.showSingleMap(record)}"    
-                               update="singleMapPanel linkPanel resultTable" 
-                               global="false" process="@this" />  
-                <p:spacer width="10" height="5" rendered="#{record.singleMapLink}" /> 
-                <h:outputLink id="scientificNameLinkNrmSingle" value="http://naturforskaren.se/search/#{record.txFullName.trim()}"  
-                              title="scientificname"  target="_blank" >                   
-                  <h:outputText value="#{msg.showintaxonpages}"  style="font-family: Arial,sans-serif;" />   
-                </h:outputLink>    
-                <p:spacer width="10" height="5" /> 
-                <p:commandLink value="#{msg.errorreport}" process="@this" global="false" 
-                               action="#{error.reportError(record)}"  />  
-              </h:panelGroup> 
-            </h:panelGrid>   
-          </h:panelGrid> 
-        </p:column>  
-      </p:dataTable>   
-
-    </ui:composition>
-  </body> 
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.commonCollection}"> 
+                    <ui:include src="/pages/commonListView.xhtml" />
+                </p:column>
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.mineral}"> 
+                    <ui:include src="/pages/mineralListView.xhtml" />
+                </p:column>   
+            </p:dataTable>  
+        </ui:composition>
+    </body>
 </html>
-
 

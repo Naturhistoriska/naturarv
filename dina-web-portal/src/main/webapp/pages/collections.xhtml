@@ -16,7 +16,7 @@
 
               <p:ajax event="tabChange" listener="#{collections.onTabChange}" global="false"  />
               <p:ajax event="tabClose" listener="#{collections.onTabClose}" global="false"  />
-              <p:tab title="#{collection.name}"  >    
+              <p:tab title="#{languages.swedish ? collection.swedishName : collection.name}"  >    
                 <p:chart type="bar" 
                          model="#{chart.getCollectionMonthChart(collection.code)}" 
                          styleClass="collectionChart" />  

@@ -15,11 +15,12 @@ public class CommonText {
     private final String simpleSearchCollectionDefaultTextEn1 = "Search ";
     private final String simpleSearchCollectionDefaultTextEn2 = " collection (species, genus, family, collectors, location, etc.)";
     
-    private final String simpleSearchCollectionDefaultTextSv1 = "Sök i ";
+    private final String simpleSearchCollectionDefaultTextSv1 = "Sök i var ";
     private final String simpleSearchCollectionDefaultTextSv2 = " samling (art, släkte, familj, insamlare, plats etc.)";
     
     private final String emptyString = "";
     private final String emptySpace = " ";
+    private final String underScore = "_";
 
     private final String nrmCode = "nrm*";
     private final String gnmCode = "gnm*";
@@ -65,14 +66,14 @@ public class CommonText {
     private final String dateEn = "Date: ";
     private final String localitySv = "Lokal: ";
     private final String localityEn = "Locality: ";
-    private static final String CONTINENT_EN = "Continent: ";
-    private static final String CONTINENT_SV = "Kontinent: ";
-    private static final String COUNTRY_EN = "Country: ";
-    private static final String COUNTRY_SV = "Land: ";
-    private static final String COORDINATE_SV = "Koordinat: ";
-    private static final String COORDINATE_EN = "Coordinate: ";
-    private static final String OTHER_INFORMATION_SV = "&Ouml;vrig etikettinfo: ";
-    private static final String OTHER_INFORMATION_EN = "Other information: ";
+    private final String continentEn = "Continent: ";
+    private final String continentSv = "Kontinent: ";
+    private final String countryEn = "Country: ";
+    private final String countrySv = "Land: ";
+    private final String coordinateSv = "Koordinat: ";
+    private final String coordinatesEn = "Coordinate: ";
+    private final String otherInformationSv = "&Ouml;vrig etikettinfo: ";
+    private final String otherInformationEn = "Other information: ";
     private static final String DETERMINER_SV = "Best&auml;mningar: ";
     private static final String DETERMINER_EN = "Determiner: ";
     private static final String DESCRIPTION_SV = "Beskrivning: ";
@@ -80,19 +81,19 @@ public class CommonText {
     private static final String REPORT_BY_SV = "Rapporterat av: ";
     private static final String REPORT_BY_EN = "Report by: ";
 
-    private static final String ALL_TYPE_EN = "All type";
-    private static final String ALL_TYPE_SV = "alla typer";
+    private final String allTypeEn = "All type";
+    private final String allTypeSv = "alla typer";
 
-    private static final String FROM_DATE_EN = "[From date] ";
-    private static final String FROM_DATE_SV = "[från datum] ";
+    private final String fromDateEn = "[From date] ";
+    private final String fromDateSv = "[från datum] ";
 
-    private static final String TO_DATE_EN = " [To date] ";
-    private static final String TO_DATE_SV = " [till datum] ";
+    private final String toDateEn = " [To date] ";
+    private final String toDateSv = " [till datum] ";
 
-    private static final String FROM_EN = " [Form] ";
-    private static final String FROM_SV = " [från] ";
-    private static final String TO_EN = " [To] ";
-    private static final String TO_SV = " [till] ";
+    private final String fromEn = " [Form] ";
+    private final String fromSv = " [från] ";
+    private final String toEn = " [To] ";
+    private final String toSv = " [till] ";
 
     private static final String HITS_EN = "hits";
     private static final String HITS_SV = "träffar";
@@ -117,18 +118,19 @@ public class CommonText {
     private static final String WILD_CARD = "*";
     private final String imageKey = "image:";
     private final String isTypeKey = "isType:";
-    private static final String DNA_KEY = "dna:";
+    private final String dnaKey = "dna:";
     private final String inSwedenKey = "inSweden:";
     private final String collectionCodeKey = "collectionId:";
     private final String highTxKey = "higherTx:";
     private final String highTxKeyNotContain = "-higherTx:";
 
-    private static final String ID_KEY = "id:";
+    private final String idKey = "id:";
     private final String mapKey = "map:";
     private static final String COORDINATE_KEY = "coordinate:";
 
-    private static final String IMAGE_VIEW_KEY = "morphBankView:";
-    private static final String MORPHBANK_ID_KEY = "morphbankId:";
+    private final String imageViewKey = "morphBankView:";
+    private final String morphBankIdKey  = "morphbankId:";
+    private final String associatedMediaKey = "associatedMedia"; 
     private static final String TEXT_FIELD = "text";
     private static final String TEXT_SEARCH = "textsearch";
     private static final String GEOPOINT = "geopoint";
@@ -144,29 +146,31 @@ public class CommonText {
     private static final String LOCATIONS = "locations";
     private static final String COORDINATE = "coordinate";
     private static final String CATALOG_NUMBER = "catalogNumber";
+    private static final String cnKey = "cn:";
     private final String catalogedDate = "catalogedDate";
     private static final String CREATED_DATE = "createdDate";
-    private static final String IMAGE_VIEW = "morphBankView";
+    private final String imageView = "morphBankView";
     private static final String IMAGE_ID = "morphbankImageId";
-    private static final String MORPHBANK_ID = "morphbankId";
+    private final String morphBankId = "morphbankId";
     private static final String SYNONYM = "synonym";
     private static final String AUTHOR = "author";
     private static final String COMMON_NAME = "commonName";
     private static final String COLLECTOR = "collector";
-    private static final String HIGH_TAXA = "higherTx";
+    private final String highTaxa = "higherTx";
     private static final String LOCALITY = "locality";
     private static final String DETERMINER = "determiner";
     private static final String TYPESTATUS = "typeStatus";
+ 
 
     private static final String TX_SEARCH = "tx";
 
     private static final String DNA = "dna";
-    private static final String IMAGE = "image";
-    private static final String MAP = "map";
-    private static final String SWEDEN = "sweden";
-    private static final String TYPE = "type";
-    private static final String IS_TYPE = "isType";
-    private static final String IN_SWEDEN = "inSweden";
+    private final String image = "image";
+    private final String map = "map";
+    private final String sweden = "sweden";
+    private final String type = "type";
+    private final String isType = "isType";
+    private final String inSweden = "inSweden";
 
     private static final String ALL = "all";
     private static final String CONTAINS = "contains";
@@ -177,12 +181,12 @@ public class CommonText {
     private static final String NOT = "not";
     private static final String OR = "or";
 
-    private static final String COLOR_1 = "coloer1";
-    private static final String COLOR_2 = "coloer2";
-    private static final String COLOR_3 = "coloer3";
-    private static final String COLOR_4 = "coloer4";
-    private static final String COLOR_5 = "coloer5";
-    private static final String COLOR_6 = "coloer6";
+//    private static final String COLOR_1 = "coloer1";
+//    private static final String COLOR_2 = "coloer2";
+//    private static final String COLOR_3 = "coloer3";
+//    private static final String COLOR_4 = "coloer4";
+//    private static final String COLOR_5 = "coloer5";
+//    private static final String COLOR_6 = "coloer6";
 
     private static final String GROUP = "group";
     private static final String GROUP_FIELD = "group.field";
@@ -190,15 +194,25 @@ public class CommonText {
     private static final String GROUPED = "grouped";
     private static final String MATCHES = "matches";
 
-    private static final String IMAGE_TYPE_THUMB = "&imgType=thumbs";
-    private static final String IMAGE_QUERY_ID = "?id=";
-    private static final String IMAGE_TYPE_JPG = "&imgType=jpg";
+    private final String imageTypeThumb = "&imgType=thumbs";
+    private final String imageQueryId = "?id=";
+    private final String imageTypeJpg = "&imgType=jpg";
+    private final String imageDataset ="&dataset=";
+    
+    private final String searchInAllCollectionsEn = "Search in all collections";
+    private final String searchInAllCollectionsSv = "Sök i alla samlingar";
 
     private static final String SV = "sv";
     private static final String EN = "en";
 
     private static final Map<String, String> FIELD_NAME_MAP = new HashMap<>();
     private static final Map<String, String> SEARCH_FIELD_MAP = new HashMap<>();
+    private static final Map<String, String> COLLECTION_NAME_MAP = new HashMap<>();
+    private static final Map<String, String> SEARCH_TEXT_SV_MAP = new HashMap<>();
+    private static final Map<String, String> SEARCH_TEXT_EN_MAP = new HashMap<>();
+    
+    private String searchImageQuery = "image:true";
+    
     private static CommonText instance = null;
 
     static {
@@ -236,6 +250,9 @@ public class CommonText {
         FIELD_NAME_MAP.put("acc_sv", "Accession");
         FIELD_NAME_MAP.put("ts_en", "Type status");
         FIELD_NAME_MAP.put("ts_sv", "Typ-status");
+        
+        FIELD_NAME_MAP.put("synonym_en", "Synonyms");
+        FIELD_NAME_MAP.put("synonym_sv", "Synonymer");
 
         SEARCH_FIELD_MAP.put("textsearch", TEXT_FIELD);
         SEARCH_FIELD_MAP.put("auth", AUTHOR);
@@ -246,7 +263,71 @@ public class CommonText {
         SEARCH_FIELD_MAP.put("acc", ACCESSION_NUMBER);
         SEARCH_FIELD_MAP.put("sfn", STATION_FIELD);
         SEARCH_FIELD_MAP.put("cn", CATALOG_NUMBER);
-        SEARCH_FIELD_MAP.put("ts", TYPESTATUS);
+        SEARCH_FIELD_MAP.put("ts", TYPESTATUS); 
+        SEARCH_FIELD_MAP.put("synonym", SYNONYM); 
+        
+        COLLECTION_NAME_MAP.put("Paleozoology", "Paleozoologisk");
+        COLLECTION_NAME_MAP.put("Paleobotany", "Paleobotanisk");
+        COLLECTION_NAME_MAP.put("NRM Entomology Collection Objects", "Entomologisk");
+        COLLECTION_NAME_MAP.put("Invertebrate main collection", "Evertebrater");
+        COLLECTION_NAME_MAP.put("Invertebrate type collection", "Evertebrater typsamling");
+        COLLECTION_NAME_MAP.put("NRM Mineralogy", "Mineralogisk"); 
+        COLLECTION_NAME_MAP.put("NRM Nodules", "Noduler"); 
+        COLLECTION_NAME_MAP.put("Fish", "Fisk"); 
+        COLLECTION_NAME_MAP.put("Amphibians and reptiles", "Grod- och kräldjur"); 
+        COLLECTION_NAME_MAP.put("Fungi/Lichens", "Svampar/Lavar"); 
+        COLLECTION_NAME_MAP.put("Mosses", "Mossor"); 
+        COLLECTION_NAME_MAP.put("Algae", "Alger"); 
+        COLLECTION_NAME_MAP.put("Vascular Plants", "Kärlväxter"); 
+        COLLECTION_NAME_MAP.put("Mammals", "Däggdjur"); 
+        COLLECTION_NAME_MAP.put("NRM Isotope Geology", "Isotopgeologi"); 
+        COLLECTION_NAME_MAP.put("Swedish Malaise Trap Project (SMTP) Collection Obj", "Swedish Malaise Tra...");
+        COLLECTION_NAME_MAP.put("Swedish Malaise Trap Project (SMTP) Species Lists", "	Swedish Malaise Tra...");
+        
+        SEARCH_TEXT_SV_MAP.put("zoo", "Sök i våra zoologiska samlingar");
+        SEARCH_TEXT_SV_MAP.put("Paleontology", "Sök i våra paleontologiska samlingar");
+        SEARCH_TEXT_SV_MAP.put("PzVert", "Sök i vår samling av fossila ryggradsdjur");
+        SEARCH_TEXT_SV_MAP.put("PzInvert", "Sök i vår samling av fossila ryggradslösa djur");
+        SEARCH_TEXT_SV_MAP.put("Paleozoology", "Sök i våra paleozoologiska samlingar");
+        SEARCH_TEXT_SV_MAP.put("Paleobotany", "Sök i vår samling av fossila växter (paleobotaniska samling)");
+        SEARCH_TEXT_SV_MAP.put("NRM Entomology Collection Objects", "Sök i vår insektssamling (entomologiska samling)");
+        SEARCH_TEXT_SV_MAP.put("Invertebrate main collection", "Sök i vår samling av ryggradslösa djur (evertebrater)");
+        SEARCH_TEXT_SV_MAP.put("Invertebrate type collection", "Sök i vår typsamling av ryggradslösa djur");
+        SEARCH_TEXT_SV_MAP.put("NRM Mineralogy", "Sök i våra mineralogiska samlingar"); 
+        SEARCH_TEXT_SV_MAP.put("Swedish Malaise Trap Project (SMTP) Collection Obj", "Sök i våra Swedish Malaise Trap Project samlingar");
+        SEARCH_TEXT_SV_MAP.put("Swedish Malaise Trap Project (SMTP) Species Lists", "Sök i våra Swedish Malaise Trap Project samlingar");
+        SEARCH_TEXT_SV_MAP.put("NRM Nodules", "Sök i vår samling av noduler"); 
+        SEARCH_TEXT_SV_MAP.put("NRM Isotope Geology", "Sök i vår samling av isotopgeologi"); 
+        SEARCH_TEXT_SV_MAP.put("Fungi/Lichens", "Sök i vår samling av svampar/lavar"); 
+        SEARCH_TEXT_SV_MAP.put("Mosses", "Sök i vår samling av mossor"); 
+        SEARCH_TEXT_SV_MAP.put("Algae", "Sök i vår samling av alger"); 
+        SEARCH_TEXT_SV_MAP.put("Vascular Plants", "Sök i vår samling av kärlväxter"); 
+        SEARCH_TEXT_SV_MAP.put("Fish", "Sök i vår samling av fisk"); 
+        SEARCH_TEXT_EN_MAP.put("Mammals", "Sök i vår samling av däggdjur"); 
+        SEARCH_TEXT_SV_MAP.put("Amphibians and reptiles", "Sök i våra Grod- och kräldjur samlingar"); 
+        
+        
+        SEARCH_TEXT_EN_MAP.put("zoo", "Search in our zoological collections");
+        SEARCH_TEXT_EN_MAP.put("Paleontology", "Search in our paleontological collections");
+        SEARCH_TEXT_EN_MAP.put("PzVert", "Search in our vertebrate fossil collection");
+        SEARCH_TEXT_EN_MAP.put("PzInvert", "Search in our invertebrate fossil collection");
+        SEARCH_TEXT_EN_MAP.put("Paleozoology", "Search in our paleozoology collections");
+        SEARCH_TEXT_EN_MAP.put("Paleobotany", "Search in our plant fossils collection (paleobotanical collection)");
+        SEARCH_TEXT_EN_MAP.put("NRM Entomology Collection Objects", "Search in our insect collection (entomology)");
+        SEARCH_TEXT_EN_MAP.put("Invertebrate main collection", "Search in our invertebrate collection");
+        SEARCH_TEXT_EN_MAP.put("Invertebrate type collection", "Search in our invertebrate type collection");
+        SEARCH_TEXT_EN_MAP.put("NRM Mineralogy", "Search in our mineralogical collections"); 
+        SEARCH_TEXT_EN_MAP.put("Swedish Malaise Trap Project (SMTP) Collection Obj", "Search in our Swedish Malaise Trap Project collections");
+        SEARCH_TEXT_EN_MAP.put("Swedish Malaise Trap Project (SMTP) Species Lists", "Search in our Swedish Malaise Trap Project collections");
+        SEARCH_TEXT_EN_MAP.put("NRM Nodules", "Search in our nodules collection"); 
+        SEARCH_TEXT_EN_MAP.put("NRM Isotope Geology", "Search in our isotope geological collection"); 
+        SEARCH_TEXT_EN_MAP.put("Fish", "Search in our fish collection"); 
+        SEARCH_TEXT_EN_MAP.put("Fungi/Lichens", "Search in our fungi/lichens collection"); 
+        SEARCH_TEXT_EN_MAP.put("Mosses", "Search in our mosses collection"); 
+        SEARCH_TEXT_EN_MAP.put("Algae", "Search in our algae collection"); 
+        SEARCH_TEXT_EN_MAP.put("Vascular Plants", "Search in our vascular plants collection"); 
+        SEARCH_TEXT_EN_MAP.put("Mammals", "Search in our mammals collection"); 
+        SEARCH_TEXT_EN_MAP.put("Amphibians and reptiles", "Search in our amphibians and reptiles collection"); 
     }
 
     public static synchronized CommonText getInstance() {
@@ -257,12 +338,28 @@ public class CommonText {
     }
 
     public String getFieldName(String key, boolean isSwedish) {
-        key = isSwedish ? key + "_" + SV : key + "_" + EN;
+        key = isSwedish ? key + underScore + SV : key + underScore + EN;
         return FIELD_NAME_MAP.get(key);
     }
 
     public String getSearchField(String key) {
         return SEARCH_FIELD_MAP.get(key);
+    }
+    
+    public String getCollectionSwedishName(String key) {
+        return COLLECTION_NAME_MAP.get(key);
+    }
+    
+    public String getSearchTextSvMap(String key) {
+        return SEARCH_TEXT_SV_MAP.get(key);
+    }
+    
+    public String getSearchTextEnMap(String key) {
+        return SEARCH_TEXT_EN_MAP.get(key);
+    }
+    
+    public String getSearchInAllCollections(boolean isSwedish ) {
+        return isSwedish ? searchInAllCollectionsSv : searchInAllCollectionsEn;
     }
 
     public String getSv() {
@@ -274,52 +371,52 @@ public class CommonText {
     }
 
     public String getImage() {
-        return IMAGE;
+        return image;
     }
 
     public String getSweden() {
-        return SWEDEN;
+        return sweden;
     }
 
     public String getMap() {
-        return MAP;
+        return map;
     }
 
     public String getType() {
-        return TYPE;
+        return type;
     }
 
     public String getIsType() {
-        return IS_TYPE;
+        return isType;
     }
 
     public String getInSweden() {
-        return IN_SWEDEN;
+        return inSweden;
     }
 
-    public String getColor1() {
-        return COLOR_1;
-    }
-
-    public String getColor2() {
-        return COLOR_2;
-    }
-
-    public String getColor3() {
-        return COLOR_3;
-    }
-
-    public String getColor4() {
-        return COLOR_4;
-    }
-
-    public String getColor5() {
-        return COLOR_5;
-    }
-
-    public String getColor6() {
-        return COLOR_6;
-    }
+//    public String getColor1() {
+//        return COLOR_1;
+//    }
+//
+//    public String getColor2() {
+//        return COLOR_2;
+//    }
+//
+//    public String getColor3() {
+//        return COLOR_3;
+//    }
+//
+//    public String getColor4() {
+//        return COLOR_4;
+//    }
+//
+//    public String getColor5() {
+//        return COLOR_5;
+//    }
+//
+//    public String getColor6() {
+//        return COLOR_6;
+//    }
 
     public String getGroup() {
         return GROUP;
@@ -366,7 +463,7 @@ public class CommonText {
     }
 
     public String getHighTaxa() {
-        return HIGH_TAXA;
+        return highTaxa;
     }
 
     public String getTxSearch() {
@@ -386,19 +483,23 @@ public class CommonText {
     }
 
     public String getMorphbankId() {
-        return MORPHBANK_ID;
+        return morphBankId;
     }
 
     public String getMorphbankIdKey() {
-        return MORPHBANK_ID_KEY;
+        return morphBankIdKey;
     }
 
     public String getImageView() {
-        return IMAGE_VIEW;
+        return imageView;
     }
 
     public String getImageId() {
         return IMAGE_ID;
+    }
+    
+    public String getAssociatedMediaKey() {
+        return associatedMediaKey;
     }
 
     public String getAuthor() {
@@ -450,7 +551,7 @@ public class CommonText {
     }
 
     public String getIdKey() {
-        return ID_KEY;
+        return idKey;
     }
 
     public String getMapKey() {
@@ -494,7 +595,7 @@ public class CommonText {
     }
 
     public String getImageViewKey() {
-        return IMAGE_VIEW_KEY;
+        return imageViewKey;
     }
 
     public String getImageKey() {
@@ -502,7 +603,7 @@ public class CommonText {
     }
 
     public String getDNAKey() {
-        return DNA_KEY;
+        return dnaKey;
     }
 
     public String getIsTypeKey() {
@@ -527,6 +628,10 @@ public class CommonText {
 
     public String getStatistic() {
         return STATISTIC;
+    }
+    
+    public String getCnKey() {
+        return cnKey;
     }
 
     public String getSynonmy() {
@@ -562,15 +667,19 @@ public class CommonText {
     }
 
     public String getImageTypeThumb() {
-        return IMAGE_TYPE_THUMB;
+        return imageTypeThumb;
     }
 
     public String getImageTypeJpg() {
-        return IMAGE_TYPE_JPG;
+        return imageTypeJpg;
+    }
+    
+    public String getImageDataset() {
+        return imageDataset;
     }
 
     public String getImageQueryId() {
-        return IMAGE_QUERY_ID;
+        return imageQueryId;
     }
 
     public String getEmptyString() {
@@ -662,19 +771,19 @@ public class CommonText {
     }
 
     public String getCoordinate(boolean isSwedish) {
-        return isSwedish ? COORDINATE_SV : COORDINATE_EN;
+        return isSwedish ? coordinateSv : coordinatesEn;
     }
 
     public String getContinent(boolean isSwedish) {
-        return isSwedish ? CONTINENT_SV : CONTINENT_EN;
+        return isSwedish ? continentSv : continentEn;
     }
 
     public String getCountry(boolean isSwedish) {
-        return isSwedish ? COUNTRY_SV : COUNTRY_EN;
+        return isSwedish ? countrySv : countryEn;
     }
 
     public String getOtherInformation(boolean isSwedish) {
-        return isSwedish ? OTHER_INFORMATION_SV : OTHER_INFORMATION_EN;
+        return isSwedish ? otherInformationSv : otherInformationEn;
     }
 
     public String getDeterminer(boolean isSwedish) {
@@ -694,7 +803,7 @@ public class CommonText {
     }
 
     public String getAllType(boolean isSwedish) {
-        return isSwedish ? ALL_TYPE_SV : ALL_TYPE_EN;
+        return isSwedish ? allTypeSv : allTypeEn;
     }
 
     public String getSelected(boolean isSwedish) {
@@ -706,22 +815,26 @@ public class CommonText {
     }
 
     public String getFromDate(boolean isSwedish) {
-        return isSwedish ? FROM_DATE_SV : FROM_DATE_EN;
+        return isSwedish ? fromDateSv : fromDateEn;
     }
 
     public String getToDate(boolean isSwedish) {
-        return isSwedish ? TO_DATE_SV : TO_DATE_EN;
+        return isSwedish ? toDateSv : toDateEn;
     }
 
     public String getFrom(boolean isSwedish) {
-        return isSwedish ? FROM_SV : FROM_EN;
+        return isSwedish ? fromSv : fromEn;
     }
 
     public String getTo(boolean isSwedish) {
-        return isSwedish ? TO_SV : TO_EN;
+        return isSwedish ? toSv : toEn;
     }
 
     public String getSessionAttColSearchQry() {
         return sessionAttColSearchQry;
+    }
+    
+    public String getImageSearchQuery() {
+        return searchImageQuery;
     }
 }

@@ -2,6 +2,7 @@ package se.nrm.dina.web.portal.model;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
+import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
  *
@@ -35,6 +36,10 @@ public class CollectionData implements Serializable {
  
   public int getTotal() {
     return total;
+  }
+  
+  public String getSwedishName() { 
+      return CommonText.getInstance().getCollectionSwedishName(name);
   }
 
   public String getShortName() {

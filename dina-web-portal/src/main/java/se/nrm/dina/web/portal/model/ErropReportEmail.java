@@ -13,7 +13,7 @@ public class ErropReportEmail {
   private static final String END_DIV_TAG = "</div>";
   private static final String TAG_BR = "<br />";
   private static final String TAG_FIELD_START = "<div style=\"float: left;  width: 800px;\">";
-  private static final String TAG_REPORT_START = "<div style=\"background-color: #AAD11C; border: 2px solid #000000;overflow: auto; padding: 10px 0; text-align: center; width: 800px;  \">";
+  private static final String TAG_REPORT_START = "<div style=\"background-color: #0b5e82; border: 2px solid #000000;overflow: auto; padding: 10px 0; text-align: center; width: 800px;  \">";
   private static final String TAG_REPORT_TITLE = "<div style=\"font-size: 1.2em;  font-weight: bold; \">";
   
   private static final String TAG_FIELD_TITLE_START = "<div style=\"display: inline; float: left; font-size: 1em; font-weight: bold;  padding: 0 15px 5px 10px; width: 15%;\">";
@@ -89,7 +89,7 @@ public class ErropReportEmail {
       sb.append(getFontColor(error.isCollector()));
       sb.append(TAG_END);
       sb.append(error.isCollector() ? " * " : "");
-      sb.append(data.getCollector() != null ? data.getCollector() : "");
+      sb.append(data.getCollector() != null ? data.getCollectors(): "");
       sb.append(END_DIV_TAG);
       sb.append(END_DIV_TAG);
 

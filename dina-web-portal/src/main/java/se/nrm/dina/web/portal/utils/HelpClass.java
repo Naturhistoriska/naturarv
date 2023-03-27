@@ -25,7 +25,7 @@ public class HelpClass {
   private final String emptySpace = " ";
   private final String replaceChars = "[\\[\\](),]";
   private final String startParentheses = "(";
-  private final String endParentheses = ")";
+  private final String endParentheses = ")"; 
   
   public static synchronized HelpClass getInstance() {
     if (instance == null) {
@@ -51,7 +51,7 @@ public class HelpClass {
 
   public String buildResultHeaderSummaryForResultView(int totalResult, boolean isSwedish) {
     if (totalResult == 0) {
-      return buildEmptyString();
+      return emptySpace;
     }
     resultHeaderSummarySb = new StringBuilder();
     resultHeaderSummarySb.append(CommonText.getInstance().getSelected(isSwedish));
@@ -68,10 +68,20 @@ public class HelpClass {
     imagePathSb.append(type);
     return imagePathSb.toString();
   }
-
-  public String buildEmptyString() {
-    return " ";
+  
+  public String buildBotImagePath(String id, String dataset, String morphbankImagePath) {
+    imagePathSb = new StringBuilder();
+    imagePathSb.append(morphbankImagePath);
+    imagePathSb.append(CommonText.getInstance().getImageQueryId());
+    imagePathSb.append(id);
+    imagePathSb.append(CommonText.getInstance().getImageDataset());
+    imagePathSb.append(dataset);
+    return imagePathSb.toString();
   }
+
+//  public String buildEmptyString() {
+//    return " ";
+//  }
  
   public String replaceChars(String value) {
     String s = value.replaceAll(replaceChars, emptySpace);

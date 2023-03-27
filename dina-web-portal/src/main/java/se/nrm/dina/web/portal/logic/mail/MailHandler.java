@@ -22,40 +22,40 @@ import se.nrm.dina.web.portal.model.SolrData;
 @Slf4j
 public class MailHandler implements Serializable {
 
-  @Inject
-  private InitialProperties properties;
+    @Inject
+    private InitialProperties properties;
 
-  private static final String MAIL_SUBJECT_EN = "Error report (naturarv)";
-  private static final String MAIL_SUBJECT_SV = "Felrapport (naturarv)";
-  private static final String MAIL_CONTENT = "text/html; charset=ISO-8859-1";
- 
-  public MailHandler() {
+    private static final String MAIL_SUBJECT_EN = "Error report (naturarv)";
+    private static final String MAIL_SUBJECT_SV = "Felrapport (naturarv)";
+    private static final String MAIL_CONTENT = "text/html; charset=ISO-8859-1";
 
-  }
+    public MailHandler() {
 
-  public MailHandler(InitialProperties properties) {
-    this.properties = properties;
-  }
+    }
 
-  public void sendMail(SolrData data, ErrorReport error, boolean isSwedish) {
- 
-    ErropReportEmail report = new ErropReportEmail();
-    Properties props = new Properties();
-    props.put(properties.getMailHostName(), properties.getMailHost());
+    public MailHandler(InitialProperties properties) {
+        this.properties = properties;
+    }
 
-    Session session = Session.getInstance(props, null);
-    session.setDebug(true);
-    Message message = new MimeMessage(session);
+    public void sendMail(SolrData data, ErrorReport error, boolean isSwedish) {
 
-    try { 
-      InternetAddress emailAddress = new InternetAddress(properties.getSupportMail());
-      message.setSubject(isSwedish ? MAIL_SUBJECT_SV : MAIL_SUBJECT_EN);
-      message.addRecipient(Message.RecipientType.TO, emailAddress);
+        ErropReportEmail report = new ErropReportEmail();
+        Properties props = new Properties();
+        props.put(properties.getMailHostName(), properties.getMailHost());
 
-      message.setContent(report.createErrorReport(data, error, isSwedish), MAIL_CONTENT);
-      Transport.send(message);
-    } catch (MessagingException ex) {
-      log.error(ex.getMessage());
-    } 
-  } 
+        Session session = Session.getInstance(props, null);
+        session.setDebug(true);
+        Message message = new MimeMessage(session);
+
+        try {
+            InternetAddress emailAddress = new InternetAddress(properties.getSupportMail());
+            message.setSubject(isSwedish ? MAIL_SUBJECT_SV : MAIL_SUBJECT_EN);
+            message.addRecipient(Message.RecipientType.TO, emailAddress);
+
+            message.setContent(report.createErrorReport(data, error, isSwedish), MAIL_CONTENT);
+            Transport.send(message);
+        } catch (MessagingException ex) {
+            log.error(ex.getMessage());
+        }
+    }
 }

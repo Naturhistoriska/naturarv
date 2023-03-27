@@ -12,8 +12,17 @@
 
                 <h:graphicImage library="images" styleClass="images" 
                                 name="icons/discipline/#{record.collectionId}.png" />    
-                <h:outputText value="#{msg.cataloguenumber}:" />   
-                <h:outputText value="#{record.catalogNumber}" />  
+                <h:outputText value="#{msg.cataloguenumber}:" />    
+                <h:panelGroup layout="block" style="width: 100%;">
+                    <h:outputText value="#{record.catalogNumber}" />  
+                    <p:spacer width="5" />
+                    <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
+                                   update=":resultsForm:resultContent" global="false" >  
+                        <h:graphicImage library="images" name="downarrow.gif" title="#{msg.simple}" 
+                                        styleClass="resultHeaderImages" />
+                    </p:commandLink>  
+                </h:panelGroup> 
+                
 
                 <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
                 <p:commandLink rendered="#{record.morphbankId != null}"  
@@ -39,6 +48,11 @@
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.speciesname}:" />   
                 <h:outputText value="#{record.taxon}" /> 
+                
+                <p:spacer width="5" height="5" rendered="#{record.etCollection}" />
+                <h:outputText value="#{msg.type}:" rendered="#{record.etCollection}" />   
+                <h:outputText value="#{record.typeStatus}" rendered="#{record.etCollection}" /> 
+                
 
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.determiner}:" />   

@@ -29,7 +29,7 @@ public class Languages implements Serializable {
     private HttpSession session;
     
     private final String hearderEl = "headerForm:header";
-    private final String topMenuEl = "topMenuForm:topmenupanel";
+    private final String topMenuEl = "topmenupanel";
     private final String searchEl = "searchForm:searchPanel";
     private final String footerEl = "footerPanel";
     private final String mainEl = "mainPanel";
@@ -72,12 +72,25 @@ public class Languages implements Serializable {
     public String getLocale() {
         return locale;
     }
+    
+    public void changeCollectionsPageLanguage(String locale) {
+        if (!this.locale.equals(locale)) {
+            style.setLanguageStyle(locale);
+            changeLanguage(locale);
+        }
+    }
+    
+    public void changeTopManuLanguage(String locale) {
+        if (!this.locale.equals(locale)) {
+            style.setTopManuLanguageStyle(locale);
+            changeLanguage(locale);
+        }
+    }
  
     public void changeLanguage(String locale) {
         log.info("changeLanguage - locale: {}", locale);
   
-        if (!this.locale.equals(locale)) {
-            style.setLanguageStyle(locale);
+        if (!this.locale.equals(locale)) { 
             this.locale = locale;
             session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             session.setAttribute(CommonText.getInstance().getLocale(), locale);

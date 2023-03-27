@@ -21,6 +21,10 @@
                                 render=":resultsForm:resultContent"   />
                     </h:selectBooleanCheckbox> 
                 </p:column> 
+                 
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.fishCollection}"> 
+                    <ui:include src="/pages/fishResult.xhtml"   /> 
+                </p:column>
 
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.pbCollection}"> 
                     <ui:include src="/pages/pbResult.xhtml"   /> 
@@ -28,13 +32,32 @@
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.evCollection}"> 
                     <ui:include src="/pages/evResult.xhtml" />  
                 </p:column>         
+                
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.fungiCollection}"> 
+                    <ui:include src="/pages/fungiResult.xhtml" />
+                </p:column>   
+                
+                
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.vasclarPlantsCollection}"> 
+                    <ui:include src="/pages/vpResult.xhtml" />
+                </p:column> 
+                
+                <ui:remove>
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.vasclarPlantsCollection}"> 
+                    <ui:include src="/pages/vpResult.xhtml" />
+                </p:column>  
+                </ui:remove>
+                
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.mammalsCollection}"> 
+                    <ui:include src="/pages/mammalsResult.xhtml" />
+                </p:column>   
 
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.commonCollection}"> 
                     <ui:include src="/pages/commonResult.xhtml" />
                 </p:column>
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.mineral}"> 
                     <ui:include src="/pages/mineralResult.xhtml" />
-                </p:column>  
+                </p:column>   
             </p:dataTable>  
         </ui:composition>
     </body>

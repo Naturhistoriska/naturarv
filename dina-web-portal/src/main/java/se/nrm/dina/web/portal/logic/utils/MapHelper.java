@@ -1,10 +1,10 @@
 package se.nrm.dina.web.portal.logic.utils;
 
 import ch.hsr.geohash.GeoHash;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap; 
+//import java.util.Map;
+//import java.util.TreeMap; 
 import java.util.stream.Collectors; 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -14,7 +14,7 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.LatLngBounds;
 import org.primefaces.model.map.Rectangle;
 import se.nrm.dina.web.portal.model.RectangleData;  
-import se.nrm.dina.web.portal.utils.CommonText;
+//import se.nrm.dina.web.portal.utils.CommonText;
 
 /**
  *
@@ -25,7 +25,7 @@ public class MapHelper {
 
   private final String defaultSearchRange = "[\"-180 -90\" TO \"180 90\"]";
   private final int defaultRangeZoom = 2;
-  private static final Map<String, String> DEFAULT_COLOR_MAP; 
+//  private static final Map<String, String> DEFAULT_COLOR_MAP; 
   private GeoHash geohash; 
   private LatLng northEast;
   private LatLng southWest;
@@ -48,16 +48,16 @@ public class MapHelper {
     }
     return instance;
   }
-
-  static {
-    DEFAULT_COLOR_MAP = new TreeMap<>();
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor1(), "#F7C7C7");
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor2(), "#E98990");
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor3(), "#DA323D");
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor4(), "#A2002E");
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor5(), "#8E0028");
-    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor6(), "#790022");
-  }
+//
+//  static {
+//    DEFAULT_COLOR_MAP = new TreeMap<>();
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor1(), "#F7C7C7");
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor2(), "#E98990");
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor3(), "#DA323D");
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor4(), "#A2002E");
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor5(), "#8E0028");
+//    DEFAULT_COLOR_MAP.put(CommonText.getInstance().getColor6(), "#790022");
+//  }
 
   public String getDefaultRegion() {
     return defaultSearchRange;
@@ -305,120 +305,120 @@ public class MapHelper {
     return zoomLevelLng > zoomLevelLat ? zoomLevelLat : zoomLevelLng;
   }
 
-  public List<String> setDefaultColorBar() { 
-    return DEFAULT_COLOR_MAP.values()
-            .stream()
-            .collect(Collectors.toList());
-  }
+//  public List<String> setDefaultColorBar() { 
+//    return DEFAULT_COLOR_MAP.values()
+//            .stream()
+//            .collect(Collectors.toList());
+//  }
 
-  public List<String> setColorBar(int size ) {
-    log.info("setColorBar: {}", size); 
-    
-    List<String> colorBar = new ArrayList<>();  
-    switch (size) {
-      case 1:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
-        break;
-      case 2:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
-        break;
-      case 3:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
-        break;
-      case 4:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
-        break;
-      case 5:
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()));
-        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
-        break;
-      default:
-        return setDefaultColorBar();
-    }
-    return colorBar;
-  }
+//  public List<String> setColorBar(int size ) {
+//    log.info("setColorBar: {}", size); 
+//    
+//    List<String> colorBar = new ArrayList<>();  
+//    switch (size) {
+//      case 1:
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
+//        break;
+//      case 2:
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
+//        break;
+//      case 3:
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
+//        break;
+//      case 4:
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
+//        break;
+//      case 5:
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()));
+//        colorBar.add(DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6()));
+//        break;
+//      default:
+//        return setDefaultColorBar();
+//    }
+//    return colorBar;
+//  }
  
-  public String getColorCode(int colorIndex, int setSize, boolean isFirst, boolean isLast) {
-    if(setSize >= 6) {
-      if(isFirst) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
-      }
-      if(isLast) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
-      }
-      
-      double divid = setSize / 4;
-      if (colorIndex > 0 && colorIndex <= divid) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
-      }
-      
-      if (colorIndex > divid && colorIndex <= divid * 2) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
-      }
-
-      if (colorIndex > divid * 2 && colorIndex <= divid * 3) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
-      }   
-      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5()); 
-    }
-    
-    if (setSize == 5) {
-      if (isFirst) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
-      }
-      if (isLast) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
-      }
-      if(colorIndex == 2) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
-      }
-      return colorIndex == 5
-              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
-              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()); 
-    }
-    
-    if (setSize == 4) {
-      if (isFirst) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
-      }
-      if (isLast) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
-      }
-
-      return colorIndex == 2
-              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
-              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
-    }
-
-    if (setSize == 3) {
-      if(isFirst) {
-        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
-      }
-      return isLast ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
-              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
-    }
-
-    if (setSize == 2) {
-      return isFirst
-              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
-              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
-    }
-
-    if (setSize == 1) {
-      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
-    }
-
-    return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
-  } 
+//  public String getColorCode(int colorIndex, int setSize, boolean isFirst, boolean isLast) {
+//    if(setSize >= 6) {
+//      if(isFirst) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      if(isLast) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//      
+//      double divid = setSize / 4;
+//      if (colorIndex > 0 && colorIndex <= divid) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//      }
+//      
+//      if (colorIndex > divid && colorIndex <= divid * 2) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//      }
+//
+//      if (colorIndex > divid * 2 && colorIndex <= divid * 3) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//      }   
+//      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor5()); 
+//    }
+//    
+//    if (setSize == 5) {
+//      if (isFirst) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      if (isLast) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//      if(colorIndex == 2) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor2());
+//      }
+//      return colorIndex == 5
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4()); 
+//    }
+//    
+//    if (setSize == 4) {
+//      if (isFirst) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      if (isLast) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//      }
+//
+//      return colorIndex == 2
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor4());
+//    }
+//
+//    if (setSize == 3) {
+//      if(isFirst) {
+//        return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//      }
+//      return isLast ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor3());
+//    }
+//
+//    if (setSize == 2) {
+//      return isFirst
+//              ? DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1())
+//              : DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//    }
+//
+//    if (setSize == 1) {
+//      return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor6());
+//    }
+//
+//    return DEFAULT_COLOR_MAP.get(CommonText.getInstance().getColor1());
+//  } 
   
   public String getMapMarkPath(String marker) {
     

@@ -4,36 +4,46 @@
       xmlns:h="http://java.sun.com/jsf/html"   >
 
     <body> 
-        <ui:composition>         
-            <h:panelGrid styleClass="topMenu" cellpadding="0" cellspacing="0"  >
-                <h:form  id="topMenuForm"> 
-                    <h:panelGrid width="980" columns="11" id="topmenupanel"  
-                                 cellpadding="5" cellspacing="5"  > 
-                        <p:spacer width="1"  />
-                        <p:commandLink actionListener="#{navigate.gotoHome()}" value="#{msg.startpage}" 
-                                       styleClass="#{style.tabStart}"  process="@this" 
-                                       global="false" update="templet"  /> 
-                        <p:spacer width="20"  /> 
-                        <p:commandLink actionListener="#{navigate.gotoCollections()}" 
-                                       id="collectionLink" value="#{msg.ourcollections}" 
-                                       styleClass="#{style.tabCollections}" process="@this" 
-                                       global="false" update="templet"  /> 
-                        <p:spacer width="20"  />
-                        <p:commandLink actionListener="#{navigate.gotoPartners()}" value="#{msg.partners}" 
-                                       styleClass="#{style.tabPartners}" process="@this" 
-                                       global="false" update="templet" /> 
-                        <p:spacer width="20"  />
-                        <p:commandLink actionListener="#{navigate.gotoFAQ()}" value="#{msg.fqa}" 
-                                       styleClass="#{style.tabFaq}" process="@this" 
-                                       global="false" update="templet" /> 
-                        <p:spacer width="20"  />
-                        <p:commandLink actionListener="#{navigate.gotoAbout()}" value="#{msg.about}" 
-                                       styleClass="#{style.tabAbout}" process="@this" 
-                                       global="false" update="templet" />  
-                        <p:spacer width="120" height="20" />  
-                    </h:panelGrid>   
-                </h:form> 
-            </h:panelGrid>    
+        <ui:composition>     
+            <h:panelGrid styleClass="topmenu" cellpadding="0" cellspacing="0"  > 
+                <h:panelGrid id="topmenupanel" width="100%" columns="2"  cellpadding="0" cellspacing="0" >
+                    <h:panelGrid style="width: 80%;"  cellpadding="0" cellspacing="0" >
+                        <h:panelGroup>
+                            <ul>
+                                <li>     
+                                    <p:commandLink actionListener="#{navigate.gotoHome()}"
+                                                   value="#{msg.startpage}" 
+                                                   styleClass="#{style.tabStart}"  process="@this" 
+                                                   global="false" update="templet"  /> 
+                                </li> 
+                                <li> 
+                                    <p:commandLink actionListener="#{navigate.gotoCollections()}" 
+                                                   id="collectionLink" value="#{msg.ourcollections}" 
+                                                   styleClass="#{style.tabCollections}" process="@this" 
+                                                   global="false" update="templet"  /> 
+                                </li>   
+                            </ul>     
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <h:panelGroup style=" float: right; text-align: right; width: 18%;"   >     
+                        <h:panelGroup style=" float: right; text-align: right; " layout="block" >   
+
+                            <h:panelGrid  columns="2"   cellpadding="0" cellspacing="0"  
+                                          style=" float: right; text-align: right; " > 
+                                <p:commandLink actionListener="#{languages.changeTopManuLanguage('sv')}" 
+                                               value="Svenska" styleClass="#{style.swdishLink}"  
+                                               process="@all" global="true"  >   
+                                </p:commandLink>  
+                                <p:commandLink actionListener="#{languages.changeTopManuLanguage('en')}" 
+                                               value="English" styleClass="#{style.englishLink}"  
+                                               process="@all" global="true"   />    
+
+                            </h:panelGrid>
+                        </h:panelGroup>   
+                    </h:panelGroup> 
+                </h:panelGrid>    
+            </h:panelGrid>   
         </ui:composition>
     </body> 
 </html>

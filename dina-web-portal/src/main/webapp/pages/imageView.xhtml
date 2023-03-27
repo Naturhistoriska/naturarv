@@ -71,7 +71,7 @@
                           scrollHeight="800" rows="50" chunkSize="50" mode="inline" >  
             <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
               <h:panelGrid columns="1" style="width:100%" > 
-                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.morphbankId}'}])"  
+                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.id}'}])"  
                                 id="imagePanelLink" update=":resultsForm:imageGalleria" global="false">
                   <p:graphicImage value="#{image.imageId}"  
                                 alt="#{image.catalogNumber}" 

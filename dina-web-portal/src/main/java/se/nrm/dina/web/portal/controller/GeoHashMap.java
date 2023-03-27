@@ -186,21 +186,21 @@ public class GeoHashMap implements Serializable {
 //    } 
 //  }
 
-  private void addRectangleMarker() {
-    String prefix = MapHelper.getInstance().getGeoHashPrefix(zoom); 
-    listData.stream()
-            .forEach(data -> {
-              int total = data.getTotal();
-              String geoHash = data.getGeohashList().stream()
-                      .filter(h -> h.contains(prefix))
-                      .findFirst()
-                      .get();
-              String colorCode = MapHelper.getInstance().getColorCode(set.headSet(total).size(),
-                      set.size(), total == set.first(), total == set.last());
-              model.addOverlay(MapHelper.getInstance().buildRectangle(
-                      geoHash.replace(prefix, CommonText.getInstance().getEmptyString()), total, colorCode));
-            });
-  }
+//  private void addRectangleMarker() {
+//    String prefix = MapHelper.getInstance().getGeoHashPrefix(zoom); 
+//    listData.stream()
+//            .forEach(data -> {
+//              int total = data.getTotal();
+//              String geoHash = data.getGeohashList().stream()
+//                      .filter(h -> h.contains(prefix))
+//                      .findFirst()
+//                      .get();
+//              String colorCode = MapHelper.getInstance().getColorCode(set.headSet(total).size(),
+//                      set.size(), total == set.first(), total == set.last());
+//              model.addOverlay(MapHelper.getInstance().buildRectangle(
+//                      geoHash.replace(prefix, CommonText.getInstance().getEmptyString()), total, colorCode));
+//            });
+//  }
 
   private void addSingleMarker(String coordinate, String markerPath) {
     String[] coordinates = StringUtils.split(coordinate, coordinatesSeparator);

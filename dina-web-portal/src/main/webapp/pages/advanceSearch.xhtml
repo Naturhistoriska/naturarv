@@ -13,32 +13,25 @@
 
                 <h:panelGroup layout="block" rendered="#{f5Detector.isCollectionSearch}"
                               style="width: 100%; float: left; text-align:  left;">
-                    <h:panelGroup layout="block" rendered="#{searchBean.selectedCollection}"
-                                  style="width: 80%; float: left; text-align:  left;">
-                        <h:outputText value="#{msg.resultheadertext1} #{searchBean.selectedCollectionFullName} #{msg.resultheadertext2}" 
+                    <h:panelGroup layout="block" style="width: 80%; float: left; text-align:  left;">
+                        <h:outputText value="#{searchBean.searchHeader}" 
                                       style="font-size: 16px; font-weight: bold;"  /> 
                     </h:panelGroup>
-                    
-                    <h:panelGroup layout="block"  rendered="#{!searchBean.selectedCollection}"
-                                  style="width: 80%; float: left; text-align:  left;">
-                        <h:outputText value="#{msg.searchincollections}"
-                                      style="font-size: 16px; font-weight: bold;"  /> 
-                    </h:panelGroup>
-                
+                     
                     <h:panelGroup layout="block" style="width: 18%; float: left; text-align: right;">
                         <h:panelGroup layout="block" style="width: 40%; float: right; text-align:  right;">
-                            <p:commandLink actionListener="#{languages.changeLanguage('en')}" 
+                            <p:commandLink actionListener="#{languages.changeCollectionsPageLanguage('en')}" 
                                            value="English" styleClass="#{style.enLink}"  
                                            process="@all" global="true"  />    
                         </h:panelGroup> 
                         <h:panelGroup layout="block" style="width: 60%; float: right; text-align:  right;">
-                            <p:commandLink actionListener="#{languages.changeLanguage('sv')}" 
+                            <p:commandLink actionListener="#{languages.changeCollectionsPageLanguage('sv')}" 
                                            value="Svenska" styleClass="#{style.svLink}"  
                                            process="@all" global="true"  >   
                             </p:commandLink>
                         </h:panelGroup> 
                     </h:panelGroup>
-                    <h:panelGroup layout="block" rendered="#{searchBean.selectedCollection}" 
+                    <h:panelGroup layout="block" rendered="#{!searchBean.isAllCollections}" 
                                   style="width: 100%; float: left; text-align: left; vertical-align: top; ">
                         [<p:commandLink actionListener="#{searchBean.searchAllcollections()}" 
                                         value="#{msg.searchAllCollections}" styleClass="link" style="font-size: 12px;"
@@ -101,6 +94,7 @@
                                             <f:selectItem itemValue="textsearch" itemLabel="#{msg.allfields}" />
                                             <f:selectItem itemValue="ftx" itemLabel="#{msg.scientificname}" /> 
                                             <f:selectItem itemValue="eftx" itemLabel="#{msg.exactsearch}" /> 
+                                            <f:selectItem itemValue="synonym" itemLabel="#{msg.synonyms}" /> 
                                             <f:selectItem itemValue="cm" itemLabel="#{msg.swedishname}" /> 
                                             <f:selectItem itemValue="auth" itemLabel="#{msg.author}" /> 
                                             <f:selectItem itemValue="cn"  itemLabel="#{msg.cataloguenumber}" />  

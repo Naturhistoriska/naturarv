@@ -2,6 +2,7 @@ package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +12,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped; 
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
+import javax.inject.Named; 
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.event.SelectEvent;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
@@ -47,6 +46,7 @@ public class SearchBean implements Serializable {
     private String sortby;
 
     private CollectionData selectedCollection; 
+    private List<CollectionData> selectionCollections;
     private List<SolrData> selectedRecords;
     private List<SolrData> selectedOneRecord;
     private List<SolrData> exportDataSet;
@@ -59,7 +59,13 @@ public class SearchBean implements Serializable {
     private boolean isSimpleSearch;
     private boolean selectedAll;
     
-    private String queryStringAll = "collection=all";
+    private final String queryStringAll = "collection=all";
+     
+    private final String pzVert = "PzVert";
+    private final String pzInvert = "PzInvert";
+    
+    private final String wildCard = "*";
+    private final String emptySpace = " ";
 
     private List<SolrData> resultList;
     private SolrResult result;
@@ -70,10 +76,14 @@ public class SearchBean implements Serializable {
     private final String invertebrates = "invertebrates";
     private final String vertebratesSearch = "+(txFullName:Chordata higherTx:Chordata*)";
     private final String invertebratesSearch = "-(txFullName:Chordata higherTx:Chordata*)";
+//    private final String zooCollectionSearch = "(e* 163840)";
+    private final String zoo = "zoo";
+    
     
     private boolean showCollectionStatisticData;
     private String pbDataset; 
-
+    private boolean isAllCollections;
+    
     @Inject
     private SolrService solr;
     @Inject
@@ -102,8 +112,7 @@ public class SearchBean implements Serializable {
         this.navigator = navigator;
         this.paging = paging;
         this.resultHeader = resultHeader;
-        this.statistic = statistic;
-//    this.geo = geo;
+        this.statistic = statistic; 
         this.galleria = galleria;
         this.properties = properties;
     }
@@ -183,6 +192,7 @@ public class SearchBean implements Serializable {
     public void searchCollectionWithQuery(String collectionId, String dataset, String queryString) {
         log.info("searchCollectionWithQuery: {} -- {}", collectionId, dataset);
 
+        pbDataset = null;
         String searchText = SearchHelper.getInstance().buildFullSearchText(freeText); 
         clearData();
         if (dataset != null) {
@@ -192,20 +202,38 @@ public class SearchBean implements Serializable {
             } else if (dataset.equals(invertebrates)) {
                 searchText = invertebratesSearch;
             }
-        } 
+        }  
+//        if(!collectionId.equals("zoo")) {
+//            queries.put(CommonText.getInstance().getCollectionCodeKey(), collectionId);
+//        } else {
+//            searchText = zooCollectionSearch;
+//        }
+        
         queries.put(CommonText.getInstance().getCollectionCodeKey(), collectionId);
         collectionSearch(queryString, searchText);
 
+        
         if (result.getTotalFound() > 0) {
             SolrData data = result.getSolrData().get(0);
             CollectionData collectionData = new CollectionData(collectionId,
                     data.getCollectionName(), result.getTotalFound()); 
-            this.selectedCollection = queryString.equals(queryStringAll) ? null : collectionData;
+            
+            if(statistic.getFilteredCollections().size() == 1) {
+                this.selectedCollection = collectionData;
+            } else {
+                this.selectedCollection = null;
+                if(collectionId.equals(wildCard)) {
+                    this.selectionCollections = null;
+                } else {
+                    selectionCollections = new ArrayList();
+                    this.selectionCollections.addAll(statistic.getFilteredCollections());
+                }
+            } 
+//            this.selectedCollection = statistic.getFilteredCollections().size() > 1 ? 
+//                    null : collectionData;
         }
     }
-    
-    
-
+     
     private void collectionSearch(String queryString, String searchText) {
         log.info("collectionSearch : {}", queryString);
  
@@ -234,7 +262,7 @@ public class SearchBean implements Serializable {
     public void searchAllcollections() {
         log.info("searchAllcollections");
          
-        searchCollectionWithQuery("*", null, queryStringAll);
+        searchCollectionWithQuery(wildCard, null, queryStringAll);
         navigator.gotoResults(queryStringAll);
     }
     
@@ -269,21 +297,15 @@ public class SearchBean implements Serializable {
      * @param filterKey - String
      */
     public void searchDataWithFilter(String filterKey) {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance()
-                .getExternalContext().getRequest();
-
-        String url = request.getRequestURL().toString();
-        String uri = request.getRequestURI();
-
-        log.info("url and rui : {} -- {}", url, uri);
-        log.info("pathInfo : {}", request.getQueryString());
-
+//        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance()
+//                .getExternalContext().getRequest();
+         
         queries.put(filterKey, String.valueOf(true));
         searchData();
         filters = new HashMap();
         filters = queries.entrySet().stream()
                 .filter(e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey()))
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())); 
     }
 
     /**
@@ -295,6 +317,7 @@ public class SearchBean implements Serializable {
     public void searchCollectionWithFilter(CollectionData collection) {
         log.info("searchCollectionWithFilter: {}", collection.getCode());
         queries.put(CommonText.getInstance().getCollectionCodeKey(), collection.getCode());
+     
         searchData();
         filters = new HashMap();
         filters = queries.entrySet().stream()
@@ -310,6 +333,7 @@ public class SearchBean implements Serializable {
         clearSelectedData();
 
         String searchText = getSearchText();
+    
         statistic.resetData(searchText, queries);
         if (resultHeader.isMapView()) {
             geo.setMapView(searchText, queries);
@@ -402,6 +426,7 @@ public class SearchBean implements Serializable {
             case "textsearch":
             case "auth":
             case "clt":
+            case "tx":    
             case "cm":
                 return solr.autoComleteMultivalue(data);
             case "ftx":
@@ -631,7 +656,7 @@ public class SearchBean implements Serializable {
     }
 
     public void showImageView() {
-        log.info("showImageView");
+        log.info("showImageView " );
         clearSelectedData();
         galleria.setImageView(statistic.getFilteredTotalImages(),
                 SearchHelper.getInstance().buildFullSearchText(freeText), queries);
@@ -729,9 +754,9 @@ public class SearchBean implements Serializable {
         queryDataList.stream().map((bean) -> {
             if (queryDataList.indexOf(bean) > 0) {
                 if (bean.isAppendValue()) {
-                    queryTextSb.append(" ");
+                    queryTextSb.append(emptySpace);
                     queryTextSb.append(bean.getOperation());
-                    queryTextSb.append(" ");
+                    queryTextSb.append(emptySpace);
                 }
             }
             return bean;
@@ -763,13 +788,13 @@ public class SearchBean implements Serializable {
                 Date endDate = data.getToDate();
                 sb.append(CommonText.getInstance().getFromDate(isSwedish));
                 if (startDate == null) {
-                    sb.append("*");
+                    sb.append(wildCard);
                 } else {
                     sb.append(DateHelper.getInstance().dateToString(startDate));
                 }
                 sb.append(CommonText.getInstance().getToDate(isSwedish));
                 if (endDate == null) {
-                    sb.append("*");
+                    sb.append(wildCard);
                 } else {
                     sb.append(DateHelper.getInstance().dateToString(data.getToDate()));
                 }
@@ -920,16 +945,35 @@ public class SearchBean implements Serializable {
     public void closeMap(SolrData data) {
         data.setDisplayMap(false);
     }
+    
+    public void displayKboImages(SolrData data) {
+        log.info("displayKboImages : {}", data);
+        
+        List<String> urls = Arrays.asList(data.getAssociatedMedia());
+ 
+        if (urls != null) {
+            data.setImageExist(true);
+            data.setDisplayImage(true);
+            data.setKboImages(properties.getMorphbankThumbPath());
+        }
+    }
 
     public void displayImages(SolrData data) {
         log.info("displayImages : {}", data);
 
-        String mbid = data.getMorphbankId();
-        log.info("mbid : {}", mbid);
-        if (mbid != null) {
+        if(data.isCommonCollection()) {
+            String mbid = data.getMorphbankId();
+            log.info("mbid : {}", mbid);
+            if (mbid != null) {
+                data.setImageExist(true);
+                data.setDisplayImage(true);
+                data.setImages(properties.getMorphbankThumbPath());
+            }
+        } else if(data.isFungiCollection() || data.isVasclarPlantsCollection()) {
+            log.info("isFungi dataset");
             data.setImageExist(true);
             data.setDisplayImage(true);
-            data.setImages(properties.getMorphbankThumbPath());
+            data.setKboImages(properties.getMorphbankThumbPath());
         }
     }
 
@@ -978,20 +1022,128 @@ public class SearchBean implements Serializable {
         }
     }
      
-    public String getDefaultText() {
-        if(!navigator.isIsCollectionSearch()) {
-            return CommonText.getInstance().getSearchDefaultText(isSwedish);
-        } else {
-            if(selectedCollection == null) {
-                return CommonText.getInstance().getSearchDefaultText(isSwedish);
-            }
-            StringBuilder textBuilder = new StringBuilder();
-            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText1(isSwedish));
-            textBuilder.append(selectedCollection.getName());
-            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText2(isSwedish));
-            return textBuilder.toString().trim();
-        }  
+    public String getSearchHeader() {
+        log.info("getSearchHeader : {}", selectionCollections);
+        if(navigator.isIsCollectionSearch()) {
+            isAllCollections = false;
+            if(pbDataset != null) {
+                if(pbDataset.equals(vertebrates)) {
+                    return isSwedish ? 
+                        CommonText.getInstance().getSearchTextSvMap(pzVert) :
+                        CommonText.getInstance().getSearchTextEnMap(pzVert); 
+                }
+                return isSwedish ? 
+                        CommonText.getInstance().getSearchTextSvMap(pzInvert) :
+                        CommonText.getInstance().getSearchTextEnMap(pzInvert); 
+            } 
+            if(selectedCollection != null) {
+                return isSwedish ? 
+                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
+                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
+            } else if(selectionCollections != null) {
+                return isSwedish ? 
+                    CommonText.getInstance().getSearchTextSvMap(zoo) :
+                    CommonText.getInstance().getSearchTextEnMap(zoo); 
+            } 
+        }
+        isAllCollections = true;
+        return CommonText.getInstance().getSearchInAllCollections(isSwedish);
     }
+
+    public String getDefaultText() { 
+        if(navigator.isIsCollectionSearch()) { 
+            if(pbDataset != null) {
+                if(pbDataset.equals(vertebrates)) {
+                    return isSwedish ? 
+                        CommonText.getInstance().getSearchTextSvMap(pzVert) :
+                        CommonText.getInstance().getSearchTextEnMap(pzVert); 
+                }
+                return isSwedish ? 
+                        CommonText.getInstance().getSearchTextSvMap(pzInvert) :
+                        CommonText.getInstance().getSearchTextEnMap(pzInvert); 
+            } 
+            if(selectedCollection != null) {
+                return isSwedish ? 
+                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
+                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
+            } else if(selectionCollections != null) {
+                return isSwedish ? 
+                    CommonText.getInstance().getSearchTextSvMap(zoo) :
+                    CommonText.getInstance().getSearchTextEnMap(zoo); 
+            } 
+        } 
+        return CommonText.getInstance().getSearchDefaultText(isSwedish);
+        
+        
+        
+//        if (navigator.isIsCollectionSearch()) { 
+//            StringBuilder textBuilder = new StringBuilder();
+//            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText1(isSwedish));
+//            if(pbDataset != null) {
+//                if(pbDataset.equals(vertebrates)) {
+//                    textBuilder.append(isSwedish ? CommonText.getInstance().getCollectionSwedishName(selectedCollection.getName()) : selectedCollection.getName());
+//                }
+//            }
+//            
+//            
+//            
+//            
+//            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText1(isSwedish));
+//            textBuilder.append(isSwedish ? CommonText.getInstance().getCollectionSwedishName(selectedCollection.getName()) : selectedCollection.getName());
+//            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText2(isSwedish));
+//            return textBuilder.toString().trim(); 
+//        }
+//        return CommonText.getInstance().getSearchDefaultText(isSwedish);
+
+        
+//        if(navigator.isIsCollectionSearch()) {
+//            if(pbDataset != null) {
+//                return pbDataset.equals(vertebrates) ? 
+//                        CommonText.getInstance().getSearchTextSvMap(pzInvert) :
+//                        CommonText.getInstance().getSearchTextEnMap(pzInvert); 
+//            }
+//            if(selectedCollection != null) { 
+//                return isSwedish ? 
+//                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
+//                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
+//            }
+//        }
+//        return CommonText.getInstance().getSearchDefaultText(isSwedish);
+        
+        
+//        if(!navigator.isIsCollectionSearch()) {
+//            return CommonText.getInstance().getSearchDefaultText(isSwedish);
+//        } else {
+//            if(statistic.getFilteredCollections().size() == 1) { 
+//                if(pbDataset != null && pbDataset.equals(vertebrates)) {
+//                    return isSwedish ? 
+//                        CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
+//                        CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
+//                }
+//                return isSwedish ? 
+//                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
+//                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
+//            } else {
+//                if(statistic.getFilteredCollections().size() == 2) {
+//                    return isSwedish ? 
+//                           CommonText.getInstance().getSearchTextSvMap(paleontology) :
+//                           CommonText.getInstance().getSearchTextEnMap(paleontology); 
+//                }
+//                return CommonText.getInstance().getSearchDefaultText(isSwedish);
+//            }
+            
+            
+//            StringBuilder textBuilder = new StringBuilder();
+//            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText1(isSwedish));
+//            textBuilder.append(isSwedish ? selectedCollection.getSwedishName() : selectedCollection.getName());
+//            textBuilder.append(CommonText.getInstance().getSearchCollectionDefaultText2(isSwedish));
+//            return textBuilder.toString().trim();
+      
+    }
+
+    public boolean isIsAllCollections() {
+        return isAllCollections;
+    } 
 
     public String getFreeText() {
         return freeText;
@@ -1064,7 +1216,8 @@ public class SearchBean implements Serializable {
     }
 
     public String getSelectedCollectionName() {
-        return selectedCollection == null ? "" : selectedCollection.getShortName();
+        return selectedCollection == null ? "" : isSwedish ? 
+                selectedCollection.getSwedishName() : selectedCollection.getShortName();
     }
     
     public String getSelectedCollectionFullName() {
@@ -1085,7 +1238,7 @@ public class SearchBean implements Serializable {
                     .buildResultHeaderSummaryForMapView(statistic.getFilteredTotalMaps(), isSwedish);
         }
         if (resultHeader.isImageView()) {
-            return HelpClass.getInstance().buildEmptyString();
+            return emptySpace;
         }
         int total = isSelectedOne ? 1 : selectedRecords.size();
         return HelpClass.getInstance().buildResultHeaderSummaryForResultView(total, isSwedish);

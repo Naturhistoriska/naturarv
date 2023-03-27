@@ -10,7 +10,7 @@
           <h:form id="homeForm" prependId="false">    
             <div class="ui-g" style="width: 980px;">
               <div class="ui-g-9"> 
-                <div class="ui-g-12"  > 
+                <div class="ui-g-12"  style="padding-top: 20px;"> 
                   <h:outputText id="welcomeText1" value="#{msg.welcome1}" styleClass="welcomeheader" /> 
                 </div> 
                 <div class="ui-g-12" >
@@ -19,14 +19,8 @@
                 <div class="ui-g-12" >   
                   <div class="ui-g-7">
                     <div class="ui-g-12 baggimg" > 
-                      <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
-                                      title="3bagg" styleClass="images" width="350" height="292"  /> 
-                      <ui:remove>
-                        <p:cache region="3baggcache" key="3baggimg">
-                          <h:graphicImage library="images" name="3bagg_rising.png" alt="3bagg" 
-                                          title="3bagg" styleClass="images" width="350" height="292"  /> 
-                        </p:cache>  
-                      </ui:remove>
+                      <h:graphicImage library="images" name="Fjarilar.png" alt="3bagg" 
+                                      title="3bagg" styleClass="images" width="300" height="220"  />  
                     </div>   
                     <div class="ui-g-12 baggimgtext" >
                       <h:outputText value="#{msg.photo3bagg}"    /> 
@@ -34,15 +28,7 @@
                   </div>
 
                   <div class="ui-g-5" style="padding-top: 5em; padding-right: 2em; ">
-                    <h:outputText value="#{msg.welcomedescription}" /> 
-                    <div class="ui-g-12" >
-                      <div class="ui-g-4" /> 
-                      <div class="ui-g-8 readMoreLink" >  
-                        <p:commandLink actionListener="#{navigate.gotoAbout()}" 
-                                       value="#{msg.readmore}" styleClass="link"
-                                       process="@this" global="false"   /> 
-                      </div>
-                    </div> 
+                    <h:outputText value="#{msg.welcomedescription}" />  
                   </div> 
                 </div> 
                 <div class="ui-g-12">
@@ -122,7 +108,7 @@
                                  process="@this"  >  
                     <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
                                  cellpadding="0" cellspacing="0" styleClass="statistic"> 
-                      <h:outputText value="#{collection.shortName}" />  
+                      <h:outputText value="#{languages.swedish ? collection.swedishName : collection.shortName}" />  
                       <h:outputText value="#{collection.total}" />
                     </h:panelGrid>  
                   </p:commandLink>   
@@ -142,6 +128,10 @@
                   <h:outputText value="#{msg.gibf}" /> 
                 </h:outputLink>
                 <h:outputText value="#{msg.gibfdesc}" style="font-size: 10px;" />  
+                
+                <h:outputLink value="https://herbarium.nrm.se/" target="_blank" > 
+                  <h:outputText value="#{msg.herbarium}" /> 
+                </h:outputLink>
               </h:panelGrid> 
             </div> 
           </h:form> 

@@ -41,6 +41,8 @@ public class SolrChartService implements Serializable {
     private final String invertebrates = "invertebrates";
 
     private Map<String, Integer> collectionMonthsDataMap;
+    
+    private BucketBasedJsonFacet monthBucket;
 
     @Inject
     @Solr
@@ -197,8 +199,7 @@ public class SolrChartService implements Serializable {
      *
      * @return Map<String, Integer>
      */
-    public Map<String, Integer> getLastYearRegistedData(String searchDateRange,
-            String collectionCode) {
+    public Map<String, Integer> getLastYearRegistedData(String searchDateRange, String collectionCode) {
         log.info("getLastYearRegistedData : {} -- {}", searchDateRange, collectionCode);
 
         collectionMonthsDataMap = new HashMap<>();
@@ -221,10 +222,10 @@ public class SolrChartService implements Serializable {
             return collectionMonthsDataMap;
         }
 
-        BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
+        monthBucket = response.getJsonFacetingResponse()
                 .getBucketBasedFacets(CommonText.getInstance().getCatalogedMonth());
-        return bucket != null
-                ? bucket.getBuckets()
+        return monthBucket != null
+                ? monthBucket.getBuckets()
                         .stream()
                         .collect(Collectors.toMap(
                                 b -> (String) b.getVal(),

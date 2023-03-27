@@ -24,8 +24,11 @@ public class F5Detector implements Serializable {
     private boolean isCollectionSearch;
     private final String pz = "pz";
     private final String qryDataset = "dataset";
-    private final String paleobiology = "paleobiology";
-    private final String pCollection = "p*";
+    private final String paleobiology = "paleobiology"; 
+    private final String pCollection = "p*"; 
+    private final String zoo = "zoo";
+    private final String zooCollection = "(e* 163840)";
+    
     private final String all = "all";
     private final String allCollection = "*";
     
@@ -56,6 +59,9 @@ public class F5Detector implements Serializable {
                         break;
                     case paleobiology:
                         collection = pCollection;
+                        break; 
+                    case zoo:
+                        collection = zooCollection;
                         break;
                     case all:
                         collection = allCollection;
@@ -68,8 +74,7 @@ public class F5Detector implements Serializable {
             }
         } else if(uri.equals(collectionUri)) {
             isCollectionSearch = true;
-        }  
-        log.info("url : {} -- {}", collection, isCollectionSearch); 
+        }   
     }
 
     public boolean isIsCollectionSearch() {

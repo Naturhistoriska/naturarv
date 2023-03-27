@@ -2,96 +2,96 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui" > 
-  <body>
-    <ui:composition  template="/templates/masterLayout.xhtml">     
-      <ui:define name="content"  >    
-        <h:panelGroup id="mainPanel"  layout="block" styleClass="main" >   
-          <h:form id="aboutForm"> 
+    <body>
+        <ui:composition  template="/templates/masterLayout.xhtml">     
+            <ui:define name="content"  >    
+                <h:panelGroup id="mainPanel"  layout="block" styleClass="main" >   
+                    <h:form id="aboutForm"> 
 
 
-            <h:panelGrid id="aboutPanel"  >
-              <h:panelGrid style="margin-left: 20px; margin-right: 200px;" > 
-                <h:outputLabel styleClass="textTitle" >
-                  #{msg.whatIsNaturarv}
-                </h:outputLabel>
-                <h:column /> 
-                <p style="font-size: 16px;">
-                  #{about.whatIsNaturarvText}
-                </p>
-                <h:column /> 
-                <h:panelGroup>
-                  #{about.whatIsNaurarvSubText} 
-                  <p:commandLink actionListener="#{navigate.gotoCollections()}" value="#{msg.ourcollections}" 
-                                 styleClass="linktext" process="@this" global="false" /> 
-                  #{msg.text1}
-                </h:panelGroup>
+                        <h:panelGrid id="aboutPanel"  >
+                            <h:panelGrid style="margin-left: 20px; margin-right: 200px;" > 
+                                <h:outputLabel styleClass="textTitle" >
+                                    #{msg.whatIsNaturarv}
+                                </h:outputLabel>
+                                <h:column /> 
+                                <p style="font-size: 16px;">
+                                    #{about.whatIsNaturarvText}
+                                </p>
+                                <h:column /> 
+                                <h:panelGroup>
+                                    #{about.whatIsNaurarvSubText} 
+                                    <p:commandLink actionListener="#{navigate.gotoCollections()}" value="#{msg.ourcollections}" 
+                                                   styleClass="linktext" process="@this" global="false" /> 
+                                    #{msg.text1}
+                                </h:panelGroup>
 
 
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
-                  ${msg.nationalInfrasTructure}
-                </h:outputLabel>
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
+                                    ${msg.nationalInfrasTructure}
+                                </h:outputLabel>
 
-                <h:column /> 
+                                <h:column /> 
 
-                <h:panelGroup>
-                  #{about.partInfrastructureText} 
-                  <h:outputLink value="#{msg.dinaurl}" target="_blank" styleClass="linktext" > 
-                    <h:outputText value="dina-project.se" /> 
-                  </h:outputLink>.
-                </h:panelGroup>
+                                <h:panelGroup>
+                                    #{about.partInfrastructureText} 
+                                    <h:outputLink value="#{msg.dinaurl}" target="_blank" styleClass="linktext" > 
+                                        <h:outputText value="dina-project.se" /> 
+                                    </h:outputLink>.
+                                </h:panelGroup>
 
-                <h:column /> 
-                <h:panelGroup>
-                  #{about.partInfrastructureSubText}  
-                  <p:commandLink actionListener="#{navigate.gotoPartners()}" 
-                                 value="#{msg.partners}" global="false"
-                                 styleClass="linktext" process="@this" /> 
-                  ${msg.text2}
-                </h:panelGroup>
+                                <h:column /> 
+                                <h:panelGroup>
+                                    #{about.partInfrastructureSubText}  
+                                    <p:commandLink actionListener="#{navigate.gotoPartners()}" 
+                                                   value="#{msg.partners}" global="false"
+                                                   styleClass="linktext" process="@this" /> 
+                                    ${msg.text2}
+                                </h:panelGroup>
 
 
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
-                  ${msg.development}
-                </h:outputLabel>
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
+                                    ${msg.development}
+                                </h:outputLabel>
 
-                <h:column /> 
-                <h:panelGroup>
-                  ${about.developmentText}
-                  <h:outputLink value="#{msg.specifyurl}" target="_blank" styleClass="linktext" > 
-                    <h:outputText value="specifysoftware.org" /> 
-                  </h:outputLink>
-                  ).
-                </h:panelGroup> 
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:column />
-                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
-                  ${msg.financialSupport}
-                </h:outputLabel> 
-                <h:column /> 
-                <p>
-                  ${about.financialSupportText}
-                </p>
-              </h:panelGrid>
+                                <h:column /> 
+                                <h:panelGroup>
+                                    ${about.developmentText}
+                                    <h:outputLink value="#{msg.specifyurl}" target="_blank" styleClass="linktext" > 
+                                        <h:outputText value="specifysoftware.org" /> 
+                                    </h:outputLink>
+                                    ).
+                                </h:panelGroup> 
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:column />
+                                <h:outputLabel style="font-size: 20px;  font-weight: bold;" >
+                                    ${msg.financialSupport}
+                                </h:outputLabel> 
+                                <h:column /> 
+                                <p>
+                                    ${about.financialSupportText}
+                                </p>
+                            </h:panelGrid>
 
-            </h:panelGrid> 
-          </h:form>  
-        </h:panelGroup>  
-      </ui:define>
-    </ui:composition>
-  </body>
+                        </h:panelGrid> 
+                    </h:form>  
+                </h:panelGroup>  
+            </ui:define>
+        </ui:composition>
+    </body>
 </html>
 
 
