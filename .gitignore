@@ -1,6 +1,9 @@
 /dina-web-portal/nb-configuration.xml
 /dina-web-portal/faces-config.NavData
+
 /dina-web-portal/src/main/resources/.DS_Store
+/dina-web-portal/src/main/webapp/.DS_Store
+
 */target/
 /dina-web-logic/target/
 /dina-web-portal_old/
@@ -10,7 +13,10 @@
 
 notes
 
+.env
 .DS_Store
+
+
 certs/*.crt
 certs/*.key
 certs/.gitkeep
