@@ -2,7 +2,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:f="http://java.sun.com/jsf/core"  
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:p="http://primefaces.org/ui"  
+      >
 
     <body>
         <ui:composition  template="/templates/masterLayout.xhtml">    
@@ -25,7 +26,7 @@
                                             </p:commandLink>  
                                             <p:commandLink actionListener="#{searchBean.showImageView()}" process="@this" 
                                                            rendered="#{!resultHeader.imageView}" 
-                                                           update=":resultsForm:resultContent">   
+                                                           update=":resultsForm:resultContent :resultsForm:imgswitchdialog">   
                                                 <h:outputText value="#{msg.imageView}"    style="font-size: 11px;"  /> 
                                             </p:commandLink>  
 
@@ -105,7 +106,7 @@
                                         <p:spacer width="8" /> 
                                         <h:outputText value="| #{msg.show}:"  />
                                         <p:spacer width="8" />  
-
+                                        
                                         <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
                                                        disabled="#{resultHeader.resultView == 'list'}" 
                                                        update=":resultsForm:resultContent" global="false" >  
@@ -276,27 +277,54 @@
                                             </h:panelGrid>
                                         </h:panelGrid> 
                                     </h:panelGrid> 
-                                </h:panelGrid>  
-
-
+                                </h:panelGrid>   
                             </h:panelGrid>
                         </h:panelGroup>
 
 
                         <!-- ************************************** image switch div ************************************* -->     
-                        <p:dialog id="imgswitchdialog" closable="true"  widgetVar="imgswitchdlg" position="top"
-                                  draggable="false" header="#{msg.imageswitcher}" > 
-                            <p:panel id="imageswitchpanel">
-                                <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
-                                            panelWidth="420" panelHeight="450"   autoPlay="false"
-                                            var="thumb"  showCaption="true"  >    
-                                    <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
-                                                    title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
-                                                    styleClass="imageswithpedding" />     
-
-                                </p:galleria>      
-                            </p:panel> 
+                        <p:dialog id="imgswitchdialog" closable="true"  
+                                  widgetVar="imgswitchdlg" position="top"
+                                  draggable="false"  
+                                  width="1200" height="600" dynamic="true" maximizable="true"> 
+                       
+                            <p:galleria id="imageGalleria" value="#{switch.jpgs}" var="thumb"  
+                                        style="overflow: scroll !important;" 
+                                        panelWidth="1180" panelHeight="550" 
+                                        autoPlay="false" showCaption="true">
+                                <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
+                                                title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
+                                                styleClass="#{switch.imageCss(thumb)}" />   
+                            </p:galleria>
+                            
+                            
                         </p:dialog>  
+                        
+                         
+                        <ui:remove>
+                            
+                             
+                            
+                                    <p:contentFlow value="#{switch.jpgs}" var="thumb" id="imageGalleria" >
+                                <p:graphicImage value="#{thumb}"  styleClass="content" />
+                                <div class="caption">#{thumb}</div>
+                            </p:contentFlow>
+                            
+                                   <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
+                                        panelWidth="850" panelHeight="540"   autoPlay="false"
+                                        var="thumb"  showCaption="true"   >    
+                                 
+                                <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
+                                                title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
+                                                styleClass="imageswithpedding" />   
+                                
+                                
+                                 <f:facet name="thumbnail">
+                                    <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" style="width: 100%; display: block" />
+                                </f:facet>
+                            </p:galleria>  
+                        </ui:remove>
+                         
                     </h:form> 
                 </h:panelGroup> 
             </ui:define>

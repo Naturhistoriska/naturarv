@@ -23,12 +23,11 @@
                     </p:commandLink>  
                 </h:panelGroup> 
 
-                <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
-                <p:commandLink rendered="#{record.morphbankId != null}"  
-                               action="#{searchBean.displayImages(record)}" update="imagePanel"  >
-                    <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
-                                    title="#{msg.showimages}" alt="#{msg.showimages}" />
-                </p:commandLink>   
+                <p:spacer width="5" height="5" rendered="#{!record.image}"  />  
+                <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                                styleClass="images" rendered="#{record.image}"
+                                title="#{msg.showimages}" alt="#{msg.showimages}" />
+         
 
                 <h:outputText value="#{msg.catalogeddate}:"  />     
                 <h:outputText value="#{record.catalogedDate}"  >
@@ -146,22 +145,37 @@
 
             <p:spacer width="5" height="5" />
             <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="imagePanel" >   
+                <ui:repeat value="#{record.thumbs}" var="thumb">     
+                    <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                    update="templet"  global="true"   >
+                        <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                        title="#{record.txFullName}/#{record.catalogNumber}" 
+                                        alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                    </p:commandLink>   
+                </ui:repeat>  
 
-                <h:panelGrid  rendered="#{record.displayImage}"> 
-                    <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
-                        <f:ajax render="imagePanel"/>
-                    </h:commandLink>   
+                
+         
 
-                    <ui:repeat value="#{record.thumbs}" var="thumb">     
-                        <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                        onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
-                            <p:graphicImage value="#{thumb}" 
-                                            title="#{record.txFullName}/#{record.catalogNumber}" 
-                                            alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                        </p:commandLink>  
+                <ui:remove>
+                    <h:panelGrid  rendered="#{record.displayImage}"> 
+             
 
-                    </ui:repeat>   
-                </h:panelGrid> 
+                    <ui:remove>
+                        <ui:repeat value="#{record.thumbs}" var="thumb">     
+                            <p:commandLink  action="#{switch.imageSwitch(record)}" 
+                                            onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
+                                <p:graphicImage value="#{thumb}" 
+                                                title="#{record.txFullName}/#{record.catalogNumber}" 
+                                                alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                            </p:commandLink>   
+                        </ui:repeat> 
+                    </ui:remove>
+                     
+                </h:panelGrid>
+                </ui:remove>
+                    
+                 
             </h:panelGrid> 
 
             <p:spacer width="5" height="5" />

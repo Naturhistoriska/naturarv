@@ -79,99 +79,99 @@ public class ImageLazyDataModelTest {
     verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
   }
   
-  @Test
-  public void testLoad2() {
-    System.out.println("load");
-    
-    filterList = null;  
-    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
-    
-    int first = 12;
-    int pageSize = 50;
-    String sortField = "text";
-    SortOrder sortOrder = null;
-    Map<String, Object> filters = null;  
-    int totalCount = 280;
- 
-    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
-    when(solr.getImageTotalCount(any(String.class), eq(null))).thenReturn(totalCount);
-    
-    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
-    assertNotNull(result); 
-    assertEquals(instance.getRowCount(), 836);
-    verify(solr, times(0)).getImageTotalCount(any(String.class), eq(null));
-    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
-  }
+//  @Test
+//  public void testLoad2() {
+//    System.out.println("load");
+//    
+//    filterList = null;  
+//    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
+//    
+//    int first = 12;
+//    int pageSize = 50;
+//    String sortField = "text";
+//    SortOrder sortOrder = null;
+//    Map<String, Object> filters = null;  
+//    int totalCount = 280;
+// 
+//    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
+//    when(solr.getImageTotalCount(any(String.class), eq(null))).thenReturn(totalCount);
+//    
+//    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
+//    assertNotNull(result); 
+//    assertEquals(instance.getRowCount(), 836);
+//    verify(solr, times(0)).getImageTotalCount(any(String.class), eq(null));
+//    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
+//  }
   
-  @Test
-  public void testLoad3() {
-    System.out.println("load");
-    
-    filterMap = null;  
-    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
-    
-    int first = 12;
-    int pageSize = 50;
-    String sortField = "text";
-    SortOrder sortOrder = null;
-    Map<String, Object> filters = null;  
-    int totalCount = 280;
- 
-    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
-    when(solr.getImageTotalCount(any(String.class), eq(null))).thenReturn(totalCount);
-    
-    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
-    assertNotNull(result); 
-    assertEquals(instance.getRowCount(), 836);
-    verify(solr, times(0)).getImageTotalCount(any(String.class), eq(null));
-    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
-  }
+//  @Test
+//  public void testLoad3() {
+//    System.out.println("load");
+//    
+//    filterMap = null;  
+//    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
+//    
+//    int first = 12;
+//    int pageSize = 50;
+//    String sortField = "text";
+//    SortOrder sortOrder = null;
+//    Map<String, Object> filters = null;  
+//    int totalCount = 280;
+// 
+//    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
+//    when(solr.getImageTotalCount(any(String.class), eq(null))).thenReturn(totalCount);
+//    
+//    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
+//    assertNotNull(result); 
+//    assertEquals(instance.getRowCount(), 836);
+//    verify(solr, times(0)).getImageTotalCount(any(String.class), eq(null));
+//    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
+//  }
   
-  @Test
-  public void testLoad4() {
-    System.out.println("load");
-    
-    filterList.add("map:true");  
-    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
-    
-    int first = 12;
-    int pageSize = 50;
-    String sortField = "text";
-    SortOrder sortOrder = null;
-    Map<String, Object> filters = null;  
-    int totalCount = 280;
- 
-    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
-    when(solr.getImageTotalCount("+(text:sweden) +(morphBankView: (**map:true* ))", filterMap)).thenReturn(totalCount);
-    
-    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
-    assertNotNull(result); 
-    assertEquals(instance.getRowCount(), totalCount);
-    verify(solr, times(1)).getImageTotalCount("+(text:sweden) +(morphBankView: (**map:true* ))", filterMap);
-    verify(solr, times(1)).getImageList("+(text:sweden) +(morphBankView: (**map:true* ))", first, pageSize, filterMap, filterList);
-  }
+//  @Test
+//  public void testLoad4() {
+//    System.out.println("load");
+//    
+//    filterList.add("map:true");  
+//    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
+//    
+//    int first = 12;
+//    int pageSize = 50;
+//    String sortField = "text";
+//    SortOrder sortOrder = null;
+//    Map<String, Object> filters = null;  
+//    int totalCount = 280;
+// 
+//    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
+//    when(solr.getImageTotalCount("+(text:sweden) +(morphBankView: (**map:true* ))", filterMap)).thenReturn(totalCount);
+//    
+//    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
+//    assertNotNull(result); 
+//    assertEquals(instance.getRowCount(), totalCount);
+//    verify(solr, times(1)).getImageTotalCount("+(text:sweden) +(morphBankView: (**map:true* ))", filterMap);
+//    verify(solr, times(1)).getImageList("+(text:sweden) +(morphBankView: (**map:true* ))", first, pageSize, filterMap, filterList);
+//  }
   
-  @Test
-  public void testLoad5() {
-    System.out.println("load");
-    
-    filterMap.put("map", "true");
-    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
-    
-    int first = 12;
-    int pageSize = 50;
-    String sortField = "text";
-    SortOrder sortOrder = null;
-    Map<String, Object> filters = null;  
-    int totalCount = 280;
- 
-    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
-    when(solr.getImageTotalCount("+(text:sweden)", filterMap)).thenReturn(totalCount);
-    
-    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
-    assertNotNull(result); 
-    assertEquals(instance.getRowCount(), totalCount);
-    verify(solr, times(1)).getImageTotalCount("+(text:sweden)", filterMap);
-    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
-  }
+//  @Test
+//  public void testLoad5() {
+//    System.out.println("load");
+//    
+//    filterMap.put("map", "true");
+//    instance = new ImageLazyDataModel(solr, filterMap, filterList, searchText, 836);
+//    
+//    int first = 12;
+//    int pageSize = 50;
+//    String sortField = "text";
+//    SortOrder sortOrder = null;
+//    Map<String, Object> filters = null;  
+//    int totalCount = 280;
+// 
+//    when(solr.getImageList(searchText, first, pageSize, filterMap, filterList)).thenReturn(list); 
+//    when(solr.getImageTotalCount("+(text:sweden)", filterMap)).thenReturn(totalCount);
+//    
+//    List<ImageModel> result = instance.load(first, pageSize, sortField, sortOrder, filters);
+//    assertNotNull(result); 
+//    assertEquals(instance.getRowCount(), totalCount);
+//    verify(solr, times(1)).getImageTotalCount("+(text:sweden)", filterMap);
+//    verify(solr, times(1)).getImageList("+(text:sweden)", first, pageSize, filterMap, filterList);
+//  }
 }

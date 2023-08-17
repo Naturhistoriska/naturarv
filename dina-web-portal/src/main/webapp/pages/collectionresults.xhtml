@@ -271,17 +271,35 @@
 
                         <!-- ************************************** image switch div ************************************* -->     
                         <p:dialog id="imgswitchdialog" closable="true"  widgetVar="imgswitchdlg" position="top"
-                                  draggable="false" header="#{msg.imageswitcher}" > 
-                            <p:panel id="imageswitchpanel">
-                                <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
-                                            panelWidth="420" panelHeight="450"   autoPlay="false"
-                                            var="thumb"  showCaption="true" >    
-                                    <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
-                                                    title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]"  styleClass="imageswithpedding" />     
-
-                                </p:galleria>      
-                            </p:panel> 
+                                  draggable="false" header="#{msg.imageswitcher}" 
+                                  width="1000" height="600" > 
+                       
+                            <p:galleria id="imageGalleria" value="#{switch.jpgs}" var="thumb"  style="overflow: scroll !important;" 
+                                        panelWidth="950" panelHeight="540"   autoPlay="false" showCaption="true">
+                                <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
+                                                title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
+                                                styleClass="#{switch.imageCss(thumb)}" />   
+                               
+                            </p:galleria> 
                         </p:dialog>  
+                        
+                        <ui:remove>
+                                     <p:dialog id="imgswitchdialog" closable="true"  widgetVar="imgswitchdlg" position="top"
+                                  draggable="false" header="#{msg.imageswitcher}" 
+                                  width="900" height="600" > 
+                            <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
+                                        panelWidth="850" panelHeight="540"   autoPlay="false"
+                                        var="thumb"  showCaption="true"   >    
+                                 
+                                <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
+                                                title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
+                                                styleClass="imageswithpedding" />      
+                            </p:galleria>   
+                        </p:dialog>  
+                        </ui:remove>
+                        
+                        
+                          
                     </h:form> 
                 </h:panelGroup> 
             </ui:define>

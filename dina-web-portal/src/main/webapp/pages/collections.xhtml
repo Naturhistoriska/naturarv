@@ -3,34 +3,34 @@
       xmlns:h="http://java.sun.com/jsf/html"   
       xmlns:p="http://primefaces.org/ui"  >
 
-  <body>
-    <ui:composition  template="/templates/masterLayout.xhtml">    
+    <body>
+        <ui:composition  template="/templates/masterLayout.xhtml">    
 
-      <ui:define name="content"  >    
-        <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
-          <h:form id="collectionForm" prependId="false">  
-            <p:accordionPanel value="#{collections.collections}" 
-                              activeIndex="#{collections.activeIndex}" 
-                              var="collection" styleClass="accordingpanel" 
-                              dynamic="true"  cache="true"   >    
+            <ui:define name="content"  >    
+                <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  > 
+                    <h:form id="collectionForm" prependId="false">  
+                        <p:accordionPanel value="#{collections.collections}" 
+                                          activeIndex="#{collections.activeIndex}" 
+                                          var="collection" styleClass="accordingpanel" 
+                                          dynamic="true"  cache="true"   >    
 
-              <p:ajax event="tabChange" listener="#{collections.onTabChange}" global="false"  />
-              <p:ajax event="tabClose" listener="#{collections.onTabClose}" global="false"  />
-              <p:tab title="#{languages.swedish ? collection.swedishName : collection.name}"  >    
-                <p:chart type="bar" 
-                         model="#{chart.getCollectionMonthChart(collection.code)}" 
-                         styleClass="collectionChart" />  
-                <p:spacer width="20" height="20" />  
-                <p:chart type="bar" 
-                         model="#{chart.getCollectionYearChart(collection.code)}" 
-                         styleClass="collectionChart" />  
-              </p:tab>   
-            </p:accordionPanel>   
-          </h:form>
+                            <p:ajax event="tabChange" listener="#{collections.onTabChange}" global="false"  />
+                            <p:ajax event="tabClose" listener="#{collections.onTabClose}" global="false"  />
+                            <p:tab title="#{languages.swedish ? collection.swedishName : collection.name}"  >    
+                                <p:chart type="bar" 
+                                         model="#{chart.getCollectionMonthChart(collection.code)}" 
+                                         styleClass="collectionChart" />  
+                                <p:spacer width="20" height="20" />  
+                                <p:chart type="bar" 
+                                         model="#{chart.getCollectionYearChart(collection.code)}" 
+                                         styleClass="collectionChart" />  
+                            </p:tab>   
+                        </p:accordionPanel>   
+                    </h:form>
 
-        </h:panelGroup> 
-      </ui:define>
-    </ui:composition>
-  </body>
+                </h:panelGroup> 
+            </ui:define>
+        </ui:composition>
+    </body>
 </html>
 

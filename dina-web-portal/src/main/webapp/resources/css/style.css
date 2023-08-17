@@ -641,6 +641,21 @@ a:hover {
     padding: 5px;
 }
 
+.largeFboImage {
+   border: none;
+   padding: 5px; 
+   /*width: 100%;*/
+   height: 95% !important;
+   margin: auto;
+}
+
+.largeKboImage {
+   border: none;
+   padding: 5px; 
+   width: 98%; 
+   margin: auto;
+}
+
 .imageCamera {
     border: none;
     padding-top: 5px;
@@ -813,6 +828,45 @@ noheader.ui-datatable .ui-paginator {
     width: 400px !important;
 }
 
+ .ui-panel-images {
+    width: 100%;
+    height: 100%;
+}
+
+.ui-galleria-panel {
+    width: 100%;
+    height: 100%;
+}
+
+.galleriaViewPanel ul {
+    width: 100%;
+    height: 500px;
+    overflow: scroll !important;
+}
+
+/*.ui-panel-images {
+    width: 100%;
+    height: 500px;
+    overflow: scroll !important;
+}*/
+
+/*#galleriaViewPanel.ui-galleria-panel-wrapper {
+    height: 500px;
+    overflow: scroll !important;
+}*/
+
+
+
+/*.ui-galleria-panel-wrapper .ui-galleria-panel {
+    height: 500px;
+    overflow: scroll !important;
+}*/
+
+/*.ui-galleria-panel {
+    width: 100%; 
+    overflow: scroll !important;
+}*/
+
 /*test leaflet map*/
 #clusteringMap {
     height: 180px;
@@ -821,3 +875,4 @@ noheader.ui-datatable .ui-paginator {
 .leaflet-popup-content-wrapper .leaflet-popup-content {
     white-space: pre-line;
 }
+ 

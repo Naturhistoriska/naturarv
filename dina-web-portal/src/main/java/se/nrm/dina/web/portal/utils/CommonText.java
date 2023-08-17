@@ -146,7 +146,7 @@ public class CommonText {
     private static final String LOCATIONS = "locations";
     private static final String COORDINATE = "coordinate";
     private static final String CATALOG_NUMBER = "catalogNumber";
-    private static final String cnKey = "cn:";
+    private final String cnKey = "cn:";
     private final String catalogedDate = "catalogedDate";
     private static final String CREATED_DATE = "createdDate";
     private final String imageView = "morphBankView";
@@ -285,7 +285,9 @@ public class CommonText {
         COLLECTION_NAME_MAP.put("Swedish Malaise Trap Project (SMTP) Species Lists", "	Swedish Malaise Tra...");
         
         SEARCH_TEXT_SV_MAP.put("zoo", "Sök i våra zoologiska samlingar");
-        SEARCH_TEXT_SV_MAP.put("Paleontology", "Sök i våra paleontologiska samlingar");
+        SEARCH_TEXT_SV_MAP.put("botany", "Sök i våra botaniska samlingar");
+        SEARCH_TEXT_SV_MAP.put("vertebrate", "Sök i våra ryggradsdjur samlingar");
+        SEARCH_TEXT_SV_MAP.put("paleontology", "Sök i våra paleontologiska samlingar");
         SEARCH_TEXT_SV_MAP.put("PzVert", "Sök i vår samling av fossila ryggradsdjur");
         SEARCH_TEXT_SV_MAP.put("PzInvert", "Sök i vår samling av fossila ryggradslösa djur");
         SEARCH_TEXT_SV_MAP.put("Paleozoology", "Sök i våra paleozoologiska samlingar");
@@ -303,12 +305,14 @@ public class CommonText {
         SEARCH_TEXT_SV_MAP.put("Algae", "Sök i vår samling av alger"); 
         SEARCH_TEXT_SV_MAP.put("Vascular Plants", "Sök i vår samling av kärlväxter"); 
         SEARCH_TEXT_SV_MAP.put("Fish", "Sök i vår samling av fisk"); 
-        SEARCH_TEXT_EN_MAP.put("Mammals", "Sök i vår samling av däggdjur"); 
+        SEARCH_TEXT_SV_MAP.put("Mammals", "Sök i vår samling av däggdjur"); 
         SEARCH_TEXT_SV_MAP.put("Amphibians and reptiles", "Sök i våra Grod- och kräldjur samlingar"); 
         
         
         SEARCH_TEXT_EN_MAP.put("zoo", "Search in our zoological collections");
-        SEARCH_TEXT_EN_MAP.put("Paleontology", "Search in our paleontological collections");
+        SEARCH_TEXT_EN_MAP.put("botany", "Search in our botanical collections");
+        SEARCH_TEXT_EN_MAP.put("vertebrate", "Search in our vertebrate collections");
+        SEARCH_TEXT_EN_MAP.put("paleontology", "Search in our paleontological collections");
         SEARCH_TEXT_EN_MAP.put("PzVert", "Search in our vertebrate fossil collection");
         SEARCH_TEXT_EN_MAP.put("PzInvert", "Search in our invertebrate fossil collection");
         SEARCH_TEXT_EN_MAP.put("Paleozoology", "Search in our paleozoology collections");

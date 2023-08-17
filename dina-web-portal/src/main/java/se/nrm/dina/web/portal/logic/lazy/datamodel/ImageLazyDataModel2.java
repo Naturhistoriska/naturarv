@@ -1,0 +1,62 @@
+package se.nrm.dina.web.portal.logic.lazy.datamodel;
+ 
+import java.util.List;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import se.nrm.dina.web.portal.model.ImageModel;
+import se.nrm.dina.web.portal.solr.SolrImageService;
+import se.nrm.dina.web.portal.utils.SearchHelper;
+
+/**
+ *
+ * @author idali
+ */
+@Slf4j
+public class ImageLazyDataModel2 extends LazyDataModel<ImageModel> {
+    
+    
+    private final SolrImageService solr; 
+    private final String searchText;
+    private final Map<String, String> filterMap;
+    private final List<String> filterList; 
+    private String searchImageQueryText;
+    
+    private int totalCount;
+    
+    public ImageLazyDataModel2(SolrImageService solr, Map<String, String> filterMap, 
+                            List<String> filterList, String searchText, int totalCount) { 
+        log.info("ImageLazyDataModel: {} -- {}", filterMap, filterList + " -- " + searchText); 
+        this.solr = solr;
+        this.searchText = searchText;
+        this.filterMap = filterMap;
+        this.filterList = filterList;
+        this.setRowCount(totalCount); 
+        searchImageQueryText = SearchHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+        log.info("searchImageQueryText : {}", searchImageQueryText);
+        
+        this.totalCount = totalCount;
+    }
+
+//    @Override
+    public int count(Map<String, FilterMeta> map) {
+        log.info("count : {}", map.toString());
+        return 50;
+    }
+
+//    @Override
+    public List<ImageModel> load(int first, int pageSize, Map<String, SortMeta> map, Map<String, FilterMeta> map1) {
+        log.info("filterMap: {} -- {}", filterList, searchText + " --- " + filterMap );
+      
+        searchImageQueryText = SearchHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+        if(filterList != null && !filterList.isEmpty() || filterMap != null && !filterMap.isEmpty()) { 
+          this.setRowCount(solr.getImageTotalCount(searchImageQueryText, filterMap)); 
+        } 
+        return solr.getImageList(searchImageQueryText, first, pageSize, filterMap, filterList); 
+    }
+     
+    
+    
+}

@@ -24,6 +24,8 @@ public class InitialPropertiesTest {
   private final String supportMail = "supportMail";
   private final String teamsupportMail = "teamsupportMail";
   private final String supportPhone = "supportPhone";
+  private final String username = "user";
+  private final String password = "password";
   
   public InitialPropertiesTest() {
   }
@@ -33,7 +35,7 @@ public class InitialPropertiesTest {
     instance1 = new InitialProperties();
     instance2 = new InitialProperties(solrPath, solrCore, morphbankThumbPath, mapKey, 
             captchaPublicKey, captchaPrivateKey, mailHost, mailHostName, supportMail, 
-            teamsupportMail, supportPhone);
+            teamsupportMail, supportPhone, username, password);
   }
   
   @After
@@ -80,7 +82,7 @@ public class InitialPropertiesTest {
     System.out.println("getSolrURL");  
     instance2 = new InitialProperties(solrPath, null, morphbankThumbPath, mapKey, 
             captchaPublicKey, captchaPrivateKey, mailHost, mailHostName, supportMail, 
-            teamsupportMail, supportPhone);
+            teamsupportMail, supportPhone, username, password);
     instance2.getSolrURL(); 
   }
   
@@ -89,7 +91,7 @@ public class InitialPropertiesTest {
     System.out.println("getSolrURL");  
     instance2 = new InitialProperties(null, solrCore, morphbankThumbPath, mapKey, 
             captchaPublicKey, captchaPrivateKey, mailHost, mailHostName, supportMail, 
-            teamsupportMail, supportPhone);
+            teamsupportMail, supportPhone, username, password);
     instance2.getSolrURL(); 
   }
 

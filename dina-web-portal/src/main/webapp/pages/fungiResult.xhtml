@@ -25,11 +25,18 @@
                 </h:panelGroup> 
                 
                 <p:spacer width="5" height="5" rendered="#{!record.image}"  />  
-                <p:commandLink rendered="#{record.image}"  
+                <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                                styleClass="images" rendered="#{record.image}" 
+                                title="#{msg.showimages}" alt="#{msg.showimages}" />
+                
+                <ui:remove>
+                    <p:commandLink rendered="#{record.image}"  
                                action="#{searchBean.displayImages(record)}" update="fungiImagePanel"  >
                     <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
                                     title="#{msg.showimages}" alt="#{msg.showimages}" />
-                </p:commandLink>   
+                </p:commandLink>  
+                </ui:remove>
+                 
  
                 
                 <h:outputText value="#{msg.catalogeddate}:"  />     
@@ -155,11 +162,22 @@
                 <h:outputText value="#{msg.remarks}:" />   
                 <h:outputText value="#{record.remarksString}" />  
             </h:panelGrid> 
-            
+
             <p:spacer width="5" height="5" />
             <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="fungiImagePanel" >   
+                <ui:repeat value="#{record.thumbs}" var="thumb">     
+                    <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                    update="templet"  global="true"   >
+                        <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                        title="#{record.txFullName}/#{record.catalogNumber}" 
+                                        alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                    </p:commandLink>   
+                </ui:repeat>  
 
-                <h:panelGrid  rendered="#{record.displayImage}"> 
+
+      
+                <ui:remove>
+                    <h:panelGrid  rendered="#{record.displayImage}"> 
                     <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
                         <f:ajax render="fungiImagePanel"/>
                     </h:commandLink>   
@@ -167,13 +185,15 @@
                     <ui:repeat value="#{record.thumbs}" var="thumb">     
                         <p:commandLink  action="#{switch.imageSwitch(record)}" 
                                         onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
-                            <p:graphicImage value="#{thumb}" 
+                            <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
                                             title="#{record.txFullName}/#{record.catalogNumber}" 
                                             alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
                         </p:commandLink>  
 
                     </ui:repeat>   
                 </h:panelGrid> 
+                </ui:remove>
+                
             </h:panelGrid> 
 
             <p:spacer width="5" height="5" />

@@ -1,17 +1,15 @@
 package se.nrm.dina.web.portal.controller;
- 
-import java.io.Serializable; 
+
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.json.JsonObject;
-import lombok.extern.slf4j.Slf4j; 
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils; 
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.solr.SolrImageService;
 
@@ -23,58 +21,76 @@ import se.nrm.dina.web.portal.solr.SolrImageService;
 @SessionScoped
 @Slf4j
 public class ImageSwitcher implements Serializable {
-    
+
     private final String leftBlacket = "[";
     private final String rightBlacket = "]";
-    private final String emptyString = "";
+    private final String emptyString = ""; 
+    private final String imageCss = "imageswithpedding";
+    private final String largeImageKboCss = "largeKboImage";
+    private final String largeImageFboCss = "largeFboImage";
+    private final String maxSize = "stor";
+    private final String largeSize = "large";
+  
     private String catalogNumber;
     private String scientificName;
     private String mbid;
     private List<String> thumbs;
     private List<String> jpgs;
-    
-    private String photogarphy;
-    private String url;
+    private String collection;
+    private String css;
+    private int width;
+    private int height;
+
+    private String photogarphy; 
     private List<String> associatedMedias;
-     
-    
+
     private Map<String, String> map;
-    
+
     private String imageId;
-    
-    private final String imageIdKey = "imageId"; 
-    
+
+    private final String imageIdKey = "imageId";
+ 
     private SolrData data;
-    
+
     @Inject
     private SolrImageService solr;
-    
+
     public ImageSwitcher() {
-    }    
-    
+    }
+
     public ImageSwitcher(SolrImageService solr) {
         this.solr = solr;
     }
 
     /**
      * imageSwitch
+     * @param imageId
      */
-    public void imageSwitch() {
-        log.info("imageSwitch");
-         
-        
-        map =FacesContext.getCurrentInstance()
-                .getExternalContext().getRequestParameterMap();
-        
-        log.info("map : {}", map); 
-        
-        imageId = map.get(imageIdKey);
-        log.info("imageId : {}", imageId);
-        
-        data = solr.getImagesById(imageId);        
+//    public void imageSwitch() {
+//        log.info("imageSwitch");
+//
+//        map = FacesContext.getCurrentInstance()
+//                .getExternalContext().getRequestParameterMap();
+//
+//        imageId = map.get(imageIdKey);
+//        log.info("image id : {}", imageId);
+//        data = solr.getImagesById(imageId);
+//        catalogNumber = data.getCatalogNumber();
+//        scientificName = data.getTxFullName();
+//        jpgs = data.getJpgs();
+//        this.collection = data.getCollectionId();
+//    }
+    
+    public void imageSwitch(String imageId) {
+        log.info("imageSwitch : {}", imageId);
+  
+        this.imageId = imageId;
+        data = solr.getImagesById(imageId);
         catalogNumber = data.getCatalogNumber();
         scientificName = data.getTxFullName();
-        jpgs = data.getJpgs();
+        this.jpgs = data.getJpgs();
+        this.collection = data.getCollectionId();
+        
     }
 
     /**
@@ -82,53 +98,97 @@ public class ImageSwitcher implements Serializable {
      * @param data - SolrData
      */
     public void imageSwitch(SolrData data) {
-        log.info("imageSwitch : {}", data);
-        
+//        log.info("imageSwitch : {}", data);
+
         this.data = data;
-        if(data.isCommonCollection()) {
-            this.mbid = data.getMorphbankId(); 
+        if (data.isCommonCollection()) {
+            this.mbid = data.getMorphbankId();
 //            this.thumbs = data.getThumbs();
 //            this.jpgs = data.getJpgs();  
-        }  
-        this.thumbs = data.getThumbs(); 
-        this.jpgs = data.getJpgs();  
+        }
+        this.thumbs = data.getThumbs();
+        this.jpgs = data.getJpgs();
         this.catalogNumber = data.getCatalogNumber();
-        this.scientificName = data.getTxFullName();   
+        this.scientificName = data.getTxFullName();
+        this.collection = data.getCollectionId();
     }
     
+  
+  
     public String getMbid() {
         return mbid;
     }
-    
+
     public String getCatalogNumber() {
         return catalogNumber;
     }
-    
+
     public String getScientificName() {
         return scientificName;
     }
-    
+
     public List<String> getThumbs() {
         return thumbs;
-    }    
-    
+    }
+
     public List<String> getJpgs() {
+        log.info("jpgs : {}", jpgs);
         return jpgs;
-    }    
+    }
 
     public String getPhotogarphy(String thumb) {
-        log.info("what is thumb : {} -- {}", thumb, data );
-         
-        if(data.getAssociatedMedia() != null) {
-            associatedMedias = Arrays.asList(data.getAssociatedMedia());
-            photogarphy = associatedMedias.stream()
-                .filter(a -> thumb.contains(StringUtils.substringBetween(a,leftBlacket,rightBlacket)))
-                .findFirst().get();
-            if(photogarphy != null) {
-                return StringUtils.substringBefore(photogarphy, leftBlacket).trim();
+//        log.info("what is thumb : {} -- {}", thumb, data );
+
+        if (data != null) {
+            if (data.getAssociatedMedia() != null && thumb != null) {
+                
+                associatedMedias = Arrays.asList(data.getAssociatedMedia()); 
+                photogarphy = associatedMedias.stream()
+                        .filter(a -> thumb.contains(StringUtils.substringBetween(a, leftBlacket, rightBlacket)))
+                        .findFirst().get();
+                if (photogarphy != null) {
+                    return StringUtils.substringBefore(photogarphy, leftBlacket).trim();
+                }
             }
         }
-        return emptyString;  
+
+        return emptyString;
     }
-     
+    
+    public String imageCss(String path) {
+//        log.info("imagePath : {}", path);
+        if(path.contains(maxSize)) {
+            return largeImageKboCss;
+        } else if( path.contains(largeSize)) {
+            return largeImageFboCss;
+        }
+        return imageCss;
+    }
+    
+    public int getWidth() {
+        log.info("getWidth : {}", collection);
+        return 980;
+//        if(collection.equals("vp")) {
+//            return 800;
+//        } else if(collection.endsWith("fungi") 
+//                || collection.equals("algae")
+//                || collection.equals("mosses")) {
+//            return 1000;
+//        } else {
+//            return 800;
+//        }
+    }
+    
+    public int getHeight() {
+        return 800;
+//        if(collection.equals("vp")) {
+//            return 800;
+//        } else if(collection.endsWith("fungi") 
+//                || collection.equals("algae")
+//                || collection.equals("mosses")) {
+//            return 600;
+//        } else {
+//            return 600;
+//        }
+    } 
 }

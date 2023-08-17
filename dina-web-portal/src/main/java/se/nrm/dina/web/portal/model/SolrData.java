@@ -2,6 +2,7 @@ package se.nrm.dina.web.portal.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -204,6 +205,8 @@ public class SolrData {
     private final String chordata = "Chordata";
     private final String thumb = "tumme2";
     private final String mini = "mini";
+    private final String large = "large";
+    private final String max = "stor";
      
     private List<String> thumbs;
     private List<String> jpgs;
@@ -224,6 +227,7 @@ public class SolrData {
     
     private String dataset;
     private String filterThumb;
+    private String filterJps;
     
     
     private final String collectionNameFungiEn = "Fungi/Lichens";
@@ -563,9 +567,10 @@ public class SolrData {
     public void setTypeStatus(String typeStatus) {
         this.typeStatus = typeStatus;
     }
-
+    
+    
     public String getTxFullName() {   
-        if ((isPbCollection() || isVasclarPlantsCollection()) && !StringUtils.isBlank(genus)) {
+        if (isVasclarPlantsCollection() && !StringUtils.isBlank(genus)) {
             taxonSb = new StringBuilder();
             taxonSb.append(genus);
             taxonSb.append(emptySpace);  
@@ -573,9 +578,30 @@ public class SolrData {
             return taxonSb.toString().trim();
         } else if(isFungiCollection()) {
             return species;
+        } else if(isPbCollection()) {
+            if(!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
+                taxonSb = new StringBuilder();
+                taxonSb.append(genus);
+                taxonSb.append(emptySpace);  
+                taxonSb.append(txFullName); 
+                return taxonSb.toString().trim();
+            }
         }
         return txFullName;
     }
+
+//    public String getTxFullName() {   
+//        if ((isPbCollection() || isVasclarPlantsCollection()) && !StringUtils.isBlank(genus)) {
+//            taxonSb = new StringBuilder();
+//            taxonSb.append(genus);
+//            taxonSb.append(emptySpace);  
+//            taxonSb.append(txFullName); 
+//            return taxonSb.toString().trim();
+//        } else if(isFungiCollection()) {
+//            return species;
+//        }
+//        return txFullName;
+//    }
 
     public void setTxFullName(String txFullName) {
         this.txFullName = txFullName;
@@ -871,9 +897,11 @@ public class SolrData {
         if(isVasclarPlantsCollection()) {
             dataset = fboDataset;
             filterThumb = mini;
+            filterJps = large; 
         } else {
             dataset = kboDataset;
             filterThumb = thumb;
+            filterJps = max;
         }
         if(image && associatedMedia != null) {
             Arrays.asList(associatedMedia) 
@@ -883,41 +911,104 @@ public class SolrData {
                         botImageUrl = HelpClass.getInstance() 
                                 .buildBotImagePath(StringUtils.substringBetween(s, leftBlacket, rightBlacket), 
                                         dataset,  morphbankImageUrl); 
-                         
-                        jpgs.add(botImageUrl); 
-                        
+                        if(botImageUrl.contains(filterJps)) {
+                            jpgs.add(botImageUrl); 
+                        }  
+                    
                         if(botImageUrl.contains(filterThumb)) {
                             thumbs.add(botImageUrl); 
-                        }  
-                    }); 
+                        }
+                    });
+        }
+//        if (isFungiCollection()) {
+//            Collections.reverse(jpgs);
+//        }
+    }
+    
+    public void setKboImages() { 
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+         
+       if(isVasclarPlantsCollection()) {
+            dataset = fboDataset;
+            filterThumb = mini;
+            filterJps = large; 
+        } else {
+            dataset = kboDataset;
+            filterThumb = thumb;
+            filterJps = max;
+        }
+        if(image && associatedMedia != null) {
+            Arrays.asList(associatedMedia) 
+                    .stream()
+//                    .filter(s -> s.contains(thumb))
+                    .forEach(s -> {  
+                        botImageUrl = HelpClass.getInstance() 
+                                .buildBotImagePath(StringUtils.substringBetween(
+                                        s, leftBlacket, rightBlacket), dataset); 
+                        
+                        if(botImageUrl.contains(filterJps)) {
+                            jpgs.add(botImageUrl); 
+                        } 
+                    
+                        if(botImageUrl.contains(filterThumb)) {
+                            thumbs.add(botImageUrl); 
+                        }
+                    });
+        }
+        if (isFungiCollection()) {
+            Collections.reverse(jpgs);
         }
     }
     
-//    public void setFboImages(String morphbankImageUrl) { 
-//        thumbs = new ArrayList<>();
-//        jpgs = new ArrayList<>();
-//        if(image && associatedMedia != null) {
-//            Arrays.asList(associatedMedia) 
-//                    .stream()
-////                    .filter(s -> s.contains(thumb))
-//                    .forEach(s -> { 
-//                        botImageUrl = HelpClass.getInstance() 
-//                                .buildBotImagePath(StringUtils.substringBetween(s, leftBlacket, rightBlacket), 
-//                                        kboDataset,  morphbankImageUrl); 
-//                        jpgs.add(botImageUrl); 
-//                         
-//                        if(isVasclarPlantsCollection()) {
-//                            if(botImageUrl.contains(mini)) {
-//                                thumbs.add(botImageUrl); 
-//                            } 
-//                        } else {
-//                            if(botImageUrl.contains(thumb)) {
-//                                thumbs.add(botImageUrl); 
-//                            } 
-//                        } 
-//                    }); 
-//        }
-//    }
+    
+    public void setImages() {
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+        
+        if(isCommonCollection()) {
+            if (morphbankImageId != null) {
+                Arrays.asList(morphbankImageId)
+                    .stream()
+                    .forEach(i -> {
+                        thumbs.add(HelpClass.getInstance()
+                                .buildImagePath(i, CommonText.getInstance()
+                                        .getImageTypeThumb()));
+                        jpgs.add(HelpClass.getInstance()
+                                .buildImagePath(i, CommonText.getInstance()
+                                        .getImageTypeJpg()));
+                    });
+            }
+        } else if(isFungiCollection() || isVasclarPlantsCollection()) {
+            setKboImages();  
+        }  
+    }
+
+    public void setFboImages(String morphbankImageUrl) { 
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+        if(image && associatedMedia != null) {
+            Arrays.asList(associatedMedia) 
+                    .stream()
+//                    .filter(s -> s.contains(thumb))
+                    .forEach(s -> { 
+                        botImageUrl = HelpClass.getInstance() 
+                                .buildBotImagePath(StringUtils.substringBetween(s, leftBlacket, rightBlacket), 
+                                        kboDataset,  morphbankImageUrl); 
+                        jpgs.add(botImageUrl); 
+                         
+                        if(isVasclarPlantsCollection()) {
+                            if(botImageUrl.contains(mini)) {
+                                thumbs.add(botImageUrl); 
+                            } 
+                        } else {
+                            if(botImageUrl.contains(thumb)) {
+                                thumbs.add(botImageUrl); 
+                            } 
+                        } 
+                    }); 
+        }
+    }
 
     public void setImages(String morphbankImageUrl) {
         thumbs = new ArrayList<>();
@@ -938,10 +1029,7 @@ public class SolrData {
             }
         } else if(isFungiCollection() || isVasclarPlantsCollection()) {
             setKboImages(morphbankImageUrl);  
-        }
-     
-        
-        
+        }  
     }
 
     public boolean isOpenMap() {
@@ -953,10 +1041,20 @@ public class SolrData {
     }
 
     public List<String> getThumbs() {
+        if(image) {
+            if(thumbs == null || thumbs.isEmpty()) {
+                setImages();
+            }
+        } 
         return thumbs;
     }
 
-    public List<String> getJpgs() {
+    public List<String> getJpgs() { 
+        if(image) {
+            if(jpgs == null || jpgs.isEmpty()) {
+                setImages();
+            }
+        } 
         return jpgs;
     }
 
@@ -1280,10 +1378,16 @@ public class SolrData {
     public String getTaxon() {
         taxonSb = new StringBuilder();
         
-        if ((isPbCollection() || isVasclarPlantsCollection()) && 
+        if (isVasclarPlantsCollection() && 
                     !StringUtils.isBlank(genus)) {
             taxonSb.append(genus);
             taxonSb.append(emptySpace);
+        } else if(isPbCollection()) {
+            if(!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
+                taxonSb = new StringBuilder();
+                taxonSb.append(genus);
+                taxonSb.append(emptySpace);   
+            }
         }
         taxonSb.append(txFullName);
         taxonSb.append(emptySpace);

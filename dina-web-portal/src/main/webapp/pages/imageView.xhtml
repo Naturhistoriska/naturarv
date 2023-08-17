@@ -4,88 +4,137 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"    >
 
-  <body>
-    <ui:composition>        
-      <h:panelGrid id="imagePanel" styleClass="imagePanel" columns="2" >   
-        <h:panelGrid width="200">  
-          <h:outputText value="#{msg.imagefilter}"  styleClass="imageViewPanel" /> 
-          <p:panel header="#{msg.selectview}" id="selectViewPanel" >   
-            <h:selectManyCheckbox value="#{galleria.viewList}" layout="pageDirection" >
-              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />
-              <f:selectItem itemValue="Label" itemLabel="#{msg.label}" />
-              <f:selectItem itemValue="Dorsal" itemLabel="#{msg.dorsal}" />
-              <f:selectItem itemValue="Ventral" itemLabel="#{msg.ventral}" />
-              <f:selectItem itemValue="Lateral" itemLabel="#{msg.lateral}" />
-              <f:selectItem itemValue="Frontal" itemLabel="#{msg.frontal}" />
-              <f:selectItem itemValue="Caudal" itemLabel="#{msg.caudal}" />
-              <p:ajax event="change" listener="#{galleria.selectViews}" 
-                      global="false"  update="imagePanel" />    
-            </h:selectManyCheckbox> 
-          </p:panel>  
+    <body>
+        <ui:composition>        
+            <h:panelGrid id="imagePanel" styleClass="imagePanel" columns="2" >   
+                <h:panelGrid width="200">  
+                    <h:outputText value="#{msg.imagefilter}"  styleClass="imageViewPanel" /> 
+                    <p:panel header="#{msg.selectview}" id="selectViewPanel" >   
+                        <h:selectManyCheckbox value="#{galleria.viewList}" layout="pageDirection" >
+                            <f:selectItem itemValue="all" itemLabel="#{msg.all}" />
+                            <f:selectItem itemValue="Label" itemLabel="#{msg.label}" />
+                            <f:selectItem itemValue="Dorsal" itemLabel="#{msg.dorsal}" />
+                            <f:selectItem itemValue="Ventral" itemLabel="#{msg.ventral}" />
+                            <f:selectItem itemValue="Lateral" itemLabel="#{msg.lateral}" />
+                            <f:selectItem itemValue="Frontal" itemLabel="#{msg.frontal}" />
+                            <f:selectItem itemValue="Caudal" itemLabel="#{msg.caudal}" />
+                            <p:ajax event="change" listener="#{galleria.selectViews}" 
+                                    global="false"  update="imagePanel" />    
+                        </h:selectManyCheckbox> 
+                    </p:panel>  
 
-          <p:panel header="#{msg.selectpart}" id="selectPartPanel" >  
-            <h:selectManyCheckbox value="#{galleria.partsList}" layout="pageDirection" >
-              <f:selectItem itemValue="all" itemLabel="#{msg.all}"  />  
-              <f:selectItem itemValue="Abdomen" itemLabel="#{msg.abdomen}" />  
-              <f:selectItem itemValue="Face"  itemLabel="#{msg.face}"/>   
-              <f:selectItem itemValue="Genitalia" itemLabel="#{msg.genitalia}" />  
-              <f:selectItem itemValue="Wings"  itemLabel="#{msg.wings}"/>  
-              <f:selectItem itemValue="Head" itemLabel="#{msg.head}" />  
-              <f:selectItem itemValue="Legs"  itemLabel="#{msg.legs}"/>  
-              <f:selectItem itemValue="Lobe" itemLabel="#{msg.lobe}" />  
-              <f:selectItem itemValue="Pronotum"  itemLabel="#{msg.pronotum}"/>  
-              <f:selectItem itemValue="Vari" itemLabel="#{msg.vari}" />  
-              <f:selectItem itemValue="Mesonotum"  itemLabel="#{msg.mesonotum}"/>  
-              <f:selectItem itemValue="Posterior" itemLabel="#{msg.posterior}" />  
-              <f:selectItem itemValue="Palps"  itemLabel="#{msg.palps}"/>  
-              <f:selectItem itemValue="Tarsi" itemLabel="#{msg.tarsi}" />  
-              <f:selectItem itemValue="Labrum"  itemLabel="#{msg.labrum}"/>  
-              <f:selectItem itemValue="Notum" itemLabel="#{msg.notum}" />  
-              <f:selectItem itemValue="Mouth"  itemLabel="#{msg.mouth}"/>  
-              <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />    
-              <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="imagePanel" />   
-            </h:selectManyCheckbox> 
-          </p:panel> 
+                    <p:panel header="#{msg.selectpart}" id="selectPartPanel" >  
+                        <h:selectManyCheckbox value="#{galleria.partsList}" layout="pageDirection" >
+                            <f:selectItem itemValue="all" itemLabel="#{msg.all}"  />  
+                            <f:selectItem itemValue="Abdomen" itemLabel="#{msg.abdomen}" />  
+                            <f:selectItem itemValue="Face"  itemLabel="#{msg.face}"/>   
+                            <f:selectItem itemValue="Genitalia" itemLabel="#{msg.genitalia}" />  
+                            <f:selectItem itemValue="Wings"  itemLabel="#{msg.wings}"/>  
+                            <f:selectItem itemValue="Head" itemLabel="#{msg.head}" />  
+                            <f:selectItem itemValue="Legs"  itemLabel="#{msg.legs}"/>  
+                            <f:selectItem itemValue="Lobe" itemLabel="#{msg.lobe}" />  
+                            <f:selectItem itemValue="Pronotum"  itemLabel="#{msg.pronotum}"/>  
+                            <f:selectItem itemValue="Vari" itemLabel="#{msg.vari}" />  
+                            <f:selectItem itemValue="Mesonotum"  itemLabel="#{msg.mesonotum}"/>  
+                            <f:selectItem itemValue="Posterior" itemLabel="#{msg.posterior}" />  
+                            <f:selectItem itemValue="Palps"  itemLabel="#{msg.palps}"/>  
+                            <f:selectItem itemValue="Tarsi" itemLabel="#{msg.tarsi}" />  
+                            <f:selectItem itemValue="Labrum"  itemLabel="#{msg.labrum}"/>  
+                            <f:selectItem itemValue="Notum" itemLabel="#{msg.notum}" />  
+                            <f:selectItem itemValue="Mouth"  itemLabel="#{msg.mouth}"/>  
+                            <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />    
+                            <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="imagePanel" />   
+                        </h:selectManyCheckbox> 
+                    </p:panel> 
 
-          <p:panel header="#{msg.selectsex}" id="selectSexPanel" >  
-            <h:selectManyCheckbox value="#{galleria.sexList}" layout="pageDirection" >
-              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
-              <f:selectItem itemValue="/male/" itemLabel="#{msg.male}" />  
-              <f:selectItem itemValue="female"  itemLabel="#{msg.female}"/>   
-              <p:ajax event="change" listener="#{galleria.selectSexes}" global="false"  update="imagePanel" />   
-            </h:selectManyCheckbox>  
-          </p:panel> 
+                    <p:panel header="#{msg.selectsex}" id="selectSexPanel" >  
+                        <h:selectManyCheckbox value="#{galleria.sexList}" layout="pageDirection" >
+                            <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
+                            <f:selectItem itemValue="/male/" itemLabel="#{msg.male}" />  
+                            <f:selectItem itemValue="female"  itemLabel="#{msg.female}"/>   
+                            <p:ajax event="change" listener="#{galleria.selectSexes}" global="false"  update="imagePanel" />   
+                        </h:selectManyCheckbox>  
+                    </p:panel> 
 
-          <p:panel header="#{msg.selectstage}" id="selectStagePanel" >  
-            <h:selectManyCheckbox value="#{galleria.stageList}" layout="pageDirection" >
-              <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
-              <f:selectItem itemValue="larva" itemLabel="#{msg.larva}" />  
-              <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>    
-              <p:ajax event="change" listener="#{galleria.selectStages}" global="false"  update="imagePanel" />   
-            </h:selectManyCheckbox>   
-          </p:panel>   
-        </h:panelGrid >
+                    <p:panel header="#{msg.selectstage}" id="selectStagePanel" >  
+                        <h:selectManyCheckbox value="#{galleria.stageList}" layout="pageDirection" >
+                            <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
+                            <f:selectItem itemValue="larva" itemLabel="#{msg.larva}" />  
+                            <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>    
+                            <p:ajax event="change" listener="#{galleria.selectStages}" global="false"  update="imagePanel" />   
+                        </h:selectManyCheckbox>   
+                    </p:panel>   
+                </h:panelGrid >
 
-        <h:panelGrid width="500" > 
-          <p:dataScroller var="image" value="#{galleria.model}" lazy="true" rowIndexVar="rowIndex"
-                          scrollHeight="800" rows="50" chunkSize="50" mode="inline" >  
-            <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
-              <h:panelGrid columns="1" style="width:100%" > 
-                <p:commandLink  onclick="displayIndex([{name:'imageId', value: '#{image.id}'}])"  
-                                id="imagePanelLink" update=":resultsForm:imageGalleria" global="false">
-                  <p:graphicImage value="#{image.imageId}"  
-                                alt="#{image.catalogNumber}" 
-                                title="#{image.txFullName}"  styleClass="imageswithpedding" />    
-                </p:commandLink>     
-                <h:outputText value="#{image.txFullName}" /> 
-              </h:panelGrid>
-            </p:panel> 
-            </p:dataScroller>  
-        </h:panelGrid> 
-      </h:panelGrid>   
-      <p:remoteCommand name="displayIndex" actionListener="#{switch.imageSwitch()}" 
-                       process="@this" global="false" oncomplete="PF('imgswitchdlg').show();"/> 
-    </ui:composition>
-  </body>
+                <h:panelGrid width="500" > 
+                    <p:dataScroller var="image" value="#{galleria.model}" lazy="true" rowIndexVar="rowIndex"
+                                    scrollHeight="800" rows="50" chunkSize="50" mode="inline" >  
+                      
+                        
+                        <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
+                            <h:panelGrid columns="1" style="width:100%" > 
+                                <p:commandLink  action="#{searchBean.displayGalleria(image.id)}"
+                                    update="templet"  global="true"   >
+                                    <p:graphicImage value="#{image.imageId}"  
+                                                    alt="#{image.catalogNumber}" 
+                                                    title="#{image.txFullName}"  styleClass="imageswithpedding" />  
+                                </p:commandLink> 
+                                
+                                
+                                
+                                
+                                
+                        
+                                <h:outputText value="#{image.txFullName}" /> 
+                            </h:panelGrid>
+                        </p:panel> 
+                        
+                        
+                        <ui:remove>
+                             <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                    update="templet"  global="true"   >
+                        <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                        title="#{record.txFullName}/#{record.catalogNumber}" 
+                                        alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                    </p:commandLink>   
+                        
+                        
+                        <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
+                            <h:panelGrid columns="1" style="width:100%" > 
+                                <p:commandLink  onclick="displayIndex([{name: 'imageId', value: '#{image.id}'}])"  
+                                                id="imagePanelLink" update=":resultsForm:imageGalleria" global="false">
+                                    <p:graphicImage value="#{image.imageId}"  
+                                                    alt="#{image.catalogNumber}" 
+                                                    title="#{image.txFullName}"  styleClass="imageswithpedding" />    
+                                </p:commandLink>     
+                                <h:outputText value="#{image.txFullName}" /> 
+                            </h:panelGrid>
+                        </p:panel> 
+                            
+                            
+                            
+                              <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
+                            <h:panelGroup layout="block" style="width: 100%;">
+                                <p:commandLink  action="#{searchBean.displayGalleria(image)}"
+                                                update="templet"  global="true"   >
+                                    <p:graphicImage value="#{image.imageId}"  
+                                                    alt="#{image.catalogNumber}" 
+                                                    title="#{image.txFullName}"  
+                                                    styleClass="imageswithpedding" />   
+                                </p:commandLink>
+                            </h:panelGroup>  
+                        </p:panel>
+                        </ui:remove>
+                        
+                    </p:dataScroller>  
+                </h:panelGrid> 
+            </h:panelGrid>   
+             
+                <p:remoteCommand name="displayIndex" actionListener="#{switch.imageSwitch()}" 
+                             process="@this" global="false" oncomplete="PF('imgswitchdlg').show();"/> 
+            
+            
+        </ui:composition>
+    </body>
 </html>
 

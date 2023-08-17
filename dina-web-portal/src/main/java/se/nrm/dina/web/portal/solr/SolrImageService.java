@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map; 
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -65,11 +67,18 @@ public class SolrImageService implements Serializable {
     private String collectionId;
     private String taxonFullName;
     private ImageModel imageModel;
+    private String username;
+    private String password;
+    private String imageThumbPath; 
+    
+    private QueryRequest request;
     
     private List<SolrData> imageDatas;
     private SolrData imageData;
     
     private String filterThumb;
+    
+    private SolrDocumentList documents;
     
     @Inject
     private InitialProperties properties;
@@ -77,6 +86,8 @@ public class SolrImageService implements Serializable {
     @Inject
     @Solr
     private SolrClient client;
+     
+
     
     public SolrImageService() {
     }
@@ -86,6 +97,15 @@ public class SolrImageService implements Serializable {
         this.properties = properties;
     }
     
+    @PostConstruct
+    public void init() {
+        log.info("init from search...");
+        username = properties.getUsername();
+        password = properties.getPassword();
+        imageThumbPath = properties.getMorphbankThumbPath();   
+    }
+
+    
     public int getImageTotalCount(String searchQueryText, Map<String, String> filters) {
         log.info("getImageTotalCount: {}", searchQueryText);
         
@@ -93,10 +113,14 @@ public class SolrImageService implements Serializable {
         query.setQuery(searchQueryText);
         query.addFilterQuery(CommonText.getInstance().getImageSearchQuery());
 //        query.addFilterQuery(CommonText.getInstance().getImageKey() + String.valueOf(true));
-        
+ 
+
         SolrHelper.getInstance().addSearchFilters(query, filters);
         try {
-            response = client.query(query);
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
+//            response = client.query(query);
 //            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {            
             log.error(ex.getMessage());
@@ -108,8 +132,7 @@ public class SolrImageService implements Serializable {
     public List<ImageModel> getImageList(String searchQueryText, int start, int numPerPage,
             Map<String, String> filters, List<String> filterList) {
         log.info("getImageList: {} -- {}", start, filterList);
-        
-        String imageThumbPath = properties.getMorphbankThumbPath();        
+              
         query = new SolrQuery();        
         query.setQuery(searchQueryText)
                 .addField(CommonText.getInstance().getId())
@@ -127,9 +150,15 @@ public class SolrImageService implements Serializable {
         SolrHelper.getInstance().addSearchFilters(query, filters);        
         images = new ArrayList();
         try {            
-            SolrDocumentList documents = client.query(query).getResults();  
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
+  
+//            final SolrDocumentList documentList = response.getResults();
             
-            
+//            SolrDocumentList documents = client.query(query).getResults();  
+            documents = response.getResults();
+             
             morphDocuments = documents.stream()
                     .filter(d -> d.getFieldValue(CommonText.getInstance().getImageView()) != null)
                     .collect(Collectors.toList());
@@ -230,7 +259,7 @@ public class SolrImageService implements Serializable {
      */
     public SolrData getImagesByMorphbankId(String morphbankId, boolean isMorph) {
         log.info("getImagesByMorphbankId : {}", morphbankId);
-        String morphbankImagePath = properties.getMorphbankThumbPath();
+//        String morphbankImagePath = properties.getMorphbankThumbPath();
         query = new SolrQuery();
         
         if(isMorph) {
@@ -240,11 +269,15 @@ public class SolrImageService implements Serializable {
         }
         
         try {
-            response = client.query(query);
+//            response = client.query(query);
+            
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
             imageDatas = response.getBeans(SolrData.class);
             if (imageDatas != null && !imageDatas.isEmpty()) {
                 imageData = imageDatas.get(0);
-                imageData.setImages(morphbankImagePath);
+                imageData.setImages(imageThumbPath);
                 return imageData;
             }
             return null;
@@ -255,17 +288,20 @@ public class SolrImageService implements Serializable {
     }
     
     public SolrData getImagesById(String id) {
-        log.info("getImagesById : {}", id);
-        String morphbankImagePath = properties.getMorphbankThumbPath();
+        log.info("getImagesById : {}", id); 
         query = new SolrQuery();
         
         query.setQuery(CommonText.getInstance().getIdKey() + id); 
         try {
-            response = client.query(query);
+//            response = client.query(query);
+
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
             List<SolrData> data = response.getBeans(SolrData.class);
             if (data != null && !data.isEmpty()) {
                 SolrData solrData = data.get(0);
-                solrData.setImages(morphbankImagePath);
+                solrData.setImages();
                 return solrData;
             }
             return null;

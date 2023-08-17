@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:p="http://primefaces.org/ui"   
+      xmlns:h="http://java.sun.com/jsf/html"    >
+
+    <body>
+        <ui:composition  template="/templates/masterLayout.xhtml">    
+            <ui:define name="content"  > 
+
+                <h:panelGroup id="mainPanel"   layout="block" 
+                              styleClass="main"  > 
+      
+                    <p:galleria id="galleriaViewPanel" value="#{switch.jpgs}" var="image" 
+                                panelWidth="#{switch.width}"  panelHeight="#{switch.height}"
+                                autoPlay="false" showCaption="true" style="margin: auto; width: 1000px;"   >
+                        <p:graphicImage value="#{searchBean.imageServerPath}#{image}"  
+                                        styleClass="#{switch.imageCss(image)}"  
+                                        onclick="window.open('#{searchBean.imageServerPath}#{image}')"
+                                        title="#{switch.catalogNumber}" stream="true"
+                                        alt="#{switch.scientificName} [#{switch.getPhotogarphy(image)}]"/>
+                    </p:galleria> 
+
+ 
+
+
+
+
+
+
+
+
+
+              
+
+                    <ui:remove>
+                        
+                              
+                  
+
+                        
+                        
+                        
+                                 
+                    <p:imageSwitch effect="wipe" widgetVar="switcher" 
+                                   id="manuelSwitcher"  
+                                slideshowAuto="false">
+                        <ui:repeat value="#{switch.jpgs}" var="image" 
+                                   id="manuelSwitcherImages">
+                            <p:graphicImage value="#{searchBean.imageServerPath}#{image}"
+                                            alt="test" title="test"  
+                                            styleClass="#{switch.imageCss(image)}"  
+                                            id="image"/>
+                        </ui:repeat>
+                    </p:imageSwitch>
+                        
+                        <h:panelGroup  id="mainPanel"   layout="block" style="width: 1050px; height: 600px;"> 
+                            <p:contentFlow value="#{switch.jpgs}" var="thumb" id="contentFlow"   > 
+                                <p:graphicImage value="#{thumb}"   styleClass="content"  />
+                                <div class="caption">#{thumb}</div> 
+                            </p:contentFlow>
+                        </h:panelGroup>
+                    </ui:remove>
+
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

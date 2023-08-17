@@ -2,8 +2,6 @@ package se.nrm.dina.web.portal.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -32,6 +30,8 @@ public class Navigator implements Serializable {
     private final String aboutPath = "/faces/pages/about.xhtml";
     private final String contactPath = "/faces/pages/contact.xhtml";
 
+    private final String galleriaPath = "/faces/pages/imageSwitchView.xhtml";
+    
     private final String resultsPath = "/faces/pages/results.xhtml";
     private final String resultsPathWithQueries = "/faces/pages/collectionresults.xhtml?";
     private final String noResultsPath = "/faces/pages/noResult.xhtml";
@@ -85,8 +85,12 @@ public class Navigator implements Serializable {
             redirectPage(homePath);
         } else {
             redirectPage(isHomeView ? homePath : resultsPath);
-        }
-
+        } 
+    }
+    
+    public void gotoGalleria() {
+        style.setTabStyle(home);
+        redirectPage(galleriaPath);
     }
 
     public void gotoResults(String queries) {

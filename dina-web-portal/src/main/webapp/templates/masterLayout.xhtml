@@ -1,90 +1,109 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       >
-  <h:head>
-    <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon-default.ico']}"/>
-    <title>
-      <ui:insert name="windowTitle">
-        #{msg.naturarv}
-      </ui:insert>
-    </title> 
+    <h:head>
+        <!-- Matomo -->
+        <script>
+            var _paq = window._paq = window._paq || [];
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function () {
+                var u = "//matomo.dina-web.net/";
+                _paq.push(['setTrackerUrl', u + 'matomo.php']);
+                _paq.push(['setSiteId', '4']);
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.async = true;
+                g.src = u + 'matomo.js';
+                s.parentNode.insertBefore(g, s);
+            })();
+        </script>
+        <!-- End Matomo Code -->  
 
-    <script name="jquery/jquery.js" library="primefaces"></script> 
 
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon-default.ico']}"/>
+        <title>
+            <ui:insert name="windowTitle">
+                #{msg.naturarv}
+            </ui:insert>
+        </title> 
 
-      #map {
-        width: 100%;
-        height: 100vh;
-      }
-    </style>
+        <script name="jquery/jquery.js" library="primefaces"></script> 
 
-  </h:head> 
-  <f:view locale="#{languages.locale}" > 
- 
-    <f:metadata>
-        <f:event listener="#{f5Detector.checkF5}"  type="preRenderView"  /> 
-    </f:metadata> 
-       
-    <h:body  styleClass="mainbody" >
-      <h:outputStylesheet library="css" name="style.css"  />
-      <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
-        
-      <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   />
-      <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false"
-                resizable="false" showHeader="false">
-        <h:panelGrid columns="3"  >
-          <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
-                          title="#{msg.progress}" styleClass="images" />
-          <p:spacer width="10" />
-          <p:outputLabel value="#{msg.wait}" styleClass="inprocess" />
-        </h:panelGrid>
-      </p:dialog>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
 
-      <h:form id="idelForm">
-        <p:idleMonitor id="idleMonitor" timeout="1800000000" > 
-          <p:ajax id="idleEvent" event="idle" listener="#{idle.idleListener}"  /> 
-        </p:idleMonitor>
-      </h:form>
+            #map {
+                width: 100%;
+                height: 100vh;
+            }
+        </style>
 
-      <h:panelGroup id="templet" layout="block" styleClass="templet">
-        <h:panelGroup  id="header" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
-          <ui:insert name="header" > 
-            <ui:include src="/pages/header.xhtml" />    
-          </ui:insert> 
-        </h:panelGroup>
+    </h:head> 
+    <f:view locale="#{languages.locale}" > 
 
-        <h:panelGroup  id="topmenu" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
-          <ui:insert name="topmenu" >
-            <ui:include src="/pages/topMenu.xhtml" />
-          </ui:insert>
-        </h:panelGroup>
+        <f:metadata>
+            <f:event listener="#{f5Detector.checkF5}"  type="preRenderView"  /> 
+        </f:metadata> 
 
-        <h:panelGroup  id="search" layout="block" rendered="#{navigate.showSearchPanel}"  >
-          <ui:insert name="search" >
-            <ui:include src="/pages/search.xhtml" />
-          </ui:insert>
-        </h:panelGroup>
+        <h:body  styleClass="mainbody" >
+            <h:outputStylesheet library="css" name="style.css"  />
+            <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
 
-        <h:panelGroup  id="main" layout="block"  >
-          <ui:insert name="content"/> 
-        </h:panelGroup>
+            <p:ajaxStatus id="statusAjax" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"   />
+            <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false"
+                      resizable="false" showHeader="false">
+                <h:panelGrid columns="3"  >
+                    <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
+                                    title="#{msg.progress}" styleClass="images" />
+                    <p:spacer width="10" />
+                    <p:outputLabel value="#{msg.wait}" styleClass="inprocess" />
+                </h:panelGrid>
+            </p:dialog>
 
-        <h:panelGroup  id="footer" layout="block"  >
-          <ui:insert name="footer" >
-            <ui:include src="/pages/footer.xhtml" />
-          </ui:insert> 
-        </h:panelGroup> 
-      </h:panelGroup> 
-    </h:body>
-  </f:view>
+            <h:form id="idelForm">
+                <p:idleMonitor id="idleMonitor" timeout="1800000000" > 
+                    <p:ajax id="idleEvent" event="idle" listener="#{idle.idleListener}"  /> 
+                </p:idleMonitor>
+            </h:form>
+
+            <h:panelGroup id="templet" layout="block" styleClass="templet">
+                <h:panelGroup  id="header" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
+                    <ui:insert name="header" > 
+                        <ui:include src="/pages/header.xhtml" />    
+                    </ui:insert> 
+                </h:panelGroup>
+
+                <h:panelGroup  id="topmenu" layout="block" rendered="#{!f5Detector.isCollectionSearch}"  >
+                    <ui:insert name="topmenu" >
+                        <ui:include src="/pages/topMenu.xhtml" />
+                    </ui:insert>
+                </h:panelGroup>
+
+                <h:panelGroup  id="search" layout="block" rendered="#{navigate.showSearchPanel}"  >
+                    <ui:insert name="search" >
+                        <ui:include src="/pages/search.xhtml" />
+                    </ui:insert>
+                </h:panelGroup>
+
+                <h:panelGroup  id="main" layout="block"  >
+                    <ui:insert name="content"/> 
+                </h:panelGroup>
+
+                <h:panelGroup  id="footer" layout="block"  >
+                    <ui:insert name="footer" >
+                        <ui:include src="/pages/footer.xhtml" />
+                    </ui:insert> 
+                </h:panelGroup> 
+            </h:panelGroup> 
+        </h:body>
+    </f:view>
 </html>

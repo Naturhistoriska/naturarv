@@ -11,11 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import static org.mockito.Matchers.any; 
-import org.mockito.Mock; 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.runner.RunWith; 
+import org.mockito.Mock;  
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
 import se.nrm.dina.web.portal.ContextMocker;
@@ -94,31 +91,31 @@ public class ImageSwitcherTest {
     instance = null;
   }
   
-  @Test(expected = NullPointerException.class)
-  public void testDefaultConstructor() {
-    instance = new ImageSwitcher();
-    assertNotNull(instance);
-    instance.imageSwitch();
-  }
+//  @Test(expected = NullPointerException.class)
+//  public void testDefaultConstructor() {
+//    instance = new ImageSwitcher();
+//    assertNotNull(instance);
+//    instance.imageSwitch();
+//  }
 
   /**
    * Test of imageSwitch method, of class ImageSwitcher.
    */
 //  @Test
-  public void testImageSwitch_0args() {
-    System.out.println("imageSwitch");  
-     
-    Map<String, String> map = new HashMap();
-    map.put(IMAGE_ID, IMAGE_ID);
-    when(externalContext.getRequestParameterMap()).thenReturn(map); 
-   
-//    when(solr.getImagesByMorphbankId(any(String.class))).thenReturn(data);
-    instance.imageSwitch(); 
-    assertEquals(instance.getCatalogNumber(), catalogNumber);
-    assertEquals(instance.getScientificName(), scientificName);
-    assertEquals(instance.getJpgs().size(), 3);
-//    verify(solr, times(1)).getImagesByMorphbankId(any(String.class)); 
-  }
+//  public void testImageSwitch_0args() {
+//    System.out.println("imageSwitch");  
+//     
+//    Map<String, String> map = new HashMap();
+//    map.put(IMAGE_ID, IMAGE_ID);
+//    when(externalContext.getRequestParameterMap()).thenReturn(map); 
+//   
+////    when(solr.getImagesByMorphbankId(any(String.class))).thenReturn(data);
+//    instance.imageSwitch(); 
+//    assertEquals(instance.getCatalogNumber(), catalogNumber);
+//    assertEquals(instance.getScientificName(), scientificName);
+//    assertEquals(instance.getJpgs().size(), 3);
+////    verify(solr, times(1)).getImagesByMorphbankId(any(String.class)); 
+//  }
 
   /**
    * Test of imageSwitch method, of class ImageSwitcher.

@@ -23,11 +23,18 @@ public class F5Detector implements Serializable {
     private final String qryCollection = "collection";
     private boolean isCollectionSearch;
     private final String pz = "pz";
+    private final String pzCollection = "pz";
+    private final String pb = "pb";
+    private final String pbCollection = "pb";
     private final String qryDataset = "dataset";
-    private final String paleobiology = "paleobiology"; 
+    private final String paleontology = "paleontology"; 
     private final String pCollection = "p*"; 
     private final String zoo = "zoo";
-    private final String zooCollection = "(e* 163840)";
+    private final String zooCollection = "(e* 163840 ma fish herps)";
+    private final String vertebrate = "vertebrate";
+    private final String vertebratCollection = "(ma fish herps)";
+    private final String botany = "botany";
+    private final String botanyCollection = "(vp fungi mosses algae)"; 
     
     private final String all = "all";
     private final String allCollection = "*";
@@ -56,12 +63,22 @@ public class F5Detector implements Serializable {
                 switch (collection) {
                     case pz:
                         dataset = request.getParameter(qryDataset);
+                        collection = pzCollection;
                         break;
-                    case paleobiology:
+                    case pb: 
+                        collection = pbCollection;
+                        break;
+                    case botany:
+                        collection = botanyCollection;
+                        break;
+                    case paleontology:
                         collection = pCollection;
                         break; 
                     case zoo:
                         collection = zooCollection;
+                        break;
+                    case vertebrate:
+                        collection = vertebratCollection;
                         break;
                     case all:
                         collection = allCollection;

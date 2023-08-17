@@ -14,6 +14,7 @@ dina-web-portal/src/main/resources/.DS_Store
 
 .env
 .DS_Store
+.env
 certs/*.crt
 certs/*.key
 certs/.gitkeep

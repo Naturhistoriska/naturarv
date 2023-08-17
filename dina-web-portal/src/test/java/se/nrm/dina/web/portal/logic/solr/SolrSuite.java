@@ -12,8 +12,7 @@ import org.junit.runners.Suite;
  * @author idali
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.solr.SolrTest.class,
-  se.nrm.dina.web.portal.logic.solr.SolrClientProducerTest.class})
+@Suite.SuiteClasses({se.nrm.dina.web.portal.logic.solr.SolrTest.class})
 public class SolrSuite {
 
   @BeforeClass

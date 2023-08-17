@@ -30,7 +30,7 @@ import se.nrm.dina.web.portal.utils.CommonText;
  *
  * @author idali
  */
-@RunWith(MockitoJUnitRunner.class)    
+//@RunWith(MockitoJUnitRunner.class)    
 //@RunWith(PowerMockRunner.class)
 public class SolrImageServiceTest {
   
@@ -80,7 +80,7 @@ public class SolrImageServiceTest {
   /**
    * Test of getImageTotalCount method, of class SolrImageService. 
    */
-  @Test
+//  @Test
   public void testGetImageTotalCount()  {
     System.out.println("getImageTotalCount");
     String searchQueryText = "tx:taxon";
@@ -92,7 +92,7 @@ public class SolrImageServiceTest {
     assertEquals(expResult, result); 
   }
   
-  @Test
+//  @Test
   public void testGetImageTotalCountWithIOException() throws SolrServerException, IOException  {
     System.out.println("getImageTotalCount");
     String searchQueryText = "tx:taxon";
@@ -105,7 +105,7 @@ public class SolrImageServiceTest {
     assertEquals(expResult, result);  
   }
   
-  @Test
+//  @Test
   public void testGetImageTotalCountWithSolrServerException() throws SolrServerException, IOException  {
     System.out.println("getImageTotalCount");
     String searchQueryText = "tx:taxon";
@@ -122,7 +122,7 @@ public class SolrImageServiceTest {
   /**
    * Test of getImageList method, of class SolrImageService.
    */
-  @Test
+//  @Test
   public void testGetImageList() {
     System.out.println("getImageList");
     

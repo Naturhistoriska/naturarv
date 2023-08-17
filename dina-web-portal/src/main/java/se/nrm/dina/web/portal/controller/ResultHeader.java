@@ -18,13 +18,14 @@ public class ResultHeader implements Serializable {
   private static final String LIST_VIEW_PATH = "/pages/listView.xhtml";
   private static final String DETAIL_VIEW_PATH = "/pages/detailView.xhtml";
   private static final String SELECTED_VIEW_PATH = "/pages/selectedView.xhtml";
-  private static final String IMAGE_VIEW_PATH = "/pages/imageView.xhtml";
+  private static final String IMAGE_VIEW_PATH = "/pages/imageView.xhtml"; 
   private static final String MAP_VIEW_PATH = "/pages/mapView.xhtml";
   
   private final String list = "list";
   private final String detail = "detail";
   private final String selected = "selected";
   private final String image = "image";
+  private final String galleria = "galleria";
   private final String map = "map";
   
   private String viewPath;
@@ -65,7 +66,7 @@ public class ResultHeader implements Serializable {
     resultView = image;
     viewPath = IMAGE_VIEW_PATH;
   }
-
+    
   public String getViewPath() {
     return viewPath;
   }

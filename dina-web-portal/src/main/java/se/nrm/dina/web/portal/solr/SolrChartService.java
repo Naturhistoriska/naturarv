@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j; 
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.SolrServerException;  
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.RangeFacetMap;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
@@ -19,6 +20,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
 import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
 import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
+import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.logic.solr.Solr;
 import se.nrm.dina.web.portal.utils.CommonText;
 
@@ -43,16 +45,35 @@ public class SolrChartService implements Serializable {
     private Map<String, Integer> collectionMonthsDataMap;
     
     private BucketBasedJsonFacet monthBucket;
+    private String username; 
+    private String password;
+    
+    private NestableJsonFacet facet;
+    private BucketBasedJsonFacet bucket;
+    
 
     @Inject
     @Solr
     private SolrClient client;
+    
+    @Inject
+    private InitialProperties properties;
 
+    
+//    private HttpSolrClient server;
+    
     public SolrChartService() {
     }
 
     public SolrChartService(SolrClient client) {
-        this.client = client;
+        this.client = client; 
+    }
+
+    @PostConstruct
+    public void init() {
+        log.info("init from search...");
+        username = properties.getUsername();
+        password = properties.getPassword();
     }
 
     /**
@@ -65,6 +86,7 @@ public class SolrChartService implements Serializable {
      */
     public Map<String, Integer> getLastTenYearsRegistedData(int startYear,
             int endYear, String collectionCode) {
+         
         Map<String, Integer> collectionYearsDataMap = new LinkedHashMap<>();
 
         RangeFacetMap rangeFacet = new RangeFacetMap(
@@ -75,6 +97,8 @@ public class SolrChartService implements Serializable {
                         : CommonText.getInstance().getCollectionCodeKey() + collectionCode)
                 .returnFields(CommonText.getInstance().getCollectionName())
                 .withFacet(CommonText.getInstance().getCatalogedYear(), rangeFacet);
+        
+        request.setBasicAuthCredentials(username, password);
         try {
             response = request.process(client);
 //      log.info("json: {}", response.jsonStr()); 
@@ -82,10 +106,8 @@ public class SolrChartService implements Serializable {
             log.error(ex.getMessage());
         }
 
-        NestableJsonFacet facet = response.getJsonFacetingResponse();
-        int total = (int) facet.getCount();
-
-        BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(
+        facet = response.getJsonFacetingResponse(); 
+        bucket = facet.getBucketBasedFacets(
                 CommonText.getInstance().getCatalogedYear());
 
         if (bucket != null) {
@@ -93,7 +115,7 @@ public class SolrChartService implements Serializable {
             int sum = buckets.stream()
                     .mapToInt(b -> (int) b.getCount())
                     .sum();
-            cumulateValue = total - sum;
+            cumulateValue = (int) facet.getCount() - sum;
             IntStream.range(0, buckets.size())
                     .forEach(i -> {
                         cumulateValue += (int) buckets.get(i).getCount();
@@ -113,6 +135,7 @@ public class SolrChartService implements Serializable {
                 .setQuery(CommonText.getInstance().getCollectionCodeKey() + collectionCode)
                 .returnFields(CommonText.getInstance().getCollectionName())
                 .withFacet(CommonText.getInstance().getCatalogedYear(), rangeFacet);
+        request.setBasicAuthCredentials(username, password);
         if(dataset != null) {
             if(dataset.equals(vertebrates)) {
                 request.withFilter(pbVertebrates);
@@ -127,10 +150,10 @@ public class SolrChartService implements Serializable {
             log.error(ex.getMessage());
         }
 
-        NestableJsonFacet facet = response.getJsonFacetingResponse();
-        int total = (int) facet.getCount();
+        facet = response.getJsonFacetingResponse();
+//        int total = (int) facet.getCount();
 
-        BucketBasedJsonFacet bucket = facet.getBucketBasedFacets(
+        bucket = facet.getBucketBasedFacets(
                 CommonText.getInstance().getCatalogedYear());
 
         if (bucket != null) {
@@ -138,7 +161,7 @@ public class SolrChartService implements Serializable {
             int sum = buckets.stream()
                     .mapToInt(b -> (int) b.getCount())
                     .sum();
-            cumulateValue = total - sum;
+            cumulateValue =  (int) facet.getCount() - sum;
             IntStream.range(0, buckets.size())
                     .forEach(i -> {
                         cumulateValue += (int) buckets.get(i).getCount();
@@ -163,6 +186,8 @@ public class SolrChartService implements Serializable {
                 .setQuery(searchDateRange)
                 .returnFields(CommonText.getInstance().getCollectionName())
                 .withFacet(CommonText.getInstance().getCatalogedMonth(), catalogedMonthFacet);
+ 
+        request.setBasicAuthCredentials(username, password);
         if (dataset != null) {
             if (dataset.equals(vertebrates)) {
                 request.withFilter(pbCollectionVertebrates);
@@ -181,7 +206,7 @@ public class SolrChartService implements Serializable {
             return collectionMonthsDataMap;
         }
 
-        BucketBasedJsonFacet bucket = response.getJsonFacetingResponse()
+        bucket = response.getJsonFacetingResponse()
                 .getBucketBasedFacets(CommonText.getInstance().getCatalogedMonth());
         return bucket != null
                 ? bucket.getBuckets()
@@ -210,6 +235,8 @@ public class SolrChartService implements Serializable {
                 .setQuery(searchDateRange)
                 .returnFields(CommonText.getInstance().getCollectionName())
                 .withFacet(CommonText.getInstance().getCatalogedMonth(), catalogedMonthFacet);
+ 
+        request.setBasicAuthCredentials(username, password);
         if (collectionCode != null) {
             request.withFilter(CommonText.getInstance().getCollectionCodeKey() + collectionCode);
         }

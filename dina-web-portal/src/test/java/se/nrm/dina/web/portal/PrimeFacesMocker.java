@@ -32,7 +32,7 @@ public abstract class PrimeFacesMocker extends PrimeFaces {
     Ajax ajax = Mockito.mock(Ajax.class);
     when(primeFaces.ajax()).thenReturn(ajax);
     Mockito.doAnswer(RELEASE)
-            .when(ajax).update();  
+            .when(ajax).update("");  
     return primeFaces;
   } 
 }

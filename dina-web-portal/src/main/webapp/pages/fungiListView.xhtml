@@ -27,15 +27,10 @@
                         </p:commandLink>   
                     </h:panelGroup>
 
-                    <p:spacer width="5" height="5" rendered="#{!record.image}"  />  
-
-                    <p:commandLink rendered="#{record.image}" global="false"
-                                   action="#{searchBean.displayImages(record)}" update="fungiimagePanel"  >
-                        <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
-                                        title="#{msg.showimages}" alt="#{msg.showimages}"
-                                        styleClass="images" /> 
-                    </p:commandLink>  
-
+                    <p:spacer width="5" height="5" rendered="#{!record.image}"  />   
+                    <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                                    title="#{msg.showimages}" alt="#{msg.showimages}"
+                                    styleClass="images" rendered="#{record.image}" /> 
 
 
                     <h:panelGrid  columns="2"  cellpadding="0" cellspacing="0"  
@@ -75,21 +70,49 @@
 
 
                     <p:spacer width="5" height="5" />
-                    <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="fungiimagePanel" >  
-                        <h:panelGrid  rendered="#{record.displayImage}">  
-                            <p:commandLink value="#{msg.closeimage}" 
-                                           action="#{searchBean.closeImage(record)}"    
-                                           update="fungiimagePanel" global="false" process="@this" />   
+                    <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="fungiimagePanel" > 
+                        <ui:repeat value="#{record.thumbs}" var="thumb">     
+                            <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                            update="templet"  global="true"   >
+                                <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                                title="#{record.txFullName}/#{record.catalogNumber}" 
+                                                alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                            </p:commandLink>   
+                        </ui:repeat>  
+
+
+                        <ui:remove>
+                            <h:panelGrid  rendered="#{record.displayImage}">  
+                            
+                          
                             <ui:repeat value="#{record.thumbs}" var="thumb">     
+                                <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                                update="templet"  global="true"   >
+                                    <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                                    title="#{record.txFullName}/#{record.catalogNumber}" 
+                                                    alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
+                                </p:commandLink>  
+
+                            </ui:repeat>   
+                            
+                            <ui:remove>
+                                <ui:repeat value="#{record.thumbs}" var="thumb">     
                                 <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                                onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
+                                                onclick="PF('imgswitchdlg').show()" 
+                                                update=":resultsForm:imageGalleria">
                                     <p:graphicImage value="#{thumb}" 
                                                     title="#{record.txFullName}/#{record.catalogNumber}" 
                                                     alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
                                 </p:commandLink>  
 
                             </ui:repeat>   
+                                
+                            </ui:remove>
+                            
                         </h:panelGrid> 
+                            
+                        </ui:remove>
+                        
                     </h:panelGrid> 
 
 
