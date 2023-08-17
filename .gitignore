@@ -12,6 +12,7 @@
 */.DS_Store
 dina-web-portal/src/main/resources/.DS_Store
 
+.env
 .DS_Store
 certs/*.crt
 certs/*.key
