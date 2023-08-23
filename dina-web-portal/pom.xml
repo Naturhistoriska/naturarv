@@ -8,7 +8,7 @@
   <parent>
     <artifactId>naturarv</artifactId>
     <groupId>se.nrm.dina</groupId>
-    <version>0.7.3</version>
+    <version>0.7.4</version>
   </parent>
 
   <artifactId>dina-web-portal</artifactId>
