@@ -43,6 +43,8 @@
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.type}:"  />   
                 <h:outputText value="#{record.typeStatus}" /> 
+                
+         
 
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.determiner}:" />   
@@ -105,6 +107,10 @@
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.preservation}:" />   
                 <h:outputText value="#{record.preservation}" /> 
+               
+                <p:spacer width="5" height="5" rendered="#{record.paleoBotanyCollection}"/>
+                <h:outputText value="#{msg.element}:" rendered="#{record.paleoBotanyCollection}" />   
+                <h:outputText value="#{record.element}" rendered="#{record.paleoBotanyCollection}" /> 
 
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.lithostratigraphic}:" />   

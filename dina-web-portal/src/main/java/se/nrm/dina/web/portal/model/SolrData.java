@@ -50,6 +50,8 @@ public class SolrData {
     @Field
     public String county;
     @Field
+    public String currentDetermination;
+    @Field
     public String state;
     @Field
     public String coordinate;
@@ -57,6 +59,8 @@ public class SolrData {
     public String determiner;
     @Field
     public Date determinedDate;
+    @Field
+    public String element;
     @Field
     public double latitude;
     @Field
@@ -187,6 +191,7 @@ public class SolrData {
     private final String collectionAlgae = "algae";
     private final String collectionVascularPlants = "vp";
     private final String collectionMammals = "ma";
+    private final String collectionBirds = "va";
     private final String collectionHerps = "herps";
     private final String slash = "/";
     private final String upArrowBtn = "hidearrow.git";
@@ -313,6 +318,16 @@ public class SolrData {
         this.determiner = determiner;
     }
 
+    public String getElement() {
+        return element;
+    }
+
+    public void setElement(String element) {
+        this.element = element;
+    }
+    
+    
+
     public Date getStartDate() {
         return startDate;
     }
@@ -392,6 +407,16 @@ public class SolrData {
     public void setCounty(String county) {
         this.county = county;
     }
+
+    public String getCurrentDetermination() {
+        return currentDetermination;
+    }
+
+    public void setCurrentDetermination(String currentDetermination) {
+        this.currentDetermination = currentDetermination;
+    }
+    
+    
 
     public String getExsiccate() {
         return exsiccate;
@@ -1245,9 +1270,13 @@ public class SolrData {
     
     public boolean isMammalsCollection() {
         if (collectionId != null) {
-            return collectionId.equals(collectionMammals);
+            return collectionId.equals(collectionMammals); 
         }
         return false;
+    }
+    
+    public boolean isBirdsCollection() {
+        return collectionId != null && collectionId.equals(collectionBirds);
     }
     
     public boolean isInsectCollection() {
@@ -1279,10 +1308,30 @@ public class SolrData {
         return false;
     }
     
-    public boolean isCommonCollection() {
-        return !isPbCollection() && !isEvCollection() && !isMineral() 
-                && !isFishCollection() && !isFungiCollection() 
-                && !isVasclarPlantsCollection() && !isMammalsCollection();
+    public boolean isCommonCollection() { 
+        if(isPbCollection()) {
+            return false;
+        } else if(isEvCollection()) {
+            return false;
+        } else if (isMammalsCollection()) {
+            return false;
+        } else if (isMineral()) {
+            return false;
+        } else if (isFishCollection()) {
+            return false;
+        } else if (isFungiCollection()) {
+            return false;
+        } else if (isVasclarPlantsCollection()) {
+            return false;
+        } else if(isBirdsCollection()) {
+            return false;
+        }
+        return true;
+
+//        return !isPbCollection() && !isEvCollection() && !isMineral() 
+//                && !isFishCollection() && !isFungiCollection() 
+//                && !isVasclarPlantsCollection() && !isMammalsCollection()
+//                && !isBirdsCollection();
     }
     
     public boolean isShowPresavation() {
