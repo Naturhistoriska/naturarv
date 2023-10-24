@@ -41,16 +41,15 @@
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.vasclarPlantsCollection}"> 
                     <ui:include src="/pages/vpResult.xhtml" />
                 </p:column> 
-                
-                <ui:remove>
-                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.vasclarPlantsCollection}"> 
-                    <ui:include src="/pages/vpResult.xhtml" />
-                </p:column>  
-                </ui:remove>
-                
+              
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.mammalsCollection}"> 
                     <ui:include src="/pages/mammalsResult.xhtml" />
                 </p:column>   
+                
+                <p:column style="font-size: 11px; width : 600px; " rendered="#{record.birdsCollection}"> 
+                    <ui:include src="/pages/birdsResult.xhtml" />
+                </p:column>   
+
 
                 <p:column style="font-size: 11px; width : 600px; " rendered="#{record.commonCollection}"> 
                     <ui:include src="/pages/commonResult.xhtml" />

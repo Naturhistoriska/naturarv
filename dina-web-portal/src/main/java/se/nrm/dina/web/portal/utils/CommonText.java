@@ -266,6 +266,7 @@ public class CommonText {
         SEARCH_FIELD_MAP.put("ts", TYPESTATUS); 
         SEARCH_FIELD_MAP.put("synonym", SYNONYM); 
         
+        COLLECTION_NAME_MAP.put("Bird", "Fågel");
         COLLECTION_NAME_MAP.put("Paleozoology", "Paleozoologisk");
         COLLECTION_NAME_MAP.put("Paleobotany", "Paleobotanisk");
         COLLECTION_NAME_MAP.put("NRM Entomology Collection Objects", "Entomologisk");
@@ -305,6 +306,7 @@ public class CommonText {
         SEARCH_TEXT_SV_MAP.put("Algae", "Sök i vår samling av alger"); 
         SEARCH_TEXT_SV_MAP.put("Vascular Plants", "Sök i vår samling av kärlväxter"); 
         SEARCH_TEXT_SV_MAP.put("Fish", "Sök i vår samling av fisk"); 
+        SEARCH_TEXT_SV_MAP.put("Bird", "Sök i vår samling av fågel"); 
         SEARCH_TEXT_SV_MAP.put("Mammals", "Sök i vår samling av däggdjur"); 
         SEARCH_TEXT_SV_MAP.put("Amphibians and reptiles", "Sök i våra Grod- och kräldjur samlingar"); 
         
@@ -326,6 +328,7 @@ public class CommonText {
         SEARCH_TEXT_EN_MAP.put("NRM Nodules", "Search in our nodules collection"); 
         SEARCH_TEXT_EN_MAP.put("NRM Isotope Geology", "Search in our isotope geological collection"); 
         SEARCH_TEXT_EN_MAP.put("Fish", "Search in our fish collection"); 
+        SEARCH_TEXT_EN_MAP.put("Bird", "Search in our bird collection"); 
         SEARCH_TEXT_EN_MAP.put("Fungi/Lichens", "Search in our fungi/lichens collection"); 
         SEARCH_TEXT_EN_MAP.put("Mosses", "Search in our mosses collection"); 
         SEARCH_TEXT_EN_MAP.put("Algae", "Search in our algae collection"); 
