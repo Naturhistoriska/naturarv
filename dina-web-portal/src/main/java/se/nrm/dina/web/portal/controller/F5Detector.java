@@ -26,15 +26,18 @@ public class F5Detector implements Serializable {
     private final String pzCollection = "pz";
     private final String pb = "pb";
     private final String pbCollection = "pb";
+    private final String geo = "geo";
     private final String qryDataset = "dataset";
     private final String paleontology = "paleontology"; 
     private final String pCollection = "p*"; 
     private final String zoo = "zoo";
-    private final String zooCollection = "(e* 163840 ma fish herps)";
+    private final String zooCollection = "(e* 262144 655361 163840 ma fish herps va)";
     private final String vertebrate = "vertebrate";
     private final String vertebratCollection = "(ma fish herps)";
     private final String botany = "botany";
     private final String botanyCollection = "(vp fungi mosses algae)"; 
+    private final String geoCollection = "(557057 753664 786432)";
+    
     
     private final String all = "all";
     private final String allCollection = "*";
@@ -79,6 +82,9 @@ public class F5Detector implements Serializable {
                         break;
                     case vertebrate:
                         collection = vertebratCollection;
+                        break;
+                    case geo:
+                        collection = geoCollection;
                         break;
                     case all:
                         collection = allCollection;

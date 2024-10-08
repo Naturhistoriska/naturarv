@@ -2,6 +2,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:p="http://primefaces.org/ui"   
       xmlns:h="http://java.sun.com/jsf/html"    >
+
     <head>
         <title>Galleria view</title>
     </head>
@@ -9,21 +10,22 @@
     <body>
         <ui:composition  template="/templates/masterLayout.xhtml">    
             <ui:define name="content"  > 
-
+                
                 <h:panelGroup id="mainPanel" layout="block" styleClass="main"  > 
       
                     <p:galleria id="galleriaViewPanel" value="#{switch.jpgs}" var="image" 
-                                panelWidth="#{switch.width}"  panelHeight="#{switch.height}"
-                                autoPlay="false" showCaption="true" 
-                                style="margin: auto; width: 1000px;" >
+                                panelWidth="#{switch.width}"  panelHeight="#{switch.height}"  
+                                autoPlay="false" showCaption="true"     
+                                style="margin: auto; width: 1000px; overflow: auto;  "   >
                         <p:graphicImage value="#{searchBean.imageServerPath}#{image}"   
                                         style="width:98%; height: 95%; object-fit:contain;  "
                                         onclick="window.open('#{searchBean.imageServerPath}#{image}')"
                                         title="#{switch.catalogNumber}" stream="true"
-                                        alt="#{switch.scientificName} #{switch.getPhotogarphy(image)}"
-                                        />
+                                        alt="#{switch.scientificName}"
+                                         />
                     </p:galleria>   
-                </h:panelGroup> 
+                </h:panelGroup>
+ 
             </ui:define>
         </ui:composition>
     </body>

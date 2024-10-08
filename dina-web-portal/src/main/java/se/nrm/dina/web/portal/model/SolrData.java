@@ -1,5 +1,5 @@
 package se.nrm.dina.web.portal.model;
-
+ 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import se.nrm.dina.web.portal.utils.HelpClass;
  */
 @Slf4j
 public class SolrData {
-    
+
     @Field
     public String[] associatedMedia;
 
@@ -156,9 +156,7 @@ public class SolrData {
     public String basionym;
     @Field
     public String herbarium;
-    
-    
-    
+
 //    @Field
 //    public String island;
 //    @Field
@@ -167,23 +165,22 @@ public class SolrData {
     public String riverDrainage;
     @Field
     public String district;
-     
 
     boolean selected = false;
     boolean imageExist;
     boolean displayMap;
     boolean displayImage;
     boolean openRemark = false;
-    boolean openSynonyms = false; 
-     
+    boolean openSynonyms = false;
 
+//    private final DecimalFormat df = new DecimalFormat("00.0000");
     private final String closeArrow = "hidearrow.gif";
     private final String openArrow = "downarrow.gif";
     private final String mineralCode = "557057";
     private final String collectionPb = "pb";
-    private final String collectionPz = "pz"; 
+    private final String collectionPz = "pz";
     private final String collectionEVmain = "ev";
-    private final String collectionEVType = "et"; 
+    private final String collectionEVType = "et";
     private final String collectionInsect = "163840";
     private final String collectionFish = "fish";
     private final String collectionFungi = "fungi";
@@ -201,18 +198,25 @@ public class SolrData {
     private final String newLine = "\n";
     private final String emptySpace = " ";
     private final String emptyString = "";
-    private final String coordinatesSeparate = " --- "; 
-    
+    private final String coordinatesSeparate = " --- ";
+
     private final String pbIconName = "pb.png";
     private final String pzEvIconName = "pz.png";
     private final String pzInEvIconName = "ev.png";
-    
+
     private final String chordata = "Chordata";
-    private final String thumb = "tumme2";
+    private final String thumb2 = "tumme2";
+
     private final String mini = "mini";
     private final String large = "large";
     private final String max = "stor";
-     
+
+    private final String thumb = "thumb";
+    private final String medium = "medium";
+    
+    private final String fullSize = "Full_size";
+    private final String thumbnails = "Thumbnails";
+
     private List<String> thumbs;
     private List<String> jpgs;
 
@@ -220,21 +224,21 @@ public class SolrData {
     private StringBuilder minAgeSb;
     private StringBuilder maxAgeSb;
     private StringBuilder taxonSb;
-    private StringBuilder coordinatesSb; 
-    private StringBuilder vpTaxonSb;
-    
+    private StringBuilder coordinatesSb;
+//    private StringBuilder vpTaxonSb;
+
     private final String degreeSign = "°";
     private final String north = "N";
     private final String east = "E";
-    
+
     private final String kboDataset = "kbo";
     private final String fboDataset = "fbo";
-    
+    private final String palDataset = "pal";
+
     private String dataset;
     private String filterThumb;
     private String filterJps;
-    
-    
+
     private final String collectionNameFungiEn = "Fungi/Lichens";
     private final String collectionNameFungiSv = "Svampar/Lavar";
     private final String collectionNameMossesEn = "Mosses";
@@ -243,14 +247,18 @@ public class SolrData {
     private final String collectionNameAlgaeSv = "Alger";
     private final String collectionNameVascularPlantEn = "Vascular plants";
     private final String collectionNameVascularPlantSv = "Kärlväxter";
-    
+
     private final String leftBlacket = "[";
     private final String rightBlacket = "]";
-    
+
+//    private StringBuilder currentDeterminationSb;
+
     private List<String> synonymAuthorskList;
     private List<String> determinationList;
-    
+
     private String botImageUrl;
+    
+    private String imageUrl;
 
     public String[] getAssociatedMedia() {
         return associatedMedia;
@@ -259,8 +267,6 @@ public class SolrData {
     public void setAssociatedMedia(String[] associatedMedia) {
         this.associatedMedia = associatedMedia;
     }
-    
-    
 
     public String getAccessionNumber() {
         return accessionNumber;
@@ -325,8 +331,6 @@ public class SolrData {
     public void setElement(String element) {
         this.element = element;
     }
-    
-    
 
     public Date getStartDate() {
         return startDate;
@@ -415,8 +419,6 @@ public class SolrData {
     public void setCurrentDetermination(String currentDetermination) {
         this.currentDetermination = currentDetermination;
     }
-    
-    
 
     public String getExsiccate() {
         return exsiccate;
@@ -433,8 +435,6 @@ public class SolrData {
     public void setSynonymAuthor(String[] synonymAuthor) {
         this.synonymAuthor = synonymAuthor;
     }
-    
-    
 
     public String getHigherTx() {
         return higherTx;
@@ -459,8 +459,6 @@ public class SolrData {
     public void setImage(boolean image) {
         this.image = image;
     }
-    
-    
 
     public String getMorphbankId() {
         return morphbankId;
@@ -565,8 +563,6 @@ public class SolrData {
     public void setSex(String sex) {
         this.sex = sex;
     }
-    
-    
 
     public Date getDeterminedDate() {
         return determinedDate;
@@ -575,7 +571,6 @@ public class SolrData {
     public void setDeterminedDate(Date determinedDate) {
         this.determinedDate = determinedDate;
     }
-     
 
     public String[] getSynonym() {
         return synonym;
@@ -592,51 +587,35 @@ public class SolrData {
     public void setTypeStatus(String typeStatus) {
         this.typeStatus = typeStatus;
     }
-    
-    
-    public String getTxFullName() {   
+
+    public String getTxFullName() {
         if (isVasclarPlantsCollection() && !StringUtils.isBlank(genus)) {
             taxonSb = new StringBuilder();
             taxonSb.append(genus);
-            taxonSb.append(emptySpace);  
-            taxonSb.append(txFullName); 
+            taxonSb.append(emptySpace);
+            taxonSb.append(txFullName);
             return taxonSb.toString().trim();
-        } else if(isFungiCollection()) {
+        } else if (isFungiCollection()) {
             return species;
-        } else if(isPbCollection()) {
-            if(!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
+        } else if (isPbCollection()) {
+            if (!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
                 taxonSb = new StringBuilder();
                 taxonSb.append(genus);
-                taxonSb.append(emptySpace);  
-                taxonSb.append(txFullName); 
+                taxonSb.append(emptySpace);
+                taxonSb.append(txFullName);
                 return taxonSb.toString().trim();
             }
         }
         return txFullName;
     }
-
-//    public String getTxFullName() {   
-//        if ((isPbCollection() || isVasclarPlantsCollection()) && !StringUtils.isBlank(genus)) {
-//            taxonSb = new StringBuilder();
-//            taxonSb.append(genus);
-//            taxonSb.append(emptySpace);  
-//            taxonSb.append(txFullName); 
-//            return taxonSb.toString().trim();
-//        } else if(isFungiCollection()) {
-//            return species;
-//        }
-//        return txFullName;
-//    }
-
+ 
     public void setTxFullName(String txFullName) {
         this.txFullName = txFullName;
     }
-    
 
     public String[] getTaxa() {
         return taxa;
     }
-    
 
     public void setTaxa(String[] taxa) {
         this.taxa = taxa;
@@ -649,7 +628,7 @@ public class SolrData {
     public void setCommonName(String[] commonName) {
         this.commonName = commonName;
     }
-    
+
     public String getCommonNames() {
         return StringUtils.join(commonName, comma);
     }
@@ -661,25 +640,7 @@ public class SolrData {
     public void setTaxonSb(StringBuilder taxonSb) {
         this.taxonSb = taxonSb;
     }
-    
-    
-
-//    public String getIsland() {
-//        return island;
-//    }
-//
-//    public void setIsland(String island) {
-//        this.island = island;
-//    }
-//
-//    public String getLakeBasin() {
-//        return lakeBasin;
-//    }
-//
-//    public void setLakeBasin(String lakeBasin) {
-//        this.lakeBasin = lakeBasin;
-//    }
-
+ 
     public String getRiverDrainage() {
         return riverDrainage;
     }
@@ -696,9 +657,6 @@ public class SolrData {
         this.district = district;
     }
 
-    
-    
-    
     public boolean isSelected() {
         return selected;
     }
@@ -714,11 +672,11 @@ public class SolrData {
     public void setImageExist(boolean imageExist) {
         this.imageExist = imageExist;
     }
-    
+
     public boolean isShowClassification() {
-        if(isFungiCollection()) {
+        if (isFungiCollection()) {
             return false;
-        } else if(isPaleoBotanyCollection()) {
+        } else if (isPaleoBotanyCollection()) {
             return false;
         }
         return true;
@@ -739,13 +697,12 @@ public class SolrData {
     public void setDisplayImage(boolean displayImage) {
         this.displayImage = displayImage;
     }
-    
-    public boolean isShowCounty() {
-        
+
+    public boolean isShowCounty() { 
         return isEvCollection() ? false : !isFungiCollection();
     }
 
-    public String getAuthors() { 
+    public String getAuthors() {
         return author == null ? emptyString : StringUtils.join(author, comma);
     }
 
@@ -765,23 +722,21 @@ public class SolrData {
         this.openSynonyms = openSynonyms;
     }
 
-    
-    
     public String getRemarkBtn() {
         return openRemark ? upArrowBtn : downArrowBtn;
     }
-    
+
     public String getDeterminations() {
         return StringUtils.join(determination, comma);
     }
 
     public List<String> getDeterminationList() {
         determinationList = new ArrayList();
-        if(determination != null && determination.length > 0) {
+        if (determination != null && determination.length > 0) {
             Arrays.asList(determination).stream()
-                        .forEach(det -> {
-                            determinationList.addAll(Arrays.asList(det.split(newLine)));
-                        }); 
+                    .forEach(det -> {
+                        determinationList.addAll(Arrays.asList(det.split(newLine)));
+                    });
         }
         return determinationList;
     }
@@ -789,20 +744,19 @@ public class SolrData {
     public String getSynonymAuthors() {
         return StringUtils.join(synonymAuthor, comma);
     }
-    
+
     public List<String> getFungiSynonymAuthors() {
         synonymAuthorskList = new ArrayList();
-        if(isFungiCollection() || isVasclarPlantsCollection()) { 
-            if(synonymAuthor != null && synonymAuthor.length > 0) {
+        if (isFungiCollection() || isVasclarPlantsCollection()) {
+            if (synonymAuthor != null && synonymAuthor.length > 0) {
                 Arrays.asList(synonymAuthor).stream()
                         .forEach(sa -> {
                             synonymAuthorskList.addAll(Arrays.asList(sa.split(newLine)));
-                        }); 
+                        });
             }
         }
         return synonymAuthorskList;
     }
-     
 
     public String getCollectors() {
         return StringUtils.join(collector, comma);
@@ -813,12 +767,12 @@ public class SolrData {
     }
 
     public String getRemarksString() {
-        if(remarks != null) {
+        if (remarks != null) {
             return String.join(comma, remarks);
         }
         return null;
     }
-    
+
     public List<String> getAllRemarkes() {
         List<String> remarkList = new ArrayList();
         if (collectionId != null && collectionId.equals(mineralCode)) {
@@ -834,7 +788,7 @@ public class SolrData {
                         .forEach(r -> {
                             remarkList.addAll(Arrays.asList(r.split(newLine)));
                         });
-            } 
+            }
         }
         return remarkList;
     }
@@ -915,69 +869,142 @@ public class SolrData {
         this.additionalDet = additionalDet;
     }
     
-    public void setKboImages(String morphbankImageUrl) { 
+    
+    
+    
+    
+    
+    
+    
+    public void setImages(String imageServerUrl) {
         thumbs = new ArrayList<>();
         jpgs = new ArrayList<>();
-         
-        if(isVasclarPlantsCollection()) {
+
+        if (isCommonCollection()) {
+            if (morphbankImageId != null) {
+                Arrays.asList(morphbankImageId)
+                        .stream()
+                        .forEach(i -> {
+                            thumbs.add(HelpClass.getInstance()
+                                    .buildImagePath(i, CommonText.getInstance()
+                                            .getImageTypeThumb(), imageServerUrl));
+                            jpgs.add(HelpClass.getInstance()
+                                    .buildImagePath(i, CommonText.getInstance()
+                                            .getImageTypeJpg(), imageServerUrl));
+                        });
+            }
+        } else if (isFungiCollection() || isVasclarPlantsCollection()) {
+            setKboImages(imageServerUrl);
+        } else if (isEtCollection() || isFishCollection()) {
+            setEtImages(imageServerUrl);
+        }
+    }
+    
+    private void setEtImages(String imageServerUrl) {
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+  
+        if (image && associatedMedia != null) {
+            Arrays.asList(associatedMedia)
+                    .stream() 
+                    .forEach(s -> {
+                        imageUrl = HelpClass.getInstance()
+                                .buildImagePathWithDataset(s, collectionId, imageServerUrl); 
+                        
+                        if (imageUrl.contains(fullSize)) {
+                            jpgs.add(imageUrl);
+                        }
+
+                        if (imageUrl.contains(thumbnails)) {
+                            thumbs.add(imageUrl);
+                        } 
+                    });
+            log.info("thumbs : {}", thumbs);
+        } 
+    }
+ 
+    private void setKboImages(String imageServerUrl) {
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+
+        if (isVasclarPlantsCollection()) {
             dataset = fboDataset;
             filterThumb = mini;
-            filterJps = large; 
+            filterJps = large;
         } else {
             dataset = kboDataset;
-            filterThumb = thumb;
+            filterThumb = thumb2;
             filterJps = max;
         }
-        if(image && associatedMedia != null) {
-            Arrays.asList(associatedMedia) 
+        if (image && associatedMedia != null) {
+            Arrays.asList(associatedMedia)
                     .stream()
-//                    .filter(s -> s.contains(thumb))
-                    .forEach(s -> {  
-                        botImageUrl = HelpClass.getInstance() 
-                                .buildBotImagePath(StringUtils.substringBetween(s, leftBlacket, rightBlacket), 
-                                        dataset,  morphbankImageUrl); 
-                        if(botImageUrl.contains(filterJps)) {
-                            jpgs.add(botImageUrl); 
-                        }  
-                    
-                        if(botImageUrl.contains(filterThumb)) {
-                            thumbs.add(botImageUrl); 
+                    //                    .filter(s -> s.contains(thumb))
+                    .forEach(s -> {
+                        botImageUrl = HelpClass.getInstance()
+                                .buildImagePathWithDataset(
+                                        StringUtils.substringBetween(s, leftBlacket, rightBlacket),
+                                        dataset, imageServerUrl);
+                        if (botImageUrl.contains(filterJps)) {
+                            jpgs.add(botImageUrl);
+                        }
+
+                        if (botImageUrl.contains(filterThumb)) {
+                            thumbs.add(botImageUrl);
+                        }
+                    });
+        } 
+    }
+
+    public void setPalImages() {
+        thumbs = new ArrayList<>();
+        jpgs = new ArrayList<>();
+
+        if (image && associatedMedia != null) {
+            Arrays.asList(associatedMedia)
+                    .stream()
+                    .forEach(media -> {
+                        if (media.contains(medium)) {
+                            jpgs.add(HelpClass.getInstance().buildPalImagePath(
+                                    media, palDataset));
+                        }
+
+                        if (media.contains(thumb)) {
+                            thumbs.add(HelpClass.getInstance().buildPalImagePath(
+                                    media, palDataset));
                         }
                     });
         }
-//        if (isFungiCollection()) {
-//            Collections.reverse(jpgs);
-//        }
     }
-    
-    public void setKboImages() { 
+
+    public void setKboImages() {
         thumbs = new ArrayList<>();
         jpgs = new ArrayList<>();
-         
-       if(isVasclarPlantsCollection()) {
+
+        if (isVasclarPlantsCollection()) {
             dataset = fboDataset;
             filterThumb = mini;
-            filterJps = large; 
+            filterJps = large;
         } else {
             dataset = kboDataset;
-            filterThumb = thumb;
+            filterThumb = thumb2;
             filterJps = max;
         }
-        if(image && associatedMedia != null) {
-            Arrays.asList(associatedMedia) 
+        if (image && associatedMedia != null) {
+            Arrays.asList(associatedMedia)
                     .stream()
-//                    .filter(s -> s.contains(thumb))
-                    .forEach(s -> {  
-                        botImageUrl = HelpClass.getInstance() 
+                    //                    .filter(s -> s.contains(thumb))
+                    .forEach(s -> {
+                        botImageUrl = HelpClass.getInstance()
                                 .buildBotImagePath(StringUtils.substringBetween(
-                                        s, leftBlacket, rightBlacket), dataset); 
-                        
-                        if(botImageUrl.contains(filterJps)) {
-                            jpgs.add(botImageUrl); 
-                        } 
-                    
-                        if(botImageUrl.contains(filterThumb)) {
-                            thumbs.add(botImageUrl); 
+                                        s, leftBlacket, rightBlacket), dataset);
+
+                        if (botImageUrl.contains(filterJps)) {
+                            jpgs.add(botImageUrl);
+                        }
+
+                        if (botImageUrl.contains(filterThumb)) {
+                            thumbs.add(botImageUrl);
                         }
                     });
         }
@@ -985,77 +1012,61 @@ public class SolrData {
             Collections.reverse(jpgs);
         }
     }
-    
-    
+
     public void setImages() {
         thumbs = new ArrayList<>();
         jpgs = new ArrayList<>();
-        
-        if(isCommonCollection()) {
+
+        if (isCommonCollection()) {
             if (morphbankImageId != null) {
                 Arrays.asList(morphbankImageId)
-                    .stream()
-                    .forEach(i -> {
-                        thumbs.add(HelpClass.getInstance()
-                                .buildImagePath(i, CommonText.getInstance()
-                                        .getImageTypeThumb()));
-                        jpgs.add(HelpClass.getInstance()
-                                .buildImagePath(i, CommonText.getInstance()
-                                        .getImageTypeJpg()));
-                    });
+                        .stream()
+                        .forEach(i -> {
+                            thumbs.add(HelpClass.getInstance()
+                                    .buildImagePath(i, CommonText.getInstance()
+                                            .getImageTypeThumb()));
+                            jpgs.add(HelpClass.getInstance()
+                                    .buildImagePath(i, CommonText.getInstance()
+                                            .getImageTypeJpg()));
+                        });
             }
-        } else if(isFungiCollection() || isVasclarPlantsCollection()) {
-            setKboImages();  
-        }  
-    }
-
-    public void setFboImages(String morphbankImageUrl) { 
-        thumbs = new ArrayList<>();
-        jpgs = new ArrayList<>();
-        if(image && associatedMedia != null) {
-            Arrays.asList(associatedMedia) 
-                    .stream()
-//                    .filter(s -> s.contains(thumb))
-                    .forEach(s -> { 
-                        botImageUrl = HelpClass.getInstance() 
-                                .buildBotImagePath(StringUtils.substringBetween(s, leftBlacket, rightBlacket), 
-                                        kboDataset,  morphbankImageUrl); 
-                        jpgs.add(botImageUrl); 
-                         
-                        if(isVasclarPlantsCollection()) {
-                            if(botImageUrl.contains(mini)) {
-                                thumbs.add(botImageUrl); 
-                            } 
-                        } else {
-                            if(botImageUrl.contains(thumb)) {
-                                thumbs.add(botImageUrl); 
-                            } 
-                        } 
-                    }); 
+        } else if (isFungiCollection() || isVasclarPlantsCollection()) {
+            setKboImages();
+        } else if (collectionId.equals(collectionPz)) {
+            setPalImages();
+        } else if (isEvCollection() || isFishCollection()) {
+            setEtImages();
         }
     }
-
-    public void setImages(String morphbankImageUrl) {
+    
+    private void setEtImages() {
         thumbs = new ArrayList<>();
         jpgs = new ArrayList<>();
-        
-        if(isCommonCollection()) {
-            if (morphbankImageId != null) {
-                Arrays.asList(morphbankImageId)
-                    .stream()
-                    .forEach(i -> {
-                        thumbs.add(HelpClass.getInstance()
-                                .buildImagePath(i, CommonText.getInstance()
-                                        .getImageTypeThumb(), morphbankImageUrl));
-                        jpgs.add(HelpClass.getInstance()
-                                .buildImagePath(i, CommonText.getInstance()
-                                        .getImageTypeJpg(), morphbankImageUrl));
-                    });
-            }
-        } else if(isFungiCollection() || isVasclarPlantsCollection()) {
-            setKboImages(morphbankImageUrl);  
-        }  
+  
+        if (image && associatedMedia != null) {
+            Arrays.asList(associatedMedia)
+                    .stream() 
+                    .forEach(s -> {
+                        imageUrl = HelpClass.getInstance()
+                                .buildImagePathWithIdAndDataset(s, collectionId); 
+                        
+                        if (imageUrl.contains(fullSize)) {
+                            jpgs.add(imageUrl);
+                        }
+
+                        if (imageUrl.contains(thumbnails)) {
+                            thumbs.add(imageUrl);
+                        } 
+                    }); 
+        } 
     }
+    
+    
+
+ 
+    
+    
+
 
     public boolean isOpenMap() {
         return map && !displayMap;
@@ -1066,20 +1077,20 @@ public class SolrData {
     }
 
     public List<String> getThumbs() {
-        if(image) {
-            if(thumbs == null || thumbs.isEmpty()) {
+        if (image) {
+            if (thumbs == null || thumbs.isEmpty()) {
                 setImages();
             }
-        } 
+        }
         return thumbs;
     }
 
-    public List<String> getJpgs() { 
-        if(image) {
-            if(jpgs == null || jpgs.isEmpty()) {
+    public List<String> getJpgs() {
+        if (image) {
+            if (jpgs == null || jpgs.isEmpty()) {
                 setImages();
             }
-        } 
+        }
         return jpgs;
     }
 
@@ -1222,7 +1233,7 @@ public class SolrData {
 
     public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
-    } 
+    }
 
     public String getBasionym() {
         return basionym;
@@ -1239,11 +1250,9 @@ public class SolrData {
     public void setHerbarium(String herbarium) {
         this.herbarium = herbarium;
     }
-    
-    
 
     public boolean isPbCollection() {
-        return collectionId != null && (collectionId.equals(collectionPb) 
+        return collectionId != null && (collectionId.equals(collectionPb)
                 || collectionId.equals(collectionPz));
     }
 
@@ -1255,11 +1264,11 @@ public class SolrData {
         }
         return false;
     }
-    
+
     public boolean isEtCollection() {
         return collectionId.equals(collectionEVType);
     }
-    
+
     public boolean isZooCollection() {
         if (collectionId != null) {
             return collectionId.equals(collectionInsect)
@@ -1267,51 +1276,50 @@ public class SolrData {
         }
         return false;
     }
-    
+
     public boolean isMammalsCollection() {
         if (collectionId != null) {
-            return collectionId.equals(collectionMammals); 
+            return collectionId.equals(collectionMammals);
         }
         return false;
     }
-    
+
     public boolean isBirdsCollection() {
         return collectionId != null && collectionId.equals(collectionBirds);
     }
-    
+
     public boolean isInsectCollection() {
         if (collectionId != null) {
             return collectionId.equals(collectionInsect);
         }
         return false;
     }
-    
+
     public boolean isFungiCollection() {
         if (collectionId != null) {
-            return collectionId.equals(collectionFungi) ? 
-                    true : collectionId.equals(collectionAlgae) ?
-                    true : collectionId.equals(collectionMosses);
+            return collectionId.equals(collectionFungi)
+                    ? true : collectionId.equals(collectionAlgae)
+                    ? true : collectionId.equals(collectionMosses);
         }
         return false;
     }
-    
+
     public boolean isVasclarPlantsCollection() {
-        return collectionId != null ? collectionId.equals(collectionVascularPlants) : false; 
+        return collectionId != null ? collectionId.equals(collectionVascularPlants) : false;
     }
-    
-        
+
     public boolean isFishCollection() {
         if (collectionId != null) {
             return collectionId.equals(collectionFish)
-                     || collectionId.equals(collectionHerps);
+                    || collectionId.equals(collectionHerps);
         }
         return false;
     }
-    
-    public boolean isCommonCollection() { 
-        if(isPbCollection()) {
+
+    public boolean isCommonCollection() {
+        if (isPbCollection()) {
             return false;
-        } else if(isEvCollection()) {
+        } else if (isEvCollection()) {
             return false;
         } else if (isMammalsCollection()) {
             return false;
@@ -1323,7 +1331,7 @@ public class SolrData {
             return false;
         } else if (isVasclarPlantsCollection()) {
             return false;
-        } else if(isBirdsCollection()) {
+        } else if (isBirdsCollection()) {
             return false;
         }
         return true;
@@ -1333,18 +1341,18 @@ public class SolrData {
 //                && !isVasclarPlantsCollection() && !isMammalsCollection()
 //                && !isBirdsCollection();
     }
-    
+
     public boolean isShowPresavation() {
-        if(isFishCollection()) {
+        if (isFishCollection()) {
             return true;
-        } else if(isPbCollection()) {
+        } else if (isPbCollection()) {
             return true;
-        } else if(isEvCollection()) {
+        } else if (isEvCollection()) {
             return true;
         }
         return false;
     }
-    
+
     public boolean isShowPreparation() {
         return isFungiCollection() ? true : isMammalsCollection();
     }
@@ -1356,7 +1364,7 @@ public class SolrData {
     public String getOpenCloseRemarkImg() {
         return openRemark ? openArrow : closeArrow;
     }
-    
+
     public void openCloseSynonyms() {
         openSynonyms = !openSynonyms;
     }
@@ -1364,7 +1372,7 @@ public class SolrData {
     public String getOpenCloseSynonymsImg() {
         return openSynonyms ? openArrow : closeArrow;
     }
-     
+
     public String getAllAdditionalDeterminations() {
         return StringUtils.join(additionalDet, semicolon);
     }
@@ -1411,50 +1419,61 @@ public class SolrData {
             if (longitudeText != null && longitudeText.length() > 0) {
                 coordinatesSb.append(latitude);
                 coordinatesSb.append(degreeSign);
+                coordinatesSb.append(emptySpace);
                 coordinatesSb.append(north);
                 coordinatesSb.append(coordinatesSeparate);
                 coordinatesSb.append(longitude);
                 coordinatesSb.append(degreeSign);
+                coordinatesSb.append(emptySpace);
                 coordinatesSb.append(east);
                 return coordinatesSb.toString().trim();
-            }  
-        }  
-        return null; 
-    }
-    
-    
- 
-    public String getTaxon() {
-        taxonSb = new StringBuilder();
-        
-        if (isVasclarPlantsCollection() && 
-                    !StringUtils.isBlank(genus)) {
-            taxonSb.append(genus);
-            taxonSb.append(emptySpace);
-        } else if(isPbCollection()) {
-            if(!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
-                taxonSb = new StringBuilder();
-                taxonSb.append(genus);
-                taxonSb.append(emptySpace);   
             }
         }
-        taxonSb.append(txFullName);
-        taxonSb.append(emptySpace);
-        taxonSb.append(getAuthors());
-        return taxonSb.toString().trim();
-    } 
-    
+        return null;
+    }
+
+    public String getTaxon() {
+        taxonSb = new StringBuilder();
+
+        if (isFishCollection()) {
+            if (!StringUtils.isBlank(species)) {
+                taxonSb.append(species);
+                if (author != null) {
+                    taxonSb.append(emptySpace);
+                    taxonSb.append(getAuthors());
+                }
+            }
+            return taxonSb.toString().trim();
+        } else {
+            if (isVasclarPlantsCollection()
+                    && !StringUtils.isBlank(genus)) {
+                taxonSb.append(genus);
+                taxonSb.append(emptySpace);
+            } else if (isPbCollection()) {
+                if (!StringUtils.isBlank(species) && !StringUtils.isBlank(genus)) {
+                    taxonSb = new StringBuilder();
+                    taxonSb.append(genus);
+                    taxonSb.append(emptySpace);
+                }
+            }
+            taxonSb.append(txFullName);
+            taxonSb.append(emptySpace);
+            taxonSb.append(getAuthors());
+            return taxonSb.toString().trim();
+        }
+    }
+
     public boolean isPaleoBotanyCollection() {
         return collectionId.equals(collectionPb);
     }
-    
+
     public String getIconName() {
         switch (collectionId) {
             case collectionPb:
                 return pbIconName;
             case collectionPz:
-                return higherTx != null && higherTx.contains(chordata) 
-                        ? pzEvIconName :   pzInEvIconName;
+                return higherTx != null && higherTx.contains(chordata)
+                        ? pzEvIconName : pzInEvIconName;
             default:
                 return collectionId + ".png";
         }
@@ -1482,10 +1501,10 @@ public class SolrData {
                 return collectionNameAlgaeEn;
             default:
                 return collectionNameVascularPlantEn;
-        } 
+        }
     }
 
-    public String getBotSvCollectionName() { 
+    public String getBotSvCollectionName() {
         switch (collectionId) {
             case collectionFungi:
                 return collectionNameFungiSv;

@@ -58,6 +58,6 @@ public class StatisticData implements Serializable {
   
   public List<CollectionData> getCollections() {
     return collections;
-  }
+  } 
 
 }

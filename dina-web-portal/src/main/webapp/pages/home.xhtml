@@ -3,141 +3,146 @@
       xmlns:h="http://java.sun.com/jsf/html"   
       xmlns:p="http://primefaces.org/ui"   >
 
-  <body>
-    <ui:composition  template="/templates/masterLayout.xhtml">     
-      <ui:define name="content"  >    
-        <h:panelGroup id="mainPanel"  layout="block" styleClass="homePanel"  >    
-          <h:form id="homeForm" prependId="false">    
-            <div class="ui-g" style="width: 980px;">
-              <div class="ui-g-9"> 
-                <div class="ui-g-12"  style="padding-top: 20px;"> 
-                  <h:outputText id="welcomeText1" value="#{msg.welcome1}" styleClass="welcomeheader" /> 
-                </div> 
-                <div class="ui-g-12" >
-                  <h:outputText id="welcomeText2" value="#{msg.welcome2}"  styleClass="welcomeheader" />  
-                </div>  
-                <div class="ui-g-12" >   
-                  <div class="ui-g-7">
-                    <div class="ui-g-12 baggimg" > 
-                      <h:graphicImage library="images" name="Fjarilar.png" alt="3bagg" 
-                                      title="3bagg" styleClass="images" width="300" height="220"  />  
-                    </div>   
-                    <div class="ui-g-12 baggimgtext" >
-                      <h:outputText value="#{msg.photo3bagg}"    /> 
-                    </div>
-                  </div>
+    <body>
+        <ui:composition  template="/templates/masterLayout.xhtml">     
+            <ui:define name="content"  >    
+                <h:panelGroup id="mainPanel"  layout="block" styleClass="homePanel"  >    
+                    <h:form id="homeForm" prependId="false">    
+                        <div class="ui-g" style="width: 980px;">
+                            <div class="ui-g-9"> 
+                                <div class="ui-g-12"  style="padding-top: 20px;"> 
+                                    <h:outputText id="welcomeText1" value="#{msg.welcome1}" styleClass="welcomeheader" /> 
+                                </div> 
+                                <div class="ui-g-12" >
+                                    <h:outputText id="welcomeText2" value="#{msg.welcome2}"  styleClass="welcomeheader" />  
+                                </div>  
+                                <div class="ui-g-12" >   
+                                    <div class="ui-g-7">
+                                        <div class="ui-g-12 baggimg" > 
+                                            <h:graphicImage library="images" name="Fjarilar.png" alt="3bagg" 
+                                                            title="3bagg" styleClass="images" width="300" height="220"  />  
+                                        </div>   
+                                        <div class="ui-g-12 baggimgtext" >
+                                            <h:outputText value="#{msg.photo3bagg}"    /> 
+                                        </div>
+                                    </div>
 
-                  <div class="ui-g-5" style="padding-top: 5em; padding-right: 2em; ">
-                    <h:outputText value="#{msg.welcomedescription}" />  
-                  </div> 
-                </div> 
-                <div class="ui-g-12">
-                  <p:spacer width="100" height="40" />  
-                </div>
-                <div class="ui-g-12" style="padding-left: 80px;">
-                  <p:chart type="bar" id="monthChart" 
-                           model="#{chart.totalMonthChart}" 
-                           style="height:300px; width: 550px;  " /> 
-                </div>
-                <div class="ui-g-12">
-                  <p:spacer width="100" height="40" />  
-                </div>
-                <div class="ui-g-12" style="padding-left: 80px;">
-                  <p:chart type="bar" id="yearChart" 
-                           model="#{chart.totalTenYearsChart}" 
-                           style="height:300px; width: 550px;  " />
+                                    <div class="ui-g-5" style="padding-top: 5em; padding-right: 2em; ">
+                                        <h:outputText value="#{msg.welcomedescription}" />  
+                                    </div> 
+                                </div> 
+                                <div class="ui-g-12">
+                                    <p:spacer width="100" height="40" />  
+                                </div>
+                                <div class="ui-g-12" style="padding-left: 80px;">
+                                    <p:chart type="bar" id="monthChart" 
+                                             model="#{chart.totalMonthChart}" 
+                                             style="height:300px; width: 550px;  " /> 
+                                </div>
+                                <div class="ui-g-12">
+                                    <p:spacer width="100" height="40" />  
+                                </div>
+                                <div class="ui-g-12" style="padding-left: 80px;">
+                                    <p:chart type="bar" id="yearChart" 
+                                             model="#{chart.totalTenYearsChart}" 
+                                             style="height:300px; width: 550px;  " />
 
-                </div>
-              </div>
-                  
-              <!--              statistic panel         -->
-              <h:panelGrid id="shoutcutpanel" styleClass="statistic textLink">
-                <p:spacer width="20" height="20" /> 
-                <p:spacer width="20" height="20" />
-                <p:spacer width="20" height="20" />
+                                </div>
+                            </div>
 
+                            <!--              statistic panel         -->
+                            <div class="ui-g-3"> 
+                                <h:panelGrid id="shoutcutpanel" styleClass="statistic textLink" 
+                                             cellpadding="0" cellspacing="0">
+                                    
+                                    <p:spacer width="20" height="20" /> 
+                                    <p:spacer width="20" height="20" /> 
 
-                <h:outputText value="#{msg.commonsearch}" style="font-weight: bold;" /> 
-                <p:commandLink actionListener="#{searchBean.all()}"  process="@this"  > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0"  styleClass="statistic"   >
-                    <h:outputText value="#{msg.allspecimens}" />  
-                    <h:outputText value="#{statistic.totalRecords}"   style="text-align: right; " /> 
-                  </h:panelGrid> 
-                </p:commandLink>  
+                                    <h:outputText value="#{msg.commonsearch}" style="font-weight: bold;" /> 
+                                    <p:spacer width="20" height="20" /> 
+                                    <p:commandLink actionListener="#{searchBean.all()}"  process="@this"  > 
+                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                                     cellpadding="0" cellspacing="0"  styleClass="statistic"   >
+                                            <h:outputText value="#{msg.allspecimens}" />  
+                                            <h:outputText value="#{statistic.totalRecords}"   style="text-align: right; " /> 
+                                        </h:panelGrid> 
+                                    </p:commandLink>  
 
-                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('map:')}"  process="@this"   > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0" styleClass="statistic" >
-                    <h:outputText value="#{msg.specimenswithmap}" />     
-                    <h:outputText value="#{statistic.totalMaps}"  style="text-align: right;" />
-                  </h:panelGrid> 
-                </p:commandLink>  
+                                    <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('map:')}"  process="@this"   > 
+                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                                     cellpadding="0" cellspacing="0" styleClass="statistic" >
+                                            <h:outputText value="#{msg.specimenswithmap}" />     
+                                            <h:outputText value="#{statistic.totalMaps}"  style="text-align: right;" />
+                                        </h:panelGrid> 
+                                    </p:commandLink>  
 
-                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('inSweden:')}"  process="@this"   > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0" styleClass="statistic" >
-                    <h:outputText value="#{msg.specimensinsweden}" />      
-                    <h:outputText value="#{statistic.totalInSweden}" />
-                  </h:panelGrid> 
-                </p:commandLink>  
-  
-                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('image:')}"  process="@this"   > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0" styleClass="statistic" >
-                    <h:outputText value="#{msg.specimenswithimage}" />       
-                    <h:outputText value="#{statistic.totalImages}" />
-                  </h:panelGrid> 
-                </p:commandLink>  
+                                    <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('inSweden:')}"  process="@this"   > 
+                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                                     cellpadding="0" cellspacing="0" styleClass="statistic" >
+                                            <h:outputText value="#{msg.specimensinsweden}" />      
+                                            <h:outputText value="#{statistic.totalInSweden}" />
+                                        </h:panelGrid> 
+                                    </p:commandLink>  
 
-                <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('isType:')}"  process="@this"   > 
-                  <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
-                               cellpadding="0" cellspacing="0" styleClass="statistic" >
-                    <h:outputText value="#{msg.specimenwithtype}" />          
-                    <h:outputText value="#{statistic.totalType}" />
-                  </h:panelGrid> 
-                </p:commandLink>
+                                    <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('image:')}"  process="@this"   > 
+                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                                     cellpadding="0" cellspacing="0" styleClass="statistic" >
+                                            <h:outputText value="#{msg.specimenswithimage}" />       
+                                            <h:outputText value="#{statistic.totalImages}" />
+                                        </h:panelGrid> 
+                                    </p:commandLink>  
 
-                <p:spacer width="20" height="20" />
-                <p:spacer width="20" height="20" />
+                                    <p:commandLink actionListener="#{searchBean.searchWithSingleFilter('isType:')}"  process="@this"   > 
+                                        <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn" 
+                                                     cellpadding="0" cellspacing="0" styleClass="statistic" >
+                                            <h:outputText value="#{msg.specimenwithtype}" />          
+                                            <h:outputText value="#{statistic.totalType}" />
+                                        </h:panelGrid> 
+                                    </p:commandLink>
 
-                <h:outputText value="#{msg.allitemsincollections}" style="font-weight: bold;" />
-                <ui:repeat var="collection" value="#{statistic.collections}" varStatus="collectionStatus" >   
-                  <p:commandLink actionListener="#{searchBean.searchCollectionWithSingleFilter(collection)}" 
-                                 title="#{collection.name}"  
-                                 process="@this"  >  
-                    <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
-                                 cellpadding="0" cellspacing="0" styleClass="statistic"> 
-                      <h:outputText value="#{languages.swedish ? collection.swedishName : collection.shortName}" />  
-                      <h:outputText value="#{collection.total}" />
-                    </h:panelGrid>  
-                  </p:commandLink>   
-                </ui:repeat>  
+                                    <p:spacer width="20" height="20" /> 
+                                    <p:spacer width="20" height="20" /> 
+                                    <h:outputText value="#{msg.allitemsincollections}" style="font-weight: bold;" />
+                                    <p:spacer width="20" height="20" /> 
+                                    <ui:repeat var="group"
+                                               value="#{statistic.collecctionGrouup}"  varStatus="collectionStatus" >  
 
-                <p:spacer width="20" height="20" />
-                <p:spacer width="20" height="20" /> 
-                <h:outputText value="#{msg.externallink}" style="font-weight: bold;"  />  
+                                        <p:commandLink actionListener="#{searchBean.searchCollectionWithSingleFilter(group)}" 
+                                                       title="#{group.group}"  
+                                                       process="@this"  >  
+                                            <h:panelGrid columns="2" columnClasses="leftcolumn,rightcolumn"
+                                                         cellpadding="0" cellspacing="0" styleClass="statistic"> 
+                                                <h:outputText value="#{languages.swedish ? group.swedishGroupName : group.groupName}"  />  
+                                                <h:outputText value="#{group.total}" />
+                                            </h:panelGrid>  
+                                        </p:commandLink>    
+                                    </ui:repeat>  
 
-                <h:outputLink id="dinaspecieslink" value="http://naturforskaren.se/"  
-                              title="scientificname"  target="_blank" >  
-                  <h:outputText value="#{msg.naturforskaren}"   />   
-                </h:outputLink> 
-                <h:outputText value="#{msg.naturforskarendesc}" style="font-size: 10px;" />  
+                                    <p:spacer width="20" height="20" />
+                                    <p:spacer width="20" height="20" /> 
+                                    <h:outputText value="#{msg.externallink}" style="font-weight: bold;"  />  
+                                    <p:spacer width="20" height="20" /> 
+                                    <h:outputLink id="dinaspecieslink" value="http://naturforskaren.se/"  
+                                                  title="scientificname"  target="_blank" >  
+                                        <h:outputText value="#{msg.naturforskaren}"   />   
+                                    </h:outputLink> 
+                                    <h:outputText value="#{msg.naturforskarendesc}" style="font-size: 10px;" />  
 
-                <h:outputLink value="http://www.gbif.se/" target="_blank" > 
-                  <h:outputText value="#{msg.gibf}" /> 
-                </h:outputLink>
-                <h:outputText value="#{msg.gibfdesc}" style="font-size: 10px;" />  
-                
-                <h:outputLink value="https://herbarium.nrm.se/" target="_blank" > 
-                  <h:outputText value="#{msg.herbarium}" /> 
-                </h:outputLink>
-              </h:panelGrid> 
-            </div> 
-          </h:form> 
-        </h:panelGroup>
-      </ui:define>
-    </ui:composition> 
-  </body>
+                                    <h:outputLink value="http://www.gbif.se/" target="_blank" > 
+                                        <h:outputText value="#{msg.gibf}" /> 
+                                    </h:outputLink>
+                                    <h:outputText value="#{msg.gibfdesc}" style="font-size: 10px;" />  
+
+                                    <h:outputLink value="https://herbarium.nrm.se/" target="_blank" > 
+                                        <h:outputText value="#{msg.herbarium}" /> 
+                                    </h:outputLink>
+                                </h:panelGrid> 
+                            </div>
+                        </div> 
+                    </h:form> 
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition> 
+    </body>
 </html>
 

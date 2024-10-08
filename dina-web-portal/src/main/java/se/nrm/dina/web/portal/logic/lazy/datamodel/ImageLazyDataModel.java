@@ -2,11 +2,8 @@ package se.nrm.dina.web.portal.logic.lazy.datamodel;
   
 import java.util.List;
 import java.util.Map;   
-import lombok.extern.slf4j.Slf4j;
-//import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-//import org.primefaces.model.SortMeta;
-//import org.primefaces.model.LazyDataModel; 
+import lombok.extern.slf4j.Slf4j; 
+import org.primefaces.model.LazyDataModel; 
 import org.primefaces.model.SortOrder; 
 import se.nrm.dina.web.portal.model.ImageModel;
 import se.nrm.dina.web.portal.solr.SolrImageService; 
@@ -38,14 +35,17 @@ public class ImageLazyDataModel extends LazyDataModel<ImageModel> {
   }
 
   @Override
-  public List<ImageModel> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+  public List<ImageModel> load(int first, int pageSize, String sortField, 
+          SortOrder sortOrder, Map<String, Object> filters) {
     log.info("filterMap: {} -- {}", filterList, searchText + " --- " + filterMap );
       
-    searchImageQueryText = SearchHelper.getInstance().buildImageOptionSearchText(searchText, filterList);
+    searchImageQueryText = SearchHelper.getInstance()
+            .buildImageOptionSearchText(searchText, filterList);
     if(filterList != null && !filterList.isEmpty() || filterMap != null && !filterMap.isEmpty()) { 
       this.setRowCount(solr.getImageTotalCount(searchImageQueryText, filterMap)); 
     } 
-    return solr.getImageList(searchImageQueryText, first, pageSize, filterMap, filterList); 
+    return solr.getImageList(searchImageQueryText, 
+            first, pageSize, filterMap, filterList); 
   } 
 
 //    @Override

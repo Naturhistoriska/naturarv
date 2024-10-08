@@ -234,7 +234,7 @@ body * {
     font-weight: bold;
     font-size: 16px;
     text-align: left;
-    padding-left: 120px;
+    padding-left: 90px;
     padding-top: 20px;
 }
 
@@ -611,7 +611,14 @@ a:hover {
     text-decoration: underline;
 }
 
+.imageSwitchClass {
+    width: 100% !important;
+}
 
+.imageSwitchClass img {
+   width: 100% !important;
+   height: 100% !important;
+}
 
 
 /***************************** replace origin padding  **************************/
@@ -638,7 +645,14 @@ a:hover {
 
 .imageswithpedding {
     border: none;
-    padding: 5px;
+    width: 70px !important; 
+    /*padding: 2px !important;*/ 
+    
+}
+
+.largeImage {
+    border: none; 
+    /*padding: 2px !important;*/  
 }
 
 .largeFboImage {
@@ -649,12 +663,22 @@ a:hover {
    margin: auto;
 }
 
+.largePalImage {
+   border: none;
+   padding: 5px; 
+   /*width: 100%;*/
+   height: 93% !important;
+   margin: auto;
+}
+
 .largeKboImage {
    border: none;
    padding: 5px; 
    width: 98%; 
    margin: auto;
 }
+
+ 
 
 .imageCamera {
     border: none;
@@ -832,17 +856,30 @@ noheader.ui-datatable .ui-paginator {
     width: 100%;
     height: 100%;
 }
+ 
 
 .ui-galleria-panel {
     width: 100%;
     height: 100%;
 }
 
-.galleriaViewPanel ul {
+.ui-galleria-frame-image {
+    object-fit:contain !important; 
+}
+ 
+.ui-galleria-frame-content img {
+    object-fit:contain !important; 
+}
+
+img {
+   object-fit: contain; 
+}
+    
+/*.galleriaViewPanel ul {
     width: 100%;
     height: 500px;
     overflow: scroll !important;
-}
+}*/
 
 /*.ui-panel-images {
     width: 100%;

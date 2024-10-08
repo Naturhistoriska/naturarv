@@ -78,6 +78,35 @@ public class HelpClass {
         return imagePathSb.toString();
     }
 
+    public String buildImagePathWithIdAndDataset(String id, String dataset) {
+        imagePathSb = new StringBuilder();  
+        imagePathSb.append(CommonText.getInstance().getImageQueryId());
+        imagePathSb.append(id);
+        imagePathSb.append(CommonText.getInstance().getImageDataset());
+        imagePathSb.append(dataset);
+        return imagePathSb.toString();
+    }
+    
+    public String buildImagePathWithDataset(String id, String dataset, String imageServerUrl) {
+        imagePathSb = new StringBuilder();  
+        imagePathSb.append(imageServerUrl);
+        imagePathSb.append(CommonText.getInstance().getImageQueryId());
+        imagePathSb.append(id);
+        imagePathSb.append(CommonText.getInstance().getImageDataset());
+        imagePathSb.append(dataset);
+        return imagePathSb.toString();
+    }
+    
+//    public String buildBotImagePath(String id, String dataset, String morphbankImagePath) {
+//        imagePathSb = new StringBuilder();
+//        imagePathSb.append(morphbankImagePath);
+//        imagePathSb.append(CommonText.getInstance().getImageQueryId());
+//        imagePathSb.append(id);
+//        imagePathSb.append(CommonText.getInstance().getImageDataset());
+//        imagePathSb.append(dataset);
+//        return imagePathSb.toString();
+//    }
+        
     public String buildImagePath(String id, String type, String morphbankImagePath) {
         imagePathSb = new StringBuilder();
         imagePathSb.append(morphbankImagePath);
@@ -87,9 +116,11 @@ public class HelpClass {
         return imagePathSb.toString();
     }
 
-    public String buildBotImagePath(String id, String dataset, String morphbankImagePath) {
-        imagePathSb = new StringBuilder();
-        imagePathSb.append(morphbankImagePath);
+
+    
+    
+    public String buildPalImagePath(String id, String dataset) {
+        imagePathSb = new StringBuilder(); 
         imagePathSb.append(CommonText.getInstance().getImageQueryId());
         imagePathSb.append(id);
         imagePathSb.append(CommonText.getInstance().getImageDataset());

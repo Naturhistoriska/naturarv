@@ -251,7 +251,8 @@
                                         <h:panelGrid style="border: solid 1px; width: 210px; "   >    
                                             <ui:repeat var="entry" value="#{searchBean.filters.entrySet()}" varStatus="status">   
                                                 <h:panelGrid  columns="3" columnClasses="alignTop,alignTop,alignTop">   
-                                                    <h:outputText value="#{searchBean.selectedCollectionName}" rendered="#{entry.key == 'collectionId:'}"  style="font-size: 10px;" /> 
+                                                    <h:outputText value="#{searchBean.selectedCollectionName}" 
+                                                                  rendered="#{entry.key == 'collectionId:'}"  style="font-size: 10px;" /> 
                                                     <h:outputText value="#{msg.specimenswithmap}" rendered="#{entry.key == 'map:'}" style="font-size: 10px;" />  
                                                     <h:outputText value="#{msg.typeddata}" rendered="#{entry.key == 'isType:'}" style="font-size: 10px;" />  
                                                     <h:outputText value="#{msg.specimensinsweden}" rendered="#{entry.key == 'inSweden:'}" style="font-size: 10px;" /> 

@@ -682,15 +682,15 @@ public class SearchBeanTest {
   /**
    * Test of displayImages method, of class SearchBean.
    */
-//  @Test
-  public void testDisplayImages() {
-    System.out.println("displayImages");
-    SolrData data = null;
-    SearchBean instance = new SearchBean();
-    instance.displayImages(data);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
+////  @Test
+//  public void testDisplayImages() {
+//    System.out.println("displayImages");
+//    SolrData data = null;
+//    SearchBean instance = new SearchBean();
+//    instance.displayImages(data);
+//    // TODO review the generated test code and remove the default call to fail.
+//    fail("The test case is a prototype.");
+//  }
 
   /**
    * Test of closeImage method, of class SearchBean.

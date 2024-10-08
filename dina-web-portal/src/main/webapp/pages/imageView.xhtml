@@ -3,6 +3,9 @@
       xmlns:p="http://primefaces.org/ui"  
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"    >
+    <head>
+        <title>Image view</title>
+    </head>
 
     <body>
         <ui:composition>        
@@ -43,7 +46,8 @@
                             <f:selectItem itemValue="Notum" itemLabel="#{msg.notum}" />  
                             <f:selectItem itemValue="Mouth"  itemLabel="#{msg.mouth}"/>  
                             <f:selectItem itemValue="Chelicerae" itemLabel="#{msg.chelicerae}" />    
-                            <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  update="imagePanel" />   
+                            <p:ajax event="change" listener="#{galleria.selectParts}" global="false"  
+                                    update="imagePanel" />   
                         </h:selectManyCheckbox> 
                     </p:panel> 
 
@@ -52,7 +56,8 @@
                             <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
                             <f:selectItem itemValue="/male/" itemLabel="#{msg.male}" />  
                             <f:selectItem itemValue="female"  itemLabel="#{msg.female}"/>   
-                            <p:ajax event="change" listener="#{galleria.selectSexes}" global="false"  update="imagePanel" />   
+                            <p:ajax event="change" listener="#{galleria.selectSexes}" global="false" 
+                                    update="imagePanel" />   
                         </h:selectManyCheckbox>  
                     </p:panel> 
 
@@ -61,17 +66,20 @@
                             <f:selectItem itemValue="all" itemLabel="#{msg.all}" />  
                             <f:selectItem itemValue="larva" itemLabel="#{msg.larva}" />  
                             <f:selectItem itemValue="adult"  itemLabel="#{msg.adult}"/>    
-                            <p:ajax event="change" listener="#{galleria.selectStages}" global="false"  update="imagePanel" />   
+                            <p:ajax event="change" listener="#{galleria.selectStages}" global="false"
+                                    update="imagePanel" />   
                         </h:selectManyCheckbox>   
                     </p:panel>   
                 </h:panelGrid >
 
                 <h:panelGrid width="500" > 
-                    <p:dataScroller var="image" value="#{galleria.model}" lazy="true" rowIndexVar="rowIndex"
+                    <p:dataScroller var="image" value="#{galleria.model}" 
+                                    lazy="true" rowIndexVar="rowIndex"
                                     scrollHeight="800" rows="50" chunkSize="50" mode="inline" >  
                       
-                        
-                        <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
+                        <p:panel header="#{image.catalogNumber}" 
+                                 style="text-align:center" id="imagePanelDataScroller">
+                            
                             <h:panelGrid columns="1" style="width:100%" > 
                                 <p:commandLink  action="#{searchBean.displayGalleria(image.id)}"
                                     update="templet"  global="true"   >
@@ -79,58 +87,16 @@
                                                     alt="#{image.catalogNumber}" 
                                                     title="#{image.txFullName}"  styleClass="imageswithpedding" />  
                                 </p:commandLink> 
-                                
-                                
-                                
-                                
-                                
-                        
+                                 
                                 <h:outputText value="#{image.txFullName}" /> 
                             </h:panelGrid>
                         </p:panel> 
-                        
-                        
-                        <ui:remove>
-                             <p:commandLink  action="#{searchBean.displayGalleria(record)}"
-                                    update="templet"  global="true"   >
-                        <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
-                                        title="#{record.txFullName}/#{record.catalogNumber}" 
-                                        alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                    </p:commandLink>   
-                        
-                        
-                        <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
-                            <h:panelGrid columns="1" style="width:100%" > 
-                                <p:commandLink  onclick="displayIndex([{name: 'imageId', value: '#{image.id}'}])"  
-                                                id="imagePanelLink" update=":resultsForm:imageGalleria" global="false">
-                                    <p:graphicImage value="#{image.imageId}"  
-                                                    alt="#{image.catalogNumber}" 
-                                                    title="#{image.txFullName}"  styleClass="imageswithpedding" />    
-                                </p:commandLink>     
-                                <h:outputText value="#{image.txFullName}" /> 
-                            </h:panelGrid>
-                        </p:panel> 
-                            
-                            
-                            
-                              <p:panel header="#{image.catalogNumber}" style="text-align:center" id="imagePanel">
-                            <h:panelGroup layout="block" style="width: 100%;">
-                                <p:commandLink  action="#{searchBean.displayGalleria(image)}"
-                                                update="templet"  global="true"   >
-                                    <p:graphicImage value="#{image.imageId}"  
-                                                    alt="#{image.catalogNumber}" 
-                                                    title="#{image.txFullName}"  
-                                                    styleClass="imageswithpedding" />   
-                                </p:commandLink>
-                            </h:panelGroup>  
-                        </p:panel>
-                        </ui:remove>
-                        
+                         
                     </p:dataScroller>  
                 </h:panelGrid> 
             </h:panelGrid>   
              
-                <p:remoteCommand name="displayIndex" actionListener="#{switch.imageSwitch()}" 
+            <p:remoteCommand name="displayIndex" actionListener="#{switch.imageSwitch()}" 
                              process="@this" global="false" oncomplete="PF('imgswitchdlg').show();"/> 
             
             

@@ -1,8 +1,7 @@
 package se.nrm.dina.web.portal.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ArrayList; 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.primefaces.event.SelectEvent;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
 import se.nrm.dina.web.portal.model.CollectionData;
+import se.nrm.dina.web.portal.model.CollectionGroupData;
 import se.nrm.dina.web.portal.model.QueryData;
 import se.nrm.dina.web.portal.model.SolrData;
 import se.nrm.dina.web.portal.model.SolrResult;
@@ -45,6 +45,7 @@ public class SearchBean implements Serializable {
     private int numDisplay;
     private String sortby;
 
+    private CollectionGroupData selectedGroup;
     private CollectionData selectedCollection; 
     private List<CollectionData> selectionCollections;
     private List<SolrData> selectedRecords;
@@ -91,6 +92,12 @@ public class SearchBean implements Serializable {
     
     private String collectionSearch;
     
+    
+    private final String zooCollection = "(e* 262144 655361 163840 ma fish herps va)";
+    private final String pCollection = "p*"; 
+    private final String botanyCollection = "(vp fungi mosses algae)"; 
+    private final String geoCollection = "(557057 753664 786432)";
+    
     @Inject
     private SolrService solr;
     @Inject
@@ -109,7 +116,7 @@ public class SearchBean implements Serializable {
     private InitialProperties properties;
     
     @Inject
-    private ImageSwitcher imageSwitch;
+    private ImageSwitcher imageSwitch; 
 
     public SearchBean() {
         isSwedish = true;
@@ -197,6 +204,34 @@ public class SearchBean implements Serializable {
         log.info("searchCollectionWithoutFilter: {}", collection.getCode());
         filterSearch(CommonText.getInstance().getCollectionCodeKey(), collection.getCode());
         this.selectedCollection = collection;
+        this.selectedGroup = null;
+    }
+    
+    public void searchCollectionWithSingleFilter(CollectionGroupData group) {
+        log.info("searchCollectionWithoutFilter: {}", group.getGroup());
+        
+        String groups = "";
+        String groupName = group.getGroup();
+        switch (groupName) {
+            case "zoo":
+                groups = zooCollection;
+                break;
+            case "botany":
+                groups = botanyCollection;
+                break;
+            case "geo":
+                groups = geoCollection;
+                break;
+            case "paleo":
+                groups = pCollection;
+                break;
+            default:
+                break;
+        }
+        
+        searchCollectionWithFilter(groups);  
+        this.selectedGroup = group;
+        this.selectedCollection = null;
     }
 
     public void searchCollectionWithQuery(String collectionId, String dataset, String queryString) {
@@ -327,6 +362,18 @@ public class SearchBean implements Serializable {
                 .filter(e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey()))
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
         this.selectedCollection = collection;
+    }
+    
+    private void searchCollectionWithFilter(String groups) {
+        log.info("searchCollectionWithFilter: {}", groups);
+        queries.put(CommonText.getInstance().getCollectionCodeKey(), groups);
+     
+        searchData();
+        filters = new HashMap();
+        filters = queries.entrySet().stream()
+                .filter(e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+//        this.selectedCollection = collection; 
     }
 
     private void searchData() {
@@ -949,18 +996,18 @@ public class SearchBean implements Serializable {
         data.setDisplayMap(false);
     }
     
-    public void displayKboImages(SolrData data) {
-        log.info("displayKboImages : {}", data);
-        
-        List<String> urls = Arrays.asList(data.getAssociatedMedia());
- 
-        if (urls != null) {
-            data.setImageExist(true);
-            data.setDisplayImage(true);
-            data.setKboImages();
-//            data.setKboImages(properties.getMorphbankThumbPath());
-        }
-    }
+//    public void displayKboImages(SolrData data) {
+//        log.info("displayKboImages : {}", data);
+//        
+//        List<String> urls = Arrays.asList(data.getAssociatedMedia());
+// 
+//        if (urls != null) {
+//            data.setImageExist(true);
+//            data.setDisplayImage(true);
+//            data.setKboImages();
+////            data.setKboImages(properties.getMorphbankThumbPath());
+//        }
+//    }
     
     public void displayGalleria(String imagePathId) {
         log.info("displayGalleria : {}", imagePathId);
@@ -972,32 +1019,35 @@ public class SearchBean implements Serializable {
         log.info("displayGalleria : {}", data);
 
         imageSwitch.imageSwitch(data);
-//        resultHeader.setImageSwitchView();
+        if(data.isPbCollection()) {
+            navigator.gotoGalleriaForPal();
+        } else { 
+            navigator.gotoGalleria();
+        } 
         
-        navigator.gotoGalleria();
     }
     
     
-    public void displayImages(SolrData data) {
-        log.info("displayImages : {}", data);
-
-        if(data.isCommonCollection()) {
-            String mbid = data.getMorphbankId();
-            log.info("mbid : {}", mbid);
-            if (mbid != null) {
-                data.setImageExist(true);
-                data.setDisplayImage(true);
-                data.setImages();
-//                data.setImages(properties.getMorphbankThumbPath());
-            }
-        } else if(data.isFungiCollection() || data.isVasclarPlantsCollection()) {
-            log.info("isFungi dataset");
-            data.setImageExist(true);
-            data.setDisplayImage(true);
-            data.setKboImages();
-//            data.setKboImages(properties.getMorphbankThumbPath());
-        }
-    }
+//    public void displayImages(SolrData data) {
+//        log.info("displayImages : {}", data);
+//
+//        if(data.isCommonCollection()) {
+//            String mbid = data.getMorphbankId();
+//            log.info("mbid : {}", mbid);
+//            if (mbid != null) {
+//                data.setImageExist(true);
+//                data.setDisplayImage(true);
+//                data.setImages();
+////                data.setImages(properties.getMorphbankThumbPath());
+//            }
+//        } else if(data.isFungiCollection() || data.isVasclarPlantsCollection()) {
+//            log.info("isFungi dataset");
+//            data.setImageExist(true);
+//            data.setDisplayImage(true);
+//            data.setKboImages();
+////            data.setKboImages(properties.getMorphbankThumbPath());
+//        }
+//    }
 
     public void closeImage(SolrData data) {
         data.setDisplayImage(false);
@@ -1236,8 +1286,15 @@ public class SearchBean implements Serializable {
     }
 
     public String getSelectedCollectionName() {
-        return selectedCollection == null ? "" : isSwedish ? 
-                selectedCollection.getSwedishName() : selectedCollection.getShortName();
+        if(selectedCollection != null) {
+            return isSwedish ? selectedCollection.getSwedishName() 
+                    : selectedCollection.getShortName();
+        } else if(selectedGroup != null) {
+            return isSwedish ? 
+                selectedGroup.getSwedishGroupName(): selectedGroup.getGroupName();
+        }
+         
+        return ""; 
     }
     
     public String getSelectedCollectionFullName() {

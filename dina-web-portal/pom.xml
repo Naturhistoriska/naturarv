@@ -3,231 +3,231 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>naturarv</artifactId>
-    <groupId>se.nrm.dina</groupId>
-    <version>0.7.4</version>
-  </parent>
+    <parent>
+        <artifactId>naturarv</artifactId>
+        <groupId>se.nrm.dina</groupId>
+        <version>0.7.7</version>
+    </parent>
 
-  <artifactId>dina-web-portal</artifactId>
-  <packaging>war</packaging>
-  <name>${project.artifactId}</name>
+    <artifactId>dina-web-portal</artifactId>
+    <packaging>war</packaging>
+    <name>${project.artifactId}</name>
 
-  <properties>
-    <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-    <!-- Wildfly Swarm Fractions -->
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>undertow</artifactId>
-    </dependency>
+    <dependencies>
+        <!-- Wildfly Swarm Fractions -->
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>undertow</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>jsf</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>jsf</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>cdi</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>cdi</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>ejb</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>ejb</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>management-console</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management-console</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>management</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management</artifactId>
+        </dependency>
        
-    <dependency>
-      <artifactId>solr-solrj</artifactId>
-      <groupId>org.apache.solr</groupId>
-      <version>8.1.1</version>
-    </dependency>
+        <dependency>
+            <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <version>8.1.1</version>
+        </dependency>
 
-    <dependency>
-      <groupId>ch.hsr</groupId>
-      <artifactId>geohash</artifactId>
-      <version>1.3.0</version>
-    </dependency>
+        <dependency>
+            <groupId>ch.hsr</groupId>
+            <artifactId>geohash</artifactId>
+            <version>1.3.0</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.9</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
 
-    <!--    Stream utilities -->
-    <dependency>
-      <groupId>com.codepoetics</groupId>
-      <artifactId>protonpack</artifactId>
-      <version>1.15</version>
-    </dependency>
+        <!--    Stream utilities -->
+        <dependency>
+            <groupId>com.codepoetics</groupId>
+            <artifactId>protonpack</artifactId>
+            <version>1.15</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.primefaces</groupId>
-      <artifactId>primefaces</artifactId>
-      <!--<version>12.0.0</version>-->
-      <version>7.0</version>
-    </dependency> 
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <!--<version>12.0.0</version>-->
+            <version>7.0</version>
+        </dependency> 
       
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>2.10.6</version>
-    </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>2.10.6</version>
+        </dependency>
 
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.7</version>
-    </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
      
-    <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-      <version>2.1.7</version>
-    </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.17</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.17</version>
+        </dependency>
     
     
-<!--    <dependency>
-      <groupId>tr.com.terrayazilim.leaflet.jsf</groupId>
-      <artifactId>terrayazilim-leaflet.jsf</artifactId>
-      <version>1.0.2</version>
-    </dependency>-->
+        <!--    <dependency>
+          <groupId>tr.com.terrayazilim.leaflet.jsf</groupId>
+          <artifactId>terrayazilim-leaflet.jsf</artifactId>
+          <version>1.0.2</version>
+        </dependency>-->
     
-    <!--    <dependency>
-      <groupId>org.webjars.bowergithub.leaflet</groupId>
-      <artifactId>leaflet.markercluster</artifactId>
-      <version>1.4.1</version>
-    </dependency>-->
+        <!--    <dependency>
+          <groupId>org.webjars.bowergithub.leaflet</groupId>
+          <artifactId>leaflet.markercluster</artifactId>
+          <version>1.4.1</version>
+        </dependency>-->
    
-    <!--    <dependency>
-      <groupId>org.webjars.bowergithub.digelements</groupId>
-      <artifactId>leaflet-map</artifactId>
-      <version>2.1.2</version>
-    </dependency>-->
-    <dependency>
-      <groupId>jsf2leaf</groupId>
-      <artifactId>jsf2leaf</artifactId>
-      <version>1.0</version>
-    </dependency>
+        <!--    <dependency>
+          <groupId>org.webjars.bowergithub.digelements</groupId>
+          <artifactId>leaflet-map</artifactId>
+          <version>2.1.2</version>
+        </dependency>-->
+        <dependency>
+            <groupId>jsf2leaf</groupId>
+            <artifactId>jsf2leaf</artifactId>
+            <version>1.0</version>
+        </dependency>
   
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-web-api</artifactId>
-      <version>8.0.1</version>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>8.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
-  <build>
-    <finalName>naturarv-portal</finalName>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.3</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
-      </plugin>
+    <build>
+        <finalName>naturarv-portal</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
       
       
       
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeScope>provided</includeScope>
-              <includes>META-INF/resources/**</includes>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>provided</includeScope>
+                            <includes>META-INF/resources/**</includes>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
       
 
-      <!--      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-dependency-plugin</artifactId>
-              <executions>
-                  <execution>
-                  <id>unpack</id>
-                  <phase>generate-test-sources</phase>
-                  <goals>
-                      <goal>unpack</goal>
-                  </goals>
-                  <configuration>
-                      <artifactItems>
-                          <artifactItem>
-                              <groupId>org.webjars.bowergithub.digelements</groupId>
-                              <artifactId>leaflet-map</artifactId>
-                              <version>2.1.2</version>                                    
-                              <type>jar</type>
-                              <includes>META-INF/resources/webjars/**/*</includes>
-                              <excludes>META-INF/resources/webjars/**/*index.html</excludes>
-                              <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-                              </artifactItem>
-                          </artifactItems>
-                      </configuration>
-                  </execution>
-          </executions>
-      </plugin>   -->
-      <plugin>
-        <groupId>io.thorntail</groupId>
-        <artifactId>thorntail-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <jvmArguments>
-            <jvmArgument>-Xmx2048m</jvmArgument>
-          </jvmArguments>
-          <properties>
-            <!--<swarm.bind.address>127.0.0.1</swarm.bind.address>-->
-            <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-          </properties>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+            <!--      <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                        <id>unpack</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.webjars.bowergithub.digelements</groupId>
+                                    <artifactId>leaflet-map</artifactId>
+                                    <version>2.1.2</version>                                    
+                                    <type>jar</type>
+                                    <includes>META-INF/resources/webjars/**/*</includes>
+                                    <excludes>META-INF/resources/webjars/**/*index.html</excludes>
+                                    <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                </executions>
+            </plugin>   -->
+            <plugin>
+                <groupId>io.thorntail</groupId>
+                <artifactId>thorntail-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArguments>
+                        <jvmArgument>-Xmx2048m</jvmArgument>
+                    </jvmArguments>
+                    <properties>
+                        <!--<swarm.bind.address>127.0.0.1</swarm.bind.address>-->
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                    </properties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

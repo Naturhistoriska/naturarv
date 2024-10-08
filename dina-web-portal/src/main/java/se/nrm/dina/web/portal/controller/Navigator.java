@@ -31,6 +31,7 @@ public class Navigator implements Serializable {
     private final String contactPath = "/faces/pages/contact.xhtml";
 
     private final String galleriaPath = "/faces/pages/imageSwitchView.xhtml";
+    private final String galleriaForPalPath = "/faces/pages/imageSwitchPal.xhtml";
     
     private final String resultsPath = "/faces/pages/results.xhtml";
     private final String resultsPathWithQueries = "/faces/pages/collectionresults.xhtml?";
@@ -91,6 +92,11 @@ public class Navigator implements Serializable {
     public void gotoGalleria() {
         style.setTabStyle(home);
         redirectPage(galleriaPath);
+    }
+    
+    public void gotoGalleriaForPal() {
+        style.setTabStyle(home);
+        redirectPage(galleriaForPalPath);
     }
 
     public void gotoResults(String queries) {

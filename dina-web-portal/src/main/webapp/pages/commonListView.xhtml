@@ -4,6 +4,11 @@
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf">
+    
+    <head>
+        <title>List view</title>
+    </head>
+
 
     <body>  
         <ui:composition>    
@@ -78,32 +83,7 @@
                             </p:commandLink>  
                         </ui:repeat>   
 
-                        <ui:remove>
-                            <h:panelGrid  rendered="#{record.displayImage}"> 
-                            <p:commandLink value="#{msg.closeimage}" 
-                                           action="#{searchBean.closeImage(record)}"    
-                                           update="imagePanel" global="false" process="@this" />   
-                            
-                            
-                            
-                            
-                            <ui:remove>
-                                 <ui:repeat value="#{record.thumbs}" var="thumb">     
-                                <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                                onclick="PF('imgswitchdlg').show()" 
-                                                update=":resultsForm:imageGalleria">
-                                    <p:graphicImage value="#{thumb}" 
-                                                    title="#{record.txFullName}/#{record.catalogNumber}" 
-                                                    alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                                </p:commandLink>  
-
-                            </ui:repeat>   
-                            </ui:remove>
-                            
-                           
-                        </h:panelGrid> 
-                            
-                        </ui:remove>
+                   
                         
                     </h:panelGrid> 
 

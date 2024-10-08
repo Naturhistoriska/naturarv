@@ -80,5 +80,6 @@
   </session-config>
   <welcome-file-list>
     <welcome-file>faces/start.xhtml</welcome-file>
+    <!--<welcome-file>faces/index.html</welcome-file>-->
   </welcome-file-list>
 </web-app>

@@ -210,6 +210,8 @@ public class CommonText {
     private static final Map<String, String> COLLECTION_NAME_MAP = new HashMap<>();
     private static final Map<String, String> SEARCH_TEXT_SV_MAP = new HashMap<>();
     private static final Map<String, String> SEARCH_TEXT_EN_MAP = new HashMap<>();
+    private static final Map<String, String> GROUP_MAP_EN = new HashMap<>();
+    private static final Map<String, String> GROUP_MAP_SV = new HashMap<>();
     
     private String searchImageQuery = "image:true";
     
@@ -335,6 +337,17 @@ public class CommonText {
         SEARCH_TEXT_EN_MAP.put("Vascular Plants", "Search in our vascular plants collection"); 
         SEARCH_TEXT_EN_MAP.put("Mammals", "Search in our mammals collection"); 
         SEARCH_TEXT_EN_MAP.put("Amphibians and reptiles", "Search in our amphibians and reptiles collection"); 
+        
+        
+        GROUP_MAP_EN.put("zoo", "Zoological collections");
+        GROUP_MAP_EN.put("botany", "Botanical and mycological collections");
+        GROUP_MAP_EN.put("geo", "Geological collection");
+        GROUP_MAP_EN.put("paleo", "Paleontological collections");
+        
+        GROUP_MAP_SV.put("zoo", "Zoologiska samlingar");
+        GROUP_MAP_SV.put("botany", "Botaniska och mykologiska samlingar");
+        GROUP_MAP_SV.put("geo", "Geologiska samlingar");
+        GROUP_MAP_SV.put("paleo", "Paleontologiska samlingar");
     }
 
     public static synchronized CommonText getInstance() {
@@ -363,6 +376,14 @@ public class CommonText {
     
     public String getSearchTextEnMap(String key) {
         return SEARCH_TEXT_EN_MAP.get(key);
+    }
+    
+    public String getGroupNameEn(String key) {
+        return GROUP_MAP_EN.get(key);
+    }
+    
+    public String getGroupNameSv(String key) {
+        return GROUP_MAP_SV.get(key);
     }
     
     public String getSearchInAllCollections(boolean isSwedish ) {

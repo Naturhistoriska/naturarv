@@ -78,41 +78,7 @@
                                                 title="#{record.txFullName}/#{record.catalogNumber}" 
                                                 alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
                             </p:commandLink>   
-                        </ui:repeat>  
-
-
-                        <ui:remove>
-                            <h:panelGrid  rendered="#{record.displayImage}">  
-                            
-                          
-                            <ui:repeat value="#{record.thumbs}" var="thumb">     
-                                <p:commandLink  action="#{searchBean.displayGalleria(record)}"
-                                                update="templet"  global="true"   >
-                                    <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
-                                                    title="#{record.txFullName}/#{record.catalogNumber}" 
-                                                    alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                                </p:commandLink>  
-
-                            </ui:repeat>   
-                            
-                            <ui:remove>
-                                <ui:repeat value="#{record.thumbs}" var="thumb">     
-                                <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                                onclick="PF('imgswitchdlg').show()" 
-                                                update=":resultsForm:imageGalleria">
-                                    <p:graphicImage value="#{thumb}" 
-                                                    title="#{record.txFullName}/#{record.catalogNumber}" 
-                                                    alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                                </p:commandLink>  
-
-                            </ui:repeat>   
-                                
-                            </ui:remove>
-                            
-                        </h:panelGrid> 
-                            
-                        </ui:remove>
-                        
+                        </ui:repeat>   
                     </h:panelGrid> 
 
 

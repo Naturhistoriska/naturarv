@@ -4,7 +4,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf" >
-
+    <head>
+        <title>Detail view</title>
+    </head>
     <body>
         <ui:composition>     
             <h:panelGrid columns="3" cellpadding="0" cellspacing="0" 
@@ -23,15 +25,11 @@
                     </p:commandLink>  
                 </h:panelGroup> 
                 
-
-                <p:spacer width="5" height="5" rendered="#{record.morphbankId == null}"  />  
-                <p:commandLink rendered="#{record.morphbankId != null}"  
-                               action="#{searchBean.displayImages(record)}" update="evimagePanel"  >
-                    <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" styleClass="images"
-                                    title="#{msg.showimages}" alt="#{msg.showimages}" />
-                </p:commandLink>   
-
-
+                <p:spacer width="5" height="5" rendered="#{!record.image}"  />   
+                <p:graphicImage value="/resources/images/icons/camera-min16x12.gif" 
+                                    title="#{msg.showimages}" alt="#{msg.showimages}"
+                                    styleClass="images" rendered="#{record.image}" />  
+                
                 <h:outputText value="#{msg.catalogeddate}:"  />     
                 <h:outputText value="#{record.catalogedDate}"  >
                     <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+3" /> 
@@ -126,26 +124,20 @@
                 <h:outputText value="#{msg.remarks}:" />   
                 <h:outputText value="#{record.remarksString}" />  
             </h:panelGrid> 
+            
             <p:spacer width="5" height="5" />
-            <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="evimagePanel" >   
-
-                <h:panelGrid  rendered="#{record.displayImage}"> 
-                    <h:commandLink action="#{searchBean.closeImage(record)}" value="#{msg.closeimage}">    
-                        <f:ajax render="evimagePanel"/>
-                    </h:commandLink>   
-
-                    <ui:repeat value="#{record.thumbs}" var="thumb">     
-                        <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                        onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
-                            <p:graphicImage value="#{thumb}" 
-                                            title="#{record.txFullName}/#{record.catalogNumber}" 
-                                            alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                        </p:commandLink>  
-
-                    </ui:repeat>   
-                </h:panelGrid> 
+            <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="evDetailViewImagePanel" >   
+                <ui:repeat value="#{record.thumbs}" var="thumb">     
+                    <p:commandLink  action="#{searchBean.displayGalleria(record)}"
+                                    update="templet"  global="true"   >
+                        <p:graphicImage value="#{searchBean.imageServerPath}#{thumb}" 
+                                        title="#{record.txFullName}/#{record.catalogNumber}" 
+                                        alt="#{record.catalogNumber}"  
+                                        style="padding: 5px !important; width: 50px;  "/>  
+                    </p:commandLink>   
+                </ui:repeat>  
             </h:panelGrid> 
-
+            
             <p:spacer width="5" height="5" />
             <h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="evsingleMapPanel" >   
                 <h:panelGrid rendered="#{record.displayMap}"> 
