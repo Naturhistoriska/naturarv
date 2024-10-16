@@ -349,7 +349,7 @@ body * {
 .resultHeader {
     /*border-top: solid 1px;*/
     border-bottom: solid   1px;
-    padding: 5px 0px 5px 0px;
+    padding: 5px 0px 5px 0px; 
 }
 
 .resultHeaderImages {
@@ -413,6 +413,18 @@ body * {
 
 .emptyColumn {
     width: 350px;
+}
+ 
+.headerEmptyColum {
+    width: 150px;
+}
+
+.headerLinkColum {
+    width: 130px;
+}
+
+downloadlinkColum {
+    width: 300px;
 }
 
 .linkColumn {

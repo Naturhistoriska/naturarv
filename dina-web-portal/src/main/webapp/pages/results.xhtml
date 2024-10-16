@@ -10,19 +10,7 @@
 
             <ui:define name="content"  >    
                 <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  >  
-                    <p:dialog id="downloadDialog" widgetVar="downloadDialog"
-                              modal="true" draggable="false" closable="false"
-                              resizable="false" showHeader="false"
-                              >
-                        <h:panelGrid columns="3"  >
-                            <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
-                                            title="#{msg.progress}" styleClass="images" />
-                            <p:spacer width="10" />
-                            <p:outputLabel value="#{msg.wait} ..." styleClass="inprocess" />
-                        </h:panelGrid>
-                    </p:dialog>
-
-
+                      
                     <h:form id="resultsForm" prependId="false">    
                         <h:panelGrid columns="3" id="dpanel" >
                             <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
@@ -35,9 +23,12 @@
                                 <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
                                     <!-- result header --> 
                                     <h:panelGrid id="resultHeader" styleClass="textLink" cellpadding="0" cellspacing="0"  > 
-                                        <h:panelGrid id="displayviewpanel" columns="4"
-                                                     columnClasses="emptyColumn,linkColumn,linkColumn,linkColumn,linkColumn"  >
+                                        <h:panelGrid id="displayviewpanel" columns="5"
+                                                     columnClasses="headerEmptyColum,headerLinkColum,headerLinkColum,headerLinkColum,downloadlinkColum"  >
+
+
                                             <h:outputText value="#{searchBean.resultHeaderSummary}" /> 
+
                                             <p:commandLink actionListener="#{searchBean.backToListView}" process="@this" 
                                                            rendered="#{resultHeader.displayBackToListLink}"  
                                                            update=":resultsForm:resultContent">   
@@ -60,6 +51,15 @@
                                                            styleClass="#{style.tabCollections}" process="@this" 
                                                            global="false" update="templet"  /> 
 
+                                            <p:commandLink id="downloadLink" value="#{msg.downLoadAll} #{msg.maxdownload}" 
+                                                           actionListener="#{searchBean.download}"  
+                                                           ajax="false"  
+                                                           onclick="PrimeFaces.monitorDownload(start, stop);"
+                                                           >
+                                                <p:fileDownload value="#{download.file}" />
+                                                <p:spacer width="8" />
+                                            </p:commandLink>
+
 
                                         </h:panelGrid>  
                                     </h:panelGrid>
@@ -75,7 +75,7 @@
                                                 <p:spacer width="4" /> 
                                                 <h:outputText value="#{msg.removeAllQueries}" />
                                             </h:panelGrid> 
-                                            <p:spacer width="300" height="20"/> 
+                                            <p:spacer width="400" height="20"/> 
                                             <h:panelGrid columns="8" > 
                                                 <h:outputText value="#{msg.backtolistview}:" />
                                                 <p:spacer width="8" />  
@@ -93,16 +93,7 @@
                                                     <h:graphicImage library="images" name="icons/detail.png" title="#{msg.list}" 
                                                                     styleClass="resultHeaderImages" />
                                                 </p:commandLink>  
-                                                <p:spacer width="8" />
-                                                  
-                                                <p:commandLink id="downloadSelectedLink" value="#{msg.downLoadAll} #{msg.maxdownload}" 
-                                                       actionListener="#{searchBean.download}"  
-                                                       ajax="false"  
-                                                       onclick="PrimeFaces.monitorDownload(start, stop);"
-                                                       >
-                                            <p:fileDownload value="#{download.file}" />
-                                            <p:spacer width="8" />
-                                        </p:commandLink>
+                                                <p:spacer width="8" /> 
                                             </h:panelGrid> 
                                         </h:panelGrid>
                                     </h:panelGroup>
@@ -158,24 +149,7 @@
                                             <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
                                                             title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
                                         </p:commandLink>    
-
-                                        <p:spacer width="4" />   
-                                        <p:commandLink id="downloadLink" value="#{msg.downLoadAll} #{msg.maxdownload}" 
-                                                       actionListener="#{searchBean.download}"  
-                                                       ajax="false"  
-                                                       onclick="PrimeFaces.monitorDownload(start, stop);"
-                                                       >
-                                            <p:fileDownload value="#{download.file}" />
-                                        </p:commandLink>
-
-                                        <ui:remove>
-                                            <!--<p:progressBar id="progressBarClient" widgetVar="pbClient" />-->
-
-                                            <p:remoteCommand name="rc"   
-                                                             actionListener="#{searchBean.checkDownload}" 
-                                                             />
-
-                                        </ui:remove>
+ 
                                     </h:panelGroup>
 
                                     <!-- result page include -->
