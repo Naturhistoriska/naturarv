@@ -12,12 +12,7 @@
                 <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  >  
                       
                     <h:form id="resultsForm" prependId="false">    
-                        <h:panelGrid columns="3" id="dpanel" >
-                            <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
-                                            title="#{msg.progress}" styleClass="images"  rendered="#{searchBean.downloading}" />
-                            <p:spacer width="10" />
-                            <p:outputLabel value="#{msg.wait} ..." styleClass="inprocess"  rendered="#{searchBean.downloading}"/>
-                        </h:panelGrid>
+                      
                         <h:panelGroup  id="result" layout="block" >  
                             <h:panelGrid columns="2" columnClasses="searchColumn,statistic" styleClass="topAlign"  >  
                                 <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
