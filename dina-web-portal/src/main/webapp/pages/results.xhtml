@@ -10,7 +10,26 @@
 
             <ui:define name="content"  >    
                 <h:panelGroup id="mainPanel"  layout="block" styleClass="main"  >  
+                    <p:dialog id="downloadDialog" widgetVar="downloadDialog"
+                              modal="true" draggable="false" closable="false"
+                              resizable="false" showHeader="false"
+                              >
+                        <h:panelGrid columns="3"  >
+                            <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
+                                            title="#{msg.progress}" styleClass="images" />
+                            <p:spacer width="10" />
+                            <p:outputLabel value="#{msg.wait} ..." styleClass="inprocess" />
+                        </h:panelGrid>
+                    </p:dialog>
+
+
                     <h:form id="resultsForm" prependId="false">    
+                        <h:panelGrid columns="3" id="dpanel" >
+                            <p:graphicImage value="/resources/images/loaderA32.gif" alt="#{msg.progress}" 
+                                            title="#{msg.progress}" styleClass="images"  rendered="#{searchBean.downloading}" />
+                            <p:spacer width="10" />
+                            <p:outputLabel value="#{msg.wait} ..." styleClass="inprocess"  rendered="#{searchBean.downloading}"/>
+                        </h:panelGrid>
                         <h:panelGroup  id="result" layout="block" >  
                             <h:panelGrid columns="2" columnClasses="searchColumn,statistic" styleClass="topAlign"  >  
                                 <h:panelGrid id="resultContent" cellpadding="0" cellspacing="0"  >  
@@ -37,11 +56,11 @@
                                             </p:commandLink> 
 
                                             <p:commandLink actionListener="#{navigate.gotoCollections()}" 
-                                                id="collectionLink1" value="#{msg.ourcollections}" 
-                                                styleClass="#{style.tabCollections}" process="@this" 
-                                                global="false" update="templet"  /> 
+                                                           id="collectionLink1" value="#{msg.ourcollections}" 
+                                                           styleClass="#{style.tabCollections}" process="@this" 
+                                                           global="false" update="templet"  /> 
 
-                                            
+
                                         </h:panelGrid>  
                                     </h:panelGrid>
                                     <hr />
@@ -56,8 +75,8 @@
                                                 <p:spacer width="4" /> 
                                                 <h:outputText value="#{msg.removeAllQueries}" />
                                             </h:panelGrid> 
-                                            <p:spacer width="400" height="20"/> 
-                                            <h:panelGrid columns="6" > 
+                                            <p:spacer width="300" height="20"/> 
+                                            <h:panelGrid columns="8" > 
                                                 <h:outputText value="#{msg.backtolistview}:" />
                                                 <p:spacer width="8" />  
                                                 <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
@@ -75,6 +94,15 @@
                                                                     styleClass="resultHeaderImages" />
                                                 </p:commandLink>  
                                                 <p:spacer width="8" />
+                                                  
+                                                <p:commandLink id="downloadSelectedLink" value="#{msg.downLoadAll} #{msg.maxdownload}" 
+                                                       actionListener="#{searchBean.download}"  
+                                                       ajax="false"  
+                                                       onclick="PrimeFaces.monitorDownload(start, stop);"
+                                                       >
+                                            <p:fileDownload value="#{download.file}" />
+                                            <p:spacer width="8" />
+                                        </p:commandLink>
                                             </h:panelGrid> 
                                         </h:panelGrid>
                                     </h:panelGroup>
@@ -106,7 +134,7 @@
                                         <p:spacer width="8" /> 
                                         <h:outputText value="| #{msg.show}:"  />
                                         <p:spacer width="8" />  
-                                        
+
                                         <p:commandLink actionListener="#{searchBean.gotoSimpleView()}" process="@this" 
                                                        disabled="#{resultHeader.resultView == 'list'}" 
                                                        update=":resultsForm:resultContent" global="false" >  
@@ -130,6 +158,24 @@
                                             <h:graphicImage library="images" name="icons/form_input_checkbox_20.png" 
                                                             title="#{msg.selectedlist}" styleClass="resultHeaderImages" />
                                         </p:commandLink>    
+
+                                        <p:spacer width="4" />   
+                                        <p:commandLink id="downloadLink" value="#{msg.downLoadAll} #{msg.maxdownload}" 
+                                                       actionListener="#{searchBean.download}"  
+                                                       ajax="false"  
+                                                       onclick="PrimeFaces.monitorDownload(start, stop);"
+                                                       >
+                                            <p:fileDownload value="#{download.file}" />
+                                        </p:commandLink>
+
+                                        <ui:remove>
+                                            <!--<p:progressBar id="progressBarClient" widgetVar="pbClient" />-->
+
+                                            <p:remoteCommand name="rc"   
+                                                             actionListener="#{searchBean.checkDownload}" 
+                                                             />
+
+                                        </ui:remove>
                                     </h:panelGroup>
 
                                     <!-- result page include -->
@@ -230,7 +276,7 @@
 
                                     <p:spacer width="20" height="30" />
                                     <h:outputText value="#{msg.collection}" style="font-weight: bold;" />  
-                                     
+
                                     <ui:repeat var="collection" value="#{statistic.filteredCollections}" varStatus="collectionStatus" >   
                                         <p:commandLink actionListener="#{searchBean.searchCollectionWithFilter(collection)}" 
                                                        title="#{collection.name}"  
@@ -288,7 +334,7 @@
                                   widgetVar="imgswitchdlg" position="top"
                                   draggable="false"  
                                   width="1200" height="600" dynamic="true" maximizable="true"> 
-                       
+
                             <p:galleria id="imageGalleria" value="#{switch.jpgs}" var="thumb"  
                                         style="overflow: scroll !important;" 
                                         panelWidth="1180" panelHeight="550" 
@@ -297,37 +343,24 @@
                                                 title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
                                                 styleClass="#{switch.imageCss(thumb)}" />   
                             </p:galleria>
-                            
-                            
+
+
                         </p:dialog>  
-                        
-                         
-                        <ui:remove>
-                            
-                             
-                            
-                                    <p:contentFlow value="#{switch.jpgs}" var="thumb" id="imageGalleria" >
-                                <p:graphicImage value="#{thumb}"  styleClass="content" />
-                                <div class="caption">#{thumb}</div>
-                            </p:contentFlow>
-                            
-                                   <p:galleria id="imageGalleria" widgetVar="gallery" value="#{switch.jpgs}" 
-                                        panelWidth="850" panelHeight="540"   autoPlay="false"
-                                        var="thumb"  showCaption="true"   >    
-                                 
-                                <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" 
-                                                title="#{switch.scientificName} [#{switch.getPhotogarphy(thumb)}]" 
-                                                styleClass="imageswithpedding" />   
-                                
-                                
-                                 <f:facet name="thumbnail">
-                                    <p:graphicImage value="#{thumb}" alt="#{switch.catalogNumber}" style="width: 100%; display: block" />
-                                </f:facet>
-                            </p:galleria>  
-                        </ui:remove>
-                         
+
+
                     </h:form> 
                 </h:panelGroup> 
+                <script>
+                    //<![CDATA[
+                    function start() {
+                        PF('statusDialog').show();
+                    }
+
+                    function stop() {
+                        PF('statusDialog').hide();
+                    }
+                    //]]>
+                </script>
             </ui:define>
         </ui:composition>
     </body>

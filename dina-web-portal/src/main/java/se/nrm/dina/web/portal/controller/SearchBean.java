@@ -1,7 +1,8 @@
 package se.nrm.dina.web.portal.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +12,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped; 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
-import javax.inject.Named; 
+import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.primefaces.event.SelectEvent;
 import se.nrm.dina.web.portal.logic.config.InitialProperties;
+import se.nrm.dina.web.portal.logic.down.Download;
 import se.nrm.dina.web.portal.model.CollectionData;
 import se.nrm.dina.web.portal.model.CollectionGroupData;
 import se.nrm.dina.web.portal.model.QueryData;
@@ -46,7 +48,7 @@ public class SearchBean implements Serializable {
     private String sortby;
 
     private CollectionGroupData selectedGroup;
-    private CollectionData selectedCollection; 
+    private CollectionData selectedCollection;
     private List<CollectionData> selectionCollections;
     private List<SolrData> selectedRecords;
     private List<SolrData> selectedOneRecord;
@@ -59,10 +61,9 @@ public class SearchBean implements Serializable {
     private boolean isSelectedOne;
     private boolean isSimpleSearch;
     private boolean selectedAll;
-    
+
     private final String queryStringAll = "collection=all";
-      
-    
+
     private final String wildCard = "*";
     private final String emptySpace = " ";
 
@@ -70,34 +71,38 @@ public class SearchBean implements Serializable {
     private SolrResult result;
     private Map<String, String> queries;
     private Map<String, String> filters;
-    private Map<String, String> collectionFilters;  
+    private Map<String, String> collectionFilters;
     private final String vertebrates = "vertebrates";
     private final String invertebrates = "invertebrates";
     private final String vertebratesSearch = "+(txFullName:Chordata higherTx:Chordata*)";
     private final String invertebratesSearch = "-(txFullName:Chordata higherTx:Chordata*)";
 //    private final String zooCollectionSearch = "(e* 163840)"; 
     private final String zoo = "zoo";
-    
+
     private final String pzVert = "PzVert";
     private final String pzInvert = "PzInvert";
     private final String botany = "botany";
     private final String vertebrate = "vertebrate";
     private final String vertebrateCollection = "collection=vertebrate";
-    private final String paleontology = "paleontology";  
+    private final String paleontology = "paleontology";
     private final String pzCollection = "pz";
-    
+
     private boolean showCollectionStatisticData;
-    private String pbDataset; 
+    private String pbDataset;
     private boolean isAllCollections;
-    
+
     private String collectionSearch;
-    
-    
+
     private final String zooCollection = "(e* 262144 655361 163840 ma fish herps va)";
-    private final String pCollection = "p*"; 
-    private final String botanyCollection = "(vp fungi mosses algae)"; 
+    private final String pCollection = "p*";
+    private final String botanyCollection = "(vp fungi mosses algae)";
     private final String geoCollection = "(557057 753664 786432)";
-    
+
+    private final int downloadSize = 5000;
+    private final int maxDownload = 200000;
+
+    private boolean downloading = false;
+
     @Inject
     private SolrService solr;
     @Inject
@@ -114,9 +119,11 @@ public class SearchBean implements Serializable {
     private GalleriaBean galleria;
     @Inject
     private InitialProperties properties;
-    
     @Inject
-    private ImageSwitcher imageSwitch; 
+    private Download download;
+
+    @Inject
+    private ImageSwitcher imageSwitch;
 
     public SearchBean() {
         isSwedish = true;
@@ -129,7 +136,7 @@ public class SearchBean implements Serializable {
         this.navigator = navigator;
         this.paging = paging;
         this.resultHeader = resultHeader;
-        this.statistic = statistic; 
+        this.statistic = statistic;
         this.galleria = galleria;
         this.properties = properties;
     }
@@ -156,7 +163,7 @@ public class SearchBean implements Serializable {
         gotoSimpleView();
         setResult();
     }
- 
+
     /**
      * Free text search
      */
@@ -206,10 +213,10 @@ public class SearchBean implements Serializable {
         this.selectedCollection = collection;
         this.selectedGroup = null;
     }
-    
+
     public void searchCollectionWithSingleFilter(CollectionGroupData group) {
         log.info("searchCollectionWithoutFilter: {}", group.getGroup());
-        
+
         String groups = "";
         String groupName = group.getGroup();
         switch (groupName) {
@@ -228,8 +235,8 @@ public class SearchBean implements Serializable {
             default:
                 break;
         }
-        
-        searchCollectionWithFilter(groups);  
+
+        searchCollectionWithFilter(groups);
         this.selectedGroup = group;
         this.selectedCollection = null;
     }
@@ -238,43 +245,42 @@ public class SearchBean implements Serializable {
         log.info("searchCollectionWithQuery: {} -- {}", collectionId, dataset);
 
         pbDataset = null;
-        String searchText = SearchHelper.getInstance().buildFullSearchText(freeText); 
+        String searchText = SearchHelper.getInstance().buildFullSearchText(freeText);
         clearData();
         if (dataset != null) {
             pbDataset = dataset;
-            if (dataset.equals(vertebrates)) {  
+            if (dataset.equals(vertebrates)) {
                 searchText = vertebratesSearch;
             } else if (dataset.equals(invertebrates)) {
                 searchText = invertebratesSearch;
             }
-        }  
-  
+        }
+
         queries.put(CommonText.getInstance().getCollectionCodeKey(), collectionId);
         collectionSearch(queryString, searchText);
 
-        
         if (result.getTotalFound() > 0) {
             SolrData data = result.getSolrData().get(0);
             CollectionData collectionData = new CollectionData(collectionId,
-                    data.getCollectionName(), result.getTotalFound()); 
-            
+                    data.getCollectionName(), result.getTotalFound());
+
             this.selectionCollections = null;
             this.selectedCollection = null;
             this.collectionSearch = queryString;
-            if(statistic.getFilteredCollections().size() == 1) { 
+            if (statistic.getFilteredCollections().size() == 1) {
                 this.selectedCollection = collectionData;
-            } else { 
-                if(!collectionId.equals(wildCard)) { 
+            } else {
+                if (!collectionId.equals(wildCard)) {
                     selectionCollections = new ArrayList();
                     this.selectionCollections.addAll(statistic.getFilteredCollections());
                 }
-            }  
+            }
         }
     }
-     
+
     private void collectionSearch(String queryString, String searchText) {
         log.info("collectionSearch : {}", queryString);
- 
+
         result = solr.searchWithFilter(searchText, queries, 0, numDisplay,
                 CommonText.getInstance().getCreatedDate(), false);
         statistic.resetData(searchText, queries);
@@ -296,24 +302,24 @@ public class SearchBean implements Serializable {
             }
         }
     }
-    
+
     public void searchAllcollections() {
         log.info("searchAllcollections");
-         
+
         searchCollectionWithQuery(wildCard, null, queryStringAll);
         navigator.gotoResults(queryStringAll);
     }
-    
+
     public void showCollectionStatistic() {
         log.info("showCollectionStatistic : {}", selectedCollection);
-        showCollectionStatisticData = true; 
+        showCollectionStatisticData = true;
     }
-    
+
     public void closeCollectionStatistic() {
         log.info("closeCollectionStatistic");
         showCollectionStatisticData = false;
     }
- 
+
     private void filterSearch(String key, String value) {
         log.info("filterSearch");
 
@@ -337,13 +343,13 @@ public class SearchBean implements Serializable {
     public void searchDataWithFilter(String filterKey) {
 //        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance()
 //                .getExternalContext().getRequest();
-         
+
         queries.put(filterKey, String.valueOf(true));
         searchData();
         filters = new HashMap();
         filters = queries.entrySet().stream()
                 .filter(e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey()))
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())); 
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 
     /**
@@ -355,7 +361,7 @@ public class SearchBean implements Serializable {
     public void searchCollectionWithFilter(CollectionData collection) {
         log.info("searchCollectionWithFilter: {}", collection.getCode());
         queries.put(CommonText.getInstance().getCollectionCodeKey(), collection.getCode());
-     
+
         searchData();
         filters = new HashMap();
         filters = queries.entrySet().stream()
@@ -363,11 +369,11 @@ public class SearchBean implements Serializable {
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
         this.selectedCollection = collection;
     }
-    
+
     private void searchCollectionWithFilter(String groups) {
         log.info("searchCollectionWithFilter: {}", groups);
         queries.put(CommonText.getInstance().getCollectionCodeKey(), groups);
-     
+
         searchData();
         filters = new HashMap();
         filters = queries.entrySet().stream()
@@ -383,7 +389,7 @@ public class SearchBean implements Serializable {
         clearSelectedData();
 
         String searchText = getSearchText();
-    
+
         statistic.resetData(searchText, queries);
         if (resultHeader.isMapView()) {
             geo.setMapView(searchText, queries);
@@ -416,7 +422,7 @@ public class SearchBean implements Serializable {
             searchData();
         }
     }
-    
+
     /**
      *
      * @param key
@@ -425,15 +431,15 @@ public class SearchBean implements Serializable {
     public void removeCollectionFilter(String key, String value) {
         log.info("removeCollectionFilter: {} -- {}", key, value);
 
-        if(!key.equals(CommonText.getInstance().getCollectionCodeKey()) && 
-                !key.equals(CommonText.getInstance().getHighTxKey())) {
+        if (!key.equals(CommonText.getInstance().getCollectionCodeKey())
+                && !key.equals(CommonText.getInstance().getHighTxKey())) {
             filters.remove(key);
-            
+
             key = key.equals(CommonText.getInstance().getGeopoint())
                     ? CommonText.getInstance().getCoordinateKey() : key;
             queries.remove(key);
-        } 
-        searchData(); 
+        }
+        searchData();
     }
 
     /**
@@ -447,7 +453,7 @@ public class SearchBean implements Serializable {
 
         searchData();
     }
-    
+
     public void removeAllCollectionQueries() {
         log.info("removeAllCollectionQueries : {} ", queries);
 
@@ -455,12 +461,12 @@ public class SearchBean implements Serializable {
         filters.remove(CommonText.getInstance().getMapKey());
         filters.remove(CommonText.getInstance().getInSwedenKey());
         filters.remove(CommonText.getInstance().getImageKey());
-        
+
         queries.remove(CommonText.getInstance().getIsTypeKey());
         queries.remove(CommonText.getInstance().getMapKey());
         queries.remove(CommonText.getInstance().getInSwedenKey());
         queries.remove(CommonText.getInstance().getImageKey());
-                   
+
         searchData();
     }
 
@@ -476,7 +482,7 @@ public class SearchBean implements Serializable {
             case "textsearch":
             case "auth":
             case "clt":
-            case "tx":    
+            case "tx":
             case "cm":
                 return solr.autoComleteMultivalue(data);
             case "ftx":
@@ -706,7 +712,7 @@ public class SearchBean implements Serializable {
     }
 
     public void showImageView() {
-        log.info("showImageView " );
+        log.info("showImageView ");
         clearSelectedData();
         galleria.setImageView(statistic.getFilteredTotalImages(),
                 SearchHelper.getInstance().buildFullSearchText(freeText), queries);
@@ -768,7 +774,7 @@ public class SearchBean implements Serializable {
                 text = addBean(text, list.get(i));
             }
             sb.append(text);
-        } 
+        }
         return text;
     }
 
@@ -995,7 +1001,7 @@ public class SearchBean implements Serializable {
     public void closeMap(SolrData data) {
         data.setDisplayMap(false);
     }
-    
+
 //    public void displayKboImages(SolrData data) {
 //        log.info("displayKboImages : {}", data);
 //        
@@ -1008,7 +1014,6 @@ public class SearchBean implements Serializable {
 ////            data.setKboImages(properties.getMorphbankThumbPath());
 //        }
 //    }
-    
     public void displayGalleria(String imagePathId) {
         log.info("displayGalleria : {}", imagePathId);
         imageSwitch.imageSwitch(imagePathId);
@@ -1019,15 +1024,14 @@ public class SearchBean implements Serializable {
         log.info("displayGalleria : {}", data);
 
         imageSwitch.imageSwitch(data);
-        if(data.isPbCollection()) {
+        if (data.isPbCollection()) {
             navigator.gotoGalleriaForPal();
-        } else { 
+        } else {
             navigator.gotoGalleria();
-        } 
-        
+        }
+
     }
-    
-    
+
 //    public void displayImages(SolrData data) {
 //        log.info("displayImages : {}", data);
 //
@@ -1048,7 +1052,6 @@ public class SearchBean implements Serializable {
 ////            data.setKboImages(properties.getMorphbankThumbPath());
 //        }
 //    }
-
     public void closeImage(SolrData data) {
         data.setDisplayImage(false);
     }
@@ -1080,66 +1083,51 @@ public class SearchBean implements Serializable {
         return exportDataSet;
     }
 
-    private void prepareExportData() {
-        log.info("prepareExportData");
-
-        exportDataSet = new ArrayList<>();
-        if (!selectedRecords.isEmpty()) {
-            exportDataSet.addAll(selectedRecords);
-        } else {
-            int numToFetch = totalResult <= 1000 ? totalResult : 1000;
-            SolrResult data = solr.searchWithFilter(getSearchText(), queries, 0,
-                    numToFetch, CommonText.getInstance().getCreatedDate(), true);
-            exportDataSet = data.getSolrData();
-        }
-    }
-     
     public String getSearchHeader() {
         log.info("getSearchHeader : {} -- {}", selectionCollections, selectedCollection);
         log.info("getSearchHeader: collectionSearch: {}", collectionSearch);
-        
-        if(navigator.isIsCollectionSearch()) {
-            if(collectionSearch.contains(botany)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(botany) :
-                    CommonText.getInstance().getSearchTextEnMap(botany); 
-            } else if(collectionSearch.contains(zoo)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(zoo) :
-                    CommonText.getInstance().getSearchTextEnMap(zoo); 
-            } else if(collectionSearch.equals(vertebrateCollection)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(vertebrate) :
-                    CommonText.getInstance().getSearchTextEnMap(vertebrate); 
-             } else if(collectionSearch.contains(pzCollection)) {
-                if(pbDataset != null) {
-                    if(pbDataset.equals(vertebrates)) {
-                        return isSwedish ? 
-                            CommonText.getInstance().getSearchTextSvMap(pzVert) :
-                            CommonText.getInstance().getSearchTextEnMap(pzVert); 
+
+        if (navigator.isIsCollectionSearch()) {
+            if (collectionSearch.contains(botany)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(botany)
+                        : CommonText.getInstance().getSearchTextEnMap(botany);
+            } else if (collectionSearch.contains(zoo)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(zoo)
+                        : CommonText.getInstance().getSearchTextEnMap(zoo);
+            } else if (collectionSearch.equals(vertebrateCollection)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(vertebrate)
+                        : CommonText.getInstance().getSearchTextEnMap(vertebrate);
+            } else if (collectionSearch.contains(pzCollection)) {
+                if (pbDataset != null) {
+                    if (pbDataset.equals(vertebrates)) {
+                        return isSwedish
+                                ? CommonText.getInstance().getSearchTextSvMap(pzVert)
+                                : CommonText.getInstance().getSearchTextEnMap(pzVert);
                     } else {
-                        return isSwedish ? 
-                            CommonText.getInstance().getSearchTextSvMap(pzInvert) :
-                            CommonText.getInstance().getSearchTextEnMap(pzInvert); 
-                    } 
-                } 
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
-                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());  
-            } else if(collectionSearch.contains(paleontology)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(paleontology) :
-                    CommonText.getInstance().getSearchTextEnMap(paleontology); 
-            } else if(selectedCollection != null) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
-                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
-            } 
-        } 
+                        return isSwedish
+                                ? CommonText.getInstance().getSearchTextSvMap(pzInvert)
+                                : CommonText.getInstance().getSearchTextEnMap(pzInvert);
+                    }
+                }
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName())
+                        : CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());
+            } else if (collectionSearch.contains(paleontology)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(paleontology)
+                        : CommonText.getInstance().getSearchTextEnMap(paleontology);
+            } else if (selectedCollection != null) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName())
+                        : CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());
+            }
+        }
         isAllCollections = true;
         return CommonText.getInstance().getSearchInAllCollections(isSwedish);
-        
-        
+
 //        if(navigator.isIsCollectionSearch()) {
 //            isAllCollections = false;
 //            if(pbDataset != null) {
@@ -1168,52 +1156,52 @@ public class SearchBean implements Serializable {
 //        return CommonText.getInstance().getSearchInAllCollections(isSwedish);
     }
 
-    public String getDefaultText() { 
-        
-        if(navigator.isIsCollectionSearch()) {
-            if(collectionSearch.contains(botany)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(botany) :
-                    CommonText.getInstance().getSearchTextEnMap(botany); 
-            } else if(collectionSearch.contains(zoo)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(zoo) :
-                    CommonText.getInstance().getSearchTextEnMap(zoo); 
-            } else if(collectionSearch.equals(vertebrateCollection)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(vertebrate) :
-                    CommonText.getInstance().getSearchTextEnMap(vertebrate); 
-            } else if(collectionSearch.contains(pzCollection)) {
-                if(pbDataset != null) {
-                    if(pbDataset.equals(vertebrates)) {
-                        return isSwedish ? 
-                            CommonText.getInstance().getSearchTextSvMap(pzVert) :
-                            CommonText.getInstance().getSearchTextEnMap(pzVert); 
+    public String getDefaultText() {
+
+        if (navigator.isIsCollectionSearch()) {
+            if (collectionSearch.contains(botany)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(botany)
+                        : CommonText.getInstance().getSearchTextEnMap(botany);
+            } else if (collectionSearch.contains(zoo)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(zoo)
+                        : CommonText.getInstance().getSearchTextEnMap(zoo);
+            } else if (collectionSearch.equals(vertebrateCollection)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(vertebrate)
+                        : CommonText.getInstance().getSearchTextEnMap(vertebrate);
+            } else if (collectionSearch.contains(pzCollection)) {
+                if (pbDataset != null) {
+                    if (pbDataset.equals(vertebrates)) {
+                        return isSwedish
+                                ? CommonText.getInstance().getSearchTextSvMap(pzVert)
+                                : CommonText.getInstance().getSearchTextEnMap(pzVert);
                     } else {
-                        return isSwedish ? 
-                            CommonText.getInstance().getSearchTextSvMap(pzInvert) :
-                            CommonText.getInstance().getSearchTextEnMap(pzInvert); 
-                    } 
-                } 
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
-                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());  
-            } else if(collectionSearch.contains(paleontology)) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(paleontology) :
-                    CommonText.getInstance().getSearchTextEnMap(paleontology); 
-            } else if(selectedCollection != null) {
-                return isSwedish ? 
-                    CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName()) :
-                    CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName()); 
-            } 
-        }  
-        return CommonText.getInstance().getSearchDefaultText(isSwedish);  
+                        return isSwedish
+                                ? CommonText.getInstance().getSearchTextSvMap(pzInvert)
+                                : CommonText.getInstance().getSearchTextEnMap(pzInvert);
+                    }
+                }
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName())
+                        : CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());
+            } else if (collectionSearch.contains(paleontology)) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(paleontology)
+                        : CommonText.getInstance().getSearchTextEnMap(paleontology);
+            } else if (selectedCollection != null) {
+                return isSwedish
+                        ? CommonText.getInstance().getSearchTextSvMap(selectedCollection.getName())
+                        : CommonText.getInstance().getSearchTextEnMap(selectedCollection.getName());
+            }
+        }
+        return CommonText.getInstance().getSearchDefaultText(isSwedish);
     }
 
     public boolean isIsAllCollections() {
         return isAllCollections;
-    } 
+    }
 
     public String getFreeText() {
         return freeText;
@@ -1249,13 +1237,13 @@ public class SearchBean implements Serializable {
 
     public Map<String, String> getCollectionFilters() {
         collectionFilters = new HashMap();
-        
+
         filters.entrySet().stream()
-                .filter(e -> !e.getKey().contains(CommonText.getInstance().getHighTxKey())) 
-                .filter(e -> !e.getKey().equals(CommonText.getInstance().getCollectionCodeKey())) 
+                .filter(e -> !e.getKey().contains(CommonText.getInstance().getHighTxKey()))
+                .filter(e -> !e.getKey().equals(CommonText.getInstance().getCollectionCodeKey()))
                 .forEach(e -> {
                     collectionFilters.put(e.getKey(), e.getValue());
-                }); 
+                });
         log.info("what... {} -- {}", filters, collectionFilters);
 
         return collectionFilters;
@@ -1286,29 +1274,29 @@ public class SearchBean implements Serializable {
     }
 
     public String getSelectedCollectionName() {
-        if(selectedCollection != null) {
-            return isSwedish ? selectedCollection.getSwedishName() 
+        if (selectedCollection != null) {
+            return isSwedish ? selectedCollection.getSwedishName()
                     : selectedCollection.getShortName();
-        } else if(selectedGroup != null) {
-            return isSwedish ? 
-                selectedGroup.getSwedishGroupName(): selectedGroup.getGroupName();
+        } else if (selectedGroup != null) {
+            return isSwedish
+                    ? selectedGroup.getSwedishGroupName() : selectedGroup.getGroupName();
         }
-         
-        return ""; 
+
+        return "";
     }
-    
+
     public String getSelectedCollectionFullName() {
-        return selectedCollection == null ? "" : selectedCollection.getName(); 
+        return selectedCollection == null ? "" : selectedCollection.getName();
     }
-    
+
     public String getSelectedCollectionCode() {
         return selectedCollection == null ? "" : selectedCollection.getCode();
     }
-    
+
     public boolean getSelectedCollection() {
         return selectedCollection != null;
     }
- 
+
     public String getResultHeaderSummary() {
         if (resultHeader.isMapView()) {
             return HelpClass.getInstance()
@@ -1332,6 +1320,52 @@ public class SearchBean implements Serializable {
     public boolean isIsSelectedOne() {
         return isSelectedOne;
     }
+
+    public void download() throws IOException {
+        log.info("download");
+
+        downloading = true;
+//        int total = paging.getTotalFound();
+//        log.info("total found : {}", total);
+
+        prepareExportData();
+        download.cSVWriter(exportDataSet);
+
+        downloading = false;
+        log.info("download... {}", downloading);
+    }
+
+    private void prepareExportData() {
+        log.info("prepareExportData");
+
+        exportDataSet = new ArrayList<>();
+        if (!selectedRecords.isEmpty()) {
+            exportDataSet.addAll(selectedRecords);
+        } else {
+//            int numToFetch = totalResult <= 1000 ? totalResult : 1000;
+//            SolrResult data = solr.searchWithFilter(getSearchText(), queries, 0,
+//                    numToFetch, CommonText.getInstance().getCreatedDate(), true);
+
+            int totalDownload = totalResult <= maxDownload ? totalResult : maxDownload;
+            for (int i = 0; i < totalDownload; i += downloadSize) {
+
+                SolrResult downloadResult = solr.searchWithFilter(getSearchText(),
+                        queries, i, downloadSize,
+                        CommonText.getInstance().getCreatedDate(), false);
+                exportDataSet.addAll(downloadResult.getSolrData());
+                log.info("data size : {} -- {}", exportDataSet.size(), i);
+            }
+        }
+    }
+     
+        //    public void checkDownload() throws InterruptedException, InterruptedException {
+        //        log.info("checkDownload : {}", downloading);
+        //
+        //        while (downloading) {
+        //            Thread.sleep(8000);
+        //            log.info("what... {}", downloading);
+        //        }
+        //    }
 
     private void pagingSearch(int start) {
         log.info("pagingSearch : {}", start);
@@ -1365,7 +1399,7 @@ public class SearchBean implements Serializable {
         this.isSwedish = isSwedish;
         appendQuery();
     }
- 
+
     private void clearAdvanceData() {
         freeText = null;
         result = null;
@@ -1434,12 +1468,15 @@ public class SearchBean implements Serializable {
     public String getPbDataset() {
         return pbDataset;
     }
-    
+
     public String getImageServerPath() {
         return properties.getMorphbankThumbPath();
     }
-     
-     
+
+    public boolean isDownloading() {
+        return downloading;
+    }
+
     Predicate<Entry<String, String>> notCoordinateKey
             = e -> !e.getKey().equals(CommonText.getInstance().getCoordinateKey());
 }

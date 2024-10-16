@@ -157,24 +157,6 @@
                 
          
 
-                <ui:remove>
-                    <h:panelGrid  rendered="#{record.displayImage}"> 
-             
-
-                    <ui:remove>
-                        <ui:repeat value="#{record.thumbs}" var="thumb">     
-                            <p:commandLink  action="#{switch.imageSwitch(record)}" 
-                                            onclick="PF('imgswitchdlg').show()" update=":resultsForm:imageGalleria">
-                                <p:graphicImage value="#{thumb}" 
-                                                title="#{record.txFullName}/#{record.catalogNumber}" 
-                                                alt="#{record.catalogNumber}" styleClass="imageswithpedding" />  
-                            </p:commandLink>   
-                        </ui:repeat> 
-                    </ui:remove>
-                     
-                </h:panelGrid>
-                </ui:remove>
-                    
                  
             </h:panelGrid> 
 

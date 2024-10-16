@@ -765,7 +765,7 @@ public class SolrData {
     public String getTaxaList() {
         return StringUtils.join(taxa, semicolon);
     }
-
+ 
     public String getRemarksString() {
         if (remarks != null) {
             return String.join(comma, remarks);
