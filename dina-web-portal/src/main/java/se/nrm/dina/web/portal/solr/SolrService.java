@@ -114,7 +114,7 @@ public class SolrService implements Serializable {
         query.setQuery(text);
         query.setStart(start);
         query.setRows(numPerPage);
-            query.setSort(sort, sortAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        query.setSort(sort, sortAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
 
         SolrHelper.getInstance().addSearchFilters(query, filters);
         if (!filters.containsKey(collectionIdKey)) {
