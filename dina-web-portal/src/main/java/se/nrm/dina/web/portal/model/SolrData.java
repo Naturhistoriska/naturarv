@@ -747,7 +747,7 @@ public class SolrData {
 
     public List<String> getFungiSynonymAuthors() {
         synonymAuthorskList = new ArrayList();
-        if (isFungiCollection() || isVasclarPlantsCollection()) {
+        if (isFungiCollection() || isVasclarPlantsCollection() || isEvCollection()) {
             if (synonymAuthor != null && synonymAuthor.length > 0) {
                 Arrays.asList(synonymAuthor).stream()
                         .forEach(sa -> {

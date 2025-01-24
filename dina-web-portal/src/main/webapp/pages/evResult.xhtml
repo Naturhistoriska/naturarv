@@ -55,7 +55,47 @@
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.determiner}:" />   
                 <h:outputText value="#{record.determination}" />   
+                
+                <p:spacer width="5" height="5" rendered="#{record.synonymAuthor != null}" /> 
+                <h:panelGroup layout="block" rendered="#{record.synonymAuthor != null}" >
+                    <h:outputText value="#{msg.synonyms}:"  /> 
+                    <h:panelGroup layout="block"  rendered="#{record.moreSynonyms}" >
+                        <p:spacer width="1" /> 
+                        [<p:commandLink actionListener="#{record.openCloseSynonyms()}" process="@this"  
+                                update="detailResultTable" global="false" 
+                                style="font-size: 11px; font-weight: lighter; font-style: italic;"
+                                value="#{msg.moresynonyms}" rendered="#{!record.openSynonyms}"  >  
+                            <h:graphicImage library="images" name="hidearrow.gif"
+                                            styleClass="imageBottomAlign"  /> 
+                        </p:commandLink>
+                        <p:commandLink actionListener="#{record.openCloseSynonyms()}" process="@this"  
+                                       update="detailResultTable" global="false"  
+                                       style="font-size: 11px; font-weight: lighter; font-style: italic;"
+                                value="#{msg.hidesynonyms}" rendered="#{record.openSynonyms}">  
+                            <h:graphicImage library="images" name="downarrow.gif"
+                                            styleClass="imageBottomAlign"  /> 
+                        </p:commandLink>] 
+                    </h:panelGroup>  
+                </h:panelGroup>
 
+                <h:panelGroup layout="block" rendered="#{record.synonymAuthor != null}" >  
+                     <h:panelGroup layout="block" rendered="#{record.moreSynonyms}" > 
+                        <h:outputText value="#{record.firstSynonyms}" rendered="#{!record.openSynonyms}" />   
+                    
+                        <h:panelGrid cellpadding="0" cellspacing="0"  >
+                            <ui:repeat value="#{record.fungiSynonymAuthors}" var="synonym" 
+                                   rendered="#{record.openSynonyms}">   
+                                <h:outputText value="#{synonym}" />  <br />
+                            </ui:repeat>  
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" rendered="#{record.oneSynonyms}">
+                        <h:outputText value="#{record.firstSynonyms}"  />   
+                    </h:panelGroup> 
+                </h:panelGroup>
+                
+                
                 <p:spacer width="5" height="5" />
                 <h:outputText value="#{msg.stationnumber}:"  />   
                 <h:outputText value="#{record.stationFieldNumber}" /> 
